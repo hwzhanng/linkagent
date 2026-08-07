@@ -1,0 +1,143 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1786069819.271259 1045217 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1786069819.271315 1045217 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+[ISAACLAB] AppLauncher initialization complete
+[INFO]: Parsing configuration from: simulation.tomato_pick.isaac.env_cfg:TomatoPickEnvCfg
+[INFO]: Parsing configuration from: simulation.tomato_pick.isaac.agents.rsl_rl_ppo_cfg:TomatoPickPPORunnerCfg
+Warp 1.13.0 initialized:
+   CUDA Toolkit 12.9, Driver 13.2
+   Devices:
+     "cpu"      : "x86_64"
+     "cuda:0"   : "NVIDIA GeForce RTX 5090" (31 GiB, sm_120, mempool enabled)
+   Kernel cache:
+     /home/descfly/.cache/warp/1.13.0
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 42
+	Physics step-size     : 0.008333333333333333
+	Rendering step-size   : 0.05
+	Environment step-size : 0.05
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Registered backend 'physx' for factory RigidObject.
+[INFO]: Registered backend 'physx' for factory ContactSensor.
+[INFO]: Physics scene prim path: /physicsScene
+[INFO]: Time taken for scene creation Last: 2.753135 s, Mean: 2.753135 s, Std: 0.000000 s, N: 1
+[INFO]: Scene manager:  <class InteractiveScene>
+	Number of environments: 1024
+	Environment spacing   : 1.8
+	Source prim name      : /World/envs/env_0
+	Global prim paths     : ['/World/ground']
+	Replicate physics     : False
+[INFO]: Starting the simulation. This may take a few seconds. Please wait...
+[INFO]: Simulation parameters for joints in /World/envs/env_.*/Robot:
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                       Simulation Joint Information (Prim path: /World/envs/env_.*/Robot)                                                      |
++-------+--------------------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+| Index | Name                     | Stiffness | Damping | Armature | Static Friction | Dynamic Friction | Viscous Friction | Position Limits | Velocity Limits | Effort Limits |
++-------+--------------------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+|   0   | R1_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-2.910, 2.910] |      10.470     |     80.000    |
+|   1   | L1_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-2.910, 2.910] |      10.470     |     80.000    |
+|   2   | R2_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-3.200, 0.070] |      10.470     |     80.000    |
+|   3   | L2_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-0.070, 3.200] |      10.470     |     80.000    |
+|   4   | R3_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-2.690, 2.690] |      9.100      |     36.000    |
+|   5   | L3_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-2.690, 2.690] |      9.100      |     36.000    |
+|   6   | R4_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-2.050, 2.050] |      9.100      |     36.000    |
+|   7   | L4_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-2.050, 2.050] |      9.100      |     36.000    |
+|   8   | R5_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-2.690, 2.690] |      9.100      |     36.000    |
+|   9   | L5_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-2.690, 2.690] |      9.100      |     36.000    |
+|   10  | R6_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-1.590, 1.590] |      7.330      |     18.000    |
+|   11  | L6_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-1.590, 1.590] |      7.330      |     18.000    |
+|   12  | R7_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-1.590, 1.590] |      7.330      |     18.000    |
+|   13  | L7_Joint                 |  1.2e+03  |  80.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-1.590, 1.590] |      7.330      |     18.000    |
+|   14  | right_hand_thumb_joint0  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-0.490, 1.050] |      0.500      |     1.000     |
+|   15  | right_hand_index_joint0  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-0.260, 0.260] |      0.200      |     1.000     |
+|   16  | right_hand_middle_joint0 |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-0.260, 0.260] |      0.200      |     1.000     |
+|   17  | right_hand_ring_joint0   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-0.260, 0.260] |      0.200      |     1.000     |
+|   18  | right_hand_little_joint0 |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-0.260, 0.260] |      0.200      |     1.000     |
+|   19  | left_hand_thumb_joint0   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-1.050, 0.490] |      0.500      |     1.000     |
+|   20  | left_hand_index_joint0   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-0.260, 0.260] |      0.200      |     1.000     |
+|   21  | left_hand_middle_joint0  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-0.260, 0.260] |      0.200      |     1.000     |
+|   22  | left_hand_ring_joint0    |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-0.260, 0.260] |      0.200      |     1.000     |
+|   23  | left_hand_little_joint0  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-0.260, 0.260] |      0.200      |     1.000     |
+|   24  | right_hand_thumb_joint1  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       | [-1.450, 0.000] |      0.400      |     1.000     |
+|   25  | right_hand_index_joint1  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.660] |      3.152      |     1.000     |
+|   26  | right_hand_middle_joint1 |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.660] |      3.116      |     1.000     |
+|   27  | right_hand_ring_joint1   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.660] |      3.081      |     1.000     |
+|   28  | right_hand_little_joint1 |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.660] |      3.001      |     1.000     |
+|   29  | left_hand_thumb_joint1   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.450] |      0.400      |     1.000     |
+|   30  | left_hand_index_joint1   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.660] |      3.152      |     1.000     |
+|   31  | left_hand_middle_joint1  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.660] |      3.116      |     1.000     |
+|   32  | left_hand_ring_joint1    |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.660] |      3.081      |     1.000     |
+|   33  | left_hand_little_joint1  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.660] |      3.001      |     1.000     |
+|   34  | right_hand_thumb_joint2  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 0.840] |      1.068      |     1.000     |
+|   35  | right_hand_index_joint2  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.360] |      2.406      |     1.000     |
+|   36  | right_hand_middle_joint2 |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.360] |      2.338      |     1.000     |
+|   37  | right_hand_ring_joint2   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.360] |      2.516      |     1.000     |
+|   38  | right_hand_little_joint2 |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.360] |      2.422      |     1.000     |
+|   39  | left_hand_thumb_joint2   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 0.840] |      1.068      |     1.000     |
+|   40  | left_hand_index_joint2   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.360] |      2.406      |     1.000     |
+|   41  | left_hand_middle_joint2  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.360] |      2.338      |     1.000     |
+|   42  | left_hand_ring_joint2    |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.360] |      2.516      |     1.000     |
+|   43  | left_hand_little_joint2  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.360] |      2.422      |     1.000     |
+|   44  | right_hand_thumb_joint3  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.320] |      1.615      |     1.000     |
+|   45  | right_hand_index_joint3  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.480] |      2.262      |     1.000     |
+|   46  | right_hand_middle_joint3 |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.480] |      2.198      |     1.000     |
+|   47  | right_hand_ring_joint3   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.480] |      2.365      |     1.000     |
+|   48  | right_hand_little_joint3 |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.480] |      2.277      |     1.000     |
+|   49  | left_hand_thumb_joint3   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.320] |      1.615      |     1.000     |
+|   50  | left_hand_index_joint3   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.480] |      2.262      |     1.000     |
+|   51  | left_hand_middle_joint3  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.480] |      2.198      |     1.000     |
+|   52  | left_hand_ring_joint3    |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.480] |      2.365      |     1.000     |
+|   53  | left_hand_little_joint3  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.480] |      2.277      |     1.000     |
+|   54  | right_hand_thumb_joint4  |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.340] |      1.792      |     1.000     |
+|   55  | left_hand_thumb_joint4   |   12.000  |  0.600  |  0.000   |      0.010      |      0.000       |      0.000       |  [0.000, 1.340] |      1.792      |     1.000     |
++-------+--------------------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+[INFO]: Time taken for simulation start Last: 21.187002 s, Mean: 21.187002 s, Std: 0.000000 s, N: 1
+[INFO] Event Manager:  <EventManager> contains 1 active terms.
++---------------------------------------+
+| Active Event Terms in Mode: 'prestartup' |
++-----------+---------------------------+
+|   Index   | Name                      |
++-----------+---------------------------+
+|     0     | fruit_geometry            |
++-----------+---------------------------+
+
+[INFO]: Completed setting up the environment...
+[INFO]: Registered backend 'physx' for factory FrameView.
+--------------------------------------------------------------------------------
+Resolved observation sets: 
+	 actor :  ['policy']
+	 critic :  ['critic']
+--------------------------------------------------------------------------------
+Actor Model: MLPModel(
+  (obs_normalizer): EmpiricalNormalization()
+  (distribution): GaussianDistribution()
+  (mlp): MLP(
+    (0): Linear(in_features=66, out_features=512, bias=True)
+    (1): ELU(alpha=1.0)
+    (2): Linear(in_features=512, out_features=256, bias=True)
+    (3): ELU(alpha=1.0)
+    (4): Linear(in_features=256, out_features=128, bias=True)
+    (5): ELU(alpha=1.0)
+    (6): Linear(in_features=128, out_features=11, bias=True)
+  )
+)
+Critic Model: MLPModel(
+  (obs_normalizer): EmpiricalNormalization()
+  (mlp): MLP(
+    (0): Linear(in_features=83, out_features=512, bias=True)
+    (1): ELU(alpha=1.0)
+    (2): Linear(in_features=512, out_features=256, bias=True)
+    (3): ELU(alpha=1.0)
+    (4): Linear(in_features=256, out_features=128, bias=True)
+    (5): ELU(alpha=1.0)
+    (6): Linear(in_features=128, out_features=1, bias=True)
+  )
+)
+[INFO]: SimulationContext cleared
+TOMATO_CHECKPOINT_EVALUATION={"action_saturation_rate": 0.44922829367897726, "checkpoint": "/home/descfly/linkagent/logs/rsl_rl/tomato_pick_minimal_v3/2026-08-07_05-13-16_2026-08-07_05-13_tomato_minimal_graspcredit_resume500b_8192/model_1499.pt", "checkpoint_sha256": "b8c7e92dcc0a285a0b302b3164281e6776a4a622d92efab51272f1fb1b23f52e", "completed_episodes": 7775, "detach_count": 7496.000061541796, "detach_rate": 0.9641157635423532, "deterministic_policy": true, "drop_count": 1527, "drop_rate": 0.19639871382636656, "elapsed_seconds": 67.19877772498876, "excess_force_count": 1359, "logged_drop_count": 1527.000029200688, "logged_success_count": 4846.000089421868, "mean_abs_action": 0.7059263439611955, "mean_episode_length": 48.81710610932476, "mean_episode_return": 151.98334413687132, "mean_hold_steps_at_reset": 12.483858638285056, "num_envs": 1024, "out_of_bounds_count": 6, "raw_mean_abs_action": 0.9149738556688483, "retained_count": 4857.000091329217, "retained_rate": 0.624694545508581, "rms_action": 0.7833015614918475, "schema_version": 1, "seed": 42, "simulation_steps_per_second": 6095.348961201192, "std_episode_return": 70.42656660488186, "steps": 400, "success_count": 4846, "success_rate": 0.6232797427652733, "timeout_count": 37}
+Loading user config located at: '/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-08-07T02:30:19Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers' or '/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers/config'
+2026-08-07T02:30:19Z [218ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+2026-08-07T02:30:20Z [1,756ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+2026-08-07T02:30:37Z [18,720ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?

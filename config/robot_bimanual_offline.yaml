@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "topology_validated": false,
+  "arms": {
+    "left": {
+      "can_interface": "can0",
+      "profile_path": "botSDK/lbot_arm_api-master/tools/local_arm_can/a7_v2_left.json",
+      "base_frame_id": "world",
+      "bitrate": 1000000,
+      "validated": true
+    },
+    "right": {
+      "can_interface": "can1",
+      "profile_path": "botSDK/lbot_arm_api-master/tools/local_arm_can/a7_v2_right.json",
+      "base_frame_id": "world",
+      "bitrate": 1000000,
+      "validated": true
+    }
+  },
+  "hands": {
+    "left": {
+      "can_interface": "can0",
+      "can_id": 40,
+      "calibration_id": "left_g20_motion_calibration_20260726",
+      "bitrate": 1000000,
+      "validated": true
+    },
+    "right": {
+      "can_interface": "can1",
+      "can_id": 39,
+      "calibration_id": "right_g20_pending_hardware_validation",
+      "bitrate": 1000000,
+      "validated": false
+    }
+  }
+}

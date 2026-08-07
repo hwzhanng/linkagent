@@ -1,0 +1,61 @@
+schema_version: 1
+name: lkls73_official_sim_baseline
+status: vendor_simulation_starting_point_not_hardware_identification
+
+provenance:
+  repository: https://github.com/linker-bot/linker-sim
+  commit: ed1b8ea26bb1161326916934e2ceb596ea01f7a6
+  component: assets/components/arms/lkls73_arm
+  isaac_loader: isaac_backend/loaders.py
+
+joint_limits:
+  source: vendor_urdf
+  effort_nm:
+    joint_1: 80.0
+    joint_2: 80.0
+    joint_3: 36.0
+    joint_4: 36.0
+    joint_5: 36.0
+    joint_6: 18.0
+    joint_7: 18.0
+  velocity_rad_s:
+    joint_1: 10.47
+    joint_2: 10.47
+    joint_3: 9.10
+    joint_4: 9.10
+    joint_5: 9.10
+    joint_6: 7.33
+    joint_7: 7.33
+
+isaac:
+  importer:
+    fix_base: true
+    merge_fixed_joints: false
+    make_instanceable: false
+    collider_type: convex_decomposition
+  articulation:
+    enabled_self_collisions: false
+    solver_position_iteration_count: 8
+    solver_velocity_iteration_count: 0
+  position_drive:
+    joint_profile:
+      stiffness: 2000.0
+      damping: 20.0
+    osc_profile:
+      stiffness: 150.0
+      damping: 8.0
+
+mujoco:
+  joint:
+    damping: 20.0
+    frictionloss: 0.0
+    armature: 0.01
+  position_actuator:
+    kp: 2000.0
+    kv: 0.0
+
+notes:
+  - These values are copied from the vendor simulation repository.
+  - The vendor meta file calls the gains a sensible starting point and asks for retuning after smoke tests.
+  - Frictionloss 0.0 is a placeholder, not a measured zero-friction claim.
+  - Use domain randomization until real-system identification is complete.

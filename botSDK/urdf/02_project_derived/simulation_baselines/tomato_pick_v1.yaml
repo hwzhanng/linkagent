@@ -1,0 +1,86 @@
+{
+  "schema_version": 3,
+  "spec_id": "tomato_pick_minimal_v3",
+  "status": "formal_training",
+  "robot": {
+    "active_arm": "right_7dof",
+    "arm_execution": "20hz_bounded_cartesian_followP_or_simulated_dls_ik",
+    "hand": "G20",
+    "independent_hand_joints": 16,
+    "tactile_fingers": 5
+  },
+  "policy": {
+    "interface_version": "3.1.0",
+    "observation_layout_id": "tomato_pick_actor_66d_v3",
+    "observation_dim": 66,
+    "action_layout_id": "tomato_pick_cartesian_g20_eigengrasp_11d_v4",
+    "action_dim": 11,
+    "critic_state_dim": 83,
+    "policy_rate_hz": 20,
+    "action_semantics": [
+      "delta_x_grasp_frame",
+      "delta_y_grasp_frame",
+      "delta_z_grasp_frame",
+      "delta_rx_grasp_frame",
+      "delta_ry_grasp_frame",
+      "delta_rz_grasp_frame_including_peduncle_twist",
+      "absolute_global_finger_flexion",
+      "absolute_proximal_distal_curl_shape",
+      "absolute_radial_ulnar_flexion_balance",
+      "absolute_finger_spread",
+      "absolute_thumb_opposition"
+    ],
+    "actor_observation_blocks": {
+      "fruit_center_in_palm": 3,
+      "fruit_semi_axes": 3,
+      "pull_axis_in_palm": 3,
+      "ee_twist_in_palm": 6,
+      "hand_joint_position": 16,
+      "hand_joint_velocity": 16,
+      "finger_pressure": 5,
+      "gravity_in_palm": 3,
+      "previous_action": 11
+    }
+  },
+  "coordinates": {
+    "grasp_z_plus": "away_from_plant",
+    "peduncle_direction_fruit_to_plant": "negative_grasp_z",
+    "positive_pull": "positive_grasp_z",
+    "axial_twist": "rotation_projection_about_grasp_z"
+  },
+  "reset": {
+    "fruit_attached": true,
+    "initial_contact": false,
+    "pregrasp_distance_from_closed_grasp_envelope_m": [0.055, 0.075],
+    "lateral_noise_m": 0.012,
+    "arm_joint_noise_deg": 3.0,
+    "collision_and_joint_limit_gate_required": true
+  },
+  "reward": {
+    "terms": [
+      "bounded_best_ever_reach_progress",
+      "bounded_best_ever_grasp_progress",
+      "bounded_best_ever_grasp_gated_stem_load_progress",
+      "opposed_grasp_per_step",
+      "two_finger_break_grasped_with_thumb_bonus",
+      "detached_retained_per_step",
+      "terminal_success"
+    ],
+    "removed": [
+      "phase_rewards",
+      "single_finger_break_reward",
+      "action_rate_reward",
+      "force_closure_teacher",
+      "terminal_failure_penalty",
+      "time_cost"
+    ]
+  },
+  "success": {
+    "definition": "fruit_detached_and_retained_for_one_second_without_drop_or_excess_force",
+    "hold_steps": 20
+  },
+  "termination": {
+    "terminated": ["success", "drop", "excess_force", "workspace_or_joint_limit"],
+    "truncated": ["episode_time_limit"]
+  }
+}

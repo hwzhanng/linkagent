@@ -1,0 +1,38 @@
+{
+  "schema_version": 3,
+  "profile_id": "tomato_pick_sim2real_minimal_v3",
+  "policy_interface": {
+    "interface_version": "3.1.0",
+    "observation_layout_id": "tomato_pick_actor_66d_v3",
+    "observation_dim": 66,
+    "action_layout_id": "tomato_pick_cartesian_g20_eigengrasp_11d_v4",
+    "action_dim": 11,
+    "critic_state_dim": 83,
+    "policy_rate_hz": 20,
+    "actor_privileged_state_allowed": false
+  },
+  "deployment_sources": {
+    "fruit_center_and_axes": "yolo_instance_mask_plus_registered_rgbd",
+    "pull_axis": "grasp_plan_frame_z_plus_away_from_plant",
+    "arm_state": "followP_feedback_pose_and_twist",
+    "hand_state": "sixteen_g20_joint_channels",
+    "tactile": "five_calibrated_finger_pressure_resultants",
+    "gravity": "robot_base_calibration_transformed_to_palm"
+  },
+  "training_randomization": {
+    "fruit_semi_axes_m": [0.025, 0.035],
+    "fruit_density_kg_m3": [650.0, 1050.0],
+    "fruit_position_noise_m_std": 0.006,
+    "fruit_axis_relative_noise_std": 0.08,
+    "action_delay_policy_steps": [0, 1],
+    "pressure_gain": [0.85, 1.15],
+    "pressure_bias_n": [-0.15, 0.15],
+    "break_force_n": [3.0, 7.0]
+  },
+  "release_gates": [
+    "same_66d_builder_in_sim_and_deployment",
+    "five_pressure_channels_calibrated",
+    "followP_shadow_replay_within_workspace",
+    "measured_stem_break_interval_replaces_training_prior"
+  ]
+}

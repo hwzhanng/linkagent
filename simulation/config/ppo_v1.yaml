@@ -1,0 +1,77 @@
+{
+  "schema_version": 3,
+  "training_profile_id": "tomato_pick_minimal_v3",
+  "status": "formal_training_active",
+  "task_id": "LinkAgent-TomatoPick-Direct-v0",
+  "runtime_role": "isaac_ppo",
+  "trainer": {
+    "backend": "rsl_rl",
+    "algorithm": "PPO",
+    "seed": 42,
+    "device": "cuda:0",
+    "num_environments": 8192,
+    "rollout_steps_per_environment": 32,
+    "rollout_source": "fresh_current_policy_only",
+    "replay_buffer_enabled": false,
+    "maximum_iterations": 1500,
+    "save_interval_iterations": 50
+  },
+  "policy": {
+    "actor_observation_dim": 66,
+    "critic_state_dim": 83,
+    "action_dim": 11,
+    "architecture": "feedforward_mlp",
+    "hidden_dimensions": [512, 256, 128],
+    "initial_action_std": 0.6,
+    "distribution": "standard_diagonal_gaussian",
+    "action_clip": 1.0
+  },
+  "algorithm": {
+    "learning_rate": 0.0003,
+    "schedule": "fixed",
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_parameter": 0.2,
+    "entropy_coefficient": 0.002,
+    "value_loss_coefficient": 1.0,
+    "maximum_gradient_norm": 1.0,
+    "learning_epochs": 4,
+    "mini_batches": 8,
+    "timeout_value_bootstrap": true,
+    "true_termination_value_bootstrap": false
+  },
+  "monitoring": {
+    "provider": "wandb",
+    "mode": "online",
+    "entity": "hwzclementine-china-agricultural-university",
+    "project": "PPO",
+    "run_name": "2026-08-07_05-13_tomato_minimal_graspcredit_resume500b_8192",
+    "run_id": "pmt88pns",
+    "credential_environment_variable": "WANDB_API_KEY",
+    "credential_store": "user_netrc_or_environment",
+    "local_tensorboard_mirror": true
+  },
+  "compatibility": {
+    "interface_version": "3.1.0",
+    "observation_layout_id": "tomato_pick_actor_66d_v3",
+    "observation_dim": 66,
+    "action_layout_id": "tomato_pick_cartesian_g20_eigengrasp_11d_v4",
+    "action_dim": 11,
+    "critic_state_dim": 83,
+    "policy_rate_hz": 20
+  },
+  "output": {
+    "root": "logs/rsl_rl/tomato_pick_minimal_v3",
+    "deployable_root": "artifacts/simulation/tomato_pick_minimal_v3",
+    "write_policy_manifest": true,
+    "write_resolved_config": true,
+    "write_environment_report": true,
+    "checkpoint_is_deployable_without_manifest": false
+  },
+  "activation_gate": {
+    "contract_unit_gate": true,
+    "isaac_physics_gate": true,
+    "short_ppo_numeric_gate": true,
+    "explicit_formal_training_authorization": true
+  }
+}

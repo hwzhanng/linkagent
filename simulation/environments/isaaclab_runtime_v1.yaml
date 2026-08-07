@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "runtime_profile_id": "linkagent_isaaclab_sim6_runtime_v1",
+  "status": "installed_and_smoke_tested",
+  "recorded_at": "2026-08-04",
+  "primary": {
+    "reason": "formal LinkBot USD was generated for Isaac Sim 6 and carries Sim 6 Newton mimic schema",
+    "source_root": "/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1",
+    "virtual_environment": "/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1/env_isaaclab",
+    "python_executable": "/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python",
+    "launcher": "/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1/isaaclab.sh",
+    "source_tag": "v3.0.0-beta2.patch1",
+    "source_commit": "ffff603eafc6b74264a5261cc0183d6a65390d78",
+    "python": "3.12.3",
+    "isaac_sim": "6.0.1.0",
+    "isaac_lab": "6.1.14",
+    "isaaclab_physx": "1.1.3",
+    "torch": "2.10.0+cu128",
+    "rsl_rl": "5.0.1",
+    "wandb": "0.28.1",
+    "environment_size_gib_approx": 13
+  },
+  "host_observed": {
+    "os": "Ubuntu 24.04.3 LTS",
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "gpu_memory_mib": 32607,
+    "driver": "595.58.03",
+    "torch_compute_capability": [12, 0]
+  },
+  "verification": {
+    "torch_cuda_allocation_passed": true,
+    "app_launcher_headless_passed": true,
+    "cuda_physx_steps_passed": true,
+    "formal_robot_usd_passed": true,
+    "formal_robot_num_bodies": 71,
+    "formal_robot_num_independent_joints": 56,
+    "formal_robot_fixed_base": true,
+    "formal_robot_authored_mimic_relations": 10,
+    "wandb_import_passed": true,
+    "wandb_login_verified": true,
+    "formal_robot_source_mutated": false,
+    "smoke_script": "script/isaac_runtime_smoke.py"
+  },
+  "dependency_health": {
+    "official_installer_exit_code": 0,
+    "pip_check_clean": false,
+    "runtime_smoke_passed_despite_metadata_conflicts": true,
+    "known_upstream_metadata_conflicts": [
+      "Isaac Sim 6.0.1 package metadata requests Torch 2.11 while this Isaac Lab tag explicitly installs Torch 2.10 cu128",
+      "isaaclab-rl requires packaging below 24 while Isaac Sim core metadata requests packaging 26",
+      "Isaac Lab requests Pillow 12.2 while its MoviePy dependency requests Pillow below 12",
+      "Isaac Sim kernel exact metadata for NumPy and coverage differs from Isaac Lab source requirements"
+    ],
+    "policy": "do not force-resolve upstream metadata conflicts after successful official install and runtime smoke; revalidate before any upgrade"
+  },
+  "reference_only": {
+    "source_root": "/home/descfly/isaaclab/IsaacLab-2.3.2",
+    "conda_environment": "/home/descfly/miniconda3/envs/linkagent-isaaclab",
+    "isaac_sim": "5.1.0",
+    "isaac_lab_tag": "v2.3.2",
+    "status": "framework_smoke_passed_but_incompatible_with_formal_robot_usd",
+    "must_not_be_used_for_c2_assets_or_training": true
+  },
+  "isolation": {
+    "agent_core_environment_unchanged": true,
+    "existing_conda_environments_unchanged": true,
+    "vendor_sdk_or_can_accessed": false,
+    "model_api_credentials_required": false,
+    "eula_acceptance_scope": "OMNI_KIT_ACCEPT_EULA was set only on explicitly authorized install and smoke processes"
+  }
+}

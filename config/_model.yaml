@@ -1,0 +1,54 @@
+{
+  "ark_anthropic_doubao": {
+    "type": "ark_anthropic_messages",
+    "model": "doubao-seed-2.0-pro",
+    "base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "api_key_env": "ARK_API_KEY",
+    "timeout_s": 60.0,
+    "max_output_tokens": 1024
+  },
+  "ark_openai_doubao": {
+    "type": "ark_openai_responses",
+    "model": "doubao-seed-2.0-pro",
+    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+    "api_key_env": "ARK_API_KEY",
+    "timeout_s": 60.0,
+    "max_output_tokens": 1024
+  },
+  "offline_mock": {
+    "type": "mock",
+    "tool_sequence": [
+      {
+        "name": "locate_target",
+        "arguments": {}
+      }
+    ],
+    "final_output": "The configured target was located."
+  },
+  "offline_agri_pick": {
+    "type": "mock",
+    "tool_sequence": [
+      {
+        "name": "detect_tomatoes",
+        "arguments": {}
+      },
+      {
+        "name": "plan_tomato_grasp",
+        "arguments": {"target_id": "tomato-1", "arm_side": "auto"}
+      },
+      {
+        "name": "move_to_pregrasp",
+        "arguments": {"grasp_plan_id": "plan-tomato-1-right-0"}
+      },
+      {
+        "name": "execute_tomato_pick",
+        "arguments": {"grasp_plan_id": "plan-tomato-1-right-0"}
+      },
+      {
+        "name": "verify_tomato_pick",
+        "arguments": {"execution_id": "exec-plan-tomato-1-right-0"}
+      }
+    ],
+    "final_output": "Offline tomato pick workflow finished."
+  }
+}

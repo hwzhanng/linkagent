@@ -1,0 +1,29 @@
+{
+  "schema_version": 3,
+  "asset_role": "fixed_g20_training_mass_profile",
+  "method": "One 1.0 kg hand: 0.55 kg palm, 0.13 kg thumb, four 0.08 kg fingers; scale each source inertia once and enforce a 2.5e-7 kg m2 principal-inertia floor. Set each R8 mounting adapter to 0.03 kg.",
+  "target_hand_mass_kg": 1.0,
+  "minimum_finger_link_mass_kg": 0.01,
+  "minimum_principal_inertia_kg_m2": 2.5e-07,
+  "mounting_adapter_mass_kg": 0.03,
+  "self_collisions": false,
+  "simulation_mimic_mode": "disabled_in_usd_software_coupled_from_urdf",
+  "source_asset": "botSDK/urdf/02_project_derived/ros2_packages/linkbot_bimanual_sdk_description/urdf/linkbot_bimanual_sdk_description.urdf",
+  "generated_asset": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg.usda",
+  "urdf": "botSDK/urdf/02_project_derived/ros2_packages/linkbot_bimanual_sdk_description/urdf/linkbot_bimanual_sdk_description.urdf",
+  "urdf_sha256": "8a2f502846898827d51296ad8f9d32c7db72a28f2f5965505afd0e470d020ff1",
+  "usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg.usda",
+  "usd_sha256": "e4b190443b3b9aedf68826ce16e007737ecd4ee487321ded2c265c2e5a88a097",
+  "mass_csv": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/tests/body_mass_inertia.csv",
+  "mass_csv_sha256": "3cbe4f3e8c6c9d694d0af0b35fe89f7dfeede9e09412d012348de8506d2823f8",
+  "verification": {
+    "target_body_count": 56,
+    "maximum_mass_error_kg": 1.1920928910669204e-08,
+    "left_hand_mass_kg": 1.0,
+    "right_hand_mass_kg": 1.0,
+    "physx_self_collisions_disabled": true,
+    "newton_mimic_joint_count": 10,
+    "newton_mimic_disabled_count": 10,
+    "mass_csv_body_count": 71
+  }
+}

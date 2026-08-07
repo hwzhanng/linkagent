@@ -1,0 +1,21 @@
+# 2026-07-19 replacement device: left hand with G20 control protocol.
+# The earlier L20 interpretation is retained only in historical logs/notes.
+armed: false
+
+hand:
+  model: G20
+  side: left
+  touch: true
+  touch_type: matrix_v2
+
+transport:
+  type: can
+  can_interface: can0
+  serial_port: null
+  bitrate: 1000000
+
+motion:
+  speed: 80
+  torque: null
+  current: null
+  settle_seconds: 2.0

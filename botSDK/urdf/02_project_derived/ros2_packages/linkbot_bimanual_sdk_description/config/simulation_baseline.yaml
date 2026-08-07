@@ -1,0 +1,61 @@
+schema_version: 1
+model: linkbot_bimanual_sdk_description
+status: training_baseline_requires_system_identification
+
+provenance:
+  arm_urdf: ../../../../01_vendor_original/04_delivered_sdk_models/lkls73_i1_dual_arm_description/urdf/lkls73_i1_dual_arm_description.urdf
+  arm_urdf_sha256: 732b7f41003d339e0ae67d8b9b9d04d266a89e32dd58f9f50037e02b86ffa804
+  arm_coordinate_semantics: delivered_sdk_control_platform
+  hand_urdf_generation: vendor_download_2024
+  arm_dynamics_source: official linker-sim commit ed1b8ea26bb1161326916934e2ceb596ea01f7a6
+
+mounts:
+  right:
+    parent: R8_Link
+    xyz: [0.0, 0.0, 0.0]
+    rpy: [3.141592653589793, 0.0, 1.5707963267948966]
+    evidence: config/mounts.json_and_formal_urdf_user_corrected
+  left:
+    parent: L8_Link
+    xyz: [0.0, 0.0, 0.0]
+    rpy: [3.141592653589793, 0.0, -1.5707963267948966]
+    evidence: config/mounts.json_and_formal_urdf_user_corrected_mirror
+
+isaac_import:
+  fix_base: true
+  merge_fixed_joints: false
+  make_instanceable: false
+  collider_type: convex_decomposition
+  enabled_self_collisions: false
+  solver_position_iteration_count: 8
+  solver_velocity_iteration_count: 0
+
+arm_drive_starting_point:
+  stiffness: 2000.0
+  damping: 20.0
+  note: vendor_simulation_value_not_measured_hardware_gain
+
+arm_joint_dynamics_in_urdf:
+  damping: 20.0
+  friction: 0.0
+  note: friction_zero_is_a_placeholder_not_a_zero_friction_claim
+
+hand_drive:
+  status: missing_vendor_torque_and_gain_identification
+  independent_command_joints_per_hand: 16
+  mimic_joints_per_hand: 5
+  urdf_velocity_limit_rad_s: 1.0
+  published_max_finger_speed_rad_s: 1.86
+  note: keep_1.0_for_initial_safe_training_until_channel_and_speed_validation
+
+known_mass_gap:
+  published_complete_hand_mass_kg: 1.0
+  urdf_left_total_kg: 0.197753
+  urdf_right_total_kg: 0.198656
+  action: measure_installed_hand_mass_com_and_inertia_before_dynamics_transfer
+
+control:
+  sdk_state_rate_hz: 50
+  sdk_follow_command_rate_hz: [50, 200]
+  sdk_speed_input_range_rad_s: [0.0, 20.0]
+  sdk_acceleration_input_range_rad_s2: [0.0, 20.0]

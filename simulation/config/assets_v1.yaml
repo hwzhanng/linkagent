@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "asset_profile_id": "tomato_pick_assets_v1",
+  "status": "minimal_11d_formal_training_active",
+  "robot": {
+    "asset_id": "linkbot_bimanual_sdk_training_mass1kg",
+    "usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg.usda",
+    "self_collision_enabled": false
+  },
+  "task_assets": {
+    "tomato": "oriented_ellipsoid_rigid_contact_proxy",
+    "stem": "compliant_attachment_with_axial_tension_fracture",
+    "fingertip_contact": "five_distal_pad_force_channels"
+  },
+  "interface": {
+    "actor_observation_shape": [66],
+    "critic_observation_shape": [83],
+    "action_shape": [11],
+    "action_semantics": "6d_grasp_frame_delta_plus_5d_absolute_g20_synergy"
+  },
+  "gates": {
+    "unit": true,
+    "physics": true,
+    "ppo_numeric_probe": true
+  },
+  "ready_for_formal_training": true,
+  "formal_training_started": true,
+  "to_real_release_pending": [
+    "measure the real tomato stem pull interval before release",
+    "add twist fracture only after a measured torque interval is available",
+    "calibrate G20 fingertip normal-force channels"
+  ]
+}

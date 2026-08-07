@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "name": "agricultural_grasp_no_equipment_proxy",
+  "status": "legacy_reference_only",
+  "current_training_entry": false,
+  "superseded_by": "tomato_pick_v1.yaml",
+  "reason": [
+    "the_old_task_was_grasp_and_lift_without_stem_detachment",
+    "the_old_action_was_joint_position_delta_not_the_frozen_7d_residual",
+    "the_old_policy_rate_was_25_or_50_hz_not_20_hz",
+    "the_old_success_definition_did_not_require_detached_and_retained",
+    "the_old_profile_incorrectly_treated_nominal_20n_range_as_a_hardware_conversion"
+  ],
+  "retained_engineering_priors": {
+    "complete_hand_mass_kg": [0.65, 1.35],
+    "hand_action_delay_s": [0.06, 0.14],
+    "fingertip_static_friction": [0.45, 1.60],
+    "fingertip_dynamic_friction": [0.30, 1.35],
+    "fruit_radius_m": [0.025, 0.075],
+    "fruit_mass_kg": [0.03, 0.50]
+  },
+  "prohibited_inheritance": [
+    "checkpoint",
+    "observation_layout",
+    "action_layout",
+    "reward",
+    "success_definition",
+    "hardware_tactile_unit_claim"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "manifest_id": "linkagent_simulation_runtime_v1",
+  "runtime_profile": "simulation/environments/isaaclab_runtime_v1.yaml",
+  "policy": {
+    "automatic_environment_mutation": false,
+    "automatic_package_install": false,
+    "automatic_download": false,
+    "real_can_access": false,
+    "vendor_sdk_import": false,
+    "model_api_credentials_visible": false
+  },
+  "roles": {
+    "agent_core": {
+      "purpose": "Agent, Task and offline mock runtime",
+      "python": ">=3.11",
+      "owner": "root pyproject.toml",
+      "must_not_import": ["isaaclab", "gymnasium", "torch", "rsl_rl"]
+    },
+    "contract_smoke": {
+      "purpose": "66D/83D/11D interface verification without physics",
+      "recommended_python": "3.12",
+      "conda_environment_file": "simulation/environments/contract.yml",
+      "requires_gpu": false,
+      "requires_isaac": false,
+      "can_train_deployable_policy": false
+    },
+    "isaac_ppo": {
+      "purpose": "Isaac Lab physics environment and PPO training only",
+      "python_owner": "isaac_lab_launcher",
+      "root_environment_variable": "LINKAGENT_ISAACLAB_ROOT",
+      "installed_root": "/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1",
+      "launcher_relative_path": "isaaclab.sh",
+      "upstream_train_relative_path": "scripts/reinforcement_learning/train.py",
+      "training_command_prefix": [
+        "train",
+        "--rl_library",
+        "rsl_rl",
+        "--external_callback",
+        "simulation.tomato_pick.isaac.register_task"
+      ],
+      "headless_arguments": ["--viz", "none"],
+      "render_arguments": ["--viz", "kit"],
+      "required_python_modules": [
+        "isaaclab",
+        "isaaclab_tasks",
+        "isaaclab_rl",
+        "isaaclab_physx",
+        "gymnasium",
+        "torch",
+        "rsl_rl",
+        "wandb"
+      ],
+      "requires_gpu": true,
+      "connects_real_can": false,
+      "imports_agent_provider_adapters": false,
+      "current_runtime_status": "installed_and_smoke_tested",
+      "current_adapter_status": "implemented_and_tested"
+    }
+  },
+  "generated_output_roots": [
+    "artifacts/simulation",
+    "simulation/.runtime"
+  ]
+}

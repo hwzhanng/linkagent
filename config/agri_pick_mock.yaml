@@ -1,0 +1,48 @@
+{
+  "models_file": "_model.yaml",
+  "perception_file": "_perception.yaml",
+  "agent": {
+    "model": "offline_agri_pick",
+    "max_iterations": 8,
+    "max_tool_calls": 5,
+    "max_tool_calls_per_turn": 1
+  },
+  "env": {
+    "type": "mock",
+    "observations": [
+      {
+        "sequence": 0,
+        "timestamp_s": 0.0,
+        "metadata": {
+          "tomatoes": [
+            {
+              "target_id": "tomato-1",
+              "center_pose": {
+                "position_m": [0.45, -0.25, 0.72],
+                "quaternion_wxyz": [1.0, 0.0, 0.0, 0.0],
+                "frame_id": "world"
+              },
+              "semi_axes_m": [0.035, 0.032, 0.038],
+              "ripeness_score": 0.92,
+              "pick_confidence": 0.96,
+              "occlusion": 0.08,
+              "stem_direction_xyz": [0.0, 0.0, -1.0]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "task": {
+    "type": "agri_pick",
+    "default_arm_side": "right",
+    "max_skill_duration_s": 4.0,
+    "robotics": {"type": "mock", "scenario": {"outcome": "success"}},
+    "skill": {"type": "mock"},
+    "perception": {"type": "mock"},
+    "planner": {"type": "mock"},
+    "safety": {"type": "mock"},
+    "verifier": {"type": "mock"}
+  },
+  "runtime": {"max_steps": 1}
+}

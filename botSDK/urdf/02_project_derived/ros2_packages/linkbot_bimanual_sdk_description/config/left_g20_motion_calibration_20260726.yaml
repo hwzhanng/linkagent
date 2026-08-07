@@ -1,0 +1,84 @@
+schema_version: 1
+status: connected_left_hand_motion_calibrated
+calibrated_at: 2026-07-26
+
+application:
+  left_hand:
+    basis: measured_on_connected_device
+  right_hand:
+    basis: inherited_from_left_by_user_authorization
+    reason: same_model_same_production_batch_high_consistency
+    velocity_deadband_and_speed_policy: identical_to_left
+    urdf_axis_and_position_sign: retain_vendor_mirrored_right_hand_definition
+
+device:
+  model: G20
+  side: left
+  serial: LHT20-011-271-L-B-1-D
+  firmware: 1.0.10
+  sdk: 3.1.1
+  can_interface: can0
+  can_id: "0x28"
+  can_bitrate: 1000000
+
+validation:
+  main_trials: 468
+  high_speed_trials: 192
+  hot_steady_state_trials: 100
+  hot_steady_state_successes: 100
+  midrange_deadband_trials: 80
+  maximum_temperature_c: 55
+  can_tx_errors: 0
+  can_rx_errors: 0
+  post_test_fault_codes: 0
+  unloaded_pressure_max_raw: 0
+
+command_policy:
+  continuous_speed_cap_raw: 204
+  continuous_speed_cap_percent: 80.0
+  raw_255: experimental_only
+  raw_255_reason: thumb base overshot a large-stroke hot-state target and temporarily rejected the immediate return
+  yaw_roll: narrow_independent_ranges_only
+  wider_yaw_roll: requires_coordinated_self_collision_checked_trajectory
+  torque_limit_raw_used_for_high_speed_tests: 153
+  torque_value_semantics: sdk_maximum_setting_not_measured_output_torque
+
+# Channel numbering follows the G20 SDK 20-value position vector.
+# Channels 11-14 are reserved/uncommanded.  Follower velocities are derived
+# from their calibrated leader velocity and the vendor mimic multiplier.
+channels:
+  0:  {joint: left_hand_thumb_joint2,  raw_range: [50, 250],  deadband_raw: 2, velocity_limit_rad_s: 1.0685}
+  1:  {joint: left_hand_index_joint1,  raw_range: [15, 250],  deadband_raw: 1, velocity_limit_rad_s: 3.1523}
+  2:  {joint: left_hand_middle_joint1, raw_range: [5, 250],   deadband_raw: 1, velocity_limit_rad_s: 3.1158}
+  3:  {joint: left_hand_ring_joint1,   raw_range: [5, 250],   deadband_raw: 1, velocity_limit_rad_s: 3.0806}
+  4:  {joint: left_hand_little_joint1, raw_range: [15, 250],  deadband_raw: 1, velocity_limit_rad_s: 3.0013}
+  5:  {joint: left_hand_thumb_joint0,  raw_range: [247, 255], deadband_raw: 2, velocity_limit_rad_s: 0.5, yaw_roll_sign: inferred}
+  6:  {joint: left_hand_index_joint0,  raw_range: [185, 200], deadband_raw: 2, velocity_limit_rad_s: 0.2, yaw_roll_sign: inferred}
+  7:  {joint: left_hand_middle_joint0, raw_range: [140, 156], deadband_raw: 2, velocity_limit_rad_s: 0.2, yaw_roll_sign: inferred}
+  8:  {joint: left_hand_ring_joint0,   raw_range: [97, 113],  deadband_raw: 2, velocity_limit_rad_s: 0.2, yaw_roll_sign: inferred}
+  9:  {joint: left_hand_little_joint0, raw_range: [42, 50],   deadband_raw: 2, velocity_limit_rad_s: 0.2, yaw_roll_sign: inferred}
+  10: {joint: left_hand_thumb_joint1,  raw_range: [235, 242], deadband_raw: 3, velocity_limit_rad_s: 0.4, yaw_roll_sign: inferred}
+  15: {joint: left_hand_thumb_joint3,  raw_range: [75, 250],  deadband_raw: 2, velocity_limit_rad_s: 1.6148}
+  16: {joint: left_hand_index_joint2,  raw_range: [5, 250],   deadband_raw: 1, velocity_limit_rad_s: 2.4061}
+  17: {joint: left_hand_middle_joint2, raw_range: [5, 250],   deadband_raw: 1, velocity_limit_rad_s: 2.3382}
+  18: {joint: left_hand_ring_joint2,   raw_range: [10, 250],  deadband_raw: 1, velocity_limit_rad_s: 2.5159}
+  19: {joint: left_hand_little_joint2, raw_range: [5, 250],   deadband_raw: 1, velocity_limit_rad_s: 2.4225}
+
+mimic_followers:
+  left_hand_thumb_joint4:  {leader: left_hand_thumb_joint3,  multiplier: 1.11, velocity_limit_rad_s: 1.7924}
+  left_hand_index_joint3:  {leader: left_hand_index_joint2,  multiplier: 0.94, velocity_limit_rad_s: 2.2617}
+  left_hand_middle_joint3: {leader: left_hand_middle_joint2, multiplier: 0.94, velocity_limit_rad_s: 2.1979}
+  left_hand_ring_joint3:   {leader: left_hand_ring_joint2,   multiplier: 0.94, velocity_limit_rad_s: 2.3649}
+  left_hand_little_joint3: {leader: left_hand_little_joint2, multiplier: 0.94, velocity_limit_rad_s: 2.2772}
+
+not_identified:
+  - absolute_output_torque
+  - viscous_damping
+  - coulomb_friction
+  - hand_mass_center_of_mass_and_inertia
+  - exact_per_taxel_force_distribution
+
+source_evidence:
+  report: ../../../../../linkerhand-control-workspace/logs/motion_calibration/LEFT_G20_MOTION_CALIBRATION_20260726.md
+  machine_overlay: ../../../../../linkerhand-control-workspace/logs/motion_calibration/left_g20_motion_overlay_20260726.yaml
+  note: isolated wide yaw endpoint trials were retained as negative evidence and excluded from training limits

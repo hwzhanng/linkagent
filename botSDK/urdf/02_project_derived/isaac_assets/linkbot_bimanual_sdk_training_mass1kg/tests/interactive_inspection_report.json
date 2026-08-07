@@ -1,0 +1,2703 @@
+{
+  "schema_version": 1,
+  "tested_at_utc": "2026-07-28T14:57:24.786506+00:00",
+  "usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg.usda",
+  "device": "cuda:0",
+  "visualizer": "['kit']",
+  "duration_requested_s": 0.0,
+  "simulated_duration_s": 311.8499999998807,
+  "wall_duration_s": 903.7742515509999,
+  "physics_dt_s": 0.008333333333333333,
+  "connection_audit": {
+    "rigid_body_count": 71,
+    "joint_count": 71,
+    "articulation_roots": [
+      "/linkbot_bimanual_sdk/Geometry"
+    ],
+    "all_joints_have_child_body": true,
+    "mount_joints": {
+      "left_hand_mount_joint": {
+        "name": "left_hand_mount_joint",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_mount_joint",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link"
+        ],
+        "connected": true
+      },
+      "right_hand_mount_joint": {
+        "name": "right_hand_mount_joint",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_mount_joint",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link"
+        ],
+        "connected": true
+      }
+    },
+    "mounts_present_and_connected": true,
+    "joints": [
+      {
+        "name": "right_hand_thumb_joint0",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_thumb_joint0",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_index_joint0",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_index_joint0",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_index_link0"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_middle_joint0",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_middle_joint0",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_middle_link0"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_ring_joint0",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_ring_joint0",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_ring_link0"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_little_joint0",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_little_joint0",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_little_link0"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_mount_joint",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_mount_joint",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_thumb_joint1",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_thumb_joint1",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_thumb_joint2",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_thumb_joint2",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1/right_hand_thumb_link2"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_thumb_joint3",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_thumb_joint3",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1/right_hand_thumb_link2"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1/right_hand_thumb_link2/right_hand_thumb_link3"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_thumb_joint4",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_thumb_joint4",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1/right_hand_thumb_link2/right_hand_thumb_link3"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1/right_hand_thumb_link2/right_hand_thumb_link3/right_hand_thumb_link4"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_thumb_joint5",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_thumb_joint5",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1/right_hand_thumb_link2/right_hand_thumb_link3/right_hand_thumb_link4"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1/right_hand_thumb_link2/right_hand_thumb_link3/right_hand_thumb_link4/right_hand_thumb_link5"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_index_joint1",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_index_joint1",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_index_link0"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_index_link0/right_hand_index_link1"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_index_joint2",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_index_joint2",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_index_link0/right_hand_index_link1"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_index_link0/right_hand_index_link1/right_hand_index_link2"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_index_joint3",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_index_joint3",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_index_link0/right_hand_index_link1/right_hand_index_link2"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_index_link0/right_hand_index_link1/right_hand_index_link2/right_hand_index_link3"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_index_joint4",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_index_joint4",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_index_link0/right_hand_index_link1/right_hand_index_link2/right_hand_index_link3"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_index_link0/right_hand_index_link1/right_hand_index_link2/right_hand_index_link3/right_hand_index_link4"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_middle_joint1",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_middle_joint1",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_middle_link0"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_middle_link0/right_hand_middle_link1"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_middle_joint2",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_middle_joint2",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_middle_link0/right_hand_middle_link1"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_middle_link0/right_hand_middle_link1/right_hand_middle_link2"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_middle_joint3",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_middle_joint3",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_middle_link0/right_hand_middle_link1/right_hand_middle_link2"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_middle_link0/right_hand_middle_link1/right_hand_middle_link2/right_hand_middle_link3"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_middle_joint4",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_middle_joint4",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_middle_link0/right_hand_middle_link1/right_hand_middle_link2/right_hand_middle_link3"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_middle_link0/right_hand_middle_link1/right_hand_middle_link2/right_hand_middle_link3/right_hand_middle_link4"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_ring_joint1",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_ring_joint1",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_ring_link0"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_ring_link0/right_hand_ring_link1"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_ring_joint2",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_ring_joint2",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_ring_link0/right_hand_ring_link1"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_ring_link0/right_hand_ring_link1/right_hand_ring_link2"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_ring_joint3",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_ring_joint3",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_ring_link0/right_hand_ring_link1/right_hand_ring_link2"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_ring_link0/right_hand_ring_link1/right_hand_ring_link2/right_hand_ring_link3"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_ring_joint4",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_ring_joint4",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_ring_link0/right_hand_ring_link1/right_hand_ring_link2/right_hand_ring_link3"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_ring_link0/right_hand_ring_link1/right_hand_ring_link2/right_hand_ring_link3/right_hand_ring_link4"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_little_joint1",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_little_joint1",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_little_link0"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_little_link0/right_hand_little_link1"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_little_joint2",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_little_joint2",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_little_link0/right_hand_little_link1"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_little_link0/right_hand_little_link1/right_hand_little_link2"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_little_joint3",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_little_joint3",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_little_link0/right_hand_little_link1/right_hand_little_link2"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_little_link0/right_hand_little_link1/right_hand_little_link2/right_hand_little_link3"
+        ],
+        "connected": true
+      },
+      {
+        "name": "right_hand_little_joint4",
+        "path": "/linkbot_bimanual_sdk/Physics/right_hand_little_joint4",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_little_link0/right_hand_little_link1/right_hand_little_link2/right_hand_little_link3"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_little_link0/right_hand_little_link1/right_hand_little_link2/right_hand_little_link3/right_hand_little_link4"
+        ],
+        "connected": true
+      },
+      {
+        "name": "R8_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/R8_Joint",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "R7_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/R7_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "R6_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/R6_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "R5_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/R5_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "R4_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/R4_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "R3_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/R3_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "R2_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/R2_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "R1_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/R1_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/R1_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "L1_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/L1_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "root_joint",
+        "path": "/linkbot_bimanual_sdk/Physics/root_joint",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "L2_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/L2_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "L3_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/L3_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "L4_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/L4_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "L5_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/L5_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "L6_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/L6_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "L7_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/L7_Joint",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "L8_Joint",
+        "path": "/linkbot_bimanual_sdk/Physics/L8_Joint",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_mount_joint",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_mount_joint",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_thumb_joint0",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_thumb_joint0",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_index_joint0",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_index_joint0",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_index_link0"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_middle_joint0",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_middle_joint0",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_middle_link0"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_ring_joint0",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_ring_joint0",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_ring_link0"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_little_joint0",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_little_joint0",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_little_link0"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_thumb_joint1",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_thumb_joint1",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0/left_hand_thumb_link1"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_thumb_joint2",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_thumb_joint2",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0/left_hand_thumb_link1"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0/left_hand_thumb_link1/left_hand_thumb_link2"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_thumb_joint3",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_thumb_joint3",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0/left_hand_thumb_link1/left_hand_thumb_link2"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0/left_hand_thumb_link1/left_hand_thumb_link2/left_hand_thumb_link3"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_thumb_joint4",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_thumb_joint4",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0/left_hand_thumb_link1/left_hand_thumb_link2/left_hand_thumb_link3"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0/left_hand_thumb_link1/left_hand_thumb_link2/left_hand_thumb_link3/left_hand_thumb_link4"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_thumb_joint5",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_thumb_joint5",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0/left_hand_thumb_link1/left_hand_thumb_link2/left_hand_thumb_link3/left_hand_thumb_link4"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_thumb_link0/left_hand_thumb_link1/left_hand_thumb_link2/left_hand_thumb_link3/left_hand_thumb_link4/left_hand_thumb_link5"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_index_joint1",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_index_joint1",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_index_link0"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_index_link0/left_hand_index_link1"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_index_joint2",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_index_joint2",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_index_link0/left_hand_index_link1"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_index_link0/left_hand_index_link1/left_hand_index_link2"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_index_joint3",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_index_joint3",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_index_link0/left_hand_index_link1/left_hand_index_link2"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_index_link0/left_hand_index_link1/left_hand_index_link2/left_hand_index_link3"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_index_joint4",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_index_joint4",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_index_link0/left_hand_index_link1/left_hand_index_link2/left_hand_index_link3"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_index_link0/left_hand_index_link1/left_hand_index_link2/left_hand_index_link3/left_hand_index_link4"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_middle_joint1",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_middle_joint1",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_middle_link0"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_middle_link0/left_hand_middle_link1"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_middle_joint2",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_middle_joint2",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_middle_link0/left_hand_middle_link1"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_middle_link0/left_hand_middle_link1/left_hand_middle_link2"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_middle_joint3",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_middle_joint3",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_middle_link0/left_hand_middle_link1/left_hand_middle_link2"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_middle_link0/left_hand_middle_link1/left_hand_middle_link2/left_hand_middle_link3"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_middle_joint4",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_middle_joint4",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_middle_link0/left_hand_middle_link1/left_hand_middle_link2/left_hand_middle_link3"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_middle_link0/left_hand_middle_link1/left_hand_middle_link2/left_hand_middle_link3/left_hand_middle_link4"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_ring_joint1",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_ring_joint1",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_ring_link0"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_ring_link0/left_hand_ring_link1"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_ring_joint2",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_ring_joint2",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_ring_link0/left_hand_ring_link1"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_ring_link0/left_hand_ring_link1/left_hand_ring_link2"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_ring_joint3",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_ring_joint3",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_ring_link0/left_hand_ring_link1/left_hand_ring_link2"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_ring_link0/left_hand_ring_link1/left_hand_ring_link2/left_hand_ring_link3"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_ring_joint4",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_ring_joint4",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_ring_link0/left_hand_ring_link1/left_hand_ring_link2/left_hand_ring_link3"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_ring_link0/left_hand_ring_link1/left_hand_ring_link2/left_hand_ring_link3/left_hand_ring_link4"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_little_joint1",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_little_joint1",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_little_link0"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_little_link0/left_hand_little_link1"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_little_joint2",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_little_joint2",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_little_link0/left_hand_little_link1"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_little_link0/left_hand_little_link1/left_hand_little_link2"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_little_joint3",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_little_joint3",
+        "type": "PhysicsRevoluteJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_little_link0/left_hand_little_link1/left_hand_little_link2"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_little_link0/left_hand_little_link1/left_hand_little_link2/left_hand_little_link3"
+        ],
+        "connected": true
+      },
+      {
+        "name": "left_hand_little_joint4",
+        "path": "/linkbot_bimanual_sdk/Physics/left_hand_little_joint4",
+        "type": "PhysicsFixedJoint",
+        "body0": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_little_link0/left_hand_little_link1/left_hand_little_link2/left_hand_little_link3"
+        ],
+        "body1": [
+          "/linkbot_bimanual_sdk/Geometry/base_link/L1_Link/L2_Link/L3_Link/L4_Link/L5_Link/L6_Link/L7_Link/L8_Link/left_hand_base_link/left_hand_little_link0/left_hand_little_link1/left_hand_little_link2/left_hand_little_link3/left_hand_little_link4"
+        ],
+        "connected": true
+      }
+    ]
+  },
+  "mass_inertia_audit": {
+    "body_count": 71,
+    "total_mass_kg": 23.892475128173828,
+    "group_mass_kg": {
+      "base": 10.806708335876465,
+      "right_arm": 5.5428842021246965,
+      "left_arm": 5.542882831217867,
+      "right_hand": 1.000000032967705,
+      "left_hand": 0.9999999866344069
+    },
+    "all_masses_positive": true,
+    "all_inertias_positive_definite": true,
+    "all_principal_inertias_satisfy_triangle_inequality": true,
+    "warning": "Hand masses/inertias are vendor URDF values and remain much lower than the complete physical hand; they are valid numerically, not yet high-fidelity Sim2Real values.",
+    "bodies": [
+      {
+        "index": 0,
+        "name": "base_link",
+        "group": "base",
+        "mass_kg": 10.806708335876465,
+        "inertia_world_kg_m2": [
+          0.1925279200077057,
+          7.366054433077807e-10,
+          3.200569054229163e-08,
+          7.366054433077807e-10,
+          0.19153974950313568,
+          1.5040545804367866e-06,
+          3.200569054229163e-08,
+          1.5040545804367866e-06,
+          0.10304941236972809
+        ],
+        "principal_inertia_kg_m2": [
+          0.10304942727088928,
+          0.19153979420661926,
+          0.1925279200077057
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 1,
+        "name": "R1_Link",
+        "group": "right_arm",
+        "mass_kg": 1.3997201919555664,
+        "inertia_world_kg_m2": [
+          0.0006919020088389516,
+          1.307272759731859e-05,
+          -1.7450130940233066e-07,
+          1.307272759731859e-05,
+          0.0011440875241532922,
+          2.116243535965623e-08,
+          -1.7450130940233066e-07,
+          2.116243535965623e-08,
+          0.0006548337987624109
+        ],
+        "principal_inertia_kg_m2": [
+          0.000654833042062819,
+          0.0006915251724421978,
+          0.001144464942626655
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 2,
+        "name": "L1_Link",
+        "group": "left_arm",
+        "mass_kg": 1.3997199535369873,
+        "inertia_world_kg_m2": [
+          0.000691901717800647,
+          -1.3072940419078805e-05,
+          -1.7445859157305676e-07,
+          -1.3072940419078805e-05,
+          0.0011440871749073267,
+          -2.1281207907009048e-08,
+          -1.7445859157305676e-07,
+          -2.1281207907009048e-08,
+          0.00065483374055475
+        ],
+        "principal_inertia_kg_m2": [
+          0.0006548328674398363,
+          0.0006915249396115541,
+          0.0011444644769653678
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 3,
+        "name": "R2_Link",
+        "group": "right_arm",
+        "mass_kg": 1.1421046257019043,
+        "inertia_world_kg_m2": [
+          0.0009995349682867527,
+          -1.305523937844555e-07,
+          -1.339183086201956e-06,
+          -1.305523937844555e-07,
+          0.0009276082855649292,
+          -2.736916758294683e-05,
+          -1.339183086201956e-06,
+          -2.736916758294683e-05,
+          0.0004925889661535621
+        ],
+        "principal_inertia_kg_m2": [
+          0.000490870326757431,
+          0.0009293234907090664,
+          0.0009995384607464075
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 4,
+        "name": "L2_Link",
+        "group": "left_arm",
+        "mass_kg": 1.1421048641204834,
+        "inertia_world_kg_m2": [
+          0.0009995346190407872,
+          1.3056143188805436e-07,
+          1.3392286746238824e-06,
+          1.3056143188805436e-07,
+          0.0009276080527342856,
+          -2.7369216695660725e-05,
+          1.3392286746238824e-06,
+          -2.7369216695660725e-05,
+          0.0004925888497382402
+        ],
+        "principal_inertia_kg_m2": [
+          0.0004908700357191265,
+          0.0009293232578784227,
+          0.0009995382279157639
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 5,
+        "name": "R3_Link",
+        "group": "right_arm",
+        "mass_kg": 1.2798435688018799,
+        "inertia_world_kg_m2": [
+          0.0016315438551828265,
+          9.004610319607309e-07,
+          1.0844451026059687e-07,
+          9.004610319607309e-07,
+          0.0003444351605139673,
+          -1.8958637156174518e-05,
+          1.0844451026059687e-07,
+          -1.8958637156174518e-05,
+          0.0015806503361091018
+        ],
+        "principal_inertia_kg_m2": [
+          0.0003441438020672649,
+          0.0015809409087523818,
+          0.001631544902920723
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 6,
+        "name": "L3_Link",
+        "group": "left_arm",
+        "mass_kg": 1.2798435688018799,
+        "inertia_world_kg_m2": [
+          0.0016315438551828265,
+          -9.005635774883558e-07,
+          -1.0898088476096746e-07,
+          -9.005635774883558e-07,
+          0.0003444351605139673,
+          -1.8958637156174518e-05,
+          -1.0898088476096746e-07,
+          -1.8958637156174518e-05,
+          0.0015806503361091018
+        ],
+        "principal_inertia_kg_m2": [
+          0.00034414386027492583,
+          0.0015809409087523818,
+          0.0016315446700900793
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 7,
+        "name": "R4_Link",
+        "group": "right_arm",
+        "mass_kg": 0.9355044960975647,
+        "inertia_world_kg_m2": [
+          0.0005251374677754939,
+          1.8651630284693965e-07,
+          -1.1671346555885975e-08,
+          1.8651630284693965e-07,
+          0.000343725667335093,
+          3.991364428657107e-05,
+          -1.1671346555885975e-08,
+          3.991364428657107e-05,
+          0.0004974969779141247
+        ],
+        "principal_inertia_kg_m2": [
+          0.0003339826362207532,
+          0.0005072397761978209,
+          0.0005251377006061375
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 8,
+        "name": "L4_Link",
+        "group": "left_arm",
+        "mass_kg": 0.9355044960975647,
+        "inertia_world_kg_m2": [
+          0.0005251374677754939,
+          -1.8653321376405074e-07,
+          1.1632408813966322e-08,
+          -1.8653321376405074e-07,
+          0.000343725667335093,
+          3.991364792454988e-05,
+          1.1632408813966322e-08,
+          3.991364792454988e-05,
+          0.0004974969197064638
+        ],
+        "principal_inertia_kg_m2": [
+          0.0003339826362207532,
+          0.00050723971799016,
+          0.0005251377006061375
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 9,
+        "name": "R5_Link",
+        "group": "right_arm",
+        "mass_kg": 0.29801371693611145,
+        "inertia_world_kg_m2": [
+          0.00038504129042848945,
+          1.1950070302191307e-06,
+          -1.8487583020032616e-07,
+          1.1950070302191307e-06,
+          0.00010194897186011076,
+          -7.451598776242463e-06,
+          -1.8487583020032616e-07,
+          -7.451598776242463e-06,
+          0.00035608894540928304
+        ],
+        "principal_inertia_kg_m2": [
+          0.00010172570182476193,
+          0.0003563055652193725,
+          0.0003850479261018336
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 10,
+        "name": "L5_Link",
+        "group": "left_arm",
+        "mass_kg": 0.29801228642463684,
+        "inertia_world_kg_m2": [
+          0.0003850406501442194,
+          -1.1950232874369249e-06,
+          1.8482376162864966e-07,
+          -1.1950232874369249e-06,
+          0.00010194897186011076,
+          -7.4516606218821835e-06,
+          1.8482376162864966e-07,
+          -7.4516606218821835e-06,
+          0.000356088305125013
+        ],
+        "principal_inertia_kg_m2": [
+          0.00010172570182476193,
+          0.0003563049540389329,
+          0.00038504728581756353
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 11,
+        "name": "R6_Link",
+        "group": "right_arm",
+        "mass_kg": 0.3443261384963989,
+        "inertia_world_kg_m2": [
+          0.00023258724831975996,
+          -1.3310815120348707e-05,
+          -5.124186372995609e-07,
+          -1.3310815120348707e-05,
+          0.00010196198127232492,
+          -3.28190571963205e-06,
+          -5.124186372995609e-07,
+          -3.28190571963205e-06,
+          0.00019518878252711147
+        ],
+        "principal_inertia_kg_m2": [
+          0.0001005031808745116,
+          0.0001953041210072115,
+          0.0002339306811336428
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 12,
+        "name": "L6_Link",
+        "group": "left_arm",
+        "mass_kg": 0.3443261981010437,
+        "inertia_world_kg_m2": [
+          0.00023258710280060768,
+          1.3310656868270598e-05,
+          5.123205255586072e-07,
+          1.3310656868270598e-05,
+          0.00010196191578870639,
+          -3.2817049486766336e-06,
+          5.123205255586072e-07,
+          -3.2817049486766336e-06,
+          0.00019518865155987442
+        ],
+        "principal_inertia_kg_m2": [
+          0.00010050321725429967,
+          0.00019530399003997445,
+          0.00023393050651066005
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 13,
+        "name": "R7_Link",
+        "group": "right_arm",
+        "mass_kg": 0.14331094920635223,
+        "inertia_world_kg_m2": [
+          6.982173363212496e-05,
+          -1.0365910352305718e-09,
+          -3.1800780675439455e-08,
+          -1.0365910352305718e-09,
+          5.4859116062289104e-05,
+          -1.960542306278512e-07,
+          -3.1800780675439455e-08,
+          -1.960542306278512e-07,
+          4.402416379889473e-05
+        ],
+        "principal_inertia_kg_m2": [
+          4.4020584027748555e-05,
+          5.486267036758363e-05,
+          6.982177001191303e-05
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 14,
+        "name": "L7_Link",
+        "group": "left_arm",
+        "mass_kg": 0.14331094920635223,
+        "inertia_world_kg_m2": [
+          6.982173363212496e-05,
+          1.0367390279597544e-09,
+          3.179647478646075e-08,
+          1.0367390279597544e-09,
+          5.4859116062289104e-05,
+          -1.960542306278512e-07,
+          3.179647478646075e-08,
+          -1.960542306278512e-07,
+          4.402416379889473e-05
+        ],
+        "principal_inertia_kg_m2": [
+          4.402056583785452e-05,
+          5.486265945364721e-05,
+          6.982177001191303e-05
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 15,
+        "name": "R8_Link",
+        "group": "right_arm",
+        "mass_kg": 6.051492891856469e-05,
+        "inertia_world_kg_m2": [
+          8.49604386843339e-09,
+          8.318641996541824e-22,
+          -7.812292445710713e-15,
+          8.318641996541824e-22,
+          8.49604386843339e-09,
+          -9.035970663181137e-16,
+          -7.812292445710713e-15,
+          -9.035970663181137e-16,
+          1.6982001582732664e-08
+        ],
+        "principal_inertia_kg_m2": [
+          8.49604386843339e-09,
+          8.496044756611809e-09,
+          1.6982003359089504e-08
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 16,
+        "name": "L8_Link",
+        "group": "left_arm",
+        "mass_kg": 6.051492891856469e-05,
+        "inertia_world_kg_m2": [
+          8.49604386843339e-09,
+          8.318641996541824e-22,
+          7.812292445710713e-15,
+          8.318641996541824e-22,
+          8.49604386843339e-09,
+          9.035970663181137e-16,
+          7.812292445710713e-15,
+          9.035970663181137e-16,
+          1.6982001582732664e-08
+        ],
+        "principal_inertia_kg_m2": [
+          8.49604386843339e-09,
+          8.496044756611809e-09,
+          1.6982003359089504e-08
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 17,
+        "name": "right_hand_base_link",
+        "group": "right_hand",
+        "mass_kg": 0.8971409797668457,
+        "inertia_world_kg_m2": [
+          0.023566290736198425,
+          1.5742734831292182e-06,
+          -0.0021483167074620724,
+          1.5742734831292182e-06,
+          0.017232732847332954,
+          0.00014317725435830653,
+          -0.0021483167074620724,
+          0.00014317725435830653,
+          0.009038674645125866
+        ],
+        "principal_inertia_kg_m2": [
+          0.008725278079509735,
+          0.01723504811525345,
+          0.023877374827861786
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 18,
+        "name": "left_hand_base_link",
+        "group": "left_hand",
+        "mass_kg": 0.898123025894165,
+        "inertia_world_kg_m2": [
+          0.023594962432980537,
+          1.2825985322706401e-06,
+          -0.0021504852920770645,
+          1.2825985322706401e-06,
+          0.017246777191758156,
+          -0.0001410618715453893,
+          -0.0021504852920770645,
+          -0.0001410618715453893,
+          0.009056891314685345
+        ],
+        "principal_inertia_kg_m2": [
+          0.008743174374103546,
+          0.01724899187684059,
+          0.023906461894512177
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 19,
+        "name": "right_hand_thumb_link0",
+        "group": "right_hand",
+        "mass_kg": 0.013419854454696178,
+        "inertia_world_kg_m2": [
+          4.451866516319569e-06,
+          6.771214202672127e-07,
+          1.4051335028852918e-07,
+          6.771214202672127e-07,
+          3.482143711153185e-06,
+          9.612321605345642e-09,
+          1.4051335028852918e-07,
+          9.612321605345642e-09,
+          2.0899299215670908e-06
+        ],
+        "principal_inertia_kg_m2": [
+          2.0808320186915807e-06,
+          3.137119847451686e-06,
+          4.805988737643929e-06
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 20,
+        "name": "right_hand_index_link0",
+        "group": "right_hand",
+        "mass_kg": 0.000844065856654197,
+        "inertia_world_kg_m2": [
+          3.16917088127866e-08,
+          6.021575599257645e-12,
+          -7.87111868738588e-12,
+          6.021575599257645e-12,
+          2.8898845982894272e-08,
+          -7.887315689458774e-09,
+          -7.87111868738588e-12,
+          -7.887315689458774e-09,
+          3.7697219568144646e-08
+        ],
+        "principal_inertia_kg_m2": [
+          2.4266832099328894e-08,
+          3.1691698154645565e-08,
+          4.232925121527842e-08
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 21,
+        "name": "right_hand_middle_link0",
+        "group": "right_hand",
+        "mass_kg": 0.000844065856654197,
+        "inertia_world_kg_m2": [
+          3.169170170735924e-08,
+          1.168077787272459e-12,
+          3.9311842626663096e-13,
+          1.168077787272459e-12,
+          2.889884953560795e-08,
+          -7.887321018529292e-09,
+          3.9311842626663096e-13,
+          -7.887321018529292e-09,
+          3.769723022628568e-08
+        ],
+        "principal_inertia_kg_m2": [
+          2.4266839204756252e-08,
+          3.169170170735924e-08,
+          4.232925121527842e-08
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 22,
+        "name": "right_hand_ring_link0",
+        "group": "right_hand",
+        "mass_kg": 0.000844065856654197,
+        "inertia_world_kg_m2": [
+          3.169170170735924e-08,
+          1.168077787272459e-12,
+          3.9311842626663096e-13,
+          1.168077787272459e-12,
+          2.889884953560795e-08,
+          -7.887321018529292e-09,
+          3.9311842626663096e-13,
+          -7.887321018529292e-09,
+          3.769723022628568e-08
+        ],
+        "principal_inertia_kg_m2": [
+          2.4266839204756252e-08,
+          3.169170170735924e-08,
+          4.232925121527842e-08
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 23,
+        "name": "right_hand_little_link0",
+        "group": "right_hand",
+        "mass_kg": 0.000844065856654197,
+        "inertia_world_kg_m2": [
+          3.16917088127866e-08,
+          6.021575599257645e-12,
+          -7.87111868738588e-12,
+          6.021575599257645e-12,
+          2.8898845982894272e-08,
+          -7.887315689458774e-09,
+          -7.87111868738588e-12,
+          -7.887315689458774e-09,
+          3.7697219568144646e-08
+        ],
+        "principal_inertia_kg_m2": [
+          2.4266832099328894e-08,
+          3.1691698154645565e-08,
+          4.232925121527842e-08
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 24,
+        "name": "left_hand_thumb_link0",
+        "group": "left_hand",
+        "mass_kg": 0.012441749684512615,
+        "inertia_world_kg_m2": [
+          4.415902822074713e-06,
+          -6.409409252228215e-07,
+          1.41593801572526e-07,
+          -6.409409252228215e-07,
+          3.4103300095011946e-06,
+          7.579725291861905e-09,
+          1.41593801572526e-07,
+          7.579725291861905e-09,
+          2.0175154986645794e-06
+        ],
+        "principal_inertia_kg_m2": [
+          2.0075285647180863e-06,
+          3.102819846390048e-06,
+          4.73340105600073e-06
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 25,
+        "name": "left_hand_index_link0",
+        "group": "left_hand",
+        "mass_kg": 0.0008440471719950438,
+        "inertia_world_kg_m2": [
+          3.169120788015789e-08,
+          2.273592989224249e-12,
+          2.175872329535089e-12,
+          2.273592989224249e-12,
+          2.889876071776598e-08,
+          -7.88617349201104e-09,
+          2.175872329535089e-12,
+          -7.88617349201104e-09,
+          3.770073320197298e-08
+        ],
+        "principal_inertia_kg_m2": [
+          2.4268668852300834e-08,
+          3.169120788015789e-08,
+          4.2330832172865485e-08
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 26,
+        "name": "left_hand_middle_link0",
+        "group": "left_hand",
+        "mass_kg": 0.0008440471719950438,
+        "inertia_world_kg_m2": [
+          3.169120788015789e-08,
+          2.273592989224249e-12,
+          2.175872329535089e-12,
+          2.273592989224249e-12,
+          2.889876071776598e-08,
+          -7.88617349201104e-09,
+          2.175872329535089e-12,
+          -7.88617349201104e-09,
+          3.770073320197298e-08
+        ],
+        "principal_inertia_kg_m2": [
+          2.4268668852300834e-08,
+          3.169120788015789e-08,
+          4.2330832172865485e-08
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 27,
+        "name": "left_hand_ring_link0",
+        "group": "left_hand",
+        "mass_kg": 0.0008440471719950438,
+        "inertia_world_kg_m2": [
+          3.169120788015789e-08,
+          2.273592989224249e-12,
+          2.175872329535089e-12,
+          2.273592989224249e-12,
+          2.889876071776598e-08,
+          -7.88617349201104e-09,
+          2.175872329535089e-12,
+          -7.88617349201104e-09,
+          3.770073320197298e-08
+        ],
+        "principal_inertia_kg_m2": [
+          2.4268668852300834e-08,
+          3.169120788015789e-08,
+          4.2330832172865485e-08
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 28,
+        "name": "left_hand_little_link0",
+        "group": "left_hand",
+        "mass_kg": 0.0008440471719950438,
+        "inertia_world_kg_m2": [
+          3.169120788015789e-08,
+          2.273592989224249e-12,
+          2.175872329535089e-12,
+          2.273592989224249e-12,
+          2.889876071776598e-08,
+          -7.88617349201104e-09,
+          2.175872329535089e-12,
+          -7.88617349201104e-09,
+          3.770073320197298e-08
+        ],
+        "principal_inertia_kg_m2": [
+          2.4268668852300834e-08,
+          3.169120788015789e-08,
+          4.2330832172865485e-08
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 29,
+        "name": "right_hand_thumb_link1",
+        "group": "right_hand",
+        "mass_kg": 0.004423005506396294,
+        "inertia_world_kg_m2": [
+          5.863828391738934e-07,
+          5.4144031480518606e-08,
+          -6.707057309540687e-08,
+          5.4144031480518606e-08,
+          6.857640642010665e-07,
+          -3.468941400797121e-08,
+          -6.707057309540687e-08,
+          -3.468941400797121e-08,
+          2.9118217526047374e-07
+        ],
+        "principal_inertia_kg_m2": [
+          2.7539630309547647e-07,
+          5.699986331819673e-07,
+          7.179341992014088e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 30,
+        "name": "right_hand_index_link1",
+        "group": "right_hand",
+        "mass_kg": 0.004587375093251467,
+        "inertia_world_kg_m2": [
+          7.211646675386874e-07,
+          1.8812265523138194e-08,
+          -2.9769464671147716e-11,
+          1.8812265523138194e-08,
+          1.3912345764310885e-07,
+          8.23164703067647e-10,
+          -2.9769464671147716e-11,
+          8.23164703067647e-10,
+          7.120045779629436e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.3851489200078504e-07,
+          7.120057148313208e-07,
+          7.217721531560528e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 31,
+        "name": "right_hand_middle_link1",
+        "group": "right_hand",
+        "mass_kg": 0.004587375093251467,
+        "inertia_world_kg_m2": [
+          7.211647812255251e-07,
+          1.8811441293564712e-08,
+          -2.9704891324477956e-11,
+          1.8811441293564712e-08,
+          1.3912340079969e-07,
+          8.232061698976167e-10,
+          -2.9704891324477956e-11,
+          8.232061698976167e-10,
+          7.120045779629436e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.385148635790756e-07,
+          7.120057148313208e-07,
+          7.217721531560528e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 32,
+        "name": "right_hand_ring_link1",
+        "group": "right_hand",
+        "mass_kg": 0.004587375093251467,
+        "inertia_world_kg_m2": [
+          7.211647243821062e-07,
+          1.8812267299495034e-08,
+          -2.9769478548935524e-11,
+          1.8812267299495034e-08,
+          1.3912345764310885e-07,
+          8.23164703067647e-10,
+          -2.9769478548935524e-11,
+          8.23164703067647e-10,
+          7.120045779629436e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.3851489200078504e-07,
+          7.120057148313208e-07,
+          7.217722099994717e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 33,
+        "name": "right_hand_little_link1",
+        "group": "right_hand",
+        "mass_kg": 0.004587375093251467,
+        "inertia_world_kg_m2": [
+          7.211647812255251e-07,
+          1.8811441293564712e-08,
+          -2.9704891324477956e-11,
+          1.8811441293564712e-08,
+          1.3912340079969e-07,
+          8.232061698976167e-10,
+          -2.9704891324477956e-11,
+          8.232061698976167e-10,
+          7.120045779629436e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.385148635790756e-07,
+          7.120057148313208e-07,
+          7.217721531560528e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 34,
+        "name": "left_hand_thumb_link1",
+        "group": "left_hand",
+        "mass_kg": 0.004423775244504213,
+        "inertia_world_kg_m2": [
+          5.864017111889552e-07,
+          -5.414760551047948e-08,
+          6.706194000116739e-08,
+          -5.414760551047948e-08,
+          6.857827088424528e-07,
+          -3.4661702841276565e-08,
+          6.706194000116739e-08,
+          -3.4661702841276565e-08,
+          2.9118939437466906e-07
+        ],
+        "principal_inertia_kg_m2": [
+          2.7541048552848224e-07,
+          5.700158567378821e-07,
+          7.179472163443279e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 35,
+        "name": "left_hand_index_link1",
+        "group": "left_hand",
+        "mass_kg": 0.004587366711348295,
+        "inertia_world_kg_m2": [
+          7.211617116809066e-07,
+          1.8810663249269055e-08,
+          2.550983729809886e-11,
+          1.8810663249269055e-08,
+          1.3912216445532977e-07,
+          -7.017605385684078e-10,
+          2.550983729809886e-11,
+          -7.017605385684078e-10,
+          7.120026452867023e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.3851398250608327e-07,
+          7.120034410945664e-07,
+          7.217689699245966e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 36,
+        "name": "left_hand_middle_link1",
+        "group": "left_hand",
+        "mass_kg": 0.004587366711348295,
+        "inertia_world_kg_m2": [
+          7.211617116809066e-07,
+          1.8810663249269055e-08,
+          2.550983729809886e-11,
+          1.8810663249269055e-08,
+          1.3912216445532977e-07,
+          -7.017605385684078e-10,
+          2.550983729809886e-11,
+          -7.017605385684078e-10,
+          7.120026452867023e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.3851398250608327e-07,
+          7.120034410945664e-07,
+          7.217689699245966e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 37,
+        "name": "left_hand_ring_link1",
+        "group": "left_hand",
+        "mass_kg": 0.004587366711348295,
+        "inertia_world_kg_m2": [
+          7.211617116809066e-07,
+          1.8810663249269055e-08,
+          2.550983729809886e-11,
+          1.8810663249269055e-08,
+          1.3912216445532977e-07,
+          -7.017605385684078e-10,
+          2.550983729809886e-11,
+          -7.017605385684078e-10,
+          7.120026452867023e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.3851398250608327e-07,
+          7.120034410945664e-07,
+          7.217689699245966e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 38,
+        "name": "left_hand_little_link1",
+        "group": "left_hand",
+        "mass_kg": 0.004587366711348295,
+        "inertia_world_kg_m2": [
+          7.211617116809066e-07,
+          1.8810663249269055e-08,
+          2.550983729809886e-11,
+          1.8810663249269055e-08,
+          1.3912216445532977e-07,
+          -7.017605385684078e-10,
+          2.550983729809886e-11,
+          -7.017605385684078e-10,
+          7.120026452867023e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.3851398250608327e-07,
+          7.120034410945664e-07,
+          7.217689699245966e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 39,
+        "name": "right_hand_thumb_link2",
+        "group": "right_hand",
+        "mass_kg": 0.022466912865638733,
+        "inertia_world_kg_m2": [
+          7.69983307691291e-06,
+          -1.5521268892371154e-07,
+          -3.8608369834491896e-09,
+          -1.5521268892371154e-07,
+          9.076846254174598e-06,
+          1.3322318181963055e-07,
+          -3.8608369834491896e-09,
+          1.3322318181963055e-07,
+          2.2776046080252854e-06
+        ],
+        "principal_inertia_kg_m2": [
+          2.2749950403522234e-06,
+          7.682577233936172e-06,
+          9.096711437450722e-06
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 40,
+        "name": "right_hand_index_link2",
+        "group": "right_hand",
+        "mass_kg": 0.0024096614215523005,
+        "inertia_world_kg_m2": [
+          2.378019843263246e-07,
+          -8.758296171640367e-12,
+          -1.3836335632788632e-08,
+          -8.758296171640367e-12,
+          1.8346845820360613e-07,
+          -6.925319259026841e-12,
+          -1.3836335632788632e-08,
+          -6.925319259026841e-12,
+          9.877410178660284e-08
+        ],
+        "principal_inertia_kg_m2": [
+          9.74104708006962e-08,
+          1.83468515047025e-07,
+          2.3916564373394067e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 41,
+        "name": "right_hand_middle_link2",
+        "group": "right_hand",
+        "mass_kg": 0.0024096614215523005,
+        "inertia_world_kg_m2": [
+          2.378020695914529e-07,
+          -8.75828229385256e-12,
+          -1.3836137569001039e-08,
+          -8.75828229385256e-12,
+          1.8346845820360613e-07,
+          -6.9253491830068015e-12,
+          -1.3836137569001039e-08,
+          -6.9253491830068015e-12,
+          9.877407336489341e-08
+        ],
+        "principal_inertia_kg_m2": [
+          9.741049211697828e-08,
+          1.8346850083617028e-07,
+          2.391656721556501e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 42,
+        "name": "right_hand_ring_link2",
+        "group": "right_hand",
+        "mass_kg": 0.0024096614215523005,
+        "inertia_world_kg_m2": [
+          2.378019843263246e-07,
+          -8.758297906363843e-12,
+          -1.3836335632788632e-08,
+          -8.758297906363843e-12,
+          1.8346845820360613e-07,
+          -6.925318391665103e-12,
+          -1.3836335632788632e-08,
+          -6.925318391665103e-12,
+          9.877410178660284e-08
+        ],
+        "principal_inertia_kg_m2": [
+          9.74104708006962e-08,
+          1.83468515047025e-07,
+          2.3916564373394067e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 43,
+        "name": "right_hand_little_link2",
+        "group": "right_hand",
+        "mass_kg": 0.0024096614215523005,
+        "inertia_world_kg_m2": [
+          2.3780195590461517e-07,
+          -8.758285763299511e-12,
+          -1.3836332968253373e-08,
+          -8.758285763299511e-12,
+          1.8346845820360613e-07,
+          -6.925317957984234e-12,
+          -1.3836332968253373e-08,
+          -6.925317957984234e-12,
+          9.877409468117548e-08
+        ],
+        "principal_inertia_kg_m2": [
+          9.741044237898677e-08,
+          1.8346848662531556e-07,
+          2.3916561531223124e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 44,
+        "name": "left_hand_thumb_link2",
+        "group": "left_hand",
+        "mass_kg": 0.022462287917733192,
+        "inertia_world_kg_m2": [
+          7.700221431150567e-06,
+          -1.551354387174797e-07,
+          3.793134695229128e-09,
+          -1.551354387174797e-07,
+          9.076879905478563e-06,
+          -1.321380125318683e-07,
+          3.793134695229128e-09,
+          -1.321380125318683e-07,
+          2.276966142744641e-06
+        ],
+        "principal_inertia_kg_m2": [
+          2.274399321322562e-06,
+          7.682977411604952e-06,
+          9.096693247556686e-06
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 45,
+        "name": "left_hand_index_link2",
+        "group": "left_hand",
+        "mass_kg": 0.0024097103159874678,
+        "inertia_world_kg_m2": [
+          2.3781007030265755e-07,
+          5.819360618386504e-12,
+          -1.3837079038125921e-08,
+          5.819360618386504e-12,
+          1.8347324726164516e-07,
+          4.183771818572213e-12,
+          -1.3837079038125921e-08,
+          4.183771818572213e-12,
+          9.877662421331479e-08
+        ],
+        "principal_inertia_kg_m2": [
+          9.741288664599779e-08,
+          1.8347327568335459e-07,
+          2.391738007645472e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 46,
+        "name": "left_hand_middle_link2",
+        "group": "left_hand",
+        "mass_kg": 0.0024097103159874678,
+        "inertia_world_kg_m2": [
+          2.3781007030265755e-07,
+          5.819358883663028e-12,
+          -1.3837079038125921e-08,
+          5.819358883663028e-12,
+          1.8347324726164516e-07,
+          4.18377311961482e-12,
+          -1.3837079038125921e-08,
+          4.18377311961482e-12,
+          9.877662421331479e-08
+        ],
+        "principal_inertia_kg_m2": [
+          9.741288664599779e-08,
+          1.8347327568335459e-07,
+          2.391738007645472e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 47,
+        "name": "left_hand_ring_link2",
+        "group": "left_hand",
+        "mass_kg": 0.0024097103159874678,
+        "inertia_world_kg_m2": [
+          2.3781007030265755e-07,
+          5.819360618386504e-12,
+          -1.3837079038125921e-08,
+          5.819360618386504e-12,
+          1.8347324726164516e-07,
+          4.183772252253082e-12,
+          -1.3837079038125921e-08,
+          4.183772252253082e-12,
+          9.877662421331479e-08
+        ],
+        "principal_inertia_kg_m2": [
+          9.741288664599779e-08,
+          1.8347327568335459e-07,
+          2.391738007645472e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 48,
+        "name": "left_hand_little_link2",
+        "group": "left_hand",
+        "mass_kg": 0.0024097103159874678,
+        "inertia_world_kg_m2": [
+          2.3781007030265755e-07,
+          5.819360618386504e-12,
+          -1.3837079038125921e-08,
+          5.819360618386504e-12,
+          1.8347324726164516e-07,
+          4.183772252253082e-12,
+          -1.3837079038125921e-08,
+          4.183772252253082e-12,
+          9.877662421331479e-08
+        ],
+        "principal_inertia_kg_m2": [
+          9.741288664599779e-08,
+          1.8347327568335459e-07,
+          2.391738007645472e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 49,
+        "name": "right_hand_thumb_link3",
+        "group": "right_hand",
+        "mass_kg": 0.005183609202504158,
+        "inertia_world_kg_m2": [
+          5.060976491222391e-07,
+          4.209641701891087e-08,
+          -3.6697285210607333e-09,
+          4.209641701891087e-08,
+          6.087721544645319e-07,
+          9.05403640949487e-10,
+          -3.6697285210607333e-09,
+          9.05403640949487e-10,
+          2.1979056441523426e-07
+        ],
+        "principal_inertia_kg_m2": [
+          2.197380695179163e-07,
+          4.910970687888039e-07,
+          6.238252012735757e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 50,
+        "name": "right_hand_index_link3",
+        "group": "right_hand",
+        "mass_kg": 0.004959503188729286,
+        "inertia_world_kg_m2": [
+          3.098132879131299e-07,
+          6.141432501438615e-11,
+          -1.1393833432293832e-07,
+          6.141432501438615e-11,
+          3.3739939908628003e-07,
+          1.1028820912084569e-10,
+          -1.1393833432293832e-07,
+          1.1028820912084569e-10,
+          1.9446167698333738e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.2443288710528577e-07,
+          3.373994559296989e-07,
+          3.798419925260532e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 51,
+        "name": "right_hand_middle_link3",
+        "group": "right_hand",
+        "mass_kg": 0.004959503188729286,
+        "inertia_world_kg_m2": [
+          3.098132879131299e-07,
+          6.141432501438615e-11,
+          -1.1393833432293832e-07,
+          6.141432501438615e-11,
+          3.3739939908628003e-07,
+          1.1028820912084569e-10,
+          -1.1393833432293832e-07,
+          1.1028820912084569e-10,
+          1.9446167698333738e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.2443288710528577e-07,
+          3.373994559296989e-07,
+          3.798419925260532e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 52,
+        "name": "right_hand_ring_link3",
+        "group": "right_hand",
+        "mass_kg": 0.004959503188729286,
+        "inertia_world_kg_m2": [
+          3.098135721302242e-07,
+          6.141412378646294e-11,
+          -1.1393814247639966e-07,
+          6.141412378646294e-11,
+          3.3739939908628003e-07,
+          1.1028827157089083e-10,
+          -1.1393814247639966e-07,
+          1.1028827157089083e-10,
+          1.944613075011148e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.2443285868357634e-07,
+          3.3739951277311775e-07,
+          3.7984193568263436e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 53,
+        "name": "right_hand_little_link3",
+        "group": "right_hand",
+        "mass_kg": 0.004959503188729286,
+        "inertia_world_kg_m2": [
+          3.098135721302242e-07,
+          6.141412378646294e-11,
+          -1.1393814247639966e-07,
+          6.141412378646294e-11,
+          3.3739939908628003e-07,
+          1.1028827157089083e-10,
+          -1.1393814247639966e-07,
+          1.1028827157089083e-10,
+          1.944613075011148e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.2443285868357634e-07,
+          3.3739951277311775e-07,
+          3.7984193568263436e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 54,
+        "name": "left_hand_thumb_link3",
+        "group": "left_hand",
+        "mass_kg": 0.005183620378375053,
+        "inertia_world_kg_m2": [
+          5.06299443259195e-07,
+          4.233908867945502e-08,
+          3.6718521556622363e-09,
+          4.233908867945502e-08,
+          6.085768404773262e-07,
+          -9.015048707539108e-10,
+          3.6718521556622363e-09,
+          -9.015048707539108e-10,
+          2.1979255393489439e-07
+        ],
+        "principal_inertia_kg_m2": [
+          2.1974004482672171e-07,
+          4.910993425255583e-07,
+          6.238297487470845e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 55,
+        "name": "left_hand_index_link3",
+        "group": "left_hand",
+        "mass_kg": 0.0049594431184232235,
+        "inertia_world_kg_m2": [
+          3.0981297527432616e-07,
+          -6.412798070343229e-11,
+          -1.1394021726118808e-07,
+          -6.412798070343229e-11,
+          3.3739519267328433e-07,
+          -1.138247829324257e-10,
+          -1.1394021726118808e-07,
+          -1.138247829324257e-10,
+          1.9445769794401713e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.244282401557939e-07,
+          3.3739530636012205e-07,
+          3.798423335865664e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 56,
+        "name": "left_hand_middle_link3",
+        "group": "left_hand",
+        "mass_kg": 0.0049594431184232235,
+        "inertia_world_kg_m2": [
+          3.0981297527432616e-07,
+          -6.412828601476406e-11,
+          -1.1394021726118808e-07,
+          -6.412828601476406e-11,
+          3.3739519267328433e-07,
+          -1.1382475517685009e-10,
+          -1.1394021726118808e-07,
+          -1.1382475517685009e-10,
+          1.9445769794401713e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.244282401557939e-07,
+          3.3739530636012205e-07,
+          3.798423335865664e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 57,
+        "name": "left_hand_ring_link3",
+        "group": "left_hand",
+        "mass_kg": 0.0049594431184232235,
+        "inertia_world_kg_m2": [
+          3.0981297527432616e-07,
+          -6.412785580334202e-11,
+          -1.1394021726118808e-07,
+          -6.412785580334202e-11,
+          3.3739519267328433e-07,
+          -1.1382466497122934e-10,
+          -1.1394021726118808e-07,
+          -1.1382466497122934e-10,
+          1.9445769794401713e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.244282401557939e-07,
+          3.3739530636012205e-07,
+          3.798423335865664e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 58,
+        "name": "left_hand_little_link3",
+        "group": "left_hand",
+        "mass_kg": 0.0049594431184232235,
+        "inertia_world_kg_m2": [
+          3.0981297527432616e-07,
+          -6.412828601476406e-11,
+          -1.1394021726118808e-07,
+          -6.412828601476406e-11,
+          3.3739519267328433e-07,
+          -1.1382475517685009e-10,
+          -1.1394021726118808e-07,
+          -1.1382475517685009e-10,
+          1.9445769794401713e-07
+        ],
+        "principal_inertia_kg_m2": [
+          1.244282401557939e-07,
+          3.3739530636012205e-07,
+          3.798423335865664e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 59,
+        "name": "right_hand_thumb_link4",
+        "group": "right_hand",
+        "mass_kg": 0.006155394949018955,
+        "inertia_world_kg_m2": [
+          3.962896926168469e-07,
+          1.021453921445925e-09,
+          2.969161982946389e-08,
+          1.021453921445925e-09,
+          2.1296163765782694e-07,
+          7.322295547673718e-10,
+          2.969161982946389e-08,
+          7.322295547673718e-10,
+          4.317240893669805e-07
+        ],
+        "principal_inertia_kg_m2": [
+          2.1295443275448633e-07,
+          3.794326062234177e-07,
+          4.4858825276605785e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 60,
+        "name": "right_hand_index_link4",
+        "group": "right_hand",
+        "mass_kg": 1.5707963711975026e-06,
+        "inertia_world_kg_m2": [
+          1.9634954198568394e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13
+        ],
+        "principal_inertia_kg_m2": [
+          1.9634954198568394e-13,
+          6.217735202575236e-13,
+          6.217735202575236e-13
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 61,
+        "name": "right_hand_middle_link4",
+        "group": "right_hand",
+        "mass_kg": 1.5707963711975026e-06,
+        "inertia_world_kg_m2": [
+          1.9634954198568394e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13
+        ],
+        "principal_inertia_kg_m2": [
+          1.9634954198568394e-13,
+          6.217735202575236e-13,
+          6.217735202575236e-13
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 62,
+        "name": "right_hand_ring_link4",
+        "group": "right_hand",
+        "mass_kg": 1.5707963711975026e-06,
+        "inertia_world_kg_m2": [
+          1.9634954198568394e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13
+        ],
+        "principal_inertia_kg_m2": [
+          1.9634954198568394e-13,
+          6.217735202575236e-13,
+          6.217735202575236e-13
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 63,
+        "name": "right_hand_little_link4",
+        "group": "right_hand",
+        "mass_kg": 1.5707963711975026e-06,
+        "inertia_world_kg_m2": [
+          1.9634954198568394e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13
+        ],
+        "principal_inertia_kg_m2": [
+          1.9634954198568394e-13,
+          6.217735202575236e-13,
+          6.217735202575236e-13
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 64,
+        "name": "left_hand_thumb_link4",
+        "group": "left_hand",
+        "mass_kg": 0.006155404262244701,
+        "inertia_world_kg_m2": [
+          3.883921522174205e-07,
+          -9.619154361928395e-10,
+          2.3224345113703748e-08,
+          -9.619154361928395e-10,
+          2.129616945012458e-07,
+          -7.164976389972821e-10,
+          2.3224345113703748e-08,
+          -7.164976389972821e-10,
+          4.3962455720247817e-07
+        ],
+        "principal_inertia_kg_m2": [
+          2.1295491592354665e-07,
+          3.794339136220515e-07,
+          4.4858964542981994e-07
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 65,
+        "name": "left_hand_index_link4",
+        "group": "left_hand",
+        "mass_kg": 1.5707963711975026e-06,
+        "inertia_world_kg_m2": [
+          1.9634954198568394e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13
+        ],
+        "principal_inertia_kg_m2": [
+          1.9634954198568394e-13,
+          6.217735202575236e-13,
+          6.217735202575236e-13
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 66,
+        "name": "left_hand_middle_link4",
+        "group": "left_hand",
+        "mass_kg": 1.5707963711975026e-06,
+        "inertia_world_kg_m2": [
+          1.9634954198568394e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13
+        ],
+        "principal_inertia_kg_m2": [
+          1.9634954198568394e-13,
+          6.217735202575236e-13,
+          6.217735202575236e-13
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 67,
+        "name": "left_hand_ring_link4",
+        "group": "left_hand",
+        "mass_kg": 1.5707963711975026e-06,
+        "inertia_world_kg_m2": [
+          1.9634954198568394e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13
+        ],
+        "principal_inertia_kg_m2": [
+          1.9634954198568394e-13,
+          6.217735202575236e-13,
+          6.217735202575236e-13
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 68,
+        "name": "left_hand_little_link4",
+        "group": "left_hand",
+        "mass_kg": 1.5707963711975026e-06,
+        "inertia_world_kg_m2": [
+          1.9634954198568394e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13
+        ],
+        "principal_inertia_kg_m2": [
+          1.9634954198568394e-13,
+          6.217735202575236e-13,
+          6.217735202575236e-13
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 69,
+        "name": "right_hand_thumb_link5",
+        "group": "right_hand",
+        "mass_kg": 1.5707963711975026e-06,
+        "inertia_world_kg_m2": [
+          1.9634954198568394e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13
+        ],
+        "principal_inertia_kg_m2": [
+          1.9634954198568394e-13,
+          6.217735202575236e-13,
+          6.217735202575236e-13
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      },
+      {
+        "index": 70,
+        "name": "left_hand_thumb_link5",
+        "group": "left_hand",
+        "mass_kg": 1.5707963711975026e-06,
+        "inertia_world_kg_m2": [
+          1.9634954198568394e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13,
+          0.0,
+          0.0,
+          0.0,
+          6.217735202575236e-13
+        ],
+        "principal_inertia_kg_m2": [
+          1.9634954198568394e-13,
+          6.217735202575236e-13,
+          6.217735202575236e-13
+        ],
+        "positive_definite": true,
+        "triangle_inequality": true
+      }
+    ]
+  },
+  "motion_test": {
+    "cycle_s": 30.0,
+    "phase_order": [
+      "静止连接检查",
+      "双臂小幅关节运动",
+      "左手屈伸",
+      "右手屈伸",
+      "双手同步屈伸",
+      "平滑返回初态"
+    ],
+    "motion_scale": 1.0,
+    "commanded_arm_joints": [
+      "R1_Joint",
+      "L1_Joint",
+      "R2_Joint",
+      "L2_Joint",
+      "R3_Joint",
+      "L3_Joint",
+      "R4_Joint",
+      "L4_Joint",
+      "R5_Joint",
+      "L5_Joint",
+      "R6_Joint",
+      "L6_Joint",
+      "R7_Joint",
+      "L7_Joint"
+    ],
+    "commanded_left_hand_joints": [
+      "left_hand_index_joint1",
+      "left_hand_middle_joint1",
+      "left_hand_ring_joint1",
+      "left_hand_little_joint1",
+      "left_hand_thumb_joint2",
+      "left_hand_index_joint2",
+      "left_hand_middle_joint2",
+      "left_hand_ring_joint2",
+      "left_hand_little_joint2",
+      "left_hand_thumb_joint3"
+    ],
+    "commanded_right_hand_joints": [
+      "right_hand_index_joint1",
+      "right_hand_middle_joint1",
+      "right_hand_ring_joint1",
+      "right_hand_little_joint1",
+      "right_hand_thumb_joint2",
+      "right_hand_index_joint2",
+      "right_hand_middle_joint2",
+      "right_hand_ring_joint2",
+      "right_hand_little_joint2",
+      "right_hand_thumb_joint3"
+    ],
+    "group_motion": {
+      "arms_max_delta_rad": 0.06960166245698929,
+      "left_hand_max_delta_rad": 0.3765377700328827,
+      "right_hand_max_delta_rad": 0.3762545585632324
+    },
+    "max_abs_joint_velocity_rad_s": 1.0685020685195923,
+    "root_translation_drift_m": 0.0,
+    "runtime_hand_drive_proxy": {
+      "stiffness": 0.12,
+      "damping": 0.012,
+      "effort_limit": 0.25,
+      "written_back_to_usd": false,
+      "identified_hardware_truth": false
+    }
+  },
+  "checks": {
+    "one_articulation_root": true,
+    "expected_71_rigid_bodies": true,
+    "expected_71_usd_joints_including_fixed_base": true,
+    "all_joints_have_child_body": true,
+    "both_hand_mounts_connected": true,
+    "expected_56_revolute_dofs": true,
+    "mass_count_matches_bodies": true,
+    "all_masses_positive": true,
+    "all_inertias_positive_definite": true,
+    "all_inertia_triangle_inequalities": true,
+    "finite_dynamic_state": true,
+    "fixed_root_translation": true
+  },
+  "passed": true,
+  "scope": "Connection topology, bounded joint motion, and numerical mass/inertia validity. This does not validate the vendor hand mass distribution or identify real actuator dynamics."
+}

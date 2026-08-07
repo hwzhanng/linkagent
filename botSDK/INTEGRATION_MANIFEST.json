@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "role": "real_machine_infrastructure_source",
+  "current_stage": "c2_2_direct_rl_environment_smoke_passed",
+  "parallel_stages": {
+    "agent_runtime": "complete",
+    "tomato_pick_c1": "complete",
+    "tomato_pick_c2": "direct_rl_environment_smoke_passed_rule_policy_pending",
+    "device_adapter_c4_o": "complete",
+    "device_gateway_c4_h": "not_started"
+  },
+  "canonical": {
+    "arm_control": "lbot_arm_api-master/tools/local_arm_can",
+    "hand_sdk": "linkerhand-ros2-sdk-main",
+    "hand_workspace": "linkerhand-control-workspace",
+    "robot_urdf": "urdf/02_project_derived/ros2_packages/linkbot_bimanual_sdk_description",
+    "isaac_standard": "urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_description",
+    "isaac_training": "urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg",
+    "tomato_pick_sim_spec": "urdf/02_project_derived/simulation_baselines/tomato_pick_v1.yaml"
+  },
+  "c2_runtime": {
+    "contract_environment": "../simulation/tomato_pick/contract_env.py",
+    "asset_profile": "../simulation/config/assets_v1.yaml",
+    "ppo_profile": "../simulation/config/ppo_v1.yaml",
+    "runtime_manifest": "../simulation/environments/runtime_manifest.yaml",
+    "sim2real_profile": "../simulation/config/sim2real_v1.yaml",
+    "contract_rule_policy_100_seed": "passed_non_physics",
+    "isaac_direct_rl_cuda_smoke": "passed_4_envs_16_steps_no_ppo",
+    "isaac_physics_rule_policy_100_seed": "pending",
+    "ppo_training": "blocked"
+  },
+  "device_shape": {
+    "arms": 2,
+    "joints_per_arm": 7,
+    "hands": 2,
+    "hand_protocol": "G20",
+    "logical_hand_dimensions": 20,
+    "tactile_fingers": 5,
+    "matrix_shape_per_finger": [12, 6]
+  },
+  "observed_topology": {
+    "left_arm": {"can_interface": "can0", "validated": true},
+    "right_arm": {"can_interface": "can1", "validated": true},
+    "left_g20": {"can_interface": "can0", "can_id": 40, "validated": true},
+    "right_g20": {"can_interface": "can1", "can_id": 39, "validated": false},
+    "simultaneous_bimanual_topology_validated": false
+  },
+  "evidence": {
+    "arm_topology": "lbot_arm_api-master/docs/本机直连机械臂高级控制器.md",
+    "left_g20_connection": "linkerhand-control-workspace/logs/left_g20_connection_20260726.json",
+    "left_g20_calibration": "urdf/02_project_derived/ros2_packages/linkbot_bimanual_sdk_description/config/left_g20_motion_calibration_20260726.yaml",
+    "g20_side_ids": "linkerhand-ros2-sdk-main/linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/linker_hand_api.py",
+    "tactile_raw_unit_boundary": "linkerhand-control-workspace/notes/pressure-spec.md",
+    "tomato_pick_sim_spec": "urdf/02_project_derived/simulation_baselines/tomato_pick_v1.yaml"
+  },
+  "implemented_arm_capabilities": [
+    "state",
+    "fk",
+    "ik",
+    "move_j",
+    "move_jp",
+    "move_l",
+    "follow_p",
+    "cancel",
+    "software_emergency_stop"
+  ],
+  "bindings": {
+    "arm_runtime": {
+      "file": "lbot_arm_api-master/tools/local_arm_can/service.py",
+      "class": "ArmCanRuntime",
+      "methods": ["start", "snapshot", "set_enabled", "close"]
+    },
+    "arm_controller": {
+      "file": "lbot_arm_api-master/tools/local_arm_can/advanced_controller.py",
+      "class": "AdvancedArmController",
+      "methods": ["forward", "inverse", "movej", "movejp", "movel", "followp", "cancel"]
+    },
+    "g20": {
+      "file": "linkerhand-ros2-sdk-main/linker_hand_ros2_sdk/linker_hand_ros2_sdk/LinkerHand/linker_hand_api.py",
+      "class": "LinkerHandApi",
+      "methods": ["finger_move", "get_state", "get_force", "get_matrix_touch_v2", "get_temperature", "get_fault", "close_can"]
+    }
+  },
+  "unsupported": ["move_c", "environment_collision_planning"],
+  "removed_legacy": [
+    "fruit_grasp_ppo",
+    "raspberry_pi_arm_control",
+    "network_lbot_sdk",
+    "right_hand_raspberry_pi_bridge",
+    "l20_misclassified_control_tools",
+    "historical_urdf_and_isaac_duplicates"
+  ],
+  "hardware_validation": {
+    "complete": false,
+    "pending": [
+      "confirm_observed_can0_can1_shared_side_topology",
+      "validate_left_and_right_arm_joint_signs_offsets_and_limits",
+      "validate_right_g20_direct_control_and_tactile",
+      "calibrate_per_finger_tactile_resultants_before_using_newtons",
+      "validate_simultaneous_dual_arm_dual_hand_operation",
+      "validate_whole_system_watchdog_and_emergency_stop"
+    ]
+  }
+}

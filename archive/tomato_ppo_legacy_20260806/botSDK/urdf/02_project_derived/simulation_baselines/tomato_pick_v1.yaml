@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "spec_id": "tomato_pick_v1",
+  "status": "ready_for_c2_environment_implementation",
+  "supersedes": "agricultural_grasp_no_equipment_proxy",
+  "source_of_truth": {
+    "integration_manifest": "botSDK/INTEGRATION_MANIFEST.json",
+    "robot_urdf": "botSDK/urdf/02_project_derived/ros2_packages/linkbot_bimanual_sdk_description/urdf/linkbot_bimanual_sdk_description.urdf",
+    "mounts": "botSDK/urdf/02_project_derived/ros2_packages/linkbot_bimanual_sdk_description/config/mounts.json",
+    "joint_groups": "botSDK/urdf/02_project_derived/ros2_packages/linkbot_bimanual_sdk_description/config/joint_groups.yaml",
+    "training_usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg.usda",
+    "training_mass_manifest": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/mass_correction_manifest.json",
+    "policy_contract": "module/skills/tomato_pick/contracts.py"
+  },
+  "runtime_boundaries": {
+    "agent_task": {
+      "python": ">=3.11",
+      "imports_vendor_sdk": false,
+      "imports_isaac_or_torch_by_default": false
+    },
+    "sdk_gateway": {
+      "reference_python": "3.12",
+      "process_isolation_from_agent_and_isaac": true,
+      "current_mode": "offline_or_read_only_shadow"
+    },
+    "isaac_training": {
+      "runtime": "isaac_owned_python",
+      "imports_agent_provider_adapters": false,
+      "connects_real_can": false
+    }
+  },
+  "robot": {
+    "arms": 2,
+    "joints_per_arm": 7,
+    "hands": 2,
+    "independent_hand_joints_per_hand": 16,
+    "mimic_hand_joints_per_hand": 5,
+    "learned_hand_joint_dimensions": 16,
+    "mechanical_follower_hand_joints_per_hand": 5,
+    "reserved_g20_raw_slots": [11, 12, 13, 14],
+    "mounts_rpy_rad": {
+      "right": [3.141592653589793, 0.0, 1.5707963267948966],
+      "left": [3.141592653589793, 0.0, -1.5707963267948966]
+    },
+    "hardware_validation": {
+      "left_arm": "validated",
+      "right_arm": "validated",
+      "left_g20": "validated",
+      "right_g20": "pending_direct_control_and_tactile",
+      "simultaneous_bimanual_topology": "pending"
+    }
+  },
+  "policy": {
+    "interface_version": "2.0.0",
+    "observation_layout_id": "tomato_pick_observation_113d",
+    "observation_dim": 113,
+    "action_layout_id": "tomato_pick_action_22d",
+    "action_dim": 22,
+    "policy_rate_hz": 20,
+    "phase_step_limits": [30, 30, 40, 20],
+    "fruit_axis_lower_m": [0.025, 0.025, 0.025],
+    "fruit_axis_upper_m": [0.035, 0.035, 0.035],
+    "action_scales": [
+      0.004, 0.004, 0.006, 0.040, 0.040, 0.050,
+      0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025,
+      0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025
+    ],
+    "phases": ["contact", "grasp", "detach", "hold"],
+    "phase_semantics": "observable_progress_labels_only_no_action_mask_or_timeout",
+    "action_semantics": [
+      "delta_x_grasp_frame",
+      "delta_y_grasp_frame",
+      "delta_z_grasp_frame",
+      "delta_rotation_vector_x_grasp_frame",
+      "delta_rotation_vector_y_grasp_frame",
+      "delta_rotation_vector_z_grasp_frame_axial_twist",
+      "delta_thumb_joint2", "delta_index_joint1", "delta_middle_joint1",
+      "delta_ring_joint1", "delta_little_joint1", "delta_thumb_joint0",
+      "delta_index_joint0", "delta_middle_joint0", "delta_ring_joint0",
+      "delta_little_joint0", "delta_thumb_joint1", "delta_thumb_joint3",
+      "delta_index_joint2", "delta_middle_joint2", "delta_ring_joint2",
+      "delta_little_joint2"
+    ],
+    "arm_execution": "bounded_6d_cartesian_residual_via_follow_p_and_7dof_ik",
+    "hand_execution": "sixteen_independent_g20_joint_position_targets",
+    "pregrasp_execution": "planner_and_move_jp_or_move_l_outside_policy"
+  },
+  "tactile": {
+    "finger_order": ["thumb", "index", "middle", "ring", "little"],
+    "verified_hardware_matrix": {
+      "shape": [5, 12, 6],
+      "dtype": "uint8",
+      "range": [0, 255],
+      "unit": null,
+      "semantics": "relative_spatial_weight_not_newtons"
+    },
+    "calibrated_resultant_force_n": {
+      "actor_contract_unit": "N",
+      "hardware_status": "blocked_until_per_finger_calibration",
+      "before_calibration": "force_valid_false_and_force_values_null",
+      "raw_to_newton_linear_conversion_allowed": false,
+      "nominal_sensor_range_n_is_not_a_conversion_curve": true
+    },
+    "simulation_proxy": {
+      "resultant_unit": "N",
+      "normalization_full_scale_n": 20.0,
+      "must_be_marked_simulated": true,
+      "may_be_claimed_as_hardware_calibration": false
+    },
+    "hardware_deployment_gate": "complete_tactile_calibration_or_retrain_a_versioned_raw_matrix_actor"
+  },
+  "task": {
+    "name": "single_tomato_pick_with_stem_detachment",
+    "fruit": {
+      "shape": "oriented_ellipsoid",
+      "semi_axes_m": {
+        "x": [0.025, 0.035],
+        "y": [0.025, 0.035],
+        "z": [0.025, 0.035]
+      },
+      "mass_kg": [0.03, 0.50],
+      "static_friction": [0.20, 1.20],
+      "dynamic_friction": [0.15, 1.00],
+      "youngs_modulus_pa": [20000.0, 2000000.0],
+      "parameter_provenance": "broad_simulation_prior_not_hardware_truth"
+    },
+    "stem": {
+      "enabled": true,
+      "model": "breakable_six_dof_constraint",
+      "break_force_n": [3.0, 7.0],
+      "break_torque_nm": [0.004, 0.012],
+      "parameter_provenance": "control_reachable_training_interval_requires_later_hardware_identification",
+      "detachment_event": "constraint_transitions_from_intact_to_broken_once"
+    },
+    "success": {
+      "stem_detached": true,
+      "fruit_retained_without_slip": true,
+      "dropped": false,
+      "verifier_valid": true
+    },
+    "failure_events": [
+      "no_contact",
+      "unstable_grasp",
+      "detach_timeout",
+      "slip",
+      "drop",
+      "excess_contact",
+      "workspace_or_joint_limit",
+      "invalid_or_stale_observation"
+    ]
+  },
+  "environment": {
+    "physics_rate_hz": 120,
+    "policy_decimation": 6,
+    "reset": {
+      "fruit_count": 1,
+      "stem_initial_state": "intact",
+      "fruit_initially_dropped": false,
+      "robot_initial_state": "validated_pregrasp_and_open_hand",
+      "randomization_is_seeded": true,
+      "clear_all_phase_verifier_and_metric_state": true
+    },
+    "reward": {
+      "status": "initial_versioned_weights_for_rule_policy_and_ppo_tuning",
+      "design": "outcome_driven_potentials_plus_terminal_task_success",
+      "terms": {
+        "approach_potential": {"weight": 0.5},
+        "hand_shape_agnostic_force_balance_potential": {"weight": 1.0},
+        "stem_load_potential_pull_or_twist": {"weight": 1.0},
+        "stem_break_once": {"weight": 5.0},
+        "post_detachment_retention_potential": {"weight": 0.5},
+        "task_success": {"terminal": true, "weight": 20.0},
+        "drop": {"terminal": true, "weight": -20.0},
+        "excess_contact": {"terminal": true, "weight": -10.0},
+        "global_task_timeout": {"terminal": true, "weight": -5.0},
+        "soft_force": {"weight": -0.10},
+        "joint_hard_limit_margin": {"weight": -0.05},
+        "action_magnitude": {"weight": -0.0005},
+        "action_rate": {"weight": -0.002}
+      },
+      "sim_ground_truth_only_for_reward_or_critic": true,
+      "sim_ground_truth_in_actor": false
+    },
+    "termination": {
+      "success": "detached_and_retained_without_slip_and_not_dropped",
+      "failure": [
+        "drop",
+        "safety_or_workspace_violation",
+        "device_or_simulation_invalid",
+        "global_task_timeout"
+      ],
+      "maximum_episode_steps": 160
+    },
+    "required_work": [
+      "low_polygon_curvature_accurate_fingertip_colliders",
+      "reviewed_self_collision_filter",
+      "tomato_and_stem_assets",
+      "breakable_stem_event",
+      "deployable_observation_wrapper",
+      "action_supervisor_wrapper",
+      "structured_episode_metrics"
+    ],
+    "privileged_critic_may_observe": [
+      "exact_fruit_pose_and_twist",
+      "exact_contact_forces",
+      "stem_constraint_state",
+      "domain_randomization_parameters"
+    ],
+    "privileged_values_in_actor": false
+  },
+  "implementation_progress": {
+    "c2_1_contract_environment": {
+      "status": "passed",
+      "backend": "contract_smoke_not_physics",
+      "implementation": "simulation/tomato_pick/contract_env.py",
+      "rule_policy": "simulation/tomato_pick/rule_policy.py",
+      "seeded_episodes_passed": 100,
+      "physics_evidence": false,
+      "checkpoint_training_allowed": false
+    },
+    "c2_2_isaac_physics_environment": {
+      "status": "cuda_113d_22d_physics_reward_and_optimizer_gates_passed",
+      "asset_profile": "simulation/config/assets_v1.yaml",
+      "implementation": "simulation/tomato_pick/isaac/env.py",
+      "smoke": "script/isaac_tomato_pick_env_smoke.py",
+      "ppo_started": true
+    },
+    "c2_3_ppo_training": {
+      "status": "formal_training_authorized_from_zero",
+      "profile": "simulation/config/ppo_v1.yaml"
+    }
+  },
+  "entry_gates": {
+    "c2_environment_implementation": "allowed",
+    "rule_policy_acceptance": "diagnostic_only_not_a_training_gate",
+    "ppo_training": "allowed_after_113d_22d_physics_reward_and_optimizer_gates",
+    "direct_sim_to_real": "blocked",
+    "ppo_acceptance_requires": [
+      "six_dof_cartesian_and_sixteen_joint_action_channels_move",
+      "success_is_impossible_before_stem_break",
+      "dropped_or_slipping_fruit_never_counts_as_success",
+      "randomized_reset_and_step_smoke_has_no_nan_or_explosions",
+      "ppo_log_probability_gae_and_optimizer_probe_pass",
+      "observation_and_action_match_frozen_manifest_exactly"
+    ]
+  }
+}

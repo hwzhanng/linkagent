@@ -1,0 +1,41 @@
+{
+  "models_file": "_model.yaml",
+  "perception_file": "_perception.yaml",
+  "agent": {
+    "model": "offline_mock",
+    "max_iterations": 4,
+    "max_tool_calls": 4,
+    "max_tool_calls_per_turn": 2
+  },
+  "env": {
+    "type": "mock",
+    "observations": [
+      {
+        "sequence": 0,
+        "timestamp_s": 0.0,
+        "metadata": {
+          "detections": [
+            {
+              "label": "bottle",
+              "score": 0.98,
+              "bbox_xyxy": [40.0, 30.0, 120.0, 220.0]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "task": {
+    "type": "locate_target",
+    "target": "bottle",
+    "perception_tools": [
+      {
+        "name": "target_detector",
+        "profile": "offline_mock"
+      }
+    ]
+  },
+  "runtime": {
+    "max_steps": 3
+  }
+}

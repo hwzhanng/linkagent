@@ -1,0 +1,68 @@
+schema_version: 1
+session_id: "20260727_lab_001"
+date_local: "2026-07-27"
+timezone: "Asia/Shanghai"
+operator: ""
+location: ""
+ambient_temperature_c: null
+supply_voltage_v: null
+
+software:
+  project_root: "botSDK/lbot_arm_api-master"
+  urdf_package: "botSDK/urdf/02_project_derived/ros2_packages/linkbot_bimanual_sdk_description"
+  arm_sdk_version: "1.0.5"
+  hand_sdk_source: "botSDK/linkerhand-ros2-sdk-main"
+  isaac_sim_version: "6.0.1.0"
+  isaac_lab_version: "6.1.14"
+  logger_version_or_git_commit: ""
+
+arm_controller:
+  model: "A7V2_50_4.27"
+  controller_serial: ""
+  controller_firmware: ""
+  ip_address: ""
+  tool_payload_config_enabled: false
+  left_tool_mass_kg: null
+  left_tool_com_m: [null, null, null]
+  right_tool_mass_kg: null
+  right_tool_com_m: [null, null, null]
+
+left_hand:
+  model: "G20"
+  serial: ""
+  hardware_version: ""
+  firmware_version: ""
+  can_interface: "can0"
+  can_id: "0x28"
+  tactile_type: "matrix_v2"
+  topology_validated: true
+  installed_parts: ""
+
+right_hand:
+  model: "G20"
+  serial: ""
+  hardware_version: ""
+  firmware_version: ""
+  can_interface: "can1"
+  can_id: "0x27"
+  tactile_type: ""
+  topology_validated: false
+  installed_parts: ""
+
+sampling:
+  requested_hz: null
+  measured_mean_hz: null
+  measured_std_hz: null
+  maximum_gap_ms: null
+  dropped_frames: null
+  clock: "CLOCK_MONOTONIC"
+
+measurement_tools:
+  scale_model: ""
+  scale_resolution_g: null
+  force_gauge_model: ""
+  force_gauge_resolution_n: null
+  caliper_model: ""
+  camera_or_tracker: ""
+
+notes: ""

@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "training_profile_id": "tomato_pick_ppo_v1",
+  "status": "ready_waiting_for_explicit_training_authorization",
+  "task_id": "LinkAgent-TomatoPick-Direct-v0",
+  "runtime_role": "isaac_ppo",
+  "trainer": {
+    "backend": "rsl_rl",
+    "algorithm": "PPO",
+    "seed": 42,
+    "device": "cuda:0",
+    "num_environments": 8192,
+    "rollout_steps_per_environment": 64,
+    "rollout_source": "fresh_current_policy_only",
+    "replay_buffer_enabled": false,
+    "maximum_iterations": 1500,
+    "save_interval_iterations": 10
+  },
+  "policy": {
+    "actor_observation_dim": 113,
+    "critic_mode": "asymmetric_privileged",
+    "action_dim": 22,
+    "hidden_dimensions": [256, 256, 128],
+    "activation": "elu",
+    "initial_action_std": 0.25,
+    "minimum_action_std": 0.05,
+    "maximum_action_std": 0.8,
+    "distribution": "tanh_squashed_diagonal_gaussian_with_jacobian_correction",
+    "post_sample_action_clipping": false
+  },
+  "algorithm": {
+    "learning_rate": 0.0001,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_parameter": 0.2,
+    "entropy_coefficient": 0.001,
+    "value_loss_coefficient": 1.0,
+    "maximum_gradient_norm": 1.0,
+    "learning_epochs": 5,
+    "mini_batches": 16,
+    "desired_kl": 0.01,
+    "schedule": "fixed",
+    "advantage_normalization": "once_over_complete_rollout",
+    "timeout_value_bootstrap": true,
+    "true_termination_value_bootstrap": false
+  },
+  "monitoring": {
+    "provider": "wandb",
+    "mode": "online",
+    "entity": "hwzclementine-china-agricultural-university",
+    "project": "PPO",
+    "run_name": "tomato_joint22_terminalalign_formal_8192",
+    "credential_environment_variable": "WANDB_API_KEY",
+    "credential_store": "user_netrc_or_environment",
+    "local_tensorboard_mirror": true
+  },
+  "active_run": {
+    "started_at": "2026-08-06T13:25:38+08:00",
+    "from_scratch": true,
+    "tmux_session": "tomato_ppo_c23",
+    "log_file": "/tmp/tomato_joint22_terminalalign_formal_8192.log",
+    "training_directory": "logs/rsl_rl/tomato_pick_v1/2026-08-06_13-25-38_tomato_joint22_terminalalign_formal_8192",
+    "wandb_run_id": "gqtizhp6",
+    "wandb_url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/gqtizhp6",
+    "supersedes_failed_run": "e9nkhw48",
+    "reward_semantics": "gamma_discounted_potentials_with_terminal_credit_recovery_and_terminal_outcome_ordering",
+    "stopped_at_steps": 12582912,
+    "stopped_checkpoint": "model_20.pt",
+    "stop_reason": "zero_success_and_declining_contact_grasp_detach_at_ten_million_step_hard_gate",
+    "audit_log": "/tmp/tomato_terminalalign_model20_audit.log",
+    "return_audit_log": "/tmp/tomato_terminalalign_model20_return_audit.log",
+    "audit_result": {
+      "break_events": 112,
+      "drop_events": 102,
+      "success_events": 0,
+      "maximum_hold_streak": 3,
+      "required_hold_streak": 20,
+      "phase3_normalized_advantage_mean": -2.1207,
+      "diagnosis": "independent_22d_exploration_never_samples_a_retained_grasp_and_makes_all_detach_actions_negative_examples"
+    }
+  },
+  "compatibility": {
+    "interface_version": "2.0.0",
+    "observation_layout_id": "tomato_pick_observation_113d",
+    "action_layout_id": "tomato_pick_action_22d",
+    "policy_rate_hz": 20,
+    "asset_profile": "simulation/config/assets_v1.yaml",
+    "runtime_profile": "simulation/environments/isaaclab_runtime_v1.yaml",
+    "sim2real_profile": "simulation/config/sim2real_v1.yaml",
+    "c2_contract": "botSDK/urdf/02_project_derived/simulation_baselines/tomato_pick_v1.yaml"
+  },
+  "output": {
+    "root": "logs/rsl_rl/tomato_pick_v1",
+    "deployable_root": "artifacts/simulation/tomato_pick_ppo_v1",
+    "write_policy_manifest": true,
+    "write_resolved_config": true,
+    "write_environment_report": true,
+    "checkpoint_is_deployable_without_manifest": false
+  },
+  "activation_gate": {
+    "asset_profile_ready_for_ppo_training": true,
+    "isaac_runtime_preflight_passed": true,
+    "direct_rl_env_cuda_smoke_passed": true,
+    "six_dof_and_sixteen_joint_action_smoke_passed": true,
+    "two_update_optimizer_probe_passed": true,
+    "post_detachment_retention_is_the_ppo_objective": true,
+    "sim2real_full_and_nominal_audits_passed": true,
+    "ppo_zero_training_preflight_passed": true,
+    "explicit_training_authorized": false,
+    "actor_has_no_privileged_state": true,
+    "old_baseline_inputs_reused": false
+  }
+}
