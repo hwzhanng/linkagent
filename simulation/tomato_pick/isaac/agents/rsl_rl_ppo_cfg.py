@@ -13,10 +13,10 @@ from simulation.tomato_pick.reward import SHAPING_GAMMA
 @configclass
 class TomatoPickPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 32
-    max_iterations = 1500
+    max_iterations = 1800
     save_interval = 50
-    experiment_name = "tomato_pick_minimal_v3"
-    run_name = "tomato_pick_minimal_v3"
+    experiment_name = "tomato_pick_clean_v5"
+    run_name = "tomato_pick_clean_v5_from_scratch"
     logger = "wandb"
     wandb_project = "PPO"
     clip_actions = 1.0

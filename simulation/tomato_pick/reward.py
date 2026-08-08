@@ -1,36 +1,62 @@
-"""Outcome-aligned hierarchical reward for tomato grasp-and-detach PPO."""
+"""Curriculum reward for from-scratch tomato-picking PPO.
+
+The discovery endpoint preserves the positive hierarchy that made the first
+successful policy learnable.  The aligned endpoint keeps the bounded front-end
+progress, but replaces immediate detach and repeated hold credit with stable
+detach, best-ever hold progress, and a much larger final outcome margin.
+
+The curriculum is a smooth function of PPO update count.  It is deliberately
+zero until the historical first-success regime has been passed, so late
+failure penalties cannot teach a random policy to avoid the fruit.
+"""
 
 from __future__ import annotations
 
 import torch
 
 
-# Progress is paid once while an episode remains alive, then fully recovered on
-# every terminal failure.  This is the second-stage objective for a mature
-# warm-start policy: it preserves dense temporal credit within successful
-# trajectories without making reach, contact, loading, or partial retention a
-# profitable terminal outcome of their own.
+SHAPING_GAMMA = 0.99
+
+# Discovery endpoint: the seven-term positive hierarchy documented by the run
+# that produced model_1450.  All progress scores are bounded in [0, 1].
 REACH_PROGRESS_WEIGHT = 5.0
 GRASP_PROGRESS_WEIGHT = 10.0
 STEM_LOAD_PROGRESS_WEIGHT = 20.0
+BREAK_GRASPED_WEIGHT = 40.0
+DISCOVERY_SUCCESS_WEIGHT = 100.0
+DISCOVERY_TIME_COST_WEIGHT = -0.01
+
+# Aligned endpoint.  Front-end reach/grasp/load progress remains available;
+# only the vulnerable detach/hold/outcome channel changes.
+OPPOSED_PROGRESS_WEIGHT = 5.0
 STABLE_DETACH_WEIGHT = 40.0
-RETENTION_PROGRESS_WEIGHT = 20.0
-SUCCESS_WEIGHT = 100.0
-TERMINAL_FAILURE_WEIGHT = -100.0
-SHAPING_GAMMA = 0.99
-# With this cost on every non-terminal transition, waiting T steps and then
-# failing has discounted return exactly TERMINAL_FAILURE_WEIGHT for every T:
-#   sum(gamma**t * -1, t=0..T-1) + gamma**T * -100 == -100.
-# Safe timeout therefore cannot dominate an earlier physical attempt merely
-# because PPO discounts delayed negative outcomes.
-TIME_COST_WEIGHT = (1.0 - SHAPING_GAMMA) * TERMINAL_FAILURE_WEIGHT
+RETENTION_PROGRESS_WEIGHT = 40.0
+ALIGNED_SUCCESS_WEIGHT = 200.0
+ALIGNED_TIME_COST_WEIGHT = -0.10
+DROP_FAILURE_WEIGHT = -40.0
+EXCESS_FORCE_FAILURE_WEIGHT = -60.0
+OUT_OF_BOUNDS_FAILURE_WEIGHT = -60.0
+PRE_DETACH_TIMEOUT_WEIGHT = -10.0
+POST_DETACH_TIMEOUT_WEIGHT = -30.0
+
+# Update-count schedule.  Update 29 was the first historical success, while
+# useful success density appeared only hundreds of updates later.  Therefore
+# the objective is exactly the discovery endpoint through update 250, changes
+# smoothly through update 1300, and remains fully aligned thereafter.
+CURRICULUM_POINTS: tuple[tuple[float, float], ...] = (
+    (0.0, 0.0),
+    (250.0, 0.0),
+    (600.0, 0.35),
+    (1000.0, 0.75),
+    (1300.0, 1.0),
+)
 
 
 def best_ever_progress(
     score: torch.Tensor,
     previous_best: torch.Tensor,
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    """Return non-repeatable progress of a bounded score and its new maximum."""
+    """Return non-repeatable progress and the updated bounded best score."""
 
     bounded_score = score.clamp(0.0, 1.0)
     bounded_best = previous_best.clamp(0.0, 1.0)
@@ -38,47 +64,22 @@ def best_ever_progress(
     return next_best - bounded_best, next_best
 
 
-def milestone_credit_term(
-    score: torch.Tensor,
-    previous_best: torch.Tensor,
-    *,
-    weight: float,
-    terminal_failure: torch.Tensor,
-) -> tuple[torch.Tensor, torch.Tensor]:
-    """Pay bounded best-ever progress once, except on a failing transition."""
+def alignment_alpha_for_iteration(iteration: float) -> float:
+    """Return a smooth, monotone reward-alignment coefficient in [0, 1]."""
 
-    progress, next_best = best_ever_progress(score, previous_best)
-    credit = weight * progress
-    paid = torch.where(terminal_failure.bool(), torch.zeros_like(credit), credit)
-    return paid, next_best
-
-
-def update_recoverable_credit(
-    previous_balance: torch.Tensor,
-    milestone_credit: torch.Tensor,
-    *,
-    success: torch.Tensor,
-    terminal_failure: torch.Tensor,
-) -> tuple[torch.Tensor, torch.Tensor]:
-    """Return failure recovery and the next gamma-correct credit balance.
-
-    Before step ``t``, ``previous_balance`` is the amount whose payment at
-    step ``t`` exactly cancels all earlier milestone rewards under gamma.
-    Non-terminal credit therefore advances as ``(balance + credit) / gamma``.
-    On failure the old balance is recovered immediately; progress from the
-    same failing transition was never paid.  Success keeps every milestone.
-    """
-
-    terminal = success.bool() | terminal_failure.bool()
-    recovery = torch.where(
-        terminal_failure.bool(), -previous_balance, torch.zeros_like(previous_balance)
-    )
-    next_balance = torch.where(
-        terminal,
-        torch.zeros_like(previous_balance),
-        (previous_balance + milestone_credit) / SHAPING_GAMMA,
-    )
-    return recovery, next_balance
+    value = max(0.0, float(iteration))
+    for (left_iteration, left_alpha), (right_iteration, right_alpha) in zip(
+        CURRICULUM_POINTS[:-1], CURRICULUM_POINTS[1:]
+    ):
+        if value <= right_iteration:
+            if right_iteration == left_iteration:
+                return float(right_alpha)
+            fraction = (value - left_iteration) / (right_iteration - left_iteration)
+            fraction = min(1.0, max(0.0, fraction))
+            # Smoothstep avoids a gradient-scale corner at curriculum knots.
+            fraction = fraction * fraction * (3.0 - 2.0 * fraction)
+            return float(left_alpha + fraction * (right_alpha - left_alpha))
+    return float(CURRICULUM_POINTS[-1][1])
 
 
 def opposed_contact_score(
@@ -86,22 +87,14 @@ def opposed_contact_score(
     *,
     full_contact_force_n: float,
 ) -> torch.Tensor:
-    """Soft thumb-plus-one-support-finger grasp score in ``[0, 1]``.
-
-    This is the learning-time ``good finger contact`` condition used by mature
-    dexterous-grasp tasks.  It is deliberately less restrictive than the final
-    task outcome: a two-sided contact is learnable, while detach-and-retain is
-    still the only way to receive the large task reward.
-    """
+    """Soft thumb-plus-one-support-finger contact score in [0, 1]."""
 
     if finger_force_n.ndim != 2 or finger_force_n.shape[1] != 5:
         raise ValueError("finger_force_n must have shape (num_envs, 5)")
     if full_contact_force_n <= 0.0:
         raise ValueError("full_contact_force_n must be positive")
     normalized = (finger_force_n / full_contact_force_n).clamp(0.0, 1.0)
-    thumb = normalized[:, 0]
-    strongest_support = normalized[:, 1:].amax(dim=1)
-    return thumb * strongest_support
+    return normalized[:, 0] * normalized[:, 1:].amax(dim=1)
 
 
 def grasp_contact_score(
@@ -109,23 +102,15 @@ def grasp_contact_score(
     *,
     full_contact_force_n: float,
 ) -> torch.Tensor:
-    """Continuous contact-count plus opposed-grasp quality in ``[0, 1]``.
+    """Continuous score of the second-strongest fingertip contact.
 
-    Individual finger contact supplies a small early learning signal, as in
-    NVIDIA's DexSuite.  Most of the score is reserved for thumb opposition, so
-    pushing with non-thumb fingers cannot look like a completed grasp.
+    Reach covers the first contact.  This term therefore rewards adding a
+    second finger without requiring that it already be the thumb; opposition
+    is represented separately and receives its own progress credit.
     """
 
-    if finger_force_n.ndim != 2 or finger_force_n.shape[1] != 5:
-        raise ValueError("finger_force_n must have shape (num_envs, 5)")
-    if full_contact_force_n <= 0.0:
-        raise ValueError("full_contact_force_n must be positive")
     normalized = (finger_force_n / full_contact_force_n).clamp(0.0, 1.0)
-    contact_count_score = normalized.mean(dim=1)
-    opposed = opposed_contact_score(
-        finger_force_n, full_contact_force_n=full_contact_force_n
-    )
-    return 0.2 * contact_count_score + 0.8 * opposed
+    return torch.topk(normalized, k=2, dim=1).values[:, 1]
 
 
 def break_grasp_quality(
@@ -133,13 +118,7 @@ def break_grasp_quality(
     *,
     contact_force_n: float,
 ) -> torch.Tensor:
-    """Quality of the hand contact at the instant the stem breaks.
-
-    A single fingertip collision receives no detach credit.  Contact from any
-    two fingers receives partial credit, while thumb opposition receives full
-    credit.  This mirrors the good-contact definition used by mature
-    dexterous-grasp tasks without prescribing a particular finger pair.
-    """
+    """Return detach grasp quality in {0, 0.4, 1}."""
 
     if finger_force_n.ndim != 2 or finger_force_n.shape[1] != 5:
         raise ValueError("finger_force_n must have shape (num_envs, 5)")
@@ -157,15 +136,22 @@ def tomato_pick_reward(
     previous_best_reach: torch.Tensor,
     grasp_score: torch.Tensor,
     previous_best_grasp: torch.Tensor,
+    opposed_score: torch.Tensor,
+    previous_best_opposed: torch.Tensor,
     stem_load_score: torch.Tensor,
     previous_best_stem_load: torch.Tensor,
     stable_detach_score: torch.Tensor,
     previous_best_stable_detach: torch.Tensor,
     retention_score: torch.Tensor,
     previous_best_retention: torch.Tensor,
-    previous_credit_balance: torch.Tensor,
+    break_grasped_score: torch.Tensor,
     success: torch.Tensor,
-    terminal_failure: torch.Tensor,
+    dropped: torch.Tensor,
+    excess_force: torch.Tensor,
+    out_of_bounds: torch.Tensor,
+    timed_out: torch.Tensor,
+    stem_detached: torch.Tensor,
+    alignment_alpha: float,
 ) -> tuple[
     torch.Tensor,
     torch.Tensor,
@@ -176,104 +162,117 @@ def tomato_pick_reward(
     torch.Tensor,
     dict[str, torch.Tensor],
 ]:
-    """Compute the complete minimal-v3 task reward.
+    """Compute one transition of the Clean-v5 curriculum objective."""
 
-    Best-ever state prevents oscillation farming.  Every milestone remains
-    dense on successful trajectories and is recovered exactly on failure.  A
-    matched time cost makes a no-progress timeout equal to every other failure.
-    """
+    if not 0.0 <= alignment_alpha <= 1.0:
+        raise ValueError("alignment_alpha must lie in [0, 1]")
 
-    terminal = success.bool() | terminal_failure.bool()
-    reach_term, next_reach = milestone_credit_term(
-        reach_score,
-        previous_best_reach,
-        weight=REACH_PROGRESS_WEIGHT,
-        terminal_failure=terminal_failure,
+    reach_progress, next_reach = best_ever_progress(
+        reach_score, previous_best_reach
     )
-    grasp_term, next_grasp = milestone_credit_term(
-        grasp_score,
-        previous_best_grasp,
-        weight=GRASP_PROGRESS_WEIGHT,
-        terminal_failure=terminal_failure,
+    grasp_progress, next_grasp = best_ever_progress(
+        grasp_score, previous_best_grasp
     )
-    stem_load_term, next_stem_load = milestone_credit_term(
-        stem_load_score,
-        previous_best_stem_load,
-        weight=STEM_LOAD_PROGRESS_WEIGHT,
-        terminal_failure=terminal_failure,
+    opposed_progress, next_opposed = best_ever_progress(
+        opposed_score, previous_best_opposed
     )
-    stable_detach_term, next_stable_detach = milestone_credit_term(
-        stable_detach_score,
-        previous_best_stable_detach,
-        weight=STABLE_DETACH_WEIGHT,
-        terminal_failure=terminal_failure,
+    stem_progress, next_stem = best_ever_progress(
+        stem_load_score, previous_best_stem_load
     )
-    retention_term, next_retention = milestone_credit_term(
-        retention_score,
-        previous_best_retention,
-        weight=RETENTION_PROGRESS_WEIGHT,
-        terminal_failure=terminal_failure,
+    stable_detach_progress, next_stable_detach = best_ever_progress(
+        stable_detach_score, previous_best_stable_detach
     )
-    # All shaping is temporary credit.  Keeping early reach/grasp/load credit on
-    # failed trajectories made the mature policy trade thumb opposition for
-    # faster approach/pull actions, increasing both drop and excess force.
-    recoverable_credit = (
-        reach_term
-        + grasp_term
-        + stem_load_term
-        + stable_detach_term
-        + retention_term
+    retention_progress, next_retention = best_ever_progress(
+        retention_score, previous_best_retention
     )
-    credit_recovery, next_credit_balance = update_recoverable_credit(
-        previous_credit_balance,
-        recoverable_credit,
-        success=success,
-        terminal_failure=terminal_failure,
+
+    alpha = float(alignment_alpha)
+    discovery = 1.0 - alpha
+    success_weight = (
+        discovery * DISCOVERY_SUCCESS_WEIGHT + alpha * ALIGNED_SUCCESS_WEIGHT
+    )
+    timeout_weight = torch.where(
+        stem_detached.bool(),
+        torch.full_like(reach_score, POST_DETACH_TIMEOUT_WEIGHT),
+        torch.full_like(reach_score, PRE_DETACH_TIMEOUT_WEIGHT),
+    )
+    terminal = (
+        success.bool()
+        | dropped.bool()
+        | excess_force.bool()
+        | out_of_bounds.bool()
+        | timed_out.bool()
     )
     terms = {
-        "time_cost": torch.where(
-            terminal, torch.zeros_like(reach_term), torch.full_like(reach_term, TIME_COST_WEIGHT)
-        ),
-        "reach_progress": reach_term,
-        "grasp_progress": grasp_term,
-        "stem_load_progress": stem_load_term,
-        # Detach itself is not rewarded.  Credit appears only after the fruit
-        # has remained stably held with opposed contact for several policy
-        # steps, making shallow collision-induced breaks unprofitable.
-        "stable_detach": stable_detach_term,
-        "retention_progress": retention_term,
-        "credit_recovery": credit_recovery,
-        "success": SUCCESS_WEIGHT * success.float(),
-        "terminal_failure": TERMINAL_FAILURE_WEIGHT * terminal_failure.float(),
+        # This bounded front-end bridge never disappears, so contact remains
+        # distinguishable from waiting even after outcome alignment is strong.
+        "reach_progress": REACH_PROGRESS_WEIGHT * reach_progress,
+        "grasp_progress": GRASP_PROGRESS_WEIGHT * grasp_progress,
+        "stem_load_progress": STEM_LOAD_PROGRESS_WEIGHT * stem_progress,
+        # Discovery pays maintained opposition and the actual break event.
+        "break_grasped": discovery
+        * BREAK_GRASPED_WEIGHT
+        * break_grasped_score.clamp(0.0, 1.0),
+        # Opposition and hold duration are new-best progress from the first
+        # update onward.  A first correct trajectory still receives the same
+        # dense increments; repeated, regressed, or oscillating states get 0.
+        "opposed_progress": OPPOSED_PROGRESS_WEIGHT * opposed_progress,
+        "stable_detach": alpha
+        * STABLE_DETACH_WEIGHT
+        * stable_detach_progress,
+        "retention_progress": RETENTION_PROGRESS_WEIGHT * retention_progress,
+        # At gamma=.99, -0.1 on every non-terminal step plus -10 on a
+        # pre-detach timeout makes waiting for any duration worth exactly -10.
+        "time_cost": (
+            discovery * DISCOVERY_TIME_COST_WEIGHT
+            + alpha * ALIGNED_TIME_COST_WEIGHT
+        ) * (~terminal).float(),
+        "success": success_weight * success.float(),
+        "drop_failure": alpha * DROP_FAILURE_WEIGHT * dropped.float(),
+        "excess_force_failure": alpha
+        * EXCESS_FORCE_FAILURE_WEIGHT
+        * excess_force.float(),
+        "out_of_bounds_failure": alpha
+        * OUT_OF_BOUNDS_FAILURE_WEIGHT
+        * out_of_bounds.float(),
+        "timeout_failure": alpha * timeout_weight * timed_out.float(),
     }
     reward = torch.stack(tuple(terms.values()), dim=0).sum(dim=0)
     return (
         reward,
         next_reach,
         next_grasp,
-        next_stem_load,
+        next_opposed,
+        next_stem,
         next_stable_detach,
         next_retention,
-        next_credit_balance,
         terms,
     )
 
 
 __all__ = [
+    "ALIGNED_SUCCESS_WEIGHT",
+    "ALIGNED_TIME_COST_WEIGHT",
+    "BREAK_GRASPED_WEIGHT",
+    "CURRICULUM_POINTS",
+    "DISCOVERY_TIME_COST_WEIGHT",
+    "DISCOVERY_SUCCESS_WEIGHT",
+    "DROP_FAILURE_WEIGHT",
+    "EXCESS_FORCE_FAILURE_WEIGHT",
     "GRASP_PROGRESS_WEIGHT",
+    "OPPOSED_PROGRESS_WEIGHT",
+    "OUT_OF_BOUNDS_FAILURE_WEIGHT",
+    "POST_DETACH_TIMEOUT_WEIGHT",
+    "PRE_DETACH_TIMEOUT_WEIGHT",
     "REACH_PROGRESS_WEIGHT",
     "RETENTION_PROGRESS_WEIGHT",
     "SHAPING_GAMMA",
     "STABLE_DETACH_WEIGHT",
     "STEM_LOAD_PROGRESS_WEIGHT",
-    "SUCCESS_WEIGHT",
-    "TERMINAL_FAILURE_WEIGHT",
-    "TIME_COST_WEIGHT",
+    "alignment_alpha_for_iteration",
     "best_ever_progress",
     "break_grasp_quality",
     "grasp_contact_score",
     "opposed_contact_score",
-    "milestone_credit_term",
     "tomato_pick_reward",
-    "update_recoverable_credit",
 ]

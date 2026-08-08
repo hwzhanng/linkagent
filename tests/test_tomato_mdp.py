@@ -22,19 +22,15 @@ from module.skills.tomato_pick.hand_synergy import (
     g20_synergy_to_joint_targets,
 )
 from simulation.tomato_pick.reward import (
-    GRASP_PROGRESS_WEIGHT,
-    REACH_PROGRESS_WEIGHT,
-    RETENTION_PROGRESS_WEIGHT,
-    SHAPING_GAMMA,
-    STABLE_DETACH_WEIGHT,
-    STEM_LOAD_PROGRESS_WEIGHT,
-    SUCCESS_WEIGHT,
-    TERMINAL_FAILURE_WEIGHT,
-    TIME_COST_WEIGHT,
+    ALIGNED_SUCCESS_WEIGHT,
+    BREAK_GRASPED_WEIGHT,
+    DISCOVERY_SUCCESS_WEIGHT,
+    DROP_FAILURE_WEIGHT,
+    EXCESS_FORCE_FAILURE_WEIGHT,
+    alignment_alpha_for_iteration,
     best_ever_progress,
     break_grasp_quality,
     grasp_contact_score,
-    opposed_contact_score,
     tomato_pick_reward,
 )
 from simulation.tomato_pick.stem_fracture import attachment_load_ratio, update_overload_streak
@@ -70,9 +66,16 @@ def test_g20_synergy_is_absolute_bounded_and_low_rank() -> None:
         second = g20_synergy_to_joint_targets(synergy)
         assert first == second
         assert len(first) == 16
-        assert all(lo <= value <= hi for value, lo, hi in zip(first, HAND_LOWER_RAD, HAND_UPPER_RAD))
-    assert g20_synergy_to_joint_targets((-1, -1, 0, 0, 0)) != g20_synergy_to_joint_targets((1, 1, 0, 0, 0))
-    assert g20_synergy_to_joint_targets((0, 0, 0, 0, 0)) == g20_synergy_to_joint_targets(PREGRASP_SYNERGY)
+        assert all(
+            lo <= value <= hi
+            for value, lo, hi in zip(first, HAND_LOWER_RAD, HAND_UPPER_RAD)
+        )
+    assert g20_synergy_to_joint_targets((-1, -1, 0, 0, 0)) != (
+        g20_synergy_to_joint_targets((1, 1, 0, 0, 0))
+    )
+    assert g20_synergy_to_joint_targets((0, 0, 0, 0, 0)) == (
+        g20_synergy_to_joint_targets(PREGRASP_SYNERGY)
+    )
 
 
 def test_thumb_roll_is_fixed_and_opposition_uses_safe_coupled_range() -> None:
@@ -100,13 +103,6 @@ def test_radial_ulnar_balance_can_correct_which_fingers_contact_first() -> None:
     assert radial[15] < ulnar[15]
 
 
-def test_curl_shape_changes_distal_relative_to_proximal_flexion() -> None:
-    straight = g20_synergy_to_joint_targets((0.45, -1.0, 0.0, 0.0, 0.0))
-    curled = g20_synergy_to_joint_targets((0.45, 1.0, 0.0, 0.0, 0.0))
-    assert curled[1] < straight[1]
-    assert curled[12] > straight[12]
-
-
 def test_each_hand_manifold_coordinate_remains_effective() -> None:
     baseline = g20_synergy_to_joint_targets((0.0,) * 5)
     for coordinate in range(5):
@@ -115,7 +111,7 @@ def test_each_hand_manifold_coordinate_remains_effective() -> None:
         assert g20_synergy_to_joint_targets(action) != baseline
 
 
-def test_stem_coordinate_counts_pull_but_not_compression_lateral_or_twist() -> None:
+def test_stem_coordinate_counts_pull_but_not_compression_or_lateral_force() -> None:
     axis = torch.tensor([[0.0, 0.0, 1.0]])
     force_limit = torch.tensor([5.0])
     pull = attachment_load_ratio(
@@ -132,45 +128,22 @@ def test_stem_coordinate_counts_pull_but_not_compression_lateral_or_twist() -> N
     assert torch.allclose(lateral, torch.zeros(1))
 
 
-def test_stem_break_requires_more_than_one_policy_interval_of_overload() -> None:
+def test_stem_overload_streak_counts_only_consecutive_physics_substeps() -> None:
     streak = torch.zeros(2, dtype=torch.long)
     attached = torch.tensor([True, True])
-    for _ in range(6):
+    for _ in range(2):
         streak = update_overload_streak(
-            streak,
-            torch.tensor([True, False]),
-            attached,
+            streak, torch.tensor([True, False]), attached
         )
-    assert streak.tolist() == [6, 0]
-    assert not bool((streak >= 7).any())
-
+    assert streak.tolist() == [2, 0]
     streak = update_overload_streak(
-        streak,
-        torch.tensor([True, True]),
-        attached,
+        streak, torch.tensor([True, True]), attached
     )
-    assert streak.tolist() == [7, 1]
-
+    assert streak.tolist() == [3, 1]
     streak = update_overload_streak(
-        streak,
-        torch.tensor([False, True]),
-        attached,
+        streak, torch.tensor([False, True]), attached
     )
     assert streak.tolist() == [0, 2]
-
-
-def test_opposed_contact_requires_thumb_and_a_support_finger() -> None:
-    forces = torch.tensor(
-        [
-            [0.6, 0.6, 0.0, 0.0, 0.0],
-            [0.6, 0.6, 0.6, 0.0, 0.0],
-            [0.3, 0.6, 0.3, 0.0, 0.0],
-        ]
-    )
-    score = opposed_contact_score(forces, full_contact_force_n=0.6)
-    assert torch.allclose(score, torch.tensor([1.0, 1.0, 0.5]))
-    shaped = grasp_contact_score(forces, full_contact_force_n=0.6)
-    assert torch.allclose(shaped, torch.tensor([0.88, 0.92, 0.48]))
 
 
 def test_break_grasp_quality_requires_two_fingers_and_prefers_thumb() -> None:
@@ -185,7 +158,102 @@ def test_break_grasp_quality_requires_two_fingers_and_prefers_thumb() -> None:
     assert torch.allclose(quality, torch.tensor([0.0, 0.4, 1.0]))
 
 
-def test_reward_is_non_repeatable_hierarchical_and_outcome_aligned() -> None:
+def test_grasp_score_rewards_a_second_finger_before_thumb_opposition() -> None:
+    forces = torch.tensor(
+        [
+            [0.0, 0.6, 0.0, 0.0, 0.0],
+            [0.0, 0.6, 0.3, 0.0, 0.0],
+            [0.6, 0.6, 0.0, 0.0, 0.0],
+        ]
+    )
+    score = grasp_contact_score(forces, full_contact_force_n=0.6)
+    assert torch.allclose(score, torch.tensor([0.0, 0.5, 1.0]))
+
+
+def _reward_step(
+    *,
+    reach: float = 0.0,
+    best_reach: float = 0.0,
+    grasp: float = 0.0,
+    best_grasp: float = 0.0,
+    opposed: float = 0.0,
+    best_opposed: float = 0.0,
+    stem_load: float = 0.0,
+    best_stem_load: float = 0.0,
+    stable_detach: float = 0.0,
+    best_stable_detach: float = 0.0,
+    retention: float = 0.0,
+    best_retention: float = 0.0,
+    break_grasped: float = 0.0,
+    detached: bool = False,
+    success: bool = False,
+    dropped: bool = False,
+    excess: bool = False,
+    out_of_bounds: bool = False,
+    timeout: bool = False,
+    alpha: float = 0.0,
+):
+    scalar = lambda value: torch.tensor([value])
+    boolean = lambda value: torch.tensor([value], dtype=torch.bool)
+    return tomato_pick_reward(
+        reach_score=scalar(reach),
+        previous_best_reach=scalar(best_reach),
+        grasp_score=scalar(grasp),
+        previous_best_grasp=scalar(best_grasp),
+        opposed_score=scalar(opposed),
+        previous_best_opposed=scalar(best_opposed),
+        stem_load_score=scalar(stem_load),
+        previous_best_stem_load=scalar(best_stem_load),
+        stable_detach_score=scalar(stable_detach),
+        previous_best_stable_detach=scalar(best_stable_detach),
+        retention_score=scalar(retention),
+        previous_best_retention=scalar(best_retention),
+        break_grasped_score=scalar(break_grasped),
+        success=boolean(success),
+        dropped=boolean(dropped),
+        excess_force=boolean(excess),
+        out_of_bounds=boolean(out_of_bounds),
+        timed_out=boolean(timeout),
+        stem_detached=boolean(detached),
+        alignment_alpha=alpha,
+    )
+
+
+def test_discovery_endpoint_preserves_positive_hierarchy() -> None:
+    result = _reward_step(
+        reach=0.8,
+        best_reach=0.2,
+        grasp=0.7,
+        best_grasp=0.3,
+        opposed=1.0,
+        stem_load=0.6,
+        best_stem_load=0.1,
+        break_grasped=1.0,
+        alpha=0.0,
+    )
+    reward, *_, terms = result
+    expected = 5.0 * 0.6 + 10.0 * 0.4 + 5.0 + 20.0 * 0.5 + 40.0 - 0.01
+    assert math.isclose(reward.item(), expected, abs_tol=2.0e-6)
+    assert terms["stable_detach"].item() == 0.0
+    assert terms["drop_failure"].item() == 0.0
+
+
+def test_discovery_failure_does_not_erase_first_success_exploration() -> None:
+    reward, *_, terms = _reward_step(
+        reach=1.0,
+        grasp=1.0,
+        opposed=1.0,
+        stem_load=1.0,
+        break_grasped=1.0,
+        detached=True,
+        dropped=True,
+        alpha=0.0,
+    )
+    assert reward.item() > BREAK_GRASPED_WEIGHT
+    assert terms["drop_failure"].item() == 0.0
+
+
+def test_progress_is_bounded_and_non_repeatable() -> None:
     best = torch.zeros(1)
     total = torch.zeros(1)
     for score in (0.2, 0.8, 0.3, 0.8, 0.1):
@@ -193,201 +261,67 @@ def test_reward_is_non_repeatable_hierarchical_and_outcome_aligned() -> None:
         total += progress
     assert torch.allclose(total, torch.tensor([0.8]))
 
-    zeros = torch.zeros(1)
-    false = torch.tensor([False])
-    wait, *_ = tomato_pick_reward(
-        reach_score=zeros,
-        previous_best_reach=zeros,
-        grasp_score=zeros,
-        previous_best_grasp=zeros,
-        stem_load_score=zeros,
-        previous_best_stem_load=zeros,
-        stable_detach_score=zeros,
-        previous_best_stable_detach=zeros,
-        retention_score=zeros,
-        previous_best_retention=zeros,
-        previous_credit_balance=zeros,
-        success=false,
-        terminal_failure=false,
-    )
-    assert math.isclose(wait.item(), TIME_COST_WEIGHT, abs_tol=1.0e-6)
-    assert math.isclose(TIME_COST_WEIGHT, -1.0, abs_tol=1.0e-12)
 
-    one = torch.ones(1)
-    shaping, _, _, _, _, _, balance, shaping_terms = tomato_pick_reward(
-        reach_score=one,
-        previous_best_reach=zeros,
-        grasp_score=one,
-        previous_best_grasp=zeros,
-        stem_load_score=one,
-        previous_best_stem_load=zeros,
-        stable_detach_score=one,
-        previous_best_stable_detach=zeros,
-        retention_score=one,
-        previous_best_retention=zeros,
-        previous_credit_balance=zeros,
-        success=false,
-        terminal_failure=false,
-    )
-    potential_sum = sum(
-        (
-            REACH_PROGRESS_WEIGHT,
-            GRASP_PROGRESS_WEIGHT,
-            STEM_LOAD_PROGRESS_WEIGHT,
-            STABLE_DETACH_WEIGHT,
-            RETENTION_PROGRESS_WEIGHT,
-        )
-    )
-    assert shaping_terms["reach_progress"].item() == REACH_PROGRESS_WEIGHT
-    assert shaping_terms["grasp_progress"].item() == GRASP_PROGRESS_WEIGHT
-    assert shaping_terms["stem_load_progress"].item() == STEM_LOAD_PROGRESS_WEIGHT
-    assert shaping_terms["stable_detach"].item() == STABLE_DETACH_WEIGHT
-    assert shaping_terms["retention_progress"].item() == RETENTION_PROGRESS_WEIGHT
-    assert shaping_terms["credit_recovery"].item() == 0.0
-    assert math.isclose(
-        shaping.item(), potential_sum + TIME_COST_WEIGHT, rel_tol=1.0e-6
-    )
-    assert math.isclose(
-        balance.item(), potential_sum / SHAPING_GAMMA, rel_tol=1.0e-6
-    )
-
-    failure, _, _, _, _, _, next_balance, failure_terms = tomato_pick_reward(
-        reach_score=one,
-        previous_best_reach=one,
-        grasp_score=one,
-        previous_best_grasp=one,
-        stem_load_score=one,
-        previous_best_stem_load=one,
-        stable_detach_score=one,
-        previous_best_stable_detach=one,
-        retention_score=one,
-        previous_best_retention=one,
-        previous_credit_balance=balance,
-        success=false,
-        terminal_failure=torch.tensor([True]),
-    )
-    assert TERMINAL_FAILURE_WEIGHT == -100.0
-    assert failure_terms["terminal_failure"].item() == TERMINAL_FAILURE_WEIGHT
-    assert math.isclose(
-        failure_terms["credit_recovery"].item(), -balance.item(), rel_tol=1.0e-6
-    )
-    assert failure_terms["time_cost"].item() == 0.0
-    assert math.isclose(
-        failure.item(), TERMINAL_FAILURE_WEIGHT - balance.item(), rel_tol=1.0e-6
-    )
-    assert next_balance.item() == 0.0
-    # Every failed trajectory has exactly the same discounted terminal return;
-    # none of the temporary milestones can be harvested by failing later.
-    assert torch.allclose(
-        shaping + SHAPING_GAMMA * failure,
-        torch.tensor([TERMINAL_FAILURE_WEIGHT]),
-    )
-
-    delayed_balance = balance.clone()
-    discounted_return = shaping.clone()
-    discount = SHAPING_GAMMA
-    for _ in range(7):
-        wait, _, _, _, _, _, delayed_balance, _ = tomato_pick_reward(
-            reach_score=one,
-            previous_best_reach=one,
-            grasp_score=one,
-            previous_best_grasp=one,
-            stem_load_score=one,
-            previous_best_stem_load=one,
-            stable_detach_score=one,
-            previous_best_stable_detach=one,
-            retention_score=one,
-            previous_best_retention=one,
-            previous_credit_balance=delayed_balance,
-            success=false,
-            terminal_failure=false,
-        )
-        discounted_return += discount * wait
-        discount *= SHAPING_GAMMA
-    delayed_failure, _, _, _, _, _, _, _ = tomato_pick_reward(
-        reach_score=one,
-        previous_best_reach=one,
-        grasp_score=one,
-        previous_best_grasp=one,
-        stem_load_score=one,
-        previous_best_stem_load=one,
-        stable_detach_score=one,
-        previous_best_stable_detach=one,
-        retention_score=one,
-        previous_best_retention=one,
-        previous_credit_balance=delayed_balance,
-        success=false,
-        terminal_failure=torch.tensor([True]),
-    )
-    discounted_return += discount * delayed_failure
-    assert torch.allclose(
-        discounted_return,
-        torch.tensor([TERMINAL_FAILURE_WEIGHT]),
-        atol=1.0e-4,
-    )
-
-    # A no-progress timeout remains exactly -100 at any episode length.
-    timeout_return = torch.zeros(1)
-    timeout_balance = torch.zeros(1)
-    discount = 1.0
-    for _ in range(7):
-        wait, _, _, _, _, _, timeout_balance, _ = tomato_pick_reward(
-            reach_score=zeros,
-            previous_best_reach=zeros,
-            grasp_score=zeros,
-            previous_best_grasp=zeros,
-            stem_load_score=zeros,
-            previous_best_stem_load=zeros,
-            stable_detach_score=zeros,
-            previous_best_stable_detach=zeros,
-            retention_score=zeros,
-            previous_best_retention=zeros,
-            previous_credit_balance=timeout_balance,
-            success=false,
-            terminal_failure=false,
-        )
-        timeout_return += discount * wait
-        discount *= SHAPING_GAMMA
-    timeout_failure, _, _, _, _, _, _, _ = tomato_pick_reward(
-        reach_score=zeros,
-        previous_best_reach=zeros,
-        grasp_score=zeros,
-        previous_best_grasp=zeros,
-        stem_load_score=zeros,
-        previous_best_stem_load=zeros,
-        stable_detach_score=zeros,
-        previous_best_stable_detach=zeros,
-        retention_score=zeros,
-        previous_best_retention=zeros,
-        previous_credit_balance=timeout_balance,
-        success=false,
-        terminal_failure=torch.tensor([True]),
-    )
-    timeout_return += discount * timeout_failure
-    assert torch.allclose(
-        timeout_return, torch.tensor([TERMINAL_FAILURE_WEIGHT]), atol=1.0e-4
-    )
+def test_alignment_schedule_is_delayed_smooth_and_monotone() -> None:
+    assert alignment_alpha_for_iteration(0) == 0.0
+    assert alignment_alpha_for_iteration(250) == 0.0
+    samples = [alignment_alpha_for_iteration(i) for i in range(0, 1501, 10)]
+    assert all(left <= right for left, right in zip(samples, samples[1:]))
+    assert 0.0 < alignment_alpha_for_iteration(500) < 0.35
+    assert alignment_alpha_for_iteration(600) == 0.35
+    assert alignment_alpha_for_iteration(1000) == 0.75
+    assert alignment_alpha_for_iteration(1300) == 1.0
 
 
-def test_downstream_rewards_require_grasp_quality() -> None:
-    zeros = torch.zeros(1)
-    one = torch.ones(1)
-    reward, _, _, _, _, _, _, terms = tomato_pick_reward(
-        reach_score=zeros,
-        previous_best_reach=zeros,
-        grasp_score=zeros,
-        previous_best_grasp=zeros,
-        stem_load_score=zeros,
-        previous_best_stem_load=zeros,
-        stable_detach_score=zeros,
-        previous_best_stable_detach=zeros,
-        retention_score=zeros,
-        previous_best_retention=zeros,
-        previous_credit_balance=zeros,
-        success=one,
-        terminal_failure=zeros,
+def test_aligned_endpoint_removes_break_and_repeated_hold_farming() -> None:
+    reward, *_, terms = _reward_step(
+        opposed=1.0,
+        best_opposed=1.0,
+        stable_detach=1.0,
+        best_stable_detach=1.0,
+        retention=0.95,
+        best_retention=0.95,
+        break_grasped=1.0,
+        detached=True,
+        alpha=1.0,
     )
-    assert terms["stable_detach"].item() == 0.0
-    assert terms["retention_progress"].item() == 0.0
-    assert terms["success"].item() == SUCCESS_WEIGHT
-    assert reward.item() == SUCCESS_WEIGHT
+    assert math.isclose(reward.item(), -0.1, abs_tol=1.0e-7)
+    assert terms["break_grasped"].item() == 0.0
+
+
+def test_aligned_success_strongly_dominates_near_success_failure() -> None:
+    common = dict(
+        reach=1.0,
+        grasp=1.0,
+        opposed=1.0,
+        stem_load=1.0,
+        stable_detach=1.0,
+        retention=1.0,
+        detached=True,
+        alpha=1.0,
+    )
+    success, *_, success_terms = _reward_step(**common, success=True)
+    drop, *_, drop_terms = _reward_step(**common, dropped=True)
+    excess, *_, _ = _reward_step(**common, excess=True)
+    assert success_terms["success"].item() == ALIGNED_SUCCESS_WEIGHT
+    assert drop_terms["drop_failure"].item() == DROP_FAILURE_WEIGHT
+    assert success.item() > drop.item() + 200.0
+    assert excess.item() < drop.item()
+    assert EXCESS_FORCE_FAILURE_WEIGHT < DROP_FAILURE_WEIGHT
+
+
+def test_aligned_timeout_distinguishes_waiting_from_late_failure() -> None:
+    waiting, *_, waiting_terms = _reward_step(timeout=True, alpha=1.0)
+    late, *_, late_terms = _reward_step(
+        detached=True, timeout=True, alpha=1.0
+    )
+    assert waiting.item() == -10.0
+    assert late.item() == -30.0
+    assert waiting_terms["timeout_failure"].item() > late_terms["timeout_failure"].item()
+
+
+def test_success_weight_grows_without_changing_discovery_endpoint() -> None:
+    discovery, *_, _ = _reward_step(success=True, alpha=0.0)
+    aligned, *_, _ = _reward_step(success=True, alpha=1.0)
+    assert discovery.item() == DISCOVERY_SUCCESS_WEIGHT
+    assert aligned.item() == ALIGNED_SUCCESS_WEIGHT

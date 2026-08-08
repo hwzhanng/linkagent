@@ -7,7 +7,7 @@ import logging
 from typing import Any, Mapping
 
 from module.agent import AgentTool, RecoverableToolError
-from module.robotics import ROBOTICS_REGISTRY, MockPickOutcome, build_robotics_bundle
+from module.robotics import ROBOTICS_REGISTRY, build_robotics_bundle
 from module.runtime import RuntimeContext
 from module.skills.tomato_pick import SKILL_REGISTRY, build_policy
 from proto import ArmSide, Observation
@@ -62,20 +62,15 @@ class AgriPickTask(BaseTask):
         perception_port = None
         try:
             bundle = build_robotics_bundle(robotics, side=side)
-            outcome = bundle.world.scenario.outcome
-            perception_options = dict(perception)
-            planner_options = dict(planner)
-            safety_options = dict(safety)
-            if outcome is MockPickOutcome.TARGET_STALE:
-                perception_options["force_stale"] = True
-            if outcome is MockPickOutcome.PLAN_STALE:
-                planner_options["force_stale"] = True
-            if outcome is MockPickOutcome.COLLISION_UNSAFE:
-                safety_options["force_unsafe"] = True
+            overrides = bundle.task_component_overrides()
+            perception_options = {**dict(perception), **dict(overrides.get("perception", {}))}
+            planner_options = {**dict(planner), **dict(overrides.get("planner", {}))}
+            safety_options = {**dict(safety), **dict(overrides.get("safety", {}))}
+            verifier_options = {**dict(verifier), **dict(overrides.get("verifier", {}))}
             perception_port = build_perception(perception_options, clock=bundle.clock)
             planner_port = build_planner(planner_options, clock=bundle.clock)
             safety_port = build_safety(safety_options, clock=bundle.clock)
-            verifier_port = build_verifier(verifier, world=bundle.world)
+            verifier_port = build_verifier(verifier_options, robotics=bundle)
             policy = build_policy(skill)
             self.service = TomatoPickService(
                 robotics=bundle,
@@ -131,7 +126,7 @@ class AgriPickTask(BaseTask):
             options["safety"], label="safety", registry=SAFETY_REGISTRY, injected_names=("clock",)
         )
         validate_component_config(
-            options["verifier"], label="verifier", registry=VERIFIER_REGISTRY, injected_names=("world",)
+            options["verifier"], label="verifier", registry=VERIFIER_REGISTRY, injected_names=("robotics",)
         )
 
     @staticmethod

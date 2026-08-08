@@ -37,8 +37,12 @@ from .hand_synergy import (
 from .policy import (
     MockTomatoPickPolicy,
     SKILL_REGISTRY,
+    TorchExportTomatoPickPolicy,
+    TorchScriptTomatoPickPolicy,
     TomatoPickPolicy,
     build_policy,
+    load_skill_profile,
+    validate_skill_manifest,
 )
 from .runner import PickVerifier, TomatoPickSkillContext, TomatoPickSkillRunner, VerifierSession
 from .supervisor import SupervisedAction, TomatoPickActionSupervisor
@@ -72,6 +76,8 @@ __all__ = [
     "THUMB_SIDE_JOINT_INDEX",
     "THUMB_SIDE_SAFE_RAD",
     "THUMB_TIP_JOINT_INDEX",
+    "TorchExportTomatoPickPolicy",
+    "TorchScriptTomatoPickPolicy",
     "PickVerifier",
     "PolicyManifest",
     "SKILL_REGISTRY",
@@ -86,4 +92,6 @@ __all__ = [
     "VerifierSession",
     "build_policy",
     "g20_synergy_to_joint_targets",
+    "load_skill_profile",
+    "validate_skill_manifest",
 ]

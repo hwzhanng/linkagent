@@ -1,8 +1,9 @@
-"""Run a sequential fixed-seed checkpoint sweep and write its final manifest."""
+"""Run a fixed-seed checkpoint sweep and write its final manifest."""
 
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import json
 import math
@@ -41,7 +42,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--seeds", type=int, nargs="+", default=(17, 42, 2026))
     parser.add_argument("--num-envs", type=int, default=1024)
     parser.add_argument("--steps", type=int, default=400)
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Number of checkpoint evaluations to run concurrently.",
+    )
+    parser.add_argument("--wandb-run-id", required=True)
+    parser.add_argument("--wandb-url", required=True)
     args = parser.parse_args(argv)
+    if args.workers < 1:
+        parser.error("--workers must be at least 1")
 
     run_dir = args.run_dir.expanduser().resolve()
     output_dir = args.output_dir.expanduser().resolve()
@@ -53,6 +64,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     environment["PYTHONPATH"] = os.pathsep.join((str(PROJECT_ROOT), environment.get("PYTHONPATH", "")))
 
     results: list[dict] = []
+    jobs: list[tuple[int, int, Path, Path, Path]] = []
     for iteration in args.iterations:
         checkpoint = run_dir / f"model_{iteration}.pt"
         if not checkpoint.is_file():
@@ -65,44 +77,60 @@ def main(argv: Sequence[str] | None = None) -> int:
                 results.append(result)
                 print(f"[SKIP] model_{iteration} seed {seed} already complete", flush=True)
                 continue
-            command = [
-                str(ISAAC_ENV / "bin" / "python"),
-                str(PROJECT_ROOT / "script" / "evaluate_tomato_checkpoint.py"),
-                "--checkpoint",
-                str(checkpoint),
-                "--output",
-                str(result_path),
-                "--num_envs",
-                str(args.num_envs),
-                "--steps",
-                str(args.steps),
-                "--seed",
-                str(seed),
-                "--viz",
-                "none",
-            ]
-            print(f"[RUN] model_{iteration} seed {seed}", flush=True)
-            with log_path.open("w") as log_file:
-                completed = subprocess.run(
-                    command,
-                    cwd=PROJECT_ROOT,
-                    env=environment,
-                    stdout=log_file,
-                    stderr=subprocess.STDOUT,
-                    check=False,
-                )
-            if completed.returncode != 0 or not result_path.is_file():
-                raise RuntimeError(
-                    f"evaluation failed for model_{iteration}, seed {seed}; see {log_path}"
-                )
-            result = json.loads(result_path.read_text())
-            results.append(result)
-            print(
-                f"[DONE] model_{iteration} seed {seed}: "
-                f"success={result['success_rate']:.4%}, drop={result['drop_rate']:.4%}, "
-                f"episodes={result['completed_episodes']}",
-                flush=True,
+            jobs.append((iteration, seed, checkpoint, result_path, log_path))
+
+    def run_evaluation(job: tuple[int, int, Path, Path, Path]) -> dict:
+        iteration, seed, checkpoint, result_path, log_path = job
+        checkpoint_environment = dict(environment)
+        checkpoint_environment["TOMATO_REWARD_ITERATION_OFFSET"] = str(iteration)
+        command = [
+            str(ISAAC_ENV / "bin" / "python"),
+            str(PROJECT_ROOT / "script" / "evaluate_tomato_checkpoint.py"),
+            "--checkpoint",
+            str(checkpoint),
+            "--output",
+            str(result_path),
+            "--num_envs",
+            str(args.num_envs),
+            "--steps",
+            str(args.steps),
+            "--seed",
+            str(seed),
+            "--viz",
+            "none",
+        ]
+        print(f"[RUN] model_{iteration} seed {seed}", flush=True)
+        with log_path.open("w") as log_file:
+            completed = subprocess.run(
+                command,
+                cwd=PROJECT_ROOT,
+                env=checkpoint_environment,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                check=False,
             )
+        if completed.returncode != 0 or not result_path.is_file():
+            raise RuntimeError(
+                f"evaluation failed for model_{iteration}, seed {seed}; see {log_path}"
+            )
+        result = json.loads(result_path.read_text())
+        print(
+            f"[DONE] model_{iteration} seed {seed}: "
+            f"success={result['success_rate']:.4%}, drop={result['drop_rate']:.4%}, "
+            f"episodes={result['completed_episodes']}",
+            flush=True,
+        )
+        return result
+
+    if args.workers == 1:
+        for job in jobs:
+            results.append(run_evaluation(job))
+    else:
+        print(f"[PARALLEL] workers={args.workers}, pending_jobs={len(jobs)}", flush=True)
+        with ThreadPoolExecutor(max_workers=args.workers) as executor:
+            futures = [executor.submit(run_evaluation, job) for job in jobs]
+            for future in as_completed(futures):
+                results.append(future.result())
 
     summaries: list[dict] = []
     for iteration in args.iterations:
@@ -146,7 +174,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     best_path = Path(best["checkpoint"])
     manifest = {
         "schema_version": 1,
-        "task": "LinkAgent-TomatoPick-Direct-v0",
+        "task": "LinkAgent-TomatoPick-Clean-v5",
         "evaluation": {
             "deterministic_policy": True,
             "full_environment_randomization": True,
@@ -160,14 +188,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         "best_checkpoint": str(best_path),
         "best_checkpoint_sha256": hashlib.sha256(best_path.read_bytes()).hexdigest(),
         "best_summary": best,
-        "wandb_run_id": "pmt88pns",
-        "wandb_url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/pmt88pns",
+        "wandb_run_id": args.wandb_run_id,
+        "wandb_url": args.wandb_url,
     }
     manifest_path = output_dir / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
 
     lines = [
-        "# Tomato minimal-v3 fixed evaluation",
+        "# Tomato Clean-v5 fixed evaluation",
         "",
         f"Best checkpoint: `{best_path}`",
         f"Success: {best['success_rate']:.2%} "

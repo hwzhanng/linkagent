@@ -6,9 +6,10 @@ RealAgent 是一个可运行的单 `TopAgent` 系统：外层 Runtime 管理观�
 
 真实相机、感知模型和真机动作仍未接入；默认 Agent 示例继续使用 mock。第三阶段 C1
 已加入可运行的离线番茄采摘闭环，C2 已实现 Sim 6 中的番茄椭球、可断果梗和
-DirectRLEnv，并完成正式 PPO 训练。当前发布的 `model_1450.pt` 在三个固定种子、23,842
-个 episode 上取得 62.57% 汇总成功率，seed 2026 为 63.65%（约 64%）。C4-O 已加入
-不连接设备的 LinkBot/G20 适配边界。
+DirectRLEnv，并完成 Clean-v5 正式 PPO 训练。当前推荐的 `model_1350.pt` 在三个固定
+种子、26,077 个 episode 上取得 **96.18%** 汇总成功率，最差种子仍为 96.06%；模型、
+训练配置、续训 checkpoint、固定评测证据和可直接加载的推理导出均随仓库发布。C4-O
+已加入不连接设备的 LinkBot/G20 适配边界。
 
 番茄采摘第三阶段已经完成 C0 接口冻结和 C1 离线实现：设备按双臂、每臂 7 关节及
 左右 G20 建模；Skill 使用 114 维部署观测和 7 维“末端残差 + 手部协同量”动作；
@@ -20,14 +21,17 @@ DirectRLEnv，并完成正式 PPO 训练。当前发布的 `model_1450.pt` 在�
 当前正式 minimal-v3 策略使用 66D actor observation、83D privileged critic state 和
 11D action。训练前的旧布局不进入当前 checkpoint 兼容边界。
 
-## PPO model 1450
+## PPO Clean-v5 model 1350
 
-可恢复训练的 checkpoint、精确 resolved config、TensorBoard history、推理导出和固定种子
-评估结果均随仓库发布。模型 SHA-256 为
-`7886845cfe59cac4ce08d787fca36cce40d909110ba3e26fd8e18a81d41e5589`。
+可恢复训练的 checkpoint、精确 resolved config、TensorBoard history、确定性推理导出、
+推理 canary 和固定三种子评估结果均随仓库发布。模型 SHA-256 为
+`c4ca9ac27aaa20806b630496362bcb9154d1e8076605f9d7026b58f719d124d0`。
 
-安装环境、复现约 64% 的 seed 结果以及从 iteration 1450 继续训练的完整命令见
-[`PPO_MODEL1450_REPRODUCTION.md`](./docs/tomato_pick/PPO_MODEL1450_REPRODUCTION.md)。
+安装环境、复现 96.18% 结果以及从 iteration 1350 继续训练的完整命令见
+[`PPO_CLEAN_V5_MODEL1350_REPRODUCTION.md`](./docs/tomato_pick/PPO_CLEAN_V5_MODEL1350_REPRODUCTION.md)。
+旧版 62.57% minimal-v3 基线继续保留在
+[`PPO_MODEL1450_REPRODUCTION.md`](./docs/tomato_pick/PPO_MODEL1450_REPRODUCTION.md)，但不再是
+推荐模型。
 
 ## 快速开始
 

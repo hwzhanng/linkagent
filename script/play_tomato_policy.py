@@ -44,7 +44,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--external_callback",
         "simulation.tomato_pick.isaac.register_task",
         "--task",
-        "LinkAgent-TomatoPick-Direct-v0",
+        "LinkAgent-TomatoPick-Clean-v5",
         "--num_envs",
         str(args.num_envs),
         "--seed",

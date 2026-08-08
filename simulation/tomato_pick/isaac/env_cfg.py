@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import math
+import os
 from pathlib import Path
 
 import isaaclab.sim as sim_utils
@@ -24,6 +26,18 @@ from simulation.tomato_pick.initialization import (
 
 from .assets import randomize_correlated_ellipsoid_geometry
 
+
+def _environment_integer(name: str, default: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    try:
+        value = int(raw)
+    except ValueError as error:
+        raise ValueError(f"{name} must be an integer") from error
+    if str(value) != raw.strip():
+        raise ValueError(f"{name} must be a canonical integer")
+    return value
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 ROBOT_USD = (
@@ -109,10 +123,9 @@ class TomatoPickEnvCfg(DirectRLEnvCfg):
     """One active environment; stages are metrics, never controls."""
 
     episode_length_s = 8.0
-    # The 8 s limit is an explicit unsuccessful task outcome.  It must not be
-    # value-bootstrapped, otherwise discounting makes safe waiting preferable
-    # to an earlier physical attempt.
-    is_finite_horizon = True
+    # Match the proven exploration run: time limits are truncations with value
+    # bootstrap, while success and physical failures are true terminals.
+    is_finite_horizon = False
     decimation = 6
     action_space = ACTION_DIM
     observation_space = OBSERVATION_DIM
@@ -280,14 +293,15 @@ class TomatoPickEnvCfg(DirectRLEnvCfg):
     minimum_initial_clearance_m = PREGRASP_RESET_SPEC.minimum_clearance_m
     stem_visual_height_m = 0.05
     success_hold_steps = 20
-    # Detach credit is delayed until several complete policy steps of stable,
-    # opposed retention.  The final success definition remains 20 steps.
     stable_detach_credit_steps = 3
+    # Match the released 64% run exactly at the discovery front end.  The
+    # 0.10 m replacement shortened the useful approach gradient and failed
+    # the 30-update first-success gate; the recorded run used 0.30 m.
+    reach_distance_scale_m = 0.30
     maximum_retained_distance_m = 0.12
     maximum_retained_relative_speed_m_s = 0.25
     maximum_fingertip_force_n = 15.0
     grasp_full_contact_force_n = 0.60
-    reach_distance_scale_m = 0.30
 
     stem_linear_natural_frequency_rad_s = 45.0
     stem_linear_damping_ratio = 1.0
@@ -296,10 +310,21 @@ class TomatoPickEnvCfg(DirectRLEnvCfg):
     maximum_stem_force_n = 100.0
     maximum_stem_torque_nm = 0.30
     break_force_range_n = (3.0, 7.0)
-    # Physics runs at 120 Hz and the policy at 20 Hz (decimation=6).  Requiring
-    # seven consecutive overloaded substeps (58.3 ms) guarantees the actor one
-    # observation/action opportunity before breakage becomes irreversible.
-    stem_break_persistence_substeps = 7
+    # Keep the discovery physics identical to the released 64% run.  A fixed
+    # three-substep requirement halved early detach/qualified-break discovery
+    # and produced no success by update 29.  Outcome-aligned reward, not a
+    # hidden persistence curriculum, must teach pre-grasp before loading.
+    stem_break_persistence_substeps = _environment_integer(
+        "TOMATO_STEM_BREAK_PERSISTENCE_SUBSTEPS", 1
+    )
+
+    # The reward schedule uses policy steps, not simulator substeps.  A resume
+    # must set TOMATO_REWARD_ITERATION_OFFSET to the checkpoint iteration so
+    # the alignment curriculum cannot silently restart from zero.
+    reward_rollout_steps = 32
+    reward_curriculum_iteration_offset = _environment_integer(
+        "TOMATO_REWARD_ITERATION_OFFSET", 0
+    )
 
     action_delay_steps = (0, 1)
     tactile_force_gain = (0.85, 1.15)

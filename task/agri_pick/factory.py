@@ -6,7 +6,8 @@ from collections.abc import Callable, Mapping
 import inspect
 from typing import Any
 
-from module.robotics import ManualClock, MockPickWorld
+from module.robotics import Clock, RoboticsBundle
+from module.skills.tomato_pick import PickVerifier
 
 from .contracts import MotionSafetyPort, TomatoGraspPlanner, TomatoPerceptionPort
 from .mock_components import (
@@ -14,6 +15,12 @@ from .mock_components import (
     MockPickVerifier,
     MockTomatoGraspPlanner,
     MockTomatoPerceptionPort,
+)
+from .verification import (
+    IndependentPickVerifier,
+    PickEvidenceSource,
+    PickVerifierThresholds,
+    RecordedPickEvidenceSource,
 )
 
 
@@ -26,8 +33,54 @@ PLANNER_REGISTRY: dict[str, Callable[..., TomatoGraspPlanner]] = {
 SAFETY_REGISTRY: dict[str, Callable[..., MotionSafetyPort]] = {
     "mock": MockMotionSafetyPort,
 }
-VERIFIER_REGISTRY: dict[str, Callable[..., MockPickVerifier]] = {
-    "mock": MockPickVerifier,
+def _build_mock_verifier(*, robotics: RoboticsBundle) -> MockPickVerifier:
+    world = robotics.verifier_context().get("mock_world")
+    if world is None:
+        raise TypeError("mock verifier requires a mock_world verifier resource")
+    return MockPickVerifier(world)
+
+
+def _build_independent_verifier(
+    *,
+    robotics: RoboticsBundle,
+    profile_id: str,
+    tactile_calibration_id: str,
+    evidence_file: str | None = None,
+    stable_hold_s: float = 1.0,
+    minimum_contact_fingers: int = 2,
+    minimum_normal_force_n: float = 0.60,
+    maximum_normal_force_n: float = 12.0,
+    maximum_slip_ratio: float = 0.75,
+    hardware_validated: bool = False,
+) -> IndependentPickVerifier:
+    if evidence_file is not None:
+        source: PickEvidenceSource = RecordedPickEvidenceSource(evidence_file)
+    else:
+        candidate = robotics.verifier_context().get("pick_evidence_source")
+        if not isinstance(candidate, PickEvidenceSource):
+            raise TypeError(
+                "independent verifier requires evidence_file or bundle "
+                "pick_evidence_source"
+            )
+        source = candidate
+    return IndependentPickVerifier(
+        source,
+        PickVerifierThresholds(
+            profile_id=profile_id,
+            tactile_calibration_id=tactile_calibration_id,
+            stable_hold_s=stable_hold_s,
+            minimum_contact_fingers=minimum_contact_fingers,
+            minimum_normal_force_n=minimum_normal_force_n,
+            maximum_normal_force_n=maximum_normal_force_n,
+            maximum_slip_ratio=maximum_slip_ratio,
+            hardware_validated=hardware_validated,
+        ),
+    )
+
+
+VERIFIER_REGISTRY: dict[str, Callable[..., PickVerifier]] = {
+    "independent": _build_independent_verifier,
+    "mock": _build_mock_verifier,
 }
 
 
@@ -74,29 +127,37 @@ def _build(
     return builder(**dict(injected), **options)
 
 
-def build_perception(config: Mapping[str, Any], *, clock: ManualClock) -> TomatoPerceptionPort:
+def build_perception(config: Mapping[str, Any], *, clock: Clock) -> TomatoPerceptionPort:
     result = _build(config, label="perception", registry=PERCEPTION_REGISTRY, injected={"clock": clock})
     if not isinstance(result, TomatoPerceptionPort):
         raise TypeError("perception builder returned an invalid port")
     return result
 
 
-def build_planner(config: Mapping[str, Any], *, clock: ManualClock) -> TomatoGraspPlanner:
+def build_planner(config: Mapping[str, Any], *, clock: Clock) -> TomatoGraspPlanner:
     result = _build(config, label="planner", registry=PLANNER_REGISTRY, injected={"clock": clock})
     if not isinstance(result, TomatoGraspPlanner):
         raise TypeError("planner builder returned an invalid port")
     return result
 
 
-def build_safety(config: Mapping[str, Any], *, clock: ManualClock) -> MotionSafetyPort:
+def build_safety(config: Mapping[str, Any], *, clock: Clock) -> MotionSafetyPort:
     result = _build(config, label="safety", registry=SAFETY_REGISTRY, injected={"clock": clock})
     if not isinstance(result, MotionSafetyPort):
         raise TypeError("safety builder returned an invalid port")
     return result
 
 
-def build_verifier(config: Mapping[str, Any], *, world: MockPickWorld) -> MockPickVerifier:
-    return _build(config, label="verifier", registry=VERIFIER_REGISTRY, injected={"world": world})
+def build_verifier(config: Mapping[str, Any], *, robotics: RoboticsBundle) -> PickVerifier:
+    result = _build(
+        config,
+        label="verifier",
+        registry=VERIFIER_REGISTRY,
+        injected={"robotics": robotics},
+    )
+    if not isinstance(result, PickVerifier):
+        raise TypeError("verifier builder returned an invalid PickVerifier")
+    return result
 
 
 __all__ = [

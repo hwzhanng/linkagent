@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from module.robotics import ControlBusyError, MockRoboticsBundle, PoseMoveCommand
+from module.robotics import ControlBusyError, PoseMoveCommand, RoboticsBundle
 from module.skills.tomato_pick import (
     TomatoPickPolicy,
+    PickVerifier,
     TomatoPickSkillContext,
     TomatoPickSkillRunner,
 )
@@ -24,7 +25,6 @@ from proto import (
 )
 
 from .contracts import MotionSafetyPort, TomatoGraspPlanner, TomatoPerceptionPort
-from .mock_components import MockPickVerifier
 from .state import AgriPickState
 
 
@@ -38,25 +38,25 @@ class TomatoPickService:
     def __init__(
         self,
         *,
-        robotics: MockRoboticsBundle,
+        robotics: RoboticsBundle,
         perception: TomatoPerceptionPort,
         planner: TomatoGraspPlanner,
         safety: MotionSafetyPort,
-        verifier: MockPickVerifier,
+        verifier: PickVerifier,
         policy: TomatoPickPolicy,
         default_arm_side: ArmSide,
         max_skill_duration_s: float,
     ) -> None:
-        if not isinstance(robotics, MockRoboticsBundle):
-            raise TypeError("robotics must be a MockRoboticsBundle in C1")
+        if not isinstance(robotics, RoboticsBundle):
+            raise TypeError("robotics must implement RoboticsBundle")
         if not isinstance(perception, TomatoPerceptionPort):
             raise TypeError("perception must implement TomatoPerceptionPort")
         if not isinstance(planner, TomatoGraspPlanner):
             raise TypeError("planner must implement TomatoGraspPlanner")
         if not isinstance(safety, MotionSafetyPort):
             raise TypeError("safety must implement MotionSafetyPort")
-        if not isinstance(verifier, MockPickVerifier):
-            raise TypeError("verifier must be a MockPickVerifier in C1")
+        if not isinstance(verifier, PickVerifier):
+            raise TypeError("verifier must implement PickVerifier")
         if not isinstance(policy, TomatoPickPolicy):
             raise TypeError("policy must implement TomatoPickPolicy")
         if not isinstance(default_arm_side, ArmSide):
@@ -115,7 +115,7 @@ class TomatoPickService:
                 raise TomatoPickServiceError("arm_side must be auto, left, or right") from exc
         if side is not self.default_arm_side:
             raise TomatoPickServiceError(
-                f"C1 mock bundle is configured for {self.default_arm_side.value!r}, not {side.value!r}"
+                f"robotics bundle is configured for {self.default_arm_side.value!r}, not {side.value!r}"
             )
         arm_state = self.robotics.arm.get_state(side)
         hand_state = self.robotics.hand.get_state(side)

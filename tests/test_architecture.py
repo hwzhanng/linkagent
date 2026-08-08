@@ -148,15 +148,21 @@ class ArchitectureBoundaryTests(unittest.TestCase):
         self.assertEqual({"mock"}, set(PERCEPTION_REGISTRY))
         self.assertEqual({"mock"}, set(MANIPULATION_REGISTRY))
         self.assertEqual({"locate_target", "agri_pick"}, set(TASK_REGISTRY))
-        self.assertEqual({"mock"}, set(ROBOTICS_REGISTRY))
+        self.assertEqual(
+            {"mock", "fake_gateway", "linkbot_g20_shadow"},
+            set(ROBOTICS_REGISTRY),
+        )
         self.assertEqual({"mock"}, set(ARM_PORT_REGISTRY))
         self.assertEqual({"mock"}, set(HAND_PORT_REGISTRY))
         self.assertEqual({"mock"}, set(TACTILE_PORT_REGISTRY))
-        self.assertEqual({"mock"}, set(SKILL_REGISTRY))
+        self.assertEqual(
+            {"mock", "profile", "torch_export", "torchscript"},
+            set(SKILL_REGISTRY),
+        )
         self.assertEqual({"mock"}, set(TOMATO_PERCEPTION_REGISTRY))
         self.assertEqual({"mock"}, set(PLANNER_REGISTRY))
         self.assertEqual({"mock"}, set(SAFETY_REGISTRY))
-        self.assertEqual({"mock"}, set(VERIFIER_REGISTRY))
+        self.assertEqual({"mock", "independent"}, set(VERIFIER_REGISTRY))
 
     def test_shipped_config_contains_no_credential_fields(self) -> None:
         secret_names = {

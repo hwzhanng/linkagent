@@ -15,14 +15,19 @@ from .mock import (
     MockTactilePort,
     build_mock_robotics_bundle,
 )
+from .bundle import RoboticsBundle
+from .shadow import build_linkbot_g20_shadow_bundle
+from .fake_gateway import build_fake_gateway_robotics_bundle
 
 
 ARM_PORT_REGISTRY: dict[str, type[MockArmControlPort]] = {"mock": MockArmControlPort}
 HAND_PORT_REGISTRY: dict[str, type[MockHandControlPort]] = {"mock": MockHandControlPort}
 TACTILE_PORT_REGISTRY: dict[str, type[MockTactilePort]] = {"mock": MockTactilePort}
 
-RoboticsBuilder = Callable[..., MockRoboticsBundle]
+RoboticsBuilder = Callable[..., RoboticsBundle]
 ROBOTICS_REGISTRY: dict[str, RoboticsBuilder] = {
+    "fake_gateway": build_fake_gateway_robotics_bundle,
+    "linkbot_g20_shadow": build_linkbot_g20_shadow_bundle,
     "mock": build_mock_robotics_bundle,
 }
 
@@ -31,7 +36,7 @@ def build_robotics_bundle(
     config: Mapping[str, Any],
     *,
     side: ArmSide,
-) -> MockRoboticsBundle:
+) -> RoboticsBundle:
     """Build one reviewed same-side robotics bundle from explicit config."""
 
     if not isinstance(config, Mapping):
@@ -54,8 +59,10 @@ def build_robotics_bundle(
             f"invalid options for robotics type {robotics_type!r}: {exc}"
         ) from exc
     bundle = builder(side=side, **options)
-    if not isinstance(bundle, MockRoboticsBundle):
-        raise TypeError("C1 robotics builder must return MockRoboticsBundle")
+    if not isinstance(bundle, RoboticsBundle):
+        raise TypeError("robotics builder must return a RoboticsBundle")
+    if bundle.side is not side:
+        raise ValueError("robotics builder returned a bundle for the wrong side")
     return bundle
 
 

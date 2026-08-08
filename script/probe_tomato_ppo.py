@@ -1,4 +1,4 @@
-"""Run a deliberately short TensorBoard-only numerical PPO probe."""
+"""Run the Clean-v5 from-scratch PPO numerical gate."""
 
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--external_callback",
         "simulation.tomato_pick.isaac.register_task",
         "--task",
-        "LinkAgent-TomatoPick-Direct-v0",
+        "LinkAgent-TomatoPick-Clean-v5",
         "--num_envs",
         str(args.num_envs),
         "--seed",
@@ -47,7 +47,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--logger",
         "tensorboard",
         "--experiment_name",
-        "tomato_pick_positive_grasp_v5_probe",
+        "tomato_pick_clean_v5_probe",
         "--run_name",
         "numeric_gate",
         "--viz",

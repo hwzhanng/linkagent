@@ -635,6 +635,34 @@ class MockRoboticsBundle:
     tactile: MockTactilePort
     _closed: bool = False
 
+    @property
+    def side(self) -> ArmSide:
+        return self.world.side
+
+    def task_component_overrides(self) -> Mapping[str, Mapping[str, Any]]:
+        outcome = self.world.scenario.outcome
+        return {
+            "perception": (
+                {"force_stale": True}
+                if outcome is MockPickOutcome.TARGET_STALE
+                else {}
+            ),
+            "planner": (
+                {"force_stale": True}
+                if outcome is MockPickOutcome.PLAN_STALE
+                else {}
+            ),
+            "safety": (
+                {"force_unsafe": True}
+                if outcome is MockPickOutcome.COLLISION_UNSAFE
+                else {}
+            ),
+            "verifier": {},
+        }
+
+    def verifier_context(self) -> Mapping[str, Any]:
+        return {"mock_world": self.world}
+
     def close(self) -> None:
         if self._closed:
             return

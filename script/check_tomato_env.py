@@ -208,7 +208,16 @@ def main(argv: Sequence[str] | None = None) -> int:
             env.sim.forward()
             env.scene.update(dt=0.0)
             env._stem_break_event.zero_()
-            env._apply_attachment_wrench()
+            for _ in range(cfg.stem_break_persistence_substeps):
+                # Hold the two counterfactual poses quasi-statically.  The
+                # attachment integrator normally changes fruit velocity after
+                # each substep; resetting it here isolates persistence and
+                # force-direction semantics from free-body acceleration.
+                env._tomato.write_root_velocity_to_sim_index(
+                    root_velocity=torch.zeros((2, 6), device=env.device),
+                    env_ids=selected,
+                )
+                env._apply_attachment_wrench()
             checks["attachment_breaks_under_axial_pull"] = bool(
                 env._stem_detached[pull_env_id].all()
             )

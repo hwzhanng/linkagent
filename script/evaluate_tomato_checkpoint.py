@@ -38,7 +38,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--output", type=Path, required=True)
 parser.add_argument("--steps", type=int, default=600)
 parser.add_argument("--num_envs", type=int, default=1024)
-parser.add_argument("--task", type=str, default="LinkAgent-TomatoPick-Direct-v0")
+parser.add_argument("--task", type=str, default="LinkAgent-TomatoPick-Clean-v5")
 parser.add_argument("--agent", type=str, default="rsl_rl_cfg_entry_point")
 parser.add_argument("--seed", type=int, default=42)
 parser.add_argument("--external_callback", default="simulation.tomato_pick.isaac.register_task")
@@ -103,6 +103,7 @@ def main(
         logged_detach_count = 0.0
         logged_retained_count = 0.0
         logged_hold_sum = 0.0
+        logged_reward_term_sums: dict[str, float] = {}
         raw_action_abs_sum = 0.0
         action_abs_sum = 0.0
         action_sq_sum = 0.0
@@ -143,6 +144,13 @@ def main(
                 logged_detach_count += float(log.get("Metrics/detach_rate", 0.0)) * reset_count
                 logged_retained_count += float(log.get("Metrics/retained_rate", 0.0)) * reset_count
                 logged_hold_sum += float(log.get("Metrics/mean_hold_steps", 0.0)) * reset_count
+                for key, value in log.items():
+                    if key.startswith("Episode_Reward/"):
+                        name = key.removeprefix("Episode_Reward/")
+                        logged_reward_term_sums[name] = (
+                            logged_reward_term_sums.get(name, 0.0)
+                            + float(value) * reset_count
+                        )
 
             step = extras.get("step", {})
             success_events += int(step.get("success_count", 0))
@@ -198,6 +206,10 @@ def main(
             "simulation_steps_per_second": args_cli.steps * args_cli.num_envs / elapsed,
             "logged_success_count": logged_success_count,
             "logged_drop_count": logged_drop_count,
+            "mean_episode_reward_terms": {
+                name: value / logged_reset_count
+                for name, value in sorted(logged_reward_term_sums.items())
+            },
         }
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")

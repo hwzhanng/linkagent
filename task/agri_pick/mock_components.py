@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
-from module.robotics import ManualClock, MockPickOutcome, MockPickWorld
+from module.robotics import Clock, MockPickWorld
 from module.skills.tomato_pick import VerifierSession
 from proto import (
     ArmSide,
@@ -40,13 +40,13 @@ class MockTomatoPerceptionPort:
 
     def __init__(
         self,
-        clock: ManualClock,
+        clock: Clock,
         *,
         model: str = "mock_tomato_detector_v1",
         force_stale: bool = False,
     ) -> None:
-        if not isinstance(clock, ManualClock):
-            raise TypeError("clock must be a ManualClock")
+        if not isinstance(clock, Clock):
+            raise TypeError("clock must implement Clock")
         if not isinstance(model, str) or not model.strip():
             raise ValueError("model must be a non-empty string")
         if not isinstance(force_stale, bool):
@@ -69,7 +69,7 @@ class MockTomatoPerceptionPort:
         except TypeError as exc:
             raise TypeError("observation.metadata.tomatoes must be a list") from exc
         if self._force_stale:
-            self._clock.advance_s(6.0)
+            self._clock.sleep(6.0)
         now = self._clock.monotonic_ns()
         targets: list[TomatoTarget] = []
         for index, value in enumerate(values):
@@ -99,14 +99,14 @@ class MockTomatoGraspPlanner:
 
     def __init__(
         self,
-        clock: ManualClock,
+        clock: Clock,
         *,
         mapping_calibration_id: str = "g20_eigengrasp_5d_v3_thumb_roll_fixed",
         plan_ttl_s: float = 5.0,
         force_stale: bool = False,
     ) -> None:
-        if not isinstance(clock, ManualClock):
-            raise TypeError("clock must be a ManualClock")
+        if not isinstance(clock, Clock):
+            raise TypeError("clock must implement Clock")
         if not isinstance(mapping_calibration_id, str) or not mapping_calibration_id:
             raise ValueError("mapping_calibration_id must be a non-empty string")
         if isinstance(plan_ttl_s, bool) or not isinstance(plan_ttl_s, (int, float)) or plan_ttl_s <= 0:
@@ -168,13 +168,13 @@ class MockMotionSafetyPort:
 
     def __init__(
         self,
-        clock: ManualClock,
+        clock: Clock,
         *,
         force_unsafe: bool = False,
         workspace_xyzxyz_m: tuple[float, ...] = (-1.5, -1.5, 0.0, 1.5, 1.5, 2.0),
     ) -> None:
-        if not isinstance(clock, ManualClock):
-            raise TypeError("clock must be a ManualClock")
+        if not isinstance(clock, Clock):
+            raise TypeError("clock must implement Clock")
         if not isinstance(force_unsafe, bool):
             raise TypeError("force_unsafe must be a bool")
         if len(tuple(workspace_xyzxyz_m)) != 6:

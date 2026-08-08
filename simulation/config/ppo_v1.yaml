@@ -1,8 +1,8 @@
 {
   "schema_version": 3,
-  "training_profile_id": "tomato_pick_minimal_v3",
+  "training_profile_id": "tomato_pick_clean_v5",
   "status": "formal_training_active",
-  "task_id": "LinkAgent-TomatoPick-Direct-v0",
+  "task_id": "LinkAgent-TomatoPick-Clean-v5",
   "runtime_role": "isaac_ppo",
   "trainer": {
     "backend": "rsl_rl",
@@ -13,7 +13,7 @@
     "rollout_steps_per_environment": 32,
     "rollout_source": "fresh_current_policy_only",
     "replay_buffer_enabled": false,
-    "maximum_iterations": 1500,
+    "maximum_iterations": 1800,
     "save_interval_iterations": 50
   },
   "policy": {
@@ -40,13 +40,27 @@
     "timeout_value_bootstrap": true,
     "true_termination_value_bootstrap": false
   },
+  "reward": {
+    "version": "clean_v5",
+    "front_end_progress_always_active": true,
+    "alignment_schedule": [[0, 0.0], [250, 0.0], [600, 0.35], [1000, 0.75], [1300, 1.0]],
+    "interpolation": "smoothstep",
+    "stem_break_persistence_substeps": 1,
+    "reach_distance_scale_m": 0.30,
+    "grasp_score": "second_strongest_fingertip_contact",
+    "retention_predicate": "detached_near_low_relative_speed_no_drop_or_excess",
+    "stable_detach_policy_steps": 3,
+    "resume_iteration_offset_environment_variable": "TOMATO_REWARD_ITERATION_OFFSET"
+  },
   "monitoring": {
     "provider": "wandb",
     "mode": "online",
     "entity": "hwzclementine-china-agricultural-university",
     "project": "PPO",
-    "run_name": "2026-08-07_05-13_tomato_minimal_graspcredit_resume500b_8192",
-    "run_id": "pmt88pns",
+    "run_name": "tomato_pick_clean_v5_from_scratch",
+    "run_id": "1vp9dp6x",
+    "local_run_directory": "/home/descfly/linkagent/wandb/run-20260808_023107-1vp9dp6x",
+    "formal_training_directory": "/home/descfly/linkagent/logs/rsl_rl/tomato_pick_clean_v5/2026-08-08_02-27-24_tomato_pick_clean_v5_from_scratch",
     "credential_environment_variable": "WANDB_API_KEY",
     "credential_store": "user_netrc_or_environment",
     "local_tensorboard_mirror": true
@@ -61,8 +75,8 @@
     "policy_rate_hz": 20
   },
   "output": {
-    "root": "logs/rsl_rl/tomato_pick_minimal_v3",
-    "deployable_root": "artifacts/simulation/tomato_pick_minimal_v3",
+    "root": "logs/rsl_rl/tomato_pick_clean_v5",
+    "deployable_root": "artifacts/simulation/tomato_pick_clean_v5",
     "write_policy_manifest": true,
     "write_resolved_config": true,
     "write_environment_report": true,

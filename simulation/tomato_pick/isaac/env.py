@@ -53,6 +53,8 @@ from module.skills.tomato_pick.hand_synergy import (
     g20_synergy_to_joint_targets,
 )
 from simulation.tomato_pick.reward import (
+    alignment_alpha_for_iteration,
+    break_grasp_quality,
     grasp_contact_score,
     opposed_contact_score,
     tomato_pick_reward,
@@ -99,16 +101,15 @@ class TomatoPickEnv(DirectRLEnv):
     def __init__(self, cfg: TomatoPickEnvCfg, render_mode: str | None = None, **kwargs):
         if (
             not isinstance(cfg.stem_break_persistence_substeps, int)
-            or cfg.stem_break_persistence_substeps <= cfg.decimation
+            or cfg.stem_break_persistence_substeps < 1
         ):
-            raise ValueError(
-                "stem_break_persistence_substeps must exceed one policy interval "
-                "(decimation physics substeps)"
-            )
+            raise ValueError("stem_break_persistence_substeps must be an integer >= 1")
         if not 1 <= cfg.stable_detach_credit_steps < cfg.success_hold_steps:
             raise ValueError(
                 "stable_detach_credit_steps must be in [1, success_hold_steps)"
             )
+        if cfg.reward_rollout_steps < 1 or cfg.reward_curriculum_iteration_offset < 0:
+            raise ValueError("reward curriculum counters must be non-negative")
         super().__init__(cfg, render_mode, **kwargs)
         if not hasattr(self, "_prestartup_fruit_axes_m"):
             raise RuntimeError("fruit geometry prestartup event did not run")
@@ -208,12 +209,12 @@ class TomatoPickEnv(DirectRLEnv):
 
         self._best_reach_score = torch.zeros(self.num_envs, device=self.device)
         self._best_grasp_score = torch.zeros(self.num_envs, device=self.device)
+        self._best_opposed_score = torch.zeros(self.num_envs, device=self.device)
         self._best_stem_load_score = torch.zeros(self.num_envs, device=self.device)
-        self._best_stable_detach_score = torch.zeros(self.num_envs, device=self.device)
-        self._best_retention_score = torch.zeros(self.num_envs, device=self.device)
-        self._recoverable_milestone_credit = torch.zeros(
+        self._best_stable_detach_score = torch.zeros(
             self.num_envs, device=self.device
         )
+        self._best_retention_score = torch.zeros(self.num_envs, device=self.device)
         self._hold_streak = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
         self._success = torch.zeros_like(self._stem_detached)
         self._dropped = torch.zeros_like(self._stem_detached)
@@ -226,15 +227,19 @@ class TomatoPickEnv(DirectRLEnv):
         self._last_reward_terms = {
             name: torch.zeros(self.num_envs, device=self.device)
             for name in (
-                "time_cost",
                 "reach_progress",
                 "grasp_progress",
                 "stem_load_progress",
+                "break_grasped",
+                "opposed_progress",
                 "stable_detach",
                 "retention_progress",
-                "credit_recovery",
+                "time_cost",
                 "success",
-                "terminal_failure",
+                "drop_failure",
+                "excess_force_failure",
+                "out_of_bounds_failure",
+                "timeout_failure",
             )
         }
         self._episode_sums = {
@@ -649,6 +654,32 @@ class TomatoPickEnv(DirectRLEnv):
         palm = self._robot.data.body_pos_w.torch[:, self._ee_body_id]
         return self._reach_score_for(fruit_pose[:, :3], tips, palm, self._fruit_axes_m)
 
+    def _enclosure_score(self) -> torch.Tensor:
+        """Bounded geometric diagnostic retained for visualization audits."""
+
+        fruit_pose = self._tomato.data.root_pose_w.torch
+        tips = self._robot.data.body_pos_w.torch[:, self._fingertip_contact_body_ids]
+        delta = tips - fruit_pose[:, None, :3]
+        fruit_quat = fruit_pose[:, None, 3:7].expand(-1, len(FINGERS), -1)
+        local = quat_apply_inverse(
+            fruit_quat.reshape(-1, 4), delta.reshape(-1, 3)
+        ).reshape(self.num_envs, len(FINGERS), 3)
+        radial = torch.sqrt(
+            torch.square(local / self._fruit_axes_m[:, None, :].clamp_min(1.0e-4)).sum(
+                dim=2
+            )
+        )
+        surface_distance = torch.abs(radial - 1.0) * self._fruit_axes_m.mean(
+            dim=1, keepdim=True
+        )
+        tip_score = torch.exp(-surface_distance / 0.018)
+        closest_three = torch.topk(tip_score, 3, dim=1).values.mean(dim=1)
+        center_error = torch.linalg.vector_norm(
+            tips.mean(dim=1) - fruit_pose[:, :3], dim=1
+        )
+        center_score = torch.exp(-center_error / 0.055)
+        return (0.65 * closest_three + 0.35 * center_score).clamp(0.0, 1.0)
+
     def _hand_collision_clearance_for(
         self,
         fruit_pos: torch.Tensor,
@@ -734,15 +765,17 @@ class TomatoPickEnv(DirectRLEnv):
 
         exact_relative = quat_apply_inverse(
             ee_pose[:, 3:7], fruit_pose[:, :3] - ee_pose[:, :3]
-        )
+        ).clamp(-0.30, 0.30)
+        fruit_linear_velocity = quat_apply_inverse(
+            ee_pose[:, 3:7], self._tomato.data.root_lin_vel_w.torch
+        ).clamp(-2.0, 2.0)
+        fruit_angular_velocity = quat_apply_inverse(
+            ee_pose[:, 3:7], self._tomato.data.root_ang_vel_w.torch
+        ).clamp(-10.0, 10.0)
         fruit_velocity = torch.cat(
             (
-                quat_apply_inverse(
-                    ee_pose[:, 3:7], self._tomato.data.root_lin_vel_w.torch
-                ),
-                quat_apply_inverse(
-                    ee_pose[:, 3:7], self._tomato.data.root_ang_vel_w.torch
-                ),
+                fruit_linear_velocity,
+                fruit_angular_velocity,
             ),
             dim=1,
         )
@@ -755,10 +788,12 @@ class TomatoPickEnv(DirectRLEnv):
             (
                 exact_relative,
                 fruit_velocity,
-                self._last_physical_force_n,
+                self._last_physical_force_n.clamp(
+                    0.0, self.cfg.maximum_fingertip_force_n
+                ),
                 stem_load,
                 self._stem_detached.float().unsqueeze(1),
-                self._fruit_mass_kg.unsqueeze(1),
+                self._fruit_mass_kg.clamp(0.03, 0.50).unsqueeze(1),
             ),
             dim=1,
         )
@@ -790,6 +825,12 @@ class TomatoPickEnv(DirectRLEnv):
         self._dropped = self._stem_detached & (
             distance > self.cfg.maximum_retained_distance_m
         )
+        # Retention is the physical outcome: after detachment the fruit stays
+        # with the hand, moves with it, and is neither dropped nor overloaded.
+        # Do not require two fingertip sensors to remain above threshold on
+        # every 50 ms policy step: a valid grasp may transfer load to the palm
+        # or between fingers.  Two-finger/thumb opposition still gates detach
+        # credit, and aligned stable/hold shaping still multiplies opposition.
         self._retained = (
             self._stem_detached
             & (distance <= self.cfg.maximum_retained_distance_m)
@@ -827,11 +868,11 @@ class TomatoPickEnv(DirectRLEnv):
             & ~self._success
             & ~physical_failure
         )
-        self._terminal_failure = physical_failure | self._timed_out
-        # Timeout is an unsuccessful task outcome, not a value-bootstrap
-        # boundary.  Returning it as terminated closes the old safe-wait path.
-        terminated = self._success | self._terminal_failure
-        truncated = torch.zeros_like(terminated)
+        # Preserve the released run's exploration semantics: a time limit is a
+        # value-bootstrap boundary, while only true task outcomes terminate.
+        self._terminal_failure = physical_failure
+        terminated = self._success | physical_failure
+        truncated = self._timed_out
         self.extras["step"] = {
             "success_count": int(self._success.sum().item()),
             "detached_count": int(self._stem_detached.sum().item()),
@@ -849,9 +890,19 @@ class TomatoPickEnv(DirectRLEnv):
             self._last_physical_force_n,
             full_contact_force_n=self.cfg.grasp_full_contact_force_n,
         )
-        opposed_grasp = opposed_contact_score(
+        opposed = opposed_contact_score(
             self._last_physical_force_n,
             full_contact_force_n=self.cfg.grasp_full_contact_force_n,
+        )
+        break_quality = break_grasp_quality(
+            self._last_physical_force_n,
+            contact_force_n=self.cfg.grasp_full_contact_force_n,
+        )
+        fruit_pos = self._tomato.data.root_pos_w.torch
+        tips = self._robot.data.body_pos_w.torch[:, self._fingertip_contact_body_ids]
+        fruit_in_hand = (
+            torch.linalg.vector_norm(fruit_pos - tips.mean(dim=1), dim=1)
+            <= self.cfg.maximum_retained_distance_m
         )
         stem_load = (
             attachment_load_ratio(
@@ -859,45 +910,64 @@ class TomatoPickEnv(DirectRLEnv):
                 self._grasp_basis_w[:, :, 2],
                 self._break_force_n,
             )
-            * opposed_grasp
+            * opposed
         )
-        stable_detach_score = (
+        stable_detach = (
             self._retained
             & (self._hold_streak >= self.cfg.stable_detach_credit_steps)
-        ).float() * opposed_grasp
-        retention_score = (
+        ).float() * opposed
+        # Physical hold duration is already downstream of a qualified detach.
+        # Reward its new-best duration even when load moves temporarily from a
+        # fingertip sensor to the palm; opposition remains a separate signal.
+        retention = (
             self._hold_streak.float() / float(self.cfg.success_hold_steps)
-        ).clamp(0.0, 1.0) * opposed_grasp
+        ).clamp(0.0, 1.0)
+        learning_iteration = (
+            float(self.cfg.reward_curriculum_iteration_offset)
+            + float(self.common_step_counter) / float(self.cfg.reward_rollout_steps)
+        )
+        alignment_alpha = alignment_alpha_for_iteration(learning_iteration)
         (
             reward,
             next_reach,
             next_grasp,
+            next_opposed,
             next_stem_load,
             next_stable_detach,
             next_retention,
-            next_credit_balance,
             terms,
         ) = tomato_pick_reward(
             reach_score=reach,
             previous_best_reach=self._best_reach_score,
             grasp_score=grasp,
             previous_best_grasp=self._best_grasp_score,
+            opposed_score=opposed,
+            previous_best_opposed=self._best_opposed_score,
             stem_load_score=stem_load,
             previous_best_stem_load=self._best_stem_load_score,
-            stable_detach_score=stable_detach_score,
+            stable_detach_score=stable_detach,
             previous_best_stable_detach=self._best_stable_detach_score,
-            retention_score=retention_score,
+            retention_score=retention,
             previous_best_retention=self._best_retention_score,
-            previous_credit_balance=self._recoverable_milestone_credit,
+            break_grasped_score=(
+                self._stem_break_event.float()
+                * fruit_in_hand.float()
+                * break_quality
+            ),
             success=self._success,
-            terminal_failure=self._terminal_failure,
+            dropped=self._dropped,
+            excess_force=self._excess_force,
+            out_of_bounds=self._out_of_bounds,
+            timed_out=self._timed_out,
+            stem_detached=self._stem_detached,
+            alignment_alpha=alignment_alpha,
         )
         self._best_reach_score.copy_(next_reach)
         self._best_grasp_score.copy_(next_grasp)
+        self._best_opposed_score.copy_(next_opposed)
         self._best_stem_load_score.copy_(next_stem_load)
         self._best_stable_detach_score.copy_(next_stable_detach)
         self._best_retention_score.copy_(next_retention)
-        self._recoverable_milestone_credit.copy_(next_credit_balance)
         for name, value in terms.items():
             self._last_reward_terms[name].copy_(value)
             self._episode_sums[name] += value
@@ -905,6 +975,8 @@ class TomatoPickEnv(DirectRLEnv):
         self._episode_sums["contact"] += (
             self._last_physical_force_n.amax(dim=1) >= 0.6
         ).float()
+        self.extras.setdefault("step", {})["reward_alignment_alpha"] = alignment_alpha
+        self.extras["step"]["reward_learning_iteration"] = learning_iteration
         if self.cfg.strict_runtime_checks and not bool(torch.isfinite(reward).all()):
             raise RuntimeError("reward contains NaN or Inf")
         return reward
@@ -1130,10 +1202,10 @@ class TomatoPickEnv(DirectRLEnv):
             self._fruit_axes_m[env_ids],
         )
         self._best_grasp_score[env_ids] = 0.0
+        self._best_opposed_score[env_ids] = 0.0
         self._best_stem_load_score[env_ids] = 0.0
         self._best_stable_detach_score[env_ids] = 0.0
         self._best_retention_score[env_ids] = 0.0
-        self._recoverable_milestone_credit[env_ids] = 0.0
         self._hold_streak[env_ids] = 0
         self._success[env_ids] = False
         self._dropped[env_ids] = False
@@ -1151,9 +1223,8 @@ class TomatoPickEnv(DirectRLEnv):
         palm: torch.Tensor,
         fruit_axes_m: torch.Tensor,
     ) -> torch.Tensor:
-        # DextrAH/DexSuite-style hand-object distance: every fingertip and the
-        # palm must approach the fruit.  Subtracting the fruit radius turns the
-        # center distance into a conservative surface distance.
+        """Score approach of the palm and every fingertip to the fruit."""
+
         hand_points = torch.cat((palm.unsqueeze(1), tips), dim=1)
         center_distance = torch.linalg.vector_norm(
             hand_points - fruit_pos.unsqueeze(1), dim=2
@@ -1165,6 +1236,23 @@ class TomatoPickEnv(DirectRLEnv):
         return 1.0 - torch.tanh(
             furthest_point / self.cfg.reach_distance_scale_m
         )
+
+    @staticmethod
+    def _enclosure_score_for(
+        fruit_pos: torch.Tensor,
+        tips: torch.Tensor,
+        fruit_axes_m: torch.Tensor,
+    ) -> torch.Tensor:
+        """Reset-time enclosure approximation used by the released run."""
+
+        distance = torch.linalg.vector_norm(tips - fruit_pos.unsqueeze(1), dim=2)
+        surface = torch.abs(distance - fruit_axes_m.mean(dim=1, keepdim=True))
+        tip_score = torch.exp(-surface / 0.018)
+        closest = torch.topk(tip_score, 3, dim=1).values.mean(dim=1)
+        center = torch.exp(
+            -torch.linalg.vector_norm(tips.mean(dim=1) - fruit_pos, dim=1) / 0.055
+        )
+        return (0.65 * closest + 0.35 * center).clamp(0.0, 1.0)
 
     def _move_stem_visual(
         self,

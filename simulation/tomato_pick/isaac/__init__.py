@@ -6,8 +6,8 @@ import sys
 
 import gymnasium as gym
 
-TASK_ID = "LinkAgent-TomatoPick-Direct-v0"
-IMPLEMENTATION_STATUS = "eigengrasp_11d_direct_rl_env_ready_for_formal_training"
+TASK_ID = "LinkAgent-TomatoPick-Clean-v5"
+IMPLEMENTATION_STATUS = "clean_v5_curriculum_reward_ready_for_gate"
 
 
 def register_task() -> list[str]:
@@ -21,18 +21,6 @@ def register_task() -> list[str]:
             kwargs={
                 "env_cfg_entry_point": f"{__name__}.env_cfg:TomatoPickEnvCfg",
                 "rsl_rl_cfg_entry_point": f"{__name__}.agents.rsl_rl_ppo_cfg:TomatoPickPPORunnerCfg",
-                "rsl_rl_finetune_cfg_entry_point": (
-                    f"{__name__}.agents.rsl_rl_finetune_ppo_cfg:"
-                    "TomatoPickFineTunePPORunnerCfg"
-                ),
-                "rsl_rl_recurrent_cfg_entry_point": (
-                    f"{__name__}.agents.rsl_rl_recurrent_ppo_cfg:"
-                    "TomatoPickRecurrentPPORunnerCfg"
-                ),
-                "rsl_rl_residual_cfg_entry_point": (
-                    f"{__name__}.agents.rsl_rl_residual_lstm_ppo_cfg:"
-                    "TomatoPickResidualLSTMRunnerCfg"
-                ),
             },
         )
     return list(sys.argv[1:])
