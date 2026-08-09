@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>番茄采摘 · 5D 灵巧手调参器</title>
+    <link rel="stylesheet" href="/src/style.css?v=11" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/node_modules/three/build/three.module.js",
+          "three/addons/": "/node_modules/three/examples/jsm/",
+          "three/examples/jsm/": "/node_modules/three/examples/jsm/",
+          "urdf-loader": "/node_modules/urdf-loader/src/URDFLoader.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">TOMATO PICK · G20 RIGHT HAND</div>
+          <h1>5D 灵巧手形状调参器</h1>
+          <p>正式右手 URDF · 当前 5D 映射为初始值 · 不连接实机</p>
+        </div>
+        <div class="status-cluster">
+          <span id="connection-dot" class="status-dot loading"></span>
+          <div>
+            <strong id="status-title">正在加载手部资产</strong>
+            <small id="status-detail">等待 URDF 与 5D 映射</small>
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <div class="viewport-card">
+          <div id="viewport" class="viewport" aria-label="右手 URDF 三维视图"></div>
+          <div class="viewport-tools">
+            <button id="fit-view" class="icon-button" type="button">适配视图</button>
+            <button id="palm-view" class="icon-button" type="button">掌心视图</button>
+            <button id="side-view" class="icon-button" type="button">侧视图</button>
+            <label class="toggle"><input id="auto-rotate" type="checkbox" /> 自动旋转</label>
+            <label class="toggle"><input id="show-axes" type="checkbox" /> 坐标轴</label>
+          </div>
+          <div class="viewport-hint">左键旋转 · 右键平移 · 滚轮缩放</div>
+          <div id="loading-overlay" class="loading-overlay">
+            <div class="spinner"></div>
+            <span>正在解析正式右手 URDF…</span>
+          </div>
+        </div>
+
+        <aside class="control-panel">
+          <section class="panel-section primary-section">
+            <div class="section-heading">
+              <div>
+                <span class="section-kicker">POLICY CONTROL</span>
+                <h2>5D 主控制</h2>
+              </div>
+              <button id="reset-synergy" class="text-button" type="button">重置当前姿态</button>
+            </div>
+            <p class="section-copy">范围均为 −1 到 +1。0 对应当前策略的预抓取中心，不是机械零位。</p>
+            <div class="pose-switcher">
+              <label for="pose-anchor">
+                <span>代表姿态</span>
+                <select id="pose-anchor" aria-label="切换5D代表姿态"></select>
+              </label>
+              <div class="pose-switcher-footer">
+                <small id="pose-status">每个姿态的调整会分别保留</small>
+                <button id="load-latest" class="text-button" type="button">加载上次保存</button>
+              </div>
+            </div>
+            <div class="thumb-root-section">
+              <div class="thumb-root-heading">
+                <span><b>拇指根双关节</b><small>独立覆盖当前5D输出</small></span>
+                <span>rad / deg</span>
+              </div>
+              <div id="thumb-root-controls" class="thumb-root-stack"></div>
+            </div>
+            <div id="synergy-controls" class="slider-stack"></div>
+          </section>
+
+          <section class="panel-section metrics-section">
+            <div class="metric"><span>主动关节</span><strong>16</strong></div>
+            <div class="metric"><span>Mimic 从动</span><strong>5</strong></div>
+            <div class="metric"><span>手部 Link</span><strong>27</strong></div>
+            <div class="metric"><span>关节覆盖</span><strong id="joint-coverage">—</strong></div>
+          </section>
+
+          <details class="panel-section advanced-section">
+            <summary>
+              <span><b>底层关节角</b><small>可单独覆盖5D输出</small></span>
+              <span id="override-count" class="pill">0 覆盖</span>
+            </summary>
+            <div class="advanced-toolbar">
+              <span>单位：rad / deg</span>
+              <button id="clear-overrides" class="text-button" type="button">清除全部覆盖</button>
+            </div>
+            <div id="joint-controls" class="joint-stack"></div>
+          </details>
+
+          <section class="panel-section export-section">
+            <div class="section-heading compact">
+              <div>
+                <span class="section-kicker">DRAFT OUTPUT</span>
+                <h2>保存调参结果</h2>
+              </div>
+            </div>
+            <p class="section-copy">只生成草案，不会修改训练或仿真配置。</p>
+            <div class="button-grid">
+              <button id="copy-json" class="secondary-button" type="button">复制 JSON</button>
+              <button id="download-json" class="secondary-button" type="button">下载 JSON</button>
+              <button id="save-draft" class="primary-button" type="button">保存到项目</button>
+            </div>
+            <output id="save-result" class="save-result"></output>
+          </section>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js?v=11"></script>
+  </body>
+</html>

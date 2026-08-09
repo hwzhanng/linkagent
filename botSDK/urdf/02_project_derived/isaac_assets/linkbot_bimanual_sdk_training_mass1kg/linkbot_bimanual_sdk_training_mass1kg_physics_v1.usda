@@ -1,0 +1,953 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "URDF USD Converter v0.1.3"
+    }
+    defaultPrim = "linkbot_bimanual_sdk"
+    doc = """Generated from Composed Stage of root layer /tmp/tmpnaecxpa6/linkbot_bimanual_sdk.usdc
+
+
+Generated from Composed Stage of root layer /tmp/urdf_import_linkbot_bimanual_sdk_description_f7ppm1am/usdex_linkbot_bimanual_sdk_description/linkbot_bimanual_sdk.usdc
+
+
+Generated from Composed Stage of root layer /tmp/urdf_import_linkbot_bimanual_sdk_description_f7ppm1am/temp_linkbot_bimanual_sdk_description/linkbot_bimanual_sdk_description.usd
+
+
+Generated from Composed Stage of root layer /tmp/linkbot_isaac_180_final2.BabK02/linkbot_bimanual_sdk_description/payloads/base.usd
+"""
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "linkbot_bimanual_sdk" (
+    customData = {
+        int physicsV1AdjacentPairsPerRobot = 54
+        int physicsV1EnabledPairsPerRobot = 59
+        int physicsV1ExpectedHandContactBodyCount = 56
+        int physicsV1FilteredPairsPerRobot = 2426
+        int physicsV1HandMaterialBodyCount = 54
+        string physicsV1HandMaterialPath = "/linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad"
+        string physicsV1HandMaterialPolicy = "both_hands_parent_binding_baked"
+        int physicsV1OutsideSolveContactDisabledBodyCount = 59
+        int physicsV1PassiveMimicCount = 5
+        string physicsV1PassiveMimicPolicy = "right_hand_native_physx_baked"
+        string physicsV1PassiveMimicSha256 = "8f225bf5c8f0244891cc497c8128abc8b8817fda7bd0fe860b08bf6cbf3b87e3"
+        string physicsV1SelfCollisionMatrixSha256 = "16653f7ed1d19e6b6bf0a5e25b74ad57c584c74eb548e8af18f3b2a473cd5755"
+        string physicsV1SelfCollisionPolicy = "right_distal_envelope_and_palm_only"
+        string physicsV1SelfCollisionRepresentation = "distal_envelope_filtered_pairs_outside_solve_contact_disabled_v2"
+        string physicsV1SourceUsdSha256 = "e4b190443b3b9aedf68826ce16e007737ecd4ee487321ded2c265c2e5a88a097"
+        int physicsV1StoredActiveHandFilteredPairCount = 7
+    }
+    prepend references = @./payloads/base.usda@
+    variants = {
+        string Physics = "physx"
+    }
+    append variantSets = "Physics"
+)
+{
+    over "Geometry" (
+        prepend apiSchemas = ["PhysxArticulationAPI"]
+    )
+    {
+        bool physxArticulation:enabledSelfCollisions = 1
+
+        over "base_link" (
+            prepend apiSchemas = ["PhysxRigidBodyAPI"]
+        )
+        {
+            custom bool physxRigidBody:solveContact = 0
+
+            over "L1_Link" (
+                prepend apiSchemas = ["PhysxRigidBodyAPI"]
+            )
+            {
+                custom bool physxRigidBody:solveContact = 0
+
+                over "L2_Link" (
+                    prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                )
+                {
+                    custom bool physxRigidBody:solveContact = 0
+
+                    over "L3_Link" (
+                        prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                    )
+                    {
+                        custom bool physxRigidBody:solveContact = 0
+
+                        over "L4_Link" (
+                            prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                        )
+                        {
+                            custom bool physxRigidBody:solveContact = 0
+
+                            over "L5_Link" (
+                                prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                            )
+                            {
+                                custom bool physxRigidBody:solveContact = 0
+
+                                over "L6_Link" (
+                                    prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                                )
+                                {
+                                    custom bool physxRigidBody:solveContact = 0
+
+                                    over "L7_Link" (
+                                        prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                                    )
+                                    {
+                                        custom bool physxRigidBody:solveContact = 0
+
+                                        over "L8_Link" (
+                                            prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                                        )
+                                        {
+                                            float3 physics:diagonalInertia = (0.000004211875, 0.000004211875, 0.0000084187495)
+                                            float physics:mass = 0.03
+                                            custom bool physxRigidBody:solveContact = 0
+
+                                            over "left_hand_base_link" (
+                                                prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                            )
+                                            {
+                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                    bindMaterialAs = "strongerThanDescendants"
+                                                )
+                                                float3 physics:diagonalInertia = (0.0005715738, 0.0011276307, 0.0015628542)
+                                                float physics:mass = 0.55
+                                                custom bool physxRigidBody:solveContact = 0
+
+                                                over "left_hand_thumb_link0" (
+                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                )
+                                                {
+                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                        bindMaterialAs = "strongerThanDescendants"
+                                                    )
+                                                    float3 physics:diagonalInertia = (0.000004517917, 0.000006982856, 0.000010652458)
+                                                    float physics:mass = 0.028
+                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                    over "left_hand_thumb_link1" (
+                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                    )
+                                                    {
+                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                            bindMaterialAs = "strongerThanDescendants"
+                                                        )
+                                                        float3 physics:diagonalInertia = (0.0000012451378, 0.0000025770564, 0.0000032458577)
+                                                        float physics:mass = 0.02
+                                                        custom bool physxRigidBody:solveContact = 0
+
+                                                        over "left_hand_thumb_link2" (
+                                                            prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                        )
+                                                        {
+                                                            rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                bindMaterialAs = "strongerThanDescendants"
+                                                            )
+                                                            float3 physics:diagonalInertia = (0.0000034426394, 0.00001162932, 0.000013769185)
+                                                            float physics:mass = 0.034
+                                                            custom bool physxRigidBody:solveContact = 0
+
+                                                            over "left_hand_thumb_link3" (
+                                                                prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                            )
+                                                            {
+                                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                    bindMaterialAs = "strongerThanDescendants"
+                                                                )
+                                                                float3 physics:diagonalInertia = (8.4782477e-7, 0.0000018948122, 0.000002406926)
+                                                                float physics:mass = 0.02
+                                                                custom bool physxRigidBody:solveContact = 0
+
+                                                                over "left_hand_thumb_link4" (
+                                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                                )
+                                                                {
+                                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                        bindMaterialAs = "strongerThanDescendants"
+                                                                    )
+                                                                    float3 physics:diagonalInertia = (6.227353e-7, 0.0000011095634, 0.0000013117925)
+                                                                    float physics:mass = 0.018
+                                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                                    over "left_hand_thumb_link5" (
+                                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                                    )
+                                                                    {
+                                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                            bindMaterialAs = "strongerThanDescendants"
+                                                                        )
+                                                                        float3 physics:diagonalInertia = (2.5e-7, 2.5e-7, 2.5e-7)
+                                                                        float physics:mass = 0.01
+                                                                        custom bool physxRigidBody:solveContact = 0
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "left_hand_index_link0" (
+                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                )
+                                                {
+                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                        bindMaterialAs = "strongerThanDescendants"
+                                                    )
+                                                    float3 physics:diagonalInertia = (3.4503284e-7, 4.5056066e-7, 6.0182634e-7)
+                                                    float physics:mass = 0.012
+                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                    over "left_hand_index_link1" (
+                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                    )
+                                                    {
+                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                            bindMaterialAs = "strongerThanDescendants"
+                                                        )
+                                                        float3 physics:diagonalInertia = (7.2467174e-7, 0.0000037250293, 0.0000037761204)
+                                                        float physics:mass = 0.024
+                                                        custom bool physxRigidBody:solveContact = 0
+
+                                                        over "left_hand_index_link2" (
+                                                            prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                        )
+                                                        {
+                                                            rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                bindMaterialAs = "strongerThanDescendants"
+                                                            )
+                                                            float3 physics:diagonalInertia = (7.276529e-7, 0.0000013705048, 0.0000017865756)
+                                                            float physics:mass = 0.018
+                                                            custom bool physxRigidBody:solveContact = 0
+
+                                                            over "left_hand_index_link3" (
+                                                                prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                            )
+                                                            {
+                                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                    bindMaterialAs = "strongerThanDescendants"
+                                                                )
+                                                                float3 physics:diagonalInertia = (4.01426e-7, 0.000001088494, 0.000001225434)
+                                                                float physics:mass = 0.016
+                                                                custom bool physxRigidBody:solveContact = 0
+
+                                                                over "left_hand_index_link4" (
+                                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                                )
+                                                                {
+                                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                        bindMaterialAs = "strongerThanDescendants"
+                                                                    )
+                                                                    float3 physics:diagonalInertia = (2.5e-7, 2.5e-7, 2.5e-7)
+                                                                    float physics:mass = 0.01
+                                                                    custom bool physxRigidBody:solveContact = 0
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "left_hand_middle_link0" (
+                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                )
+                                                {
+                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                        bindMaterialAs = "strongerThanDescendants"
+                                                    )
+                                                    float3 physics:diagonalInertia = (3.4503284e-7, 4.5056066e-7, 6.0182634e-7)
+                                                    float physics:mass = 0.012
+                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                    over "left_hand_middle_link1" (
+                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                    )
+                                                    {
+                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                            bindMaterialAs = "strongerThanDescendants"
+                                                        )
+                                                        float3 physics:diagonalInertia = (7.2467174e-7, 0.0000037250293, 0.0000037761204)
+                                                        float physics:mass = 0.024
+                                                        custom bool physxRigidBody:solveContact = 0
+
+                                                        over "left_hand_middle_link2" (
+                                                            prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                        )
+                                                        {
+                                                            rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                bindMaterialAs = "strongerThanDescendants"
+                                                            )
+                                                            float3 physics:diagonalInertia = (7.276529e-7, 0.0000013705048, 0.0000017865756)
+                                                            float physics:mass = 0.018
+                                                            custom bool physxRigidBody:solveContact = 0
+
+                                                            over "left_hand_middle_link3" (
+                                                                prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                            )
+                                                            {
+                                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                    bindMaterialAs = "strongerThanDescendants"
+                                                                )
+                                                                float3 physics:diagonalInertia = (4.01426e-7, 0.000001088494, 0.000001225434)
+                                                                float physics:mass = 0.016
+                                                                custom bool physxRigidBody:solveContact = 0
+
+                                                                over "left_hand_middle_link4" (
+                                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                                )
+                                                                {
+                                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                        bindMaterialAs = "strongerThanDescendants"
+                                                                    )
+                                                                    float3 physics:diagonalInertia = (2.5e-7, 2.5e-7, 2.5e-7)
+                                                                    float physics:mass = 0.01
+                                                                    custom bool physxRigidBody:solveContact = 0
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "left_hand_ring_link0" (
+                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                )
+                                                {
+                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                        bindMaterialAs = "strongerThanDescendants"
+                                                    )
+                                                    float3 physics:diagonalInertia = (3.4503284e-7, 4.5056066e-7, 6.0182634e-7)
+                                                    float physics:mass = 0.012
+                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                    over "left_hand_ring_link1" (
+                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                    )
+                                                    {
+                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                            bindMaterialAs = "strongerThanDescendants"
+                                                        )
+                                                        float3 physics:diagonalInertia = (7.2467174e-7, 0.0000037250293, 0.0000037761204)
+                                                        float physics:mass = 0.024
+                                                        custom bool physxRigidBody:solveContact = 0
+
+                                                        over "left_hand_ring_link2" (
+                                                            prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                        )
+                                                        {
+                                                            rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                bindMaterialAs = "strongerThanDescendants"
+                                                            )
+                                                            float3 physics:diagonalInertia = (7.276529e-7, 0.0000013705048, 0.0000017865756)
+                                                            float physics:mass = 0.018
+                                                            custom bool physxRigidBody:solveContact = 0
+
+                                                            over "left_hand_ring_link3" (
+                                                                prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                            )
+                                                            {
+                                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                    bindMaterialAs = "strongerThanDescendants"
+                                                                )
+                                                                float3 physics:diagonalInertia = (4.01426e-7, 0.000001088494, 0.000001225434)
+                                                                float physics:mass = 0.016
+                                                                custom bool physxRigidBody:solveContact = 0
+
+                                                                over "left_hand_ring_link4" (
+                                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                                )
+                                                                {
+                                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                        bindMaterialAs = "strongerThanDescendants"
+                                                                    )
+                                                                    float3 physics:diagonalInertia = (2.5e-7, 2.5e-7, 2.5e-7)
+                                                                    float physics:mass = 0.01
+                                                                    custom bool physxRigidBody:solveContact = 0
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "left_hand_little_link0" (
+                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                )
+                                                {
+                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                        bindMaterialAs = "strongerThanDescendants"
+                                                    )
+                                                    float3 physics:diagonalInertia = (3.4503284e-7, 4.5056066e-7, 6.0182634e-7)
+                                                    float physics:mass = 0.012
+                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                    over "left_hand_little_link1" (
+                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                    )
+                                                    {
+                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                            bindMaterialAs = "strongerThanDescendants"
+                                                        )
+                                                        float3 physics:diagonalInertia = (7.2467174e-7, 0.0000037250293, 0.0000037761204)
+                                                        float physics:mass = 0.024
+                                                        custom bool physxRigidBody:solveContact = 0
+
+                                                        over "left_hand_little_link2" (
+                                                            prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                        )
+                                                        {
+                                                            rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                bindMaterialAs = "strongerThanDescendants"
+                                                            )
+                                                            float3 physics:diagonalInertia = (7.276529e-7, 0.0000013705048, 0.0000017865756)
+                                                            float physics:mass = 0.018
+                                                            custom bool physxRigidBody:solveContact = 0
+
+                                                            over "left_hand_little_link3" (
+                                                                prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                            )
+                                                            {
+                                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                    bindMaterialAs = "strongerThanDescendants"
+                                                                )
+                                                                float3 physics:diagonalInertia = (4.01426e-7, 0.000001088494, 0.000001225434)
+                                                                float physics:mass = 0.016
+                                                                custom bool physxRigidBody:solveContact = 0
+
+                                                                over "left_hand_little_link4" (
+                                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                                )
+                                                                {
+                                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                        bindMaterialAs = "strongerThanDescendants"
+                                                                    )
+                                                                    float3 physics:diagonalInertia = (2.5e-7, 2.5e-7, 2.5e-7)
+                                                                    float physics:mass = 0.01
+                                                                    custom bool physxRigidBody:solveContact = 0
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            over "R1_Link" (
+                prepend apiSchemas = ["PhysxRigidBodyAPI"]
+            )
+            {
+                custom bool physxRigidBody:solveContact = 0
+
+                over "R2_Link" (
+                    prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                )
+                {
+                    custom bool physxRigidBody:solveContact = 0
+
+                    over "R3_Link" (
+                        prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                    )
+                    {
+                        custom bool physxRigidBody:solveContact = 0
+
+                        over "R4_Link" (
+                            prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                        )
+                        {
+                            custom bool physxRigidBody:solveContact = 0
+
+                            over "R5_Link" (
+                                prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                            )
+                            {
+                                custom bool physxRigidBody:solveContact = 0
+
+                                over "R6_Link" (
+                                    prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                                )
+                                {
+                                    custom bool physxRigidBody:solveContact = 0
+
+                                    over "R7_Link" (
+                                        prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                                    )
+                                    {
+                                        custom bool physxRigidBody:solveContact = 0
+
+                                        over "R8_Link" (
+                                            prepend apiSchemas = ["PhysxRigidBodyAPI"]
+                                        )
+                                        {
+                                            float3 physics:diagonalInertia = (0.000004211875, 0.000004211875, 0.0000084187495)
+                                            float physics:mass = 0.03
+                                            custom bool physxRigidBody:solveContact = 0
+
+                                            over "right_hand_base_link" (
+                                                prepend apiSchemas = ["MaterialBindingAPI"]
+                                            )
+                                            {
+                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                    bindMaterialAs = "strongerThanDescendants"
+                                                )
+                                                float3 physics:diagonalInertia = (0.00057118, 0.0011282521, 0.0015630766)
+                                                float physics:mass = 0.55
+
+                                                over "right_hand_thumb_link0" (
+                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                )
+                                                {
+                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                        bindMaterialAs = "strongerThanDescendants"
+                                                    )
+                                                    float3 physics:diagonalInertia = (0.000004341574, 0.0000065454774, 0.0000100275065)
+                                                    float physics:mass = 0.028
+                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                    over "right_hand_thumb_link1" (
+                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                    )
+                                                    {
+                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                            bindMaterialAs = "strongerThanDescendants"
+                                                        )
+                                                        float3 physics:diagonalInertia = (0.00000124529, 0.000002577427, 0.0000032463638)
+                                                        float physics:mass = 0.02
+                                                        custom bool physxRigidBody:solveContact = 0
+
+                                                        over "right_hand_thumb_link2" (
+                                                            prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                        )
+                                                        {
+                                                            rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                bindMaterialAs = "strongerThanDescendants"
+                                                            )
+                                                            float3 physics:diagonalInertia = (0.0000034428322, 0.00001162632, 0.000013766382)
+                                                            float physics:mass = 0.034
+                                                            custom bool physxRigidBody:solveContact = 0
+
+                                                            over "right_hand_thumb_link3" (
+                                                                prepend apiSchemas = ["PhysicsFilteredPairsAPI", "MaterialBindingAPI"]
+                                                            )
+                                                            {
+                                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                    bindMaterialAs = "strongerThanDescendants"
+                                                                )
+                                                                float3 physics:diagonalInertia = (8.47819e-7, 0.0000018948077, 0.0000024069143)
+                                                                prepend rel physics:filteredPairs = [
+                                                                    </linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1/right_hand_thumb_link2/right_hand_thumb_link3/right_hand_thumb_link4>,
+                                                                    </linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1/right_hand_thumb_link2/right_hand_thumb_link3/right_hand_thumb_link4/right_hand_thumb_link5>,
+                                                                ]
+                                                                float physics:mass = 0.02
+
+                                                                over "right_hand_thumb_link4" (
+                                                                    prepend apiSchemas = ["PhysicsFilteredPairsAPI", "MaterialBindingAPI"]
+                                                                )
+                                                                {
+                                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                        bindMaterialAs = "strongerThanDescendants"
+                                                                    )
+                                                                    float3 physics:diagonalInertia = (6.227348e-7, 0.0000011095609, 0.0000013117897)
+                                                                    prepend rel physics:filteredPairs = </linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_thumb_link0/right_hand_thumb_link1/right_hand_thumb_link2/right_hand_thumb_link3/right_hand_thumb_link4/right_hand_thumb_link5>
+                                                                    float physics:mass = 0.018
+
+                                                                    over "right_hand_thumb_link5" (
+                                                                        prepend apiSchemas = ["MaterialBindingAPI"]
+                                                                    )
+                                                                    {
+                                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                            bindMaterialAs = "strongerThanDescendants"
+                                                                        )
+                                                                        float3 physics:diagonalInertia = (2.5e-7, 2.5e-7, 2.5e-7)
+                                                                        float physics:mass = 0.01
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "right_hand_index_link0" (
+                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                )
+                                                {
+                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                        bindMaterialAs = "strongerThanDescendants"
+                                                    )
+                                                    float3 physics:diagonalInertia = (3.4499914e-7, 4.5055776e-7, 6.017906e-7)
+                                                    float physics:mass = 0.012
+                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                    over "right_hand_index_link1" (
+                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                    )
+                                                    {
+                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                            bindMaterialAs = "strongerThanDescendants"
+                                                        )
+                                                        float3 physics:diagonalInertia = (7.246752e-7, 0.0000037250359, 0.0000037761315)
+                                                        float physics:mass = 0.024
+                                                        custom bool physxRigidBody:solveContact = 0
+
+                                                        over "right_hand_index_link2" (
+                                                            prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                        )
+                                                        {
+                                                            rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                bindMaterialAs = "strongerThanDescendants"
+                                                            )
+                                                            float3 physics:diagonalInertia = (7.2764936e-7, 0.0000013704969, 0.0000017865507)
+                                                            float physics:mass = 0.018
+                                                            custom bool physxRigidBody:solveContact = 0
+
+                                                            over "right_hand_index_link3" (
+                                                                prepend apiSchemas = ["PhysicsFilteredPairsAPI", "MaterialBindingAPI"]
+                                                            )
+                                                            {
+                                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                    bindMaterialAs = "strongerThanDescendants"
+                                                                )
+                                                                float3 physics:diagonalInertia = (4.014364e-7, 0.0000010884944, 0.0000012254186)
+                                                                prepend rel physics:filteredPairs = </linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_index_link0/right_hand_index_link1/right_hand_index_link2/right_hand_index_link3/right_hand_index_link4>
+                                                                float physics:mass = 0.016
+
+                                                                over "right_hand_index_link4" (
+                                                                    prepend apiSchemas = ["MaterialBindingAPI"]
+                                                                )
+                                                                {
+                                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                        bindMaterialAs = "strongerThanDescendants"
+                                                                    )
+                                                                    float3 physics:diagonalInertia = (2.5e-7, 2.5e-7, 2.5e-7)
+                                                                    float physics:mass = 0.01
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "right_hand_middle_link0" (
+                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                )
+                                                {
+                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                        bindMaterialAs = "strongerThanDescendants"
+                                                    )
+                                                    float3 physics:diagonalInertia = (3.4499914e-7, 4.5055776e-7, 6.017906e-7)
+                                                    float physics:mass = 0.012
+                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                    over "right_hand_middle_link1" (
+                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                    )
+                                                    {
+                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                            bindMaterialAs = "strongerThanDescendants"
+                                                        )
+                                                        float3 physics:diagonalInertia = (7.246752e-7, 0.0000037250359, 0.0000037761315)
+                                                        float physics:mass = 0.024
+                                                        custom bool physxRigidBody:solveContact = 0
+
+                                                        over "right_hand_middle_link2" (
+                                                            prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                        )
+                                                        {
+                                                            rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                bindMaterialAs = "strongerThanDescendants"
+                                                            )
+                                                            float3 physics:diagonalInertia = (7.2764936e-7, 0.0000013704969, 0.0000017865507)
+                                                            float physics:mass = 0.018
+                                                            custom bool physxRigidBody:solveContact = 0
+
+                                                            over "right_hand_middle_link3" (
+                                                                prepend apiSchemas = ["PhysicsFilteredPairsAPI", "MaterialBindingAPI"]
+                                                            )
+                                                            {
+                                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                    bindMaterialAs = "strongerThanDescendants"
+                                                                )
+                                                                float3 physics:diagonalInertia = (4.014364e-7, 0.0000010884944, 0.0000012254186)
+                                                                prepend rel physics:filteredPairs = </linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_middle_link0/right_hand_middle_link1/right_hand_middle_link2/right_hand_middle_link3/right_hand_middle_link4>
+                                                                float physics:mass = 0.016
+
+                                                                over "right_hand_middle_link4" (
+                                                                    prepend apiSchemas = ["MaterialBindingAPI"]
+                                                                )
+                                                                {
+                                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                        bindMaterialAs = "strongerThanDescendants"
+                                                                    )
+                                                                    float3 physics:diagonalInertia = (2.5e-7, 2.5e-7, 2.5e-7)
+                                                                    float physics:mass = 0.01
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "right_hand_ring_link0" (
+                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                )
+                                                {
+                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                        bindMaterialAs = "strongerThanDescendants"
+                                                    )
+                                                    float3 physics:diagonalInertia = (3.4499914e-7, 4.5055776e-7, 6.017906e-7)
+                                                    float physics:mass = 0.012
+                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                    over "right_hand_ring_link1" (
+                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                    )
+                                                    {
+                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                            bindMaterialAs = "strongerThanDescendants"
+                                                        )
+                                                        float3 physics:diagonalInertia = (7.246752e-7, 0.0000037250359, 0.0000037761317)
+                                                        float physics:mass = 0.024
+                                                        custom bool physxRigidBody:solveContact = 0
+
+                                                        over "right_hand_ring_link2" (
+                                                            prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                        )
+                                                        {
+                                                            rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                bindMaterialAs = "strongerThanDescendants"
+                                                            )
+                                                            float3 physics:diagonalInertia = (7.2764936e-7, 0.0000013704969, 0.0000017865507)
+                                                            float physics:mass = 0.018
+                                                            custom bool physxRigidBody:solveContact = 0
+
+                                                            over "right_hand_ring_link3" (
+                                                                prepend apiSchemas = ["PhysicsFilteredPairsAPI", "MaterialBindingAPI"]
+                                                            )
+                                                            {
+                                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                    bindMaterialAs = "strongerThanDescendants"
+                                                                )
+                                                                float3 physics:diagonalInertia = (4.014364e-7, 0.0000010884944, 0.0000012254186)
+                                                                prepend rel physics:filteredPairs = </linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_ring_link0/right_hand_ring_link1/right_hand_ring_link2/right_hand_ring_link3/right_hand_ring_link4>
+                                                                float physics:mass = 0.016
+
+                                                                over "right_hand_ring_link4" (
+                                                                    prepend apiSchemas = ["MaterialBindingAPI"]
+                                                                )
+                                                                {
+                                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                        bindMaterialAs = "strongerThanDescendants"
+                                                                    )
+                                                                    float3 physics:diagonalInertia = (2.5e-7, 2.5e-7, 2.5e-7)
+                                                                    float physics:mass = 0.01
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "right_hand_little_link0" (
+                                                    prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                )
+                                                {
+                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                        bindMaterialAs = "strongerThanDescendants"
+                                                    )
+                                                    float3 physics:diagonalInertia = (3.4499914e-7, 4.5055776e-7, 6.017906e-7)
+                                                    float physics:mass = 0.012
+                                                    custom bool physxRigidBody:solveContact = 0
+
+                                                    over "right_hand_little_link1" (
+                                                        prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                    )
+                                                    {
+                                                        rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                            bindMaterialAs = "strongerThanDescendants"
+                                                        )
+                                                        float3 physics:diagonalInertia = (7.246752e-7, 0.0000037250359, 0.0000037761315)
+                                                        float physics:mass = 0.024
+                                                        custom bool physxRigidBody:solveContact = 0
+
+                                                        over "right_hand_little_link2" (
+                                                            prepend apiSchemas = ["PhysxRigidBodyAPI", "MaterialBindingAPI"]
+                                                        )
+                                                        {
+                                                            rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                bindMaterialAs = "strongerThanDescendants"
+                                                            )
+                                                            float3 physics:diagonalInertia = (7.2764936e-7, 0.0000013704969, 0.0000017865505)
+                                                            float physics:mass = 0.018
+                                                            custom bool physxRigidBody:solveContact = 0
+
+                                                            over "right_hand_little_link3" (
+                                                                prepend apiSchemas = ["PhysicsFilteredPairsAPI", "MaterialBindingAPI"]
+                                                            )
+                                                            {
+                                                                rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                    bindMaterialAs = "strongerThanDescendants"
+                                                                )
+                                                                float3 physics:diagonalInertia = (4.014364e-7, 0.0000010884944, 0.0000012254186)
+                                                                prepend rel physics:filteredPairs = </linkbot_bimanual_sdk/Geometry/base_link/R1_Link/R2_Link/R3_Link/R4_Link/R5_Link/R6_Link/R7_Link/R8_Link/right_hand_base_link/right_hand_little_link0/right_hand_little_link1/right_hand_little_link2/right_hand_little_link3/right_hand_little_link4>
+                                                                float physics:mass = 0.016
+
+                                                                over "right_hand_little_link4" (
+                                                                    prepend apiSchemas = ["MaterialBindingAPI"]
+                                                                )
+                                                                {
+                                                                    rel material:binding:physics = </linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad> (
+                                                                        bindMaterialAs = "strongerThanDescendants"
+                                                                    )
+                                                                    float3 physics:diagonalInertia = (2.5e-7, 2.5e-7, 2.5e-7)
+                                                                    float physics:mass = 0.01
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    over "Physics"
+    {
+        over "right_hand_thumb_joint4" (
+            prepend apiSchemas = ["PhysxMimicJointAPI:rotX"]
+        )
+        {
+            bool newton:mimicEnabled = 0
+            custom float physxMimicJoint:rotX:dampingRatio = 1.2
+            custom float physxMimicJoint:rotX:gearing = -1.11
+            custom float physxMimicJoint:rotX:naturalFrequency = 150
+            custom float physxMimicJoint:rotX:offset = -0
+            custom rel physxMimicJoint:rotX:referenceJoint
+            prepend rel physxMimicJoint:rotX:referenceJoint = </linkbot_bimanual_sdk/Physics/right_hand_thumb_joint3>
+            custom token physxMimicJoint:rotX:referenceJointAxis = "rotX"
+        }
+
+        over "right_hand_index_joint3" (
+            prepend apiSchemas = ["PhysxMimicJointAPI:rotY"]
+        )
+        {
+            bool newton:mimicEnabled = 0
+            custom float physxMimicJoint:rotY:dampingRatio = 1.2
+            custom float physxMimicJoint:rotY:gearing = -0.94
+            custom float physxMimicJoint:rotY:naturalFrequency = 150
+            custom float physxMimicJoint:rotY:offset = -0
+            custom rel physxMimicJoint:rotY:referenceJoint
+            prepend rel physxMimicJoint:rotY:referenceJoint = </linkbot_bimanual_sdk/Physics/right_hand_index_joint2>
+            custom token physxMimicJoint:rotY:referenceJointAxis = "rotY"
+        }
+
+        over "right_hand_middle_joint3" (
+            prepend apiSchemas = ["PhysxMimicJointAPI:rotY"]
+        )
+        {
+            bool newton:mimicEnabled = 0
+            custom float physxMimicJoint:rotY:dampingRatio = 1.2
+            custom float physxMimicJoint:rotY:gearing = -0.94
+            custom float physxMimicJoint:rotY:naturalFrequency = 150
+            custom float physxMimicJoint:rotY:offset = -0
+            custom rel physxMimicJoint:rotY:referenceJoint
+            prepend rel physxMimicJoint:rotY:referenceJoint = </linkbot_bimanual_sdk/Physics/right_hand_middle_joint2>
+            custom token physxMimicJoint:rotY:referenceJointAxis = "rotY"
+        }
+
+        over "right_hand_ring_joint3" (
+            prepend apiSchemas = ["PhysxMimicJointAPI:rotY"]
+        )
+        {
+            bool newton:mimicEnabled = 0
+            custom float physxMimicJoint:rotY:dampingRatio = 1.2
+            custom float physxMimicJoint:rotY:gearing = -0.94
+            custom float physxMimicJoint:rotY:naturalFrequency = 150
+            custom float physxMimicJoint:rotY:offset = -0
+            custom rel physxMimicJoint:rotY:referenceJoint
+            prepend rel physxMimicJoint:rotY:referenceJoint = </linkbot_bimanual_sdk/Physics/right_hand_ring_joint2>
+            custom token physxMimicJoint:rotY:referenceJointAxis = "rotY"
+        }
+
+        over "right_hand_little_joint3" (
+            prepend apiSchemas = ["PhysxMimicJointAPI:rotY"]
+        )
+        {
+            bool newton:mimicEnabled = 0
+            custom float physxMimicJoint:rotY:dampingRatio = 1.2
+            custom float physxMimicJoint:rotY:gearing = -0.94
+            custom float physxMimicJoint:rotY:naturalFrequency = 150
+            custom float physxMimicJoint:rotY:offset = -0
+            custom rel physxMimicJoint:rotY:referenceJoint
+            prepend rel physxMimicJoint:rotY:referenceJoint = </linkbot_bimanual_sdk/Physics/right_hand_little_joint2>
+            custom token physxMimicJoint:rotY:referenceJointAxis = "rotY"
+        }
+
+        over "left_hand_thumb_joint4"
+        {
+            bool newton:mimicEnabled = 0
+        }
+
+        over "left_hand_index_joint3"
+        {
+            bool newton:mimicEnabled = 0
+        }
+
+        over "left_hand_middle_joint3"
+        {
+            bool newton:mimicEnabled = 0
+        }
+
+        over "left_hand_ring_joint3"
+        {
+            bool newton:mimicEnabled = 0
+        }
+
+        over "left_hand_little_joint3"
+        {
+            bool newton:mimicEnabled = 0
+        }
+    }
+
+    def "PhysicsMaterials"
+    {
+        def Material "PhysicsV1FingerPad" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.45
+            float physics:restitution = 0
+            float physics:staticFriction = 0.55
+        }
+    }
+    variantSet "Physics" = {
+        "mujoco" (
+            prepend payload = @./payloads/Physics/mujoco.usda@
+        ) {
+
+        }
+        "none" {
+
+        }
+        "physics" (
+            prepend payload = @./payloads/Physics/physics.usda@
+        ) {
+
+        }
+        "physx" (
+            prepend payload = @./payloads/Physics/physx.usda@
+        ) {
+
+        }
+    }
+}

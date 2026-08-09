@@ -1,0 +1,171 @@
+{
+  "checks": {
+    "aligned_reward_reaches_full_strength": true,
+    "clean_v5_release_success_above_90_percent": true,
+    "discovery_reward_is_exact_through_update_250": true,
+    "learning_interface_exactly_reused": true,
+    "physics_downstream_credit_requires_secure_support": true,
+    "physics_retention_is_stricter_than_clean_v5": true,
+    "physics_success_requires_secure_support": true,
+    "ppo_hyperparameters_exactly_reused": true
+  },
+  "clean_v5_release": {
+    "best_checkpoint": "/home/descfly/linkagent/logs/rsl_rl/tomato_pick_clean_v5/2026-08-08_02-27-24_tomato_pick_clean_v5_from_scratch/model_1350.pt",
+    "checkpoint_sha256": "c4ca9ac27aaa20806b630496362bcb9154d1e8076605f9d7026b58f719d124d0",
+    "completed_episodes": 26077,
+    "drop_rate": 0.02101468727230893,
+    "minimum_seed_success_rate": 0.9606227106227107,
+    "success_rate": 0.9618054224028838,
+    "success_wilson_95": [
+      0.959410245210066,
+      0.9640645555417625
+    ]
+  },
+  "decision": "The Physics-v1-only secure-support credit alignment passed its fresh from-scratch 8192x50 first-success gate; keep reward weights and PPO frozen.",
+  "environment": {
+    "clean_v5": {
+      "action_dim": 11,
+      "actor_observation_dim": 66,
+      "critic_state_dim": 83,
+      "episode_seconds": 8.0,
+      "grasp_full_contact_force_n": 0.6,
+      "maximum_fingertip_force_n": 15.0,
+      "maximum_retained_distance_m": 0.12,
+      "maximum_retained_relative_speed_m_s": 0.25,
+      "physics_hz": 120,
+      "policy_hz": 20,
+      "reach_distance_scale_m": 0.3,
+      "reward_rollout_steps": 32,
+      "stable_detach_credit_steps": 3,
+      "success_hold_steps": 20
+    },
+    "intentional_physics_v1_changes": [
+      "user-calibrated collision-safe five-dimensional hand manifold",
+      "passive follower mimics and cross-digit self collision",
+      "compliant low-restitution literature-prior contact",
+      "correlated fruit and stem randomization with duration-based fracture",
+      "broad reachable arm-relative reset workspace",
+      "secure thumb-opposed retention and success predicate"
+    ],
+    "physics_v1": {
+      "action_dim": 11,
+      "actor_observation_dim": 66,
+      "critic_state_dim": 83,
+      "episode_seconds": 8.0,
+      "grasp_full_contact_force_n": 0.6,
+      "maximum_fingertip_force_n": 8.0,
+      "maximum_retained_distance_m": 0.06,
+      "maximum_retained_relative_speed_m_s": 0.1,
+      "minimum_support_force_n": 0.25,
+      "minimum_supported_fingertips": 2,
+      "physics_hz": 120,
+      "policy_hz": 20,
+      "reach_distance_scale_m": 0.3,
+      "reward_rollout_steps": 32,
+      "stable_detach_credit_steps": 3,
+      "stem_damage_onset_ratio": 0.55,
+      "stem_damage_recovery_time_s": 0.12,
+      "success_hold_steps": 20,
+      "thumb_opposition_required": true
+    }
+  },
+  "passed": true,
+  "ppo": {
+    "clean_v5": {
+      "activation": "elu",
+      "actor_hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "actor_obs_normalization": true,
+      "clip_actions": 1.0,
+      "clip_param": 0.2,
+      "critic_hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "critic_obs_normalization": true,
+      "desired_kl": 0.01,
+      "entropy_coef": 0.002,
+      "gamma": 0.99,
+      "initial_std": 0.6,
+      "lambda": 0.95,
+      "learning_rate": 0.0003,
+      "max_grad_norm": 1.0,
+      "max_iterations": 1800,
+      "num_learning_epochs": 4,
+      "num_mini_batches": 8,
+      "num_steps_per_env": 32,
+      "save_interval": 50,
+      "schedule": "fixed",
+      "std_type": "log",
+      "value_loss_coef": 1.0
+    },
+    "physics_v1": {
+      "activation": "elu",
+      "actor_hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "actor_obs_normalization": true,
+      "clip_actions": 1.0,
+      "clip_param": 0.2,
+      "critic_hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "critic_obs_normalization": true,
+      "desired_kl": 0.01,
+      "entropy_coef": 0.002,
+      "gamma": 0.99,
+      "initial_std": 0.6,
+      "lambda": 0.95,
+      "learning_rate": 0.0003,
+      "max_grad_norm": 1.0,
+      "max_iterations": 1800,
+      "num_learning_epochs": 4,
+      "num_mini_batches": 8,
+      "num_steps_per_env": 32,
+      "save_interval": 50,
+      "schedule": "fixed",
+      "std_type": "log",
+      "value_loss_coef": 1.0
+    }
+  },
+  "reward": {
+    "curriculum_points": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        250.0,
+        0.0
+      ],
+      [
+        600.0,
+        0.35
+      ],
+      [
+        1000.0,
+        0.75
+      ],
+      [
+        1300.0,
+        1.0
+      ]
+    ],
+    "interpretation": {
+      "updates_0_to_250": "exact Clean-v5 discovery endpoint; bounded reach, grasp, opposition, stem-load and qualified-break exploration remains available only under measured Physics-v1 secure support",
+      "updates_1300_plus": "fully aligned endpoint",
+      "updates_250_to_1300": "smoothly removes immediate break credit and adds stable-detach, outcome penalties, stronger success and time pressure"
+    },
+    "shared_source": "simulation/tomato_pick/reward.py",
+    "shared_source_sha256": "d572c24d5ba415b4b7fa42967f782e575b4d41b925371bb8aeea1123bf0c02de"
+  },
+  "schema_version": 1
+}

@@ -1,0 +1,68 @@
+{
+  "checks": {
+    "completed_four_updates": true,
+    "final_checkpoint_is_nonempty": true,
+    "losses_and_std_are_finite": true,
+    "no_traceback_nan_inf_overflow_or_oom": true
+  },
+  "credit_gate": {
+    "break_substep_kinematic_retained_required": true,
+    "break_substep_secure_support_required": true,
+    "maximum_center_distance_m": 0.06,
+    "maximum_relative_speed_m_s": 0.1
+  },
+  "final_checkpoint": "/home/descfly/linkagent/logs/rsl_rl/tomato_pick_physics_v1_preflight/2026-08-09_11-21-47_numeric_gate_not_formal_training/model_3.pt",
+  "final_checkpoint_sha256": "be2c85bb542ebf95ccb5def373451bf62f7c481526a8ad621b007045a0e317de",
+  "input_sha256": {
+    "simulation/tomato_pick/isaac/physics_v1/env.py": "efae96a277d1009c241bcd5399bcbf6a1c6fd5598fdabf3f57273f53eacc1e16",
+    "simulation/tomato_pick/physics_v1.py": "9c736a79b66b5516d7a52dda19e1b933f63dec9382dd6578afd7d6fe84ad713b",
+    "tests/test_tomato_physics_v1.py": "b1a37bde454b759a06f26806556c2c2c22390a4eea0f90bf4eaf3d4138077221"
+  },
+  "iterations": [
+    {
+      "entropy_loss": 9.9915,
+      "iteration": 0,
+      "mean_action_std": 0.6,
+      "mean_reward": 2.96,
+      "steps_per_second": 710.0,
+      "surrogate_loss": 0.0044,
+      "value_loss": 5.2337
+    },
+    {
+      "entropy_loss": 9.9964,
+      "iteration": 1,
+      "mean_action_std": 0.6,
+      "mean_reward": 1.89,
+      "steps_per_second": 691.0,
+      "surrogate_loss": -0.0171,
+      "value_loss": 0.0052
+    },
+    {
+      "entropy_loss": 9.9892,
+      "iteration": 2,
+      "mean_action_std": 0.6,
+      "mean_reward": 0.0,
+      "steps_per_second": 677.0,
+      "surrogate_loss": -0.0022,
+      "value_loss": 0.6225
+    },
+    {
+      "entropy_loss": 9.9978,
+      "iteration": 3,
+      "mean_action_std": 0.6,
+      "mean_reward": 0.13,
+      "steps_per_second": 681.0,
+      "surrogate_loss": -0.0051,
+      "value_loss": 0.5739
+    }
+  ],
+  "log": "/tmp/tomato_physics_v1_ppo_preflight_secure_kinematic.log",
+  "num_envs": 256,
+  "passed": true,
+  "qualification": "numerical_preflight_not_formal_training",
+  "run_directory": "/home/descfly/linkagent/logs/rsl_rl/tomato_pick_physics_v1_preflight/2026-08-09_11-21-47_numeric_gate_not_formal_training",
+  "schema_version": 1,
+  "seed": 42,
+  "task_id": "LinkAgent-TomatoPick-Physics-v1",
+  "total_transitions": 32768
+}

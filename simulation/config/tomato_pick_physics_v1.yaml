@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "profile_id": "tomato_pick_physics_v1",
+  "status": "formal_training_ready_provisional_literature_prior",
+  "parent_evidence": {
+    "task_id": "LinkAgent-TomatoPick-Clean-v5",
+    "checkpoint": "logs/rsl_rl/tomato_pick_clean_v5/2026-08-08_02-27-24_tomato_pick_clean_v5_from_scratch/model_1350.pt",
+    "checkpoint_sha256": "c4ca9ac27aaa20806b630496362bcb9154d1e8076605f9d7026b58f719d124d0",
+    "reuse": [
+      "66D actor observation layout",
+      "83D critic state layout",
+      "11D Cartesian plus five-dimensional hand action layout",
+      "Clean-v5 bounded new-best exploration reward and PPO hyperparameters"
+    ],
+    "do_not_reuse": [
+      "single-substep axial stem fracture",
+      "independently powered passive follower joints",
+      "rigid non-compliant tomato contact",
+      "unqualified 0.12 m retention success predicate"
+    ]
+  },
+  "robot_asset": {
+    "source_usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg.usda",
+    "source_usd_sha256": "e4b190443b3b9aedf68826ce16e007737ecd4ee487321ded2c265c2e5a88a097",
+    "derived_usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg_physics_v1.usda",
+    "derived_usd_sha256": "6bde6855bcd0d6c2ab9e23c5588b516c684743cff980d7b37b5981834dc5aa35",
+    "collision_matrix_baked": true,
+    "self_collision_representation": "distal_envelope_filtered_pairs_outside_solve_contact_disabled_v2",
+    "stored_active_hand_filtered_pair_count": 7,
+    "outside_solve_contact_disabled_body_count": 59,
+    "runtime_authored_collision_pairs": 0,
+    "passive_mimics_baked": true,
+    "runtime_authored_passive_mimics": 0,
+    "passive_mimic_count": 5,
+    "passive_mimic_sha256": "8f225bf5c8f0244891cc497c8128abc8b8817fda7bd0fe860b08bf6cbf3b87e3",
+    "hand_material_baked": true,
+    "runtime_authored_hand_material_bindings": 0,
+    "hand_material_body_count": 54
+  },
+  "hand": {
+    "model": "Linker Hand L20",
+    "vendor_manual": "https://a.storyblok.com/f/298593/x/50a0fc9e84/linker-hand-l20-v10-20260324.pdf",
+    "vendor_manual_revision": "V1.2 2026-03-24",
+    "active_joint_count": 16,
+    "passive_follower_count": 5,
+    "manifold_mapping_id": "tomato_g20_user_calibrated_5d_v2_1_collision_safe",
+    "manifold_source_draft_sha256": "75d8122975dac780110505596419a1a98ed13bb3a6e06c3c5206f844e2fb30a7",
+    "thumb_closure_schedule": "fingers_form_cage_first_thumb_closes_over_outer_fingers_in_final_quarter",
+    "self_collision_policy": "right_distal_envelope_and_palm_only",
+    "self_collision_pair_matrix_sha256": "16653f7ed1d19e6b6bf0a5e25b74ad57c584c74eb548e8af18f3b2a473cd5755",
+    "enabled_meaningful_self_collision_pairs_per_robot": 59,
+    "filtered_self_collision_pairs_per_robot": 2426,
+    "vendor_mass_kg": 1.2,
+    "asset_mass_kg": 1.0,
+    "mass_calibration_required": true,
+    "full_open_close_time_s": 0.9,
+    "command_rate_hz": 500,
+    "thumb_max_fingertip_force_n": 18.0,
+    "finger_max_fingertip_force_n": 20.0,
+    "active_drive_effort_limit_nm": 0.45,
+    "active_drive_stiffness_nm_rad": 10.0,
+    "active_drive_damping_nm_s_rad": 0.8,
+    "active_drive_armature_kg_m2": 0.002,
+    "passive_mimic_natural_frequency": 150.0,
+    "passive_mimic_damping_ratio": 1.2,
+    "passive_mimic_offset_rad": 0.0,
+    "passive_mimic_driver_velocity_safety_factor": 0.95,
+    "passive_mimic_max_tracking_error_rad": 0.35,
+    "joint_max_velocity_deg_s_in_policy_order": [
+      124.0, 217.0, 217.0, 217.0, 217.0,
+      149.0, 118.0, 118.0, 118.0, 118.0,
+      129.0, 115.0, 251.0, 251.0, 251.0, 251.0
+    ]
+  },
+  "arm": {
+    "model": "Linker Arm A7",
+    "controller_identification_required": true,
+    "maximum_joint_target_delta_rad_per_policy_step": 0.04,
+    "maximum_joint_target_lead_rad": 0.06,
+    "provisional_stiffness_nm_rad": 1200.0,
+    "provisional_damping_nm_s_rad": 80.0
+  },
+  "contact": {
+    "status": "isolated_gate_passed_literature_prior_not_user_calibrated",
+    "finger_static_friction": 0.55,
+    "finger_dynamic_friction": 0.45,
+    "tomato_static_friction": 0.55,
+    "tomato_dynamic_friction": 0.45,
+    "friction_combine_mode": "average",
+    "restitution": 0.01,
+    "restitution_combine_mode": "min",
+    "compliant_contact_stiffness_n_m": 5000.0,
+    "compliant_contact_damping_n_s_m": 25.0,
+    "contact_offset_m": 0.0015,
+    "rest_offset_m": 0.0,
+    "contact_point_maximum_surface_gap_m": 0.008,
+    "maximum_depenetration_velocity_m_s": 0.25,
+    "calibration_search_only": {
+      "static_friction": [0.2, 1.4],
+      "effective_stiffness_n_m": [3000.0, 20000.0],
+      "effective_damping_n_s_m": [10.0, 80.0]
+    },
+    "experimental_reference": {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6475739/",
+      "rubber_static_friction_mean": 0.305,
+      "rubber_static_friction_range": [0.284, 0.344],
+      "compression_modulus_gpa_mean": 0.11,
+      "rupture_force_n_mean": 51.27,
+      "rupture_deformation_mm_mean": 9.52,
+      "scope_warning": "Bulk-rubber and cultivar-specific measurements do not directly identify the user's fingertip-pad contact or a PhysX effective contact spring."
+    }
+  },
+  "fruit_prior": {
+    "equatorial_radius_m": [0.025, 0.035],
+    "polar_aspect_ratio": [0.86, 1.04],
+    "density_kg_m3": [880.0, 1060.0],
+    "accepted_mass_kg": [0.05, 0.22],
+    "maximum_axis_ratio": 1.35
+  },
+  "stem_prior": {
+    "status": "provisional_abscission_envelope_qualified_not_user_calibrated",
+    "abscission_diameter_m": [0.0045, 0.0075],
+    "detachment_model": "abscission_zone_combined_wrench_duration_v1",
+    "abscission_detachment_force_n": [4.0, 8.0],
+    "safe_wrench_supported_fingertips": 3,
+    "safe_wrench_maximum_fingertip_force_n": 8.0,
+    "safe_wrench_utilization_fraction": 0.75,
+    "tensile_strength_pa": [1200000.0, 1900000.0],
+    "shear_to_tension_ratio": [0.60, 0.80],
+    "bending_lever_arm_m": [0.006, 0.012],
+    "critical_duration_s": [0.035, 0.075],
+    "damage_onset_ratio": 0.55,
+    "damage_recovery_time_s": 0.12,
+    "experimental_reference": {
+      "url": "https://www.mdpi.com/2073-4395/14/10/2274",
+      "diameter_group_mm": [5.52, 6.27, 7.75],
+      "mean_pull_off_force_n": [40.262, 44.781, 72.003],
+      "mean_tensile_strength_mpa": [1.691, 1.441, 1.534],
+      "three_point_bending_force_n_range": [13.299, 51.685],
+      "scope_warning": "Results are cultivar, maturity, geometry, loading direction, and loading-rate dependent."
+    }
+  },
+  "randomization": {
+    "scope": "episode_fixed_correlated_profiles",
+    "independent_uniform_physics_sampling_forbidden": true,
+    "contact_friction_bins": 4,
+    "contact_compliance_bins": 4,
+    "actuator_mass_fraction": 0.05,
+    "actuator_inertia_fraction": 0.10,
+    "drive_time_constant_fraction": 0.15,
+    "joint_friction_fraction": 0.20,
+    "contact_parameter_fraction": 0.15,
+    "compliance_parameter_fraction": 0.20
+  },
+  "secure_success": {
+    "minimum_supported_fingertips": 2,
+    "minimum_support_force_n": 0.25,
+    "thumb_opposition_required": true,
+    "maximum_center_distance_m": 0.06,
+    "maximum_relative_speed_m_s": 0.10,
+    "hold_policy_steps": 20,
+    "is_training_success": true
+  },
+  "reset_workspace": {
+    "version": 3,
+    "status": "xy_extended_workspace_runtime_gate_passed_pending_user_review",
+    "sampling_space": "seven_joint_continuous_ellipsoid_plus_correlated_forward_mode",
+    "arm_joint_ellipsoid_radius_deg_in_a7_order": [
+      42.0, 50.0, 58.0, 34.0, 48.0, 46.0, 52.0
+    ],
+    "arm_joint_correlated_modes_deg_in_a7_order": [
+      [8.4, 17.9, 3.7, 22.0, 0.9, 2.6, -8.7]
+    ],
+    "arm_joint_correlated_mode_coefficient_ranges": [
+      [-1.0, 0.30]
+    ],
+    "joint_limit_margin_fraction": 0.10,
+    "fruit_approach_distance_m": [0.045, 0.060],
+    "fruit_approach_yaw_deg": [-28.0, 28.0],
+    "fruit_approach_pitch_deg": [-18.0, 18.0],
+    "fruit_stem_tilt_deg_max": 15.0,
+    "fruit_yaw_deg": [-180.0, 180.0],
+    "minimum_initial_clearance_m": 0.015,
+    "fruit_sampling_max_attempts": 64,
+    "maximum_closure_translation_norm_m": 0.065,
+    "minimum_closure_translation_headroom_fraction": 0.25,
+    "minimum_closure_joint_limit_margin_fraction": 0.03,
+    "maximum_closure_ik_position_error_m": 0.008,
+    "point_cloud_samples": 2048,
+    "design_rules": [
+      "sample arm joints first and obtain the actual palm pose by forward kinematics",
+      "reject and redraw any joint sample outside the ten-percent limit margin instead of clipping it onto the boundary",
+      "spawn the fruit relative to that palm rather than moving the palm toward a fixed fruit",
+      "keep the full sample inside the A7 joint-limit margin",
+      "push a fruit only outward along its sampled approach ray when collision clearance is insufficient",
+      "reject and redraw any fruit whose closed-grasp translation exceeds six-and-a-half centimetres even when the per-axis command range would allow it",
+      "require at least twenty-five percent unused Cartesian command range after moving the fruit to the closed-grasp centre",
+      "verify the closed-grasp pose by iterative USD Jacobian IK and retain at least three percent joint-limit margin",
+      "bound each correlated reach mode by its measured asymmetric closure-IK envelope and exclude the positive singularity shell above coefficient 0.30",
+      "keep the stem direction observable through the existing pull-axis observation"
+    ]
+  },
+  "calibration_protocol": {
+    "hand_free_motion": {
+      "record": [
+        "command timestamp and all sixteen active joint targets",
+        "all twenty-one measured joint positions and velocities",
+        "motor current or estimated joint effort when available",
+        "neutral, full-open, full-close, slow sweep, fast sweep, and reversal trajectories"
+      ],
+      "minimum_repetitions_per_trajectory": 5,
+      "acceptance": [
+        "per-joint range and 95th-percentile speed agree with hardware within 10 percent",
+        "driver-follower median absolute error is at most 0.10 rad in free motion",
+        "driver-follower 99th-percentile error is at most 0.20 rad in free motion",
+        "no unexplained simulated overshoot, self-collision impulse, or energy growth"
+      ]
+    },
+    "arm_free_motion": {
+      "record": [
+        "command and measured position, velocity, and effort for isolated small steps on each A7 joint",
+        "Cartesian end-effector pose for the same trials"
+      ],
+      "minimum_repetitions_per_joint": 5,
+      "acceptance": [
+        "rise time, overshoot, and steady-state error agree within 15 percent",
+        "the 20 Hz target limiter never requests motion outside the measured controller envelope"
+      ]
+    },
+    "fruit_contact": {
+      "record": [
+        "incline-slip angle using the actual fingertip pad and representative tomatoes",
+        "normal force versus compression at 1, 2, 3, and 5 mm",
+        "rebound height or coefficient of restitution from at least two low drop heights",
+        "fruit diameter, mass, ripeness, surface wetness, and damage after each trial"
+      ],
+      "minimum_samples_per_condition": 10,
+      "acceptance": [
+        "simulated median slip angle is within 3 degrees of the matched experiment",
+        "compression force is within 15 percent at every non-damaging displacement",
+        "rebound height is within 10 mm and no trial gains mechanical energy",
+        "normal grasp trials remain below the measured damage envelope"
+      ]
+    },
+    "stem": {
+      "record": [
+        "abscission diameter and ripeness",
+        "axial force-displacement-time curve to separation",
+        "lateral or three-point bending force-displacement-time curve to separation",
+        "loading direction and loading rate"
+      ],
+      "minimum_samples_per_mode": 20,
+      "acceptance": [
+        "median axial and bending break load are within 15 percent of matched measurements",
+        "10th and 90th percentile break loads are each within 20 percent",
+        "one isolated 8.33 ms overload does not detach unless supported by measured evidence",
+        "sustained matched loading reproduces both detachment time and failure mode"
+      ]
+    }
+  },
+  "training_gate": {
+    "ready": true,
+    "formal_training_started": false,
+    "qualification": "literature_prior_provisional",
+    "blockers": [],
+    "passed_gates": [
+      "baked scalable self-collision matrix with zero runtime pair authoring",
+      "one and sixty-four environment articulation, passive-linkage, reset, and contact gates",
+      "isolated friction, compression, rebound, and stem-duration gate",
+      "two-hundred-thousand-profile abscission-envelope feasibility gate",
+      "two-hundred-fifty-six environment four-update PPO numerical preflight after secure-plus-kinematic break-credit alignment",
+      "from-scratch 8192-environment 50-update secure-plus-kinematic first-success gate with first success at update 42 and passing tail trends"
+    ],
+    "required_before_hardware_transfer": [
+      "measure actual L20 mass, actuator response, and passive linkage error",
+      "identify A7 joint and Cartesian step response",
+      "measure fingertip-pad tomato friction for the deployed pad and cultivar",
+      "measure tomato compression and rebound across ripeness and surface condition",
+      "measure cultivar-specific axial, shear, and bending stem failure"
+    ]
+  }
+}

@@ -41,6 +41,11 @@ parser.add_argument("--num_envs", type=int, default=1024)
 parser.add_argument("--task", type=str, default="LinkAgent-TomatoPick-Clean-v5")
 parser.add_argument("--agent", type=str, default="rsl_rl_cfg_entry_point")
 parser.add_argument("--seed", type=int, default=42)
+parser.add_argument(
+    "--stochastic-policy",
+    action="store_true",
+    help="Sample the checkpoint policy distribution as during PPO rollouts.",
+)
 parser.add_argument("--external_callback", default="simulation.tomato_pick.isaac.register_task")
 cli_args.add_rsl_rl_args(parser)
 add_launcher_args(parser)
@@ -109,11 +114,45 @@ def main(
         action_sq_sum = 0.0
         action_count = 0
         saturated_actions = 0
+        base_env = env.unwrapped
+        has_stem_damage_diagnostics = all(
+            hasattr(base_env, name)
+            for name in (
+                "_stem_damage",
+                "_stem_combined_load_ratio",
+                "_shadow_secure_support",
+            )
+        )
+        stem_sample_count = 0
+        stem_damage_sum = 0.0
+        stem_damage_sq_sum = 0.0
+        stem_load_sum = 0.0
+        stem_load_sq_sum = 0.0
+        stem_damage_threshold_counts = {
+            "gt_0_01": 0,
+            "gt_0_10": 0,
+            "gt_0_25": 0,
+            "gt_0_50": 0,
+            "gt_0_75": 0,
+            "gt_0_90": 0,
+        }
+        stem_load_threshold_counts = {
+            "gt_0_55": 0,
+            "gt_0_75": 0,
+            "gt_0_90": 0,
+            "gt_1_00": 0,
+        }
+        secure_support_count = 0
+        secure_support_damage_sum = 0.0
+        secure_support_load_sum = 0.0
+        maximum_stem_damage = 0.0
+        maximum_stem_load_ratio = 0.0
+        physics_v1_break_audit_sums: dict[str, float] = {}
         started = time.perf_counter()
 
         for _ in range(args_cli.steps):
             with torch.inference_mode():
-                actions = policy(obs)
+                actions = policy(obs, stochastic_output=args_cli.stochastic_policy)
                 raw_action_abs_sum += actions.abs().sum().item()
                 executed_actions = actions.clamp(-1.0, 1.0)
                 action_abs_sum += executed_actions.abs().sum().item()
@@ -122,6 +161,47 @@ def main(
                 saturated_actions += (actions.abs() >= 0.99).sum().item()
                 obs, rewards, dones, extras = env.step(actions)
                 policy.reset(dones)
+
+                if has_stem_damage_diagnostics:
+                    damage = base_env._stem_damage
+                    load_ratio = base_env._stem_combined_load_ratio
+                    secure_support = base_env._shadow_secure_support
+                    stem_sample_count += damage.numel()
+                    stem_damage_sum += damage.sum().item()
+                    stem_damage_sq_sum += damage.square().sum().item()
+                    stem_load_sum += load_ratio.sum().item()
+                    stem_load_sq_sum += load_ratio.square().sum().item()
+                    maximum_stem_damage = max(
+                        maximum_stem_damage, float(damage.max().item())
+                    )
+                    maximum_stem_load_ratio = max(
+                        maximum_stem_load_ratio, float(load_ratio.max().item())
+                    )
+                    for name, threshold in (
+                        ("gt_0_01", 0.01),
+                        ("gt_0_10", 0.10),
+                        ("gt_0_25", 0.25),
+                        ("gt_0_50", 0.50),
+                        ("gt_0_75", 0.75),
+                        ("gt_0_90", 0.90),
+                    ):
+                        stem_damage_threshold_counts[name] += int(
+                            (damage > threshold).sum().item()
+                        )
+                    for name, threshold in (
+                        ("gt_0_55", 0.55),
+                        ("gt_0_75", 0.75),
+                        ("gt_0_90", 0.90),
+                        ("gt_1_00", 1.00),
+                    ):
+                        stem_load_threshold_counts[name] += int(
+                            (load_ratio > threshold).sum().item()
+                        )
+                    support_count = int(secure_support.sum().item())
+                    secure_support_count += support_count
+                    if support_count:
+                        secure_support_damage_sum += damage[secure_support].sum().item()
+                        secure_support_load_sum += load_ratio[secure_support].sum().item()
 
             episode_returns += rewards
             episode_lengths += 1
@@ -153,6 +233,11 @@ def main(
                         )
 
             step = extras.get("step", {})
+            for key, value in step.items():
+                if key.startswith("physics_v1_break_"):
+                    physics_v1_break_audit_sums[key] = (
+                        physics_v1_break_audit_sums.get(key, 0.0) + float(value)
+                    )
             success_events += int(step.get("success_count", 0))
             drop_events += int(step.get("drop_count", 0))
             excess_force_events += int(step.get("excess_force_count", 0))
@@ -181,7 +266,7 @@ def main(
             "seed": args_cli.seed,
             "num_envs": args_cli.num_envs,
             "steps": args_cli.steps,
-            "deterministic_policy": True,
+            "deterministic_policy": not args_cli.stochastic_policy,
             "completed_episodes": completed_episodes,
             "success_count": success_events,
             "success_rate": success_events / completed_episodes,
@@ -211,6 +296,75 @@ def main(
                 for name, value in sorted(logged_reward_term_sums.items())
             },
         }
+        if has_stem_damage_diagnostics:
+            mean_damage = stem_damage_sum / stem_sample_count
+            mean_load = stem_load_sum / stem_sample_count
+            result["physics_v1_stem_diagnostics"] = {
+                "sample_count": stem_sample_count,
+                "mean_damage": mean_damage,
+                "std_damage": max(
+                    0.0, stem_damage_sq_sum / stem_sample_count - mean_damage**2
+                )
+                ** 0.5,
+                "maximum_damage": maximum_stem_damage,
+                "damage_sample_rates": {
+                    name: count / stem_sample_count
+                    for name, count in stem_damage_threshold_counts.items()
+                },
+                "mean_combined_load_ratio": mean_load,
+                "std_combined_load_ratio": max(
+                    0.0, stem_load_sq_sum / stem_sample_count - mean_load**2
+                )
+                ** 0.5,
+                "maximum_combined_load_ratio": maximum_stem_load_ratio,
+                "combined_load_sample_rates": {
+                    name: count / stem_sample_count
+                    for name, count in stem_load_threshold_counts.items()
+                },
+                "secure_support_sample_rate": secure_support_count / stem_sample_count,
+                "mean_damage_when_securely_supported": (
+                    secure_support_damage_sum / secure_support_count
+                    if secure_support_count
+                    else 0.0
+                ),
+                "mean_combined_load_when_securely_supported": (
+                    secure_support_load_sum / secure_support_count
+                    if secure_support_count
+                    else 0.0
+                ),
+            }
+            break_count = physics_v1_break_audit_sums.get(
+                "physics_v1_break_count", 0.0
+            )
+            result["physics_v1_break_event_audit"] = {
+                key.removeprefix("physics_v1_break_"): value
+                for key, value in sorted(physics_v1_break_audit_sums.items())
+            }
+            if break_count:
+                result["physics_v1_break_event_audit"].update(
+                    {
+                        "mean_supported_fingertips": physics_v1_break_audit_sums.get(
+                            "physics_v1_break_supported_fingertip_sum", 0.0
+                        )
+                        / break_count,
+                        "mean_distance_m": physics_v1_break_audit_sums.get(
+                            "physics_v1_break_distance_sum_m", 0.0
+                        )
+                        / break_count,
+                        "mean_relative_speed_m_s": physics_v1_break_audit_sums.get(
+                            "physics_v1_break_relative_speed_sum_m_s", 0.0
+                        )
+                        / break_count,
+                        "mean_damage": physics_v1_break_audit_sums.get(
+                            "physics_v1_break_damage_sum", 0.0
+                        )
+                        / break_count,
+                        "mean_load_ratio": physics_v1_break_audit_sums.get(
+                            "physics_v1_break_load_ratio_sum", 0.0
+                        )
+                        / break_count,
+                    }
+                )
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
         print("TOMATO_CHECKPOINT_EVALUATION=" + json.dumps(result, sort_keys=True))

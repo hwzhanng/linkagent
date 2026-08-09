@@ -33,6 +33,13 @@ DirectRLEnv，并完成 Clean-v5 正式 PPO 训练。当前推荐的 `model_1350
 [`PPO_MODEL1450_REPRODUCTION.md`](./docs/tomato_pick/PPO_MODEL1450_REPRODUCTION.md)，但不再是
 推荐模型。
 
+## Physics-v1 source baseline（不含 checkpoint）
+
+Physics-v1 将用户标定的新版连续 5D 手部流形、派生碰撞 USD、相关物理/随机化配置、
+奖励信用门控和训练前门禁证据作为独立源码基线发布。本次源码交接不包含任何新的
+Physics-v1 checkpoint、W&B 运行文件或 TensorBoard 事件。完整复现和队友修改边界见
+[`PHYSICS_V1_SOURCE_REPRODUCTION.md`](./docs/tomato_pick/PHYSICS_V1_SOURCE_REPRODUCTION.md)。
+
 ## 快速开始
 
 要求 Python 3.11 或更高版本。项目没有第三方运行时硬依赖。

@@ -904,14 +904,7 @@ class TomatoPickEnv(DirectRLEnv):
             torch.linalg.vector_norm(fruit_pos - tips.mean(dim=1), dim=1)
             <= self.cfg.maximum_retained_distance_m
         )
-        stem_load = (
-            attachment_load_ratio(
-                self._last_stem_force_w,
-                self._grasp_basis_w[:, :, 2],
-                self._break_force_n,
-            )
-            * opposed
-        )
+        stem_load = self._stem_progress_reward_score(opposed)
         stable_detach = (
             self._retained
             & (self._hold_streak >= self.cfg.stable_detach_credit_steps)
@@ -949,10 +942,8 @@ class TomatoPickEnv(DirectRLEnv):
             previous_best_stable_detach=self._best_stable_detach_score,
             retention_score=retention,
             previous_best_retention=self._best_retention_score,
-            break_grasped_score=(
-                self._stem_break_event.float()
-                * fruit_in_hand.float()
-                * break_quality
+            break_grasped_score=self._break_grasped_reward_score(
+                fruit_in_hand, break_quality
             ),
             success=self._success,
             dropped=self._dropped,
@@ -980,6 +971,34 @@ class TomatoPickEnv(DirectRLEnv):
         if self.cfg.strict_runtime_checks and not bool(torch.isfinite(reward).all()):
             raise RuntimeError("reward contains NaN or Inf")
         return reward
+
+    def _stem_progress_reward_score(self, opposed: torch.Tensor) -> torch.Tensor:
+        """Return the task-specific bounded stem progress score.
+
+        Clean-v5 keeps its released instantaneous axial-load semantics.
+        Independent physics overlays may override this hook when their actual
+        fracture state uses a different load model.
+        """
+
+        return (
+            attachment_load_ratio(
+                self._last_stem_force_w,
+                self._grasp_basis_w[:, :, 2],
+                self._break_force_n,
+            )
+            * opposed
+        )
+
+    def _break_grasped_reward_score(
+        self, fruit_in_hand: torch.Tensor, break_quality: torch.Tensor
+    ) -> torch.Tensor:
+        """Return task-specific one-shot credit for a grasped fracture."""
+
+        return (
+            self._stem_break_event.float()
+            * fruit_in_hand.float()
+            * break_quality
+        )
 
     def _reset_idx(self, env_ids: torch.Tensor | None) -> None:
         if env_ids is None:
