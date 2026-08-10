@@ -25,6 +25,7 @@ TEST_FILES = (
     "tests/test_tomato_physics_v2_artifact_audit.py",
     "tests/test_tomato_physics_v2_sensitivity.py",
     "tests/test_tomato_physics_v2_curriculum.py",
+    "tests/test_tomato_physics_v2_experiment.py",
 )
 
 

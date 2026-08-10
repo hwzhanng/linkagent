@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "matrix_id": "tomato_pick_physics_v2_gpu_resume_matrix_v1",
+  "status": "inactive_cpu_authored_protocol",
+  "task_id": "LinkAgent-TomatoPick-Physics-v2",
+  "external_callback": "simulation.tomato_pick.isaac.physics_v2.register_task",
+  "purpose": "Separate learning, robustness and ablation questions before spending high-power GPU time.",
+  "common_protocol": {
+    "from_scratch": true,
+    "training_seed": 43,
+    "evaluation_seeds": [17, 42, 2026],
+    "policy_steps_per_environment": 32,
+    "checkpoint_interval_updates": 50,
+    "candidate_selection": "training_metrics_nominate_then_independent_multi_seed_evaluation",
+    "best_checkpoint_selection_order": [
+      "success_rate_descending",
+      "damage_proxy_ascending",
+      "drop_rate_ascending",
+      "peak_force_ascending"
+    ],
+    "training_metrics_can_name_best": false,
+    "real_hardware_in_scope": false
+  },
+  "resource_tiers": [
+    {
+      "id": "integration_smoke",
+      "num_environments": 64,
+      "updates": 10,
+      "purpose": "finite-state and metric-schema verification only",
+      "authorizes_next_tier": false
+    },
+    {
+      "id": "numerical_probe",
+      "num_environments": 256,
+      "updates": 4,
+      "purpose": "fixed optimizer and checkpoint numerical gate",
+      "authorizes_next_tier": false
+    },
+    {
+      "id": "bounded_learning",
+      "num_environments": 256,
+      "updates": 500,
+      "purpose": "observe first learning signal under a bounded local budget",
+      "authorizes_next_tier": false
+    }
+  ],
+  "evaluation": {
+    "num_environments": 64,
+    "episode_steps": 160,
+    "deterministic_policy": true,
+    "randomization_enabled": true,
+    "required_metrics": [
+      "success_rate",
+      "retained_rate",
+      "detach_rate",
+      "drop_rate",
+      "excess_force_rate",
+      "peak_fingertip_force_n",
+      "damage_proxy_mean",
+      "worst_bucket_success_rate"
+    ],
+    "robustness_buckets": [
+      "small_soft_dry",
+      "small_soft_wet",
+      "large_firm_dry",
+      "large_firm_wet",
+      "high_actuator_delay",
+      "high_tactile_delay_dropout"
+    ]
+  },
+  "experiments": [
+    {
+      "id": "full_physics_v2_reference",
+      "kind": "reference",
+      "changed_parameter_families": [],
+      "question": "Does the complete provisional Physics-v2 task learn any valid detach-retain behavior?",
+      "runtime_overlay": "none",
+      "activation_status": "pending_gpu_preflight"
+    },
+    {
+      "id": "ablate_tactile_uncertainty",
+      "kind": "single_family_ablation",
+      "changed_parameter_families": ["tactile_measurement"],
+      "question": "How much early learning and robustness is lost or gained when tactile measurement uncertainty is removed?",
+      "runtime_overlay": "to_be_implemented_revisioned_overlay",
+      "activation_status": "design_only"
+    },
+    {
+      "id": "ablate_actuator_uncertainty",
+      "kind": "single_family_ablation",
+      "changed_parameter_families": ["hand_and_arm_actuation"],
+      "question": "Does actuator delay, response, deadband and backlash dominate early policy learning?",
+      "runtime_overlay": "to_be_implemented_revisioned_overlay",
+      "activation_status": "design_only"
+    },
+    {
+      "id": "ablate_fruit_contact_randomization",
+      "kind": "single_family_ablation",
+      "changed_parameter_families": ["fruit_contact"],
+      "question": "Does fixed nominal contact overestimate policy quality relative to correlated fruit priors?",
+      "runtime_overlay": "to_be_implemented_revisioned_overlay",
+      "activation_status": "design_only"
+    },
+    {
+      "id": "ablate_curriculum_staging",
+      "kind": "single_family_ablation",
+      "changed_parameter_families": ["curriculum"],
+      "question": "Does staged promotion improve valid grasp discovery over the current smooth reward schedule?",
+      "runtime_overlay": "to_be_implemented_revisioned_overlay",
+      "activation_status": "design_only"
+    }
+  ],
+  "fail_closed_rules": {
+    "formal_scale_training_authorized": false,
+    "curriculum_runtime_activation_authorized": false,
+    "ablation_runtime_overlays_implemented": false,
+    "candidate_policy_release_authorized": false,
+    "hardware_deployment_authorized": false
+  }
+}
