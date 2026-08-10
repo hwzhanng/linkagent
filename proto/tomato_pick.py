@@ -587,6 +587,10 @@ class TomatoTarget:
     """Deployable oriented-ellipsoid target fitted from RGB-D perception.
 
     ``semi_axes_m`` is ``(a_x, a_y, a_z)`` in ``center_pose``'s local frame.
+    ``stem_direction_xyz`` retains its legacy field name but is frozen as the
+    unit pull axis pointing from the plant/stem toward the fruit (away from the
+    plant), expressed in ``center_pose.frame_id``.  The grasp-frame z+ axis
+    must align with it.
     Images, masks, and point clouds stay behind the perception port; policies
     receive this compact three-dimensional geometry instead of privileged sim
     state or a raw point cloud.

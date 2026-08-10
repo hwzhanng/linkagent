@@ -128,6 +128,7 @@ class MockPickWorld:
         self.detach_attempts = 0
         self.hold_checks = 0
         self.contact = False
+        self.approach_direction: tuple[float, float, float] | None = None
         self.grasped = False
         self.detached = False
         self.slip = False
@@ -236,11 +237,17 @@ class MockPickWorld:
         self.arm_sequence += 1
 
     def follow_pose(self, pose: Pose) -> None:
-        old_z = self.ee_pose.position_m[2]
+        old_position = self.ee_pose.position_m
         self.ee_pose = pose
         self.arm_sequence += 1
-        delta_z = pose.position_m[2] - old_z
-        if not self.contact and delta_z < -1e-9:
+        delta = tuple(
+            current - previous
+            for current, previous in zip(pose.position_m, old_position)
+        )
+        motion_norm_sq = sum(value * value for value in delta)
+        if not self.contact and motion_norm_sq > 1e-18:
+            if self.approach_direction is None:
+                self.approach_direction = delta
             self.contact_attempts += 1
             if (
                 self.scenario.outcome is not MockPickOutcome.NO_CONTACT
@@ -248,7 +255,15 @@ class MockPickWorld:
             ):
                 self.contact = True
                 self.tactile_sequence += 1
-        elif self.grasped and delta_z > 1e-9:
+        elif (
+            self.grasped
+            and self.approach_direction is not None
+            and sum(
+                current * approach
+                for current, approach in zip(delta, self.approach_direction)
+            )
+            < -1e-12
+        ):
             self.detach_attempts += 1
             if (
                 self.scenario.outcome is not MockPickOutcome.DETACH_FAILURE
@@ -271,6 +286,16 @@ class MockPickWorld:
                 and self.grasp_attempts >= self.scenario.grasp_ticks
             ):
                 self.grasped = True
+        if target.closure <= 0.05:
+            self.contact = False
+            self.grasped = False
+            self.detached = False
+            self.slip = False
+            self.approach_direction = None
+            self.contact_attempts = 0
+            self.grasp_attempts = 0
+            self.detach_attempts = 0
+            self.hold_checks = 0
         self.tactile_sequence += 1
 
     def set_hand_joint_positions(self, target: tuple[float, ...]) -> None:

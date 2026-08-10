@@ -50,5 +50,139 @@
       }
     ],
     "final_output": "Offline tomato pick workflow finished."
+  },
+  "offline_harvest_cycle": {
+    "type": "mock",
+    "tool_sequence": [
+      {
+        "name": "check_harvest_system",
+        "arguments": {}
+      },
+      {
+        "name": "detect_tomatoes",
+        "arguments": {}
+      },
+      {
+        "name": "select_harvest_target",
+        "arguments": {}
+      },
+      {
+        "name": "reobserve_tomato",
+        "arguments": {"target_id": "tomato-1"}
+      },
+      {
+        "name": "plan_tomato_grasp",
+        "arguments": {"target_id": "tomato-1", "arm_side": "auto"}
+      },
+      {
+        "name": "check_pregrasp_clearance",
+        "arguments": {"grasp_plan_id": "plan-tomato-1-right-0"}
+      },
+      {
+        "name": "move_to_pick_ready",
+        "arguments": {"grasp_plan_id": "plan-tomato-1-right-0"}
+      },
+      {
+        "name": "execute_tomato_pick",
+        "arguments": {"grasp_plan_id": "plan-tomato-1-right-0"}
+      },
+      {
+        "name": "retreat_with_tomato",
+        "arguments": {"execution_id": "exec-plan-tomato-1-right-0"}
+      },
+      {
+        "name": "transport_payload",
+        "arguments": {"retreat_execution_id": "retreat-exec-plan-tomato-1-right-0"}
+      },
+      {
+        "name": "place_tomato",
+        "arguments": {"transport_execution_id": "transport-payload-exec-plan-tomato-1-right-0"}
+      },
+      {
+        "name": "verify_harvest_cycle",
+        "arguments": {"placement_id": "placement-payload-exec-plan-tomato-1-right-0"}
+      }
+    ],
+    "final_output": "Offline tomato harvest cycle finished."
+  },
+  "offline_harvest_active_view": {
+    "type": "mock",
+    "tool_sequence": [
+      {
+        "name": "check_harvest_system",
+        "arguments": {}
+      },
+      {
+        "name": "detect_tomatoes",
+        "arguments": {}
+      },
+      {
+        "name": "select_harvest_target",
+        "arguments": {}
+      },
+      {
+        "name": "active_view_reposition",
+        "arguments": {}
+      },
+      {
+        "name": "select_harvest_target",
+        "arguments": {}
+      },
+      {
+        "name": "reobserve_tomato",
+        "arguments": {"target_id": "tomato-1"}
+      },
+      {
+        "name": "plan_tomato_grasp",
+        "arguments": {"target_id": "tomato-1", "arm_side": "auto"}
+      },
+      {
+        "name": "check_pregrasp_clearance",
+        "arguments": {"grasp_plan_id": "plan-tomato-1-right-0"}
+      },
+      {
+        "name": "move_to_pick_ready",
+        "arguments": {"grasp_plan_id": "plan-tomato-1-right-0"}
+      },
+      {
+        "name": "execute_tomato_pick",
+        "arguments": {"grasp_plan_id": "plan-tomato-1-right-0"}
+      },
+      {
+        "name": "retreat_with_tomato",
+        "arguments": {"execution_id": "exec-plan-tomato-1-right-0"}
+      },
+      {
+        "name": "transport_payload",
+        "arguments": {"retreat_execution_id": "retreat-exec-plan-tomato-1-right-0"}
+      },
+      {
+        "name": "place_tomato",
+        "arguments": {"transport_execution_id": "transport-payload-exec-plan-tomato-1-right-0"}
+      },
+      {
+        "name": "verify_harvest_cycle",
+        "arguments": {"placement_id": "placement-payload-exec-plan-tomato-1-right-0"}
+      }
+    ],
+    "final_output": "Offline active-view tomato harvest cycle finished."
+  },
+  "offline_harvest_ark_vision": {
+    "type": "mock",
+    "tool_sequence": [
+      {"name": "check_harvest_system", "arguments": {}},
+      {"name": "detect_tomatoes", "arguments": {}},
+      {"name": "select_harvest_target", "arguments": {}},
+      {"name": "reobserve_tomato", "arguments": {"target_id": "tomato-000001"}},
+      {"name": "plan_tomato_grasp", "arguments": {"target_id": "tomato-000001", "arm_side": "auto"}},
+      {"name": "check_pregrasp_clearance", "arguments": {"grasp_plan_id": "plan-tomato-000001-right-0"}},
+      {"name": "move_to_pick_ready", "arguments": {"grasp_plan_id": "plan-tomato-000001-right-0"}},
+      {"name": "execute_tomato_pick", "arguments": {"grasp_plan_id": "plan-tomato-000001-right-0"}},
+      {"name": "retreat_with_tomato", "arguments": {"execution_id": "exec-plan-tomato-000001-right-0"}},
+      {"name": "transport_payload", "arguments": {"retreat_execution_id": "retreat-exec-plan-tomato-000001-right-0"}},
+      {"name": "place_tomato", "arguments": {"transport_execution_id": "transport-payload-exec-plan-tomato-000001-right-0"}},
+      {"name": "verify_harvest_cycle", "arguments": {"placement_id": "placement-payload-exec-plan-tomato-000001-right-0"}}
+    ],
+    "final_output": "Ark VLM RGB-D tomato harvest simulation finished."
   }
 }

@@ -8,6 +8,10 @@ from typing import Any
 
 from module.robotics import Clock, RoboticsBundle
 from module.skills.tomato_pick import PickVerifier
+from module.skills.tomato_vision import (
+    ReplayTomatoVisionPerceptionPort,
+    WorkerTomatoVisionPerceptionPort,
+)
 
 from .contracts import MotionSafetyPort, TomatoGraspPlanner, TomatoPerceptionPort
 from .mock_components import (
@@ -16,6 +20,7 @@ from .mock_components import (
     MockTomatoGraspPlanner,
     MockTomatoPerceptionPort,
 )
+from .training_distribution import TrainingDistributionTomatoGraspPlanner
 from .verification import (
     IndependentPickVerifier,
     PickEvidenceSource,
@@ -26,9 +31,12 @@ from .verification import (
 
 PERCEPTION_REGISTRY: dict[str, Callable[..., TomatoPerceptionPort]] = {
     "mock": MockTomatoPerceptionPort,
+    "tomato_vision_replay": ReplayTomatoVisionPerceptionPort,
+    "tomato_vision_worker": WorkerTomatoVisionPerceptionPort,
 }
 PLANNER_REGISTRY: dict[str, Callable[..., TomatoGraspPlanner]] = {
     "mock": MockTomatoGraspPlanner,
+    "training_distribution": TrainingDistributionTomatoGraspPlanner,
 }
 SAFETY_REGISTRY: dict[str, Callable[..., MotionSafetyPort]] = {
     "mock": MockMotionSafetyPort,

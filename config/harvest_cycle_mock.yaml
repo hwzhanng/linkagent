@@ -1,0 +1,159 @@
+{
+  "models_file": "_model.yaml",
+  "perception_file": "_perception.yaml",
+  "agent": {
+    "model": "offline_harvest_cycle",
+    "max_iterations": 13,
+    "max_tool_calls": 12,
+    "max_tool_calls_per_turn": 1
+  },
+  "env": {
+    "type": "mock",
+    "observations": [
+      {
+        "sequence": 0,
+        "timestamp_s": 0.0,
+        "metadata": {
+          "tomato_vision": {
+            "camera": {
+              "device_id": "orbbec-replay-001",
+              "depth_aligned_to_rgb": true,
+              "evidence_sources": ["replay:rgb", "replay:aligned-depth"],
+              "intrinsics": {
+                "width_px": 640,
+                "height_px": 480,
+                "fx_px": 600.0,
+                "fy_px": 600.0,
+                "cx_px": 320.0,
+                "cy_px": 240.0,
+                "calibration_id": "orbbec_gemini_pro_mock_calibration_v1"
+              },
+              "camera_pose_in_world": {
+                "position_m": [0.35, -0.25, -0.08],
+                "quaternion_wxyz": [1.0, 0.0, 0.0, 0.0],
+                "frame_id": "world"
+              }
+            },
+            "instances": [
+              {
+                "instance_id": "mask-1",
+                "track_id": "tomato-1",
+                "bbox_xyxy_px": [365.0, 210.0, 425.0, 270.0],
+                "mask_pixels_xy": [[395, 240], [372, 240], [418, 240], [395, 218], [395, 262]],
+                "detector_confidence": 0.97,
+                "ripeness_score": 0.92,
+                "occlusion_ratio": 0.08,
+                "depth_samples_uvm": [
+                  [395.01, 240.0, 0.82977],
+                  [395.01, 240.0, 0.77023],
+                  [372.43, 240.0, 0.80372],
+                  [417.77, 240.0, 0.79628],
+                  [395.0, 217.5, 0.8],
+                  [395.0, 262.5, 0.8]
+                ],
+                "stem_point_camera_m": [0.1, 0.05, 0.8]
+              }
+            ],
+            "vlm_selection": {
+              "selected_instance_id": "mask-1",
+              "confidence": 0.95,
+              "reason": "ripe, reachable, and minimally occluded numbered candidate",
+              "point_xy": [395, 240],
+              "selector_model": "replay_set_of_mark_vlm_v1"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "task": {
+    "type": "harvest_cycle",
+    "default_arm_side": "right",
+    "max_skill_duration_s": 4.0,
+    "max_atomic_duration_s": 8.0,
+    "robotics": {"type": "mock", "scenario": {"outcome": "success"}},
+    "skill": {"type": "mock"},
+    "perception": {
+      "type": "tomato_vision_replay",
+      "expected_calibration_id": "orbbec_gemini_pro_mock_calibration_v1",
+      "expected_device_id": "orbbec-replay-001"
+    },
+    "planner": {"type": "training_distribution"},
+    "safety": {"type": "mock"},
+    "verifier": {"type": "mock"},
+    "atomic_skills": {
+      "system_self_check": {
+        "type": "system_self_check",
+        "execution_mode": "offline_mock"
+      },
+      "active_view_reposition": {
+        "type": "active_view_reposition",
+        "execution_mode": "offline_mock",
+        "view_profile_id": "offline-mock-fixed-top-arm-parallax-v1",
+        "view_arm_side": "right",
+        "view_offsets_world_m": [[0.0, 0.05, 0.0], [0.0, -0.05, 0.0], [0.0, 0.0, 0.05]],
+        "workspace_min_m": [-0.20, -0.80, 0.20],
+        "workspace_max_m": [0.80, 0.80, 1.40]
+      },
+      "select_harvest_target": {
+        "type": "select_harvest_target",
+        "reachability_profile_id": "offline-mock-right-arm-workspace-v1",
+        "reachability_arm_side": "right",
+        "workspace_min_m": [0.20, -0.60, 0.30],
+        "workspace_max_m": [0.80, 0.20, 1.20]
+      },
+      "target_reobserve": {
+        "type": "target_reobserve",
+        "require_depth": true,
+        "require_new_sample": false
+      },
+      "pregrasp_clearance_check": {
+        "type": "pregrasp_clearance_check"
+      },
+      "move_to_pick_ready": {
+        "type": "move_to_pick_ready",
+        "execution_mode": "offline_mock"
+      },
+      "safe_retract": {"type": "safe_retract"},
+      "payload_retreat": {"type": "payload_retreat"},
+      "transport_payload": {"type": "transport_payload"},
+      "payload_place": {"type": "payload_place"},
+      "localize_dropped_payload": {
+        "type": "localize_dropped_payload",
+        "recovery_workspace_xyzxyz_m": [-0.20, -0.80, 0.0, 0.80, 0.80, 0.50]
+      },
+      "reset_for_next_target": {"type": "reset_for_next_target"}
+    },
+    "camera_health": {
+      "type": "mock",
+      "sdk_root": "botSDK/orbbec-gemini-pro-viewer",
+      "calibration_id": "orbbec_gemini_pro_mock_calibration_v1"
+    },
+    "vision_worker_health": {"type": "mock"},
+    "emergency_stop_health": {"type": "mock"},
+    "target_observation": {
+      "type": "tomato_vision_replay",
+      "expected_calibration_id": "orbbec_gemini_pro_mock_calibration_v1",
+      "expected_device_id": "orbbec-replay-001"
+    },
+    "clearance_scene": {"type": "mock"},
+    "dropped_payload_observation": {"type": "mock"},
+    "placement_verifier": {"type": "mock"},
+    "container": {
+      "container_id": "harvest-bin-1",
+      "placement_pose": {
+        "position_m": [0.35, 0.40, 0.65],
+        "quaternion_wxyz": [1.0, 0.0, 0.0, 0.0],
+        "frame_id": "world"
+      },
+      "available": true,
+      "capacity_remaining": 20
+    },
+    "safe_pose": {
+      "position_m": [0.0, 0.0, 0.80],
+      "quaternion_wxyz": [1.0, 0.0, 0.0, 0.0],
+      "frame_id": "world"
+    }
+  },
+  "runtime": {"max_steps": 1}
+}

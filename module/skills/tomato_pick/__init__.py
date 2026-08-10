@@ -44,8 +44,10 @@ from .policy import (
     load_skill_profile,
     validate_skill_manifest,
 )
+from .ready import evaluate_ppo_ready
 from .runner import PickVerifier, TomatoPickSkillContext, TomatoPickSkillRunner, VerifierSession
 from .supervisor import SupervisedAction, TomatoPickActionSupervisor
+from .target_state import TargetStatePort, WorldThenHandTargetStatePort
 
 __all__ = [
     "ACTION_DIM",
@@ -85,12 +87,15 @@ __all__ = [
     "TactileFeatureExtractor",
     "TomatoPickAction",
     "TomatoPickActionSupervisor",
+    "TargetStatePort",
     "TomatoPickObservation",
     "TomatoPickPolicy",
     "TomatoPickSkillContext",
     "TomatoPickSkillRunner",
     "VerifierSession",
+    "WorldThenHandTargetStatePort",
     "build_policy",
+    "evaluate_ppo_ready",
     "g20_synergy_to_joint_targets",
     "load_skill_profile",
     "validate_skill_manifest",

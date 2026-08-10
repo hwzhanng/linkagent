@@ -18,6 +18,21 @@ DirectRLEnv，并完成 Clean-v5 正式 PPO 训练。当前推荐的 `model_1350
 训练的 C2 Isaac PPO skill 保持隔离。SDK 中旧 Fruit-Grasp baseline 已清理，审计结论
 只保留在文档中。
 
+采摘策略之外新增了 `HarvestCycleTask`：首先执行只读 `system_self_check` 准入门禁，
+随后在原有 PPO pick 前增加同步 RGB-D、实例支持区域、VLM 候选选择、对齐深度三维椭球、
+确定性 `select_harvest_target` 筛选、遮挡时的 `active_view_reposition`、目标重观察、训练分布规划、
+无动作 `pregrasp_clearance_check` 和 `move_to_pick_ready`，在其后增加带载回撤、低冲击运输、容器放置、独立闭环验收，
+并提供失败后的安全撤离。新增能力使用统一
+`AtomicSkill` 合约和有界结构化轨迹；视觉链现有核心内 replay 后端，以及 loopback HTTP
+隔离 Worker。Worker 可运行 replay、Ultralytics YOLO-seg + VLM，也可用 Ark 多模态框选临时
+替代 YOLO；后者仍由本地 aligned depth 生成三维数据，不让 VLM 直接提供位姿或动作。
+带载阶段检测到掉果后，任务会进入 `dropped_payload_recovery`，先由
+`localize_dropped_payload` 使用固定顶置视角判断果实是否已入容器、位于专用回收区或需要人工
+处理；该技能不授权运动，也不会误用为悬挂果实训练的 PPO。
+Isaac 验收相机固定安装在双臂中间顶部并斜向前下看；主动换视角只移动机械臂去遮挡，不移动
+相机。当前代码和可复现的完整 PhysX 验收命令见
+[`docs/harvest_cycle/ISAAC_SIM_ACCEPTANCE.md`](./docs/harvest_cycle/ISAAC_SIM_ACCEPTANCE.md)。
+
 当前正式 minimal-v3 策略使用 66D actor observation、83D privileged critic state 和
 11D action。训练前的旧布局不进入当前 checkpoint 兼容边界。
 
@@ -33,11 +48,19 @@ DirectRLEnv，并完成 Clean-v5 正式 PPO 训练。当前推荐的 `model_1350
 [`PPO_MODEL1450_REPRODUCTION.md`](./docs/tomato_pick/PPO_MODEL1450_REPRODUCTION.md)，但不再是
 推荐模型。
 
-## Physics-v1 source baseline（不含 checkpoint）
+## Physics-v1 perf-v7 未完成训练 checkpoint 1200
 
-Physics-v1 将用户标定的新版连续 5D 手部流形、派生碰撞 USD、相关物理/随机化配置、
-奖励信用门控和训练前门禁证据作为独立源码基线发布。本次源码交接不包含任何新的
-Physics-v1 checkpoint、W&B 运行文件或 TensorBoard 事件。完整复现和队友修改边界见
+Physics-v1 perf-v7 已将新版连续 5D 手部流形、版本化碰撞 USD、120 Hz 物理配置和训练
+门禁用于正式训练。计划共 1,800 次 PPO update；训练日志到达 iteration 1208 后中断，
+最后完整、可恢复的 checkpoint 是 `model_1200.pt`。它随 resolved config、TensorBoard
+history、冻结输入哈希和暂停清单一起发布，供从 iteration 1200 精确续训。
+
+这不是最终模型，也没有固定多种子评测，不能替代已发布的 Clean-v5 model 1350。
+checkpoint SHA-256 为
+`d757dcb6bd6e0b7328ebef53dd049620d5457c8b54857a95ad6083c41a2bd83c`；核验、续训命令和
+完成后的模型选择门禁见
+[`PHYSICS_V1_INCOMPLETE_RUN_1200.md`](./docs/tomato_pick/PHYSICS_V1_INCOMPLETE_RUN_1200.md)。
+此前的源码基线说明保留在
 [`PHYSICS_V1_SOURCE_REPRODUCTION.md`](./docs/tomato_pick/PHYSICS_V1_SOURCE_REPRODUCTION.md)。
 
 ## 快速开始
@@ -66,6 +89,65 @@ python -m compileall module proto task script tests
 ```bash
 python -m script.run --config config/agri_pick_mock.yaml
 ```
+
+运行包含重观察、带载回撤、放置和独立验收的离线采摘周期：
+
+```bash
+python -m script.run --config config/harvest_cycle_mock.yaml
+```
+
+运行必须经历“遮挡→换视角→重新识别”的闭环：
+
+```bash
+python -m script.run --config config/harvest_cycle_active_view_mock.yaml
+```
+
+验证隔离视觉 Worker 的真实跨进程闭环（分别在两个终端运行）：
+
+```bash
+python -m script.tomato_vision_worker --config config/tomato_vision_worker_replay.yaml
+python -m script.run --config config/harvest_cycle_worker_replay.yaml
+```
+
+使用 Ark 真实多模态框选完成合成 RGB-D 跨进程采摘闭环：
+
+```bash
+set -a; . ./.env.local; set +a
+python -m script.tomato_vision_worker --config config/tomato_vision_worker_ark_box.yaml
+# 另一个终端，同样载入 ARK_API_KEY：
+python -m script.run --config config/harvest_cycle_worker_ark.yaml
+```
+
+`ark_vlm_box` 是 YOLO 权重到位前的临时后端：Ark 返回 0–1000 归一化 box、中心点、果梗点和
+语义分数；Worker 本地映射像素、结合 aligned depth 构造保守支持区域、拟合三维椭球并追踪
+目标。合成输入可由 `python -m script.generate_tomato_vision_sim_capture` 重建。
+
+准备位移动前会调用 `pregrasp_clearance_check`。它从配置端口取得 world-frame 场景点，剔除
+选中果实椭球内点，对“当前末端→预抓取→接触→果心”三段路径做扫掠净空检查；检查本身不
+发送动作，阻挡、场景过期或覆盖不足时不会启动准备位移动或 PPO。默认配置用确定性场景，
+`observation_pointcloud` 端口为后续深度相机保留同一合同。
+
+采摘验证后不再从果树回撤点直接移动到容器。`transport_payload` 先垂直抬升，再低速移动到
+由容器位姿和固定高度偏移生成的前置位；起点、抬升终点和运输终点都读取手部与五指触觉。
+掉果或保持不足会锁住放置，`place_tomato` 只允许从该次运输绑定的前置位短距离下探并松手。
+
+一次放置验收完成后，可显式调用 `reset_for_next_target`：它确认手为空，将机械臂移回配置观测位，
+清除本周期的目标、计划和 PPO execution 绑定，同时保留周期验证历史。下一次检测必须来自新的
+observation sequence；离线测试已连续完成两个独立采摘周期。
+
+RGB-D 采集数据面现已支持原子 spool、`latest.json` 严格新帧、录制导入和 recorded-shadow
+审计。硬件未接入时可先校验 profile；有 raw RGB-D 录制后再执行导入和审计：
+
+```bash
+python -m script.audit_tomato_vision_spool \
+  --profile config/tomato_vision_spool_recorded_shadow.yaml \
+  --output artifacts/vision_spool/recorded-shadow-audit.json
+```
+
+profile 默认要求 100 帧，所以空目录或不完整录制会失败，这是预期的准入行为。Orbbec
+厂商 adapter、真实标定、YOLO 权重和 VLM endpoint 尚未随仓提供，不会自动降级成 viewer
+预览或旧视觉 metadata。详细接缝和录制导入命令见
+[`docs/harvest_cycle/VISION_WORKER.md`](./docs/harvest_cycle/VISION_WORKER.md)。
 
 运行无物理契约门禁（不会启动 Isaac 或 PPO）：
 
@@ -120,6 +202,15 @@ Anthropic 或 LangChain SDK 类型。
 C1 已完成完全离线的 `AgriPickTask + TomatoPickSkillRunner` 闭环；C2 已运行契约 smoke、
 Isaac 物理门禁、PPO 数值探针和正式训练，并把 Agent、契约测试、Isaac/PPO 三套环境
 隔离。下一阶段是 C3 真实感知、触觉标定和 sim-to-real 验收。
+
+采摘周期的能力边界、证据链、真实硬件接入门禁和后续原子能力优先级见
+[`docs/harvest_cycle/ATOMIC_SKILLS_ROADMAP.md`](./docs/harvest_cycle/ATOMIC_SKILLS_ROADMAP.md)。
+视觉选择、三维点云、PPO 9 维输入、准备位训练分布和真实相机接入门禁见
+[`docs/harvest_cycle/VISION_TO_PPO_PIPELINE.md`](./docs/harvest_cycle/VISION_TO_PPO_PIPELINE.md)。
+隔离 Worker、raw RGB-D sidecar、真实 YOLO/VLM 配置和失败边界见
+[`docs/harvest_cycle/VISION_WORKER.md`](./docs/harvest_cycle/VISION_WORKER.md)。
+Orbbec Gemini Pro 的当前只读接入方式、自检项目和离线限制见
+[`docs/harvest_cycle/SYSTEM_SELF_CHECK.md`](./docs/harvest_cycle/SYSTEM_SELF_CHECK.md)。
 
 C4-O 已完成 SDK-neutral gateway 契约、LinkBot/G20 DTO 转换、双臂双手生命周期、控制
 租约、只读门禁、命令幂等、全系统急停以及四设备部署模板。它没有导入供应商 SDK，
