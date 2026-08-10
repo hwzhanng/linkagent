@@ -28,6 +28,7 @@ TEST_FILES = (
     "tests/test_tomato_physics_v2_experiment.py",
     "tests/test_tomato_physics_v2_calibration.py",
     "tests/test_tomato_physics_v2_contract_parity.py",
+    "tests/test_tomato_mdp.py",
 )
 
 
@@ -60,6 +61,15 @@ def qualification_commands(python: Path, output: Path) -> list[tuple[str, list[s
                     str(output / "parameter_sensitivity.json"),
                     "--markdown",
                     str(output / "parameter_sensitivity.md"),
+                ],
+            ),
+            (
+                "shared_reward_audit",
+                [
+                    str(python),
+                    str(ROOT / "script/audit_tomato_clean_reward.py"),
+                    "--output",
+                    str(output / "shared_reward_audit.json"),
                 ],
             ),
             (

@@ -24,9 +24,10 @@ The runner executes an explicit allow-list:
 
 1. Static and analytic Physics-v2 gates 1 through 7.
 2. A 50,000-sample correlated parameter sensitivity screen.
-3. Reward/success counterfactuals and curriculum validation.
-4. Static success-contract parity and unresolved-semantic registration.
-5. Physics-v2 CPU unit and property tests.
+3. Shared tomato MDP reward-schedule audit.
+4. Reward/success counterfactuals and curriculum validation.
+5. Static success-contract parity and unresolved-semantic registration.
+6. Physics-v2 and shared-MDP CPU unit/property tests.
 
 It sets `CUDA_VISIBLE_DEVICES` to an empty value, disables W&B, rejects the
 Omniverse EULA for child commands, and removes known robot/ROS endpoint
