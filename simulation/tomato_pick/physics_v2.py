@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from simulation.tomato_pick.config import REPOSITORY_ROOT, load_object
+from simulation.tomato_pick.physics_v1 import load_physics_v1_profile
 
 
 PHYSICS_V2_PROFILE_PATH = (
@@ -100,6 +101,50 @@ def load_physics_v2_profile(
         asset = profile.get("robot_asset_v2")
         if not isinstance(asset, dict) or len(asset.get("sha256", "")) != 64:
             raise ValueError("Physics-v2 stage 2+ requires an independent robot asset")
+
+    success_contract = profile.get("success_contract_parity")
+    if not isinstance(success_contract, dict):
+        raise ValueError("Physics-v2 success_contract_parity must be an object")
+    thresholds = success_contract.get("thresholds")
+    if not isinstance(thresholds, dict):
+        raise ValueError("Physics-v2 success contract thresholds must be an object")
+    secure_success = load_physics_v1_profile().get("secure_success")
+    common_stem = profile.get("stem_modes_v2", {}).get("common")
+    if not isinstance(secure_success, dict) or not isinstance(common_stem, dict):
+        raise ValueError("Physics-v2 success contract references missing parent thresholds")
+    expected_thresholds = {
+        "minimum_supported_fingertips": secure_success.get("minimum_supported_fingertips"),
+        "minimum_support_force_n": secure_success.get("minimum_support_force_n"),
+        "maximum_center_distance_m": secure_success.get("maximum_center_distance_m"),
+        "maximum_relative_speed_m_s": secure_success.get("maximum_relative_speed_m_s"),
+        "hold_policy_steps": secure_success.get("hold_policy_steps"),
+        "maximum_fingertip_force_n": common_stem.get("safe_maximum_fingertip_force_n"),
+        # These are the explicit v2 contract values.  They must not be copied
+        # from the candidate profile itself, otherwise a drifted profile could
+        # validate against its own incorrect thresholds.
+        "minimum_palm_support_force_n": 0.25,
+        "palm_support_requires_detach": True,
+    }
+    for key, expected in expected_thresholds.items():
+        if key not in thresholds:
+            raise ValueError(f"Physics-v2 success contract is missing {key}")
+        if thresholds[key] != expected:
+            raise ValueError(
+                f"Physics-v2 success contract mismatch: {key} must match {expected!r}"
+            )
+    if thresholds["minimum_palm_support_force_n"] <= 0.0:
+        raise ValueError("Physics-v2 palm support threshold must be positive")
+    if thresholds["maximum_fingertip_force_n"] <= 0.0:
+        raise ValueError("Physics-v2 force ceiling must be positive")
+    if success_contract.get("status") != "explicit_palm_support_after_qualified_detach":
+        raise ValueError("Physics-v2 success contract status is not explicit palm support")
+    semantic_difference = success_contract.get("semantic_difference")
+    if not isinstance(semantic_difference, dict):
+        raise ValueError("Physics-v2 success contract semantic_difference must be an object")
+    if semantic_difference.get("resolution_status") != (
+        "implemented_static_pending_exact_runtime_gpu_validation"
+    ):
+        raise ValueError("Physics-v2 success contract must remain pending exact GPU validation")
     if boundary.get("training_allowed") is not False:
         raise ValueError("Physics-v2 training must remain fail-closed at step 1")
 

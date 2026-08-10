@@ -146,6 +146,36 @@ SCENARIOS: tuple[dict[str, object], ...] = (
         "hold_steps": 20,
         "expected_success": False,
     },
+    {
+        "id": "palm_support_threshold_boundary",
+        "force_n": [0.0, 0.0, 0.0, 0.0, 0.0],
+        "palm_force_n": 0.25,
+        "detached": True,
+        "distance_m": 0.03,
+        "speed_m_s": 0.02,
+        "hold_steps": 20,
+        "expected_success": True,
+    },
+    {
+        "id": "palm_force_ceiling_boundary",
+        "force_n": [0.0, 0.0, 0.0, 0.0, 0.0],
+        "palm_force_n": 8.0,
+        "detached": True,
+        "distance_m": 0.03,
+        "speed_m_s": 0.02,
+        "hold_steps": 20,
+        "expected_success": True,
+    },
+    {
+        "id": "palm_force_just_above_ceiling",
+        "force_n": [0.0, 0.0, 0.0, 0.0, 0.0],
+        "palm_force_n": 8.0001,
+        "detached": True,
+        "distance_m": 0.03,
+        "speed_m_s": 0.02,
+        "hold_steps": 20,
+        "expected_success": False,
+    },
 )
 
 

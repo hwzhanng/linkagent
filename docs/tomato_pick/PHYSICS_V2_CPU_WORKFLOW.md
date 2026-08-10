@@ -94,6 +94,8 @@ detachment event.
 The CPU parity report marks the semantics as statically aligned and keeps the
 formal gate closed until the exact Isaac/PhysX runtime path is validated on a
 powered GPU. This is a validation boundary, not a second success definition.
+The profile loader also rejects threshold drift, legacy fingertip-only status,
+and any attempt to mark the exact runtime validation complete prematurely.
 
 ## Deferred until power or hardware returns
 
