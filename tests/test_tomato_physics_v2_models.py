@@ -127,6 +127,39 @@ def test_v2_excessive_physical_force_cannot_succeed() -> None:
     assert not bool(result["success"].item())
 
 
+def test_v2_palm_contact_can_retain_only_after_finger_qualified_detach() -> None:
+    palm_hold = physical_task_predicates(
+        torch.zeros((1, 5)),
+        physical_palm_force_n=torch.tensor([2.0]),
+        stem_detached=torch.ones(1, dtype=torch.bool),
+        center_distance_m=torch.tensor([0.03]),
+        relative_speed_m_s=torch.tensor([0.02]),
+        hold_steps=torch.tensor([20]),
+    )
+    attached = physical_task_predicates(
+        torch.zeros((1, 5)),
+        physical_palm_force_n=torch.tensor([2.0]),
+        stem_detached=torch.zeros(1, dtype=torch.bool),
+        center_distance_m=torch.tensor([0.03]),
+        relative_speed_m_s=torch.tensor([0.02]),
+        hold_steps=torch.tensor([20]),
+    )
+    overloaded = physical_task_predicates(
+        torch.zeros((1, 5)),
+        physical_palm_force_n=torch.tensor([9.0]),
+        stem_detached=torch.ones(1, dtype=torch.bool),
+        center_distance_m=torch.tensor([0.03]),
+        relative_speed_m_s=torch.tensor([0.02]),
+        hold_steps=torch.tensor([20]),
+    )
+    assert bool(palm_hold["palm_support"].item())
+    assert bool(palm_hold["success"].item())
+    assert not bool(attached["palm_support"].item())
+    assert not bool(attached["success"].item())
+    assert not bool(overloaded["within_force_limit"].item())
+    assert not bool(overloaded["success"].item())
+
+
 def test_v2_fruit_profiles_are_deterministic_correlated_and_mass_consistent() -> None:
     first = sample_correlated_fruit_contact_profiles(
         8192, generator=torch.Generator().manual_seed(42)

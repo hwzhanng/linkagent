@@ -26,7 +26,7 @@ The runner executes an explicit allow-list:
 2. A 50,000-sample correlated parameter sensitivity screen.
 3. Shared tomato MDP reward-schedule audit.
 4. Reward/success counterfactuals and curriculum validation.
-5. Static success-contract parity and unresolved-semantic registration.
+5. Static success-contract parity and explicit palm-support registration.
 6. Physics-v2 and shared-MDP CPU unit/property tests.
 
 It sets `CUDA_VISIBLE_DEVICES` to an empty value, disables W&B, rejects the
@@ -83,15 +83,17 @@ from-scratch training, CPU qualification, 64-environment integration,
 ## Success-contract parity
 
 The Physics-v1/Physics-v2 inherited runtime thresholds and the offline oracle
-now agree on two supported fingertips, 0.25 N minimum support, 6 cm retained
-distance, 0.10 m/s relative speed, 20 policy steps, and an 8 N force ceiling.
+agree on two opposed fingertips for detachment, 0.25 N minimum fingertip
+support, 6 cm retained distance, 0.10 m/s relative speed, 20 policy steps, and
+an 8 N force ceiling. Physics-v2 now makes palm load transfer explicit: a
+tomato-filtered ContactSensor on `right_hand_base_link` may provide the
+post-detachment support evidence, with a 0.25 N palm threshold and the same
+8 N safety ceiling. Fingertip opposition is still required to qualify the
+detachment event.
 
-One semantic difference remains intentionally visible: the conservative
-offline oracle requires continuous thumb-opposed fingertip support, while the
-integrated runtime allows load to transfer to the palm or between fingers after
-a qualified detach. The CPU parity report therefore sets exact semantic parity
-to false and blocks formal claims until palm contact evidence and GPU
-requalification resolve the choice.
+The CPU parity report marks the semantics as statically aligned and keeps the
+formal gate closed until the exact Isaac/PhysX runtime path is validated on a
+powered GPU. This is a validation boundary, not a second success definition.
 
 ## Deferred until power or hardware returns
 

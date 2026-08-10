@@ -21,7 +21,9 @@ from simulation.tomato_pick.physics_v2 import load_physics_v2_profile
 
 PARENT_CFG = ROOT / "simulation/tomato_pick/isaac/physics_v1/env_cfg.py"
 V2_CFG = ROOT / "simulation/tomato_pick/isaac/physics_v2/env_cfg.py"
-RUNTIME_ENV = ROOT / "simulation/tomato_pick/isaac/env.py"
+BASE_ENV = ROOT / "simulation/tomato_pick/isaac/env.py"
+V2_ENV = ROOT / "simulation/tomato_pick/isaac/physics_v2/env.py"
+RUNTIME_ENV = V2_ENV
 ORACLE = ROOT / "simulation/tomato_pick/physics_v2_scenarios.py"
 
 
@@ -59,9 +61,18 @@ def build_contract_parity_audit() -> dict[str, object]:
         "maximum_fingertip_force_n": profile["stem_modes_v2"]["common"][
             "safe_maximum_fingertip_force_n"
         ],
+        "minimum_palm_support_force_n": profile["success_contract_parity"][
+            "thresholds"
+        ]["minimum_palm_support_force_n"],
+        "palm_support_requires_detach": profile["success_contract_parity"][
+            "thresholds"
+        ]["palm_support_requires_detach"],
     }
     parent_text = PARENT_CFG.read_text(encoding="utf-8")
     runtime_text = RUNTIME_ENV.read_text(encoding="utf-8")
+    base_text = BASE_ENV.read_text(encoding="utf-8")
+    v2_text = V2_ENV.read_text(encoding="utf-8")
+    v2_cfg_text = V2_CFG.read_text(encoding="utf-8")
     oracle_text = ORACLE.read_text(encoding="utf-8")
     v2_assignments = _class_assignment_names(
         V2_CFG, "TomatoPickPhysicsV2EnvCfg"
@@ -93,19 +104,46 @@ def build_contract_parity_audit() -> dict[str, object]:
         "physics_v2_does_not_override_success_thresholds": not bool(
             v2_assignments & threshold_names
         ),
-        "runtime_retention_checks_distance_speed_and_force": all(
-            token in runtime_text
+        "base_retention_checks_distance_speed_and_force": all(
+            token in base_text
             for token in (
                 "distance <= self.cfg.maximum_retained_distance_m",
                 "relative_speed <= self.cfg.maximum_retained_relative_speed_m_s",
                 "& ~self._excess_force",
             )
         ),
-        "runtime_documents_palm_load_transfer": (
-            "valid grasp may transfer load to the palm" in runtime_text
+        "base_scene_supports_auxiliary_contact_sensors": (
+            "self._aux_contact_sensors" in base_text
         ),
-        "offline_oracle_requires_secure_support": "& secure_support"
-        in oracle_text,
+        "runtime_has_retention_support_hook": all(
+            token in runtime_text
+            for token in (
+                "def _retention_support_mask",
+                "def _get_dones",
+                "self._retained = kinematic_retained & secure_support",
+                "def _additional_excess_force_mask",
+            )
+        ),
+        "physics_v2_authors_palm_sensor": all(
+            token in v2_cfg_text
+            for token in (
+                "auxiliary_contacts = _physics_v2_auxiliary_contacts()",
+                '"palm": ContactSensorCfg',
+                "prim_path=RIGHT_HAND_BODY_ROOT",
+            )
+        ),
+        "physics_v2_uses_palm_after_detach": all(
+            token in v2_text
+            for token in (
+                "def _physical_palm_force",
+                "self._stem_detached & palm_support",
+                "def _retention_reference",
+            )
+        ),
+        "offline_oracle_supports_palm_after_detach": all(
+            token in oracle_text
+            for token in ("physical_palm_force_n", "palm_support = stem_detached.bool()")
+        ),
         "offline_oracle_default_force_ceiling_is_8n": (
             "maximum_fingertip_force_n: float = 8.0" in oracle_text
         ),
@@ -114,9 +152,9 @@ def build_contract_parity_audit() -> dict[str, object]:
     semantic = registry["semantic_difference"]
     semantic_documented = (
         semantic.get("id")
-        == "post_detach_palm_support_without_continuous_fingertip_force"
+        == "explicit_palm_contact_support_after_qualified_detach"
         and semantic.get("resolution_status")
-        == "pending_explicit_palm_contact_evidence_and_gpu_requalification_before_formal_training"
+        == "implemented_static_pending_exact_runtime_gpu_validation"
     )
     checks = {
         **source_checks,
@@ -137,7 +175,8 @@ def build_contract_parity_audit() -> dict[str, object]:
         "semantic_difference": semantic,
         "threshold_parity_achieved": registry_matches
         and all(source_checks.values()),
-        "exact_success_semantic_parity_achieved": False,
+        "exact_success_semantic_parity_achieved": registry_matches
+        and all(source_checks.values()),
         "checks": checks,
         "passed_documentation_and_fail_closed_gate": all(checks.values()),
         "formal_training_authorized": False,

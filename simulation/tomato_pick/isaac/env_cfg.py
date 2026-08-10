@@ -272,6 +272,9 @@ class TomatoPickEnvCfg(DirectRLEnvCfg):
         )
         for name, prim_path in RIGHT_FINGERTIP_PATHS.items()
     }
+    # Optional non-fingertip contact sensors are kept separate from the five
+    # fingertip force channels so existing reward dimensions remain unchanged.
+    auxiliary_contacts = {}
 
     action_scales = (0.004, 0.004, 0.006, 0.040, 0.040, 0.060)
     # The verified reset needs about 9 cm of forward travel to reach the

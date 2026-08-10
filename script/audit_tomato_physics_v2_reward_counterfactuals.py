@@ -116,6 +116,36 @@ SCENARIOS: tuple[dict[str, object], ...] = (
         "hold_steps": 20,
         "expected_success": False,
     },
+    {
+        "id": "palm_supported_after_qualified_detach",
+        "force_n": [0.0, 0.0, 0.0, 0.0, 0.0],
+        "palm_force_n": 2.0,
+        "detached": True,
+        "distance_m": 0.03,
+        "speed_m_s": 0.02,
+        "hold_steps": 20,
+        "expected_success": True,
+    },
+    {
+        "id": "palm_contact_before_detach",
+        "force_n": [0.0, 0.0, 0.0, 0.0, 0.0],
+        "palm_force_n": 2.0,
+        "detached": False,
+        "distance_m": 0.03,
+        "speed_m_s": 0.02,
+        "hold_steps": 20,
+        "expected_success": False,
+    },
+    {
+        "id": "overloaded_palm_contact",
+        "force_n": [0.0, 0.0, 0.0, 0.0, 0.0],
+        "palm_force_n": 9.0,
+        "detached": True,
+        "distance_m": 0.03,
+        "speed_m_s": 0.02,
+        "hold_steps": 20,
+        "expected_success": False,
+    },
 )
 
 
@@ -156,6 +186,11 @@ def build_reward_audit() -> dict[str, object]:
     for scenario in SCENARIOS:
         result = physical_task_predicates(
             torch.tensor([scenario["force_n"]], dtype=torch.float64),
+            physical_palm_force_n=(
+                torch.tensor([scenario["palm_force_n"]], dtype=torch.float64)
+                if "palm_force_n" in scenario
+                else None
+            ),
             stem_detached=torch.tensor([scenario["detached"]], dtype=torch.bool),
             center_distance_m=torch.tensor([scenario["distance_m"]], dtype=torch.float64),
             relative_speed_m_s=torch.tensor([scenario["speed_m_s"]], dtype=torch.float64),
@@ -167,6 +202,8 @@ def build_reward_audit() -> dict[str, object]:
             {
                 **scenario,
                 "observed_secure_support": bool(result["secure_support"].item()),
+                "observed_fingertip_support": bool(result["fingertip_support"].item()),
+                "observed_palm_support": bool(result["palm_support"].item()),
                 "observed_kinematic_retained": bool(result["kinematic_retained"].item()),
                 "observed_within_force_limit": bool(result["within_force_limit"].item()),
                 "observed_success": success,

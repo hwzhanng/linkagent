@@ -90,11 +90,16 @@ def test_physics_v2_preserves_parent_and_learning_interface_methods() -> None:
             "_apply_action",
             "_apply_attachment_wrench",
             "_apply_workspace_reset",
+            "_additional_excess_force_mask",
             "_get_dones",
             "_measured_finger_pressure",
             "_move_stem_visual",
             "_pre_physics_step",
-        "_reset_idx",
+            "_physical_palm_force",
+            "_retention_reference",
+            "_retention_support_diagnostics",
+            "_retention_support_mask",
+            "_reset_idx",
     }
     assert "_get_observations" not in methods
     assert "_get_rewards" not in methods

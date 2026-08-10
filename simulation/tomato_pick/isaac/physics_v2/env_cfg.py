@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import math
 
+from isaaclab.sensors import ContactSensorCfg
 from isaaclab.utils.configclass import configclass
 from isaaclab.managers import EventTermCfg as EventTerm
 
@@ -12,7 +13,10 @@ from simulation.tomato_pick.isaac.physics_v1.env_cfg import (
     TomatoPickPhysicsV1EventCfg,
     TomatoPickPhysicsV1EnvCfg,
 )
-from simulation.tomato_pick.isaac.env_cfg import RIGHT_FINGERTIP_PATHS
+from simulation.tomato_pick.isaac.env_cfg import (
+    RIGHT_HAND_BODY_ROOT,
+    RIGHT_FINGERTIP_PATHS,
+)
 from simulation.tomato_pick.physics_v2 import PHYSICS_V2_ROBOT_USD_PATH
 
 from .assets import author_correlated_fruit_profiles_v2
@@ -37,6 +41,23 @@ def _physics_v2_fingertip_contacts():
     return sensors
 
 
+def _physics_v2_auxiliary_contacts():
+    """Track physical tomato contact on the palm as a separate force channel."""
+
+    return {
+        "palm": ContactSensorCfg(
+            prim_path=RIGHT_HAND_BODY_ROOT,
+            update_period=1.0 / 120.0,
+            history_length=0,
+            filter_prim_paths_expr=["{ENV_REGEX_NS}/Tomato"],
+            track_pose=True,
+            track_contact_points=True,
+            track_friction_forces=True,
+            max_contact_data_count_per_prim=64,
+        )
+    }
+
+
 @configclass
 class TomatoPickPhysicsV2EventCfg(TomatoPickPhysicsV1EventCfg):
     fruit_profile = EventTerm(
@@ -53,6 +74,7 @@ class TomatoPickPhysicsV2EnvCfg(TomatoPickPhysicsV1EnvCfg):
     robot = copy.deepcopy(_PHYSICS_V1_CFG.robot)
     robot.spawn.usd_path = str(PHYSICS_V2_ROBOT_USD_PATH)
     fingertip_contacts = _physics_v2_fingertip_contacts()
+    auxiliary_contacts = _physics_v2_auxiliary_contacts()
     events = TomatoPickPhysicsV2EventCfg()
     action_delay_steps = (0, 2)
     # Re-evaluate the inherited hand-viewer center on the formal USD using the
@@ -79,6 +101,9 @@ class TomatoPickPhysicsV2EnvCfg(TomatoPickPhysicsV1EnvCfg):
     maximum_closure_translation_norm_m = 0.20
     minimum_closure_translation_headroom_fraction = 0.05
     open_hand_before_workspace_reset = False
+    minimum_palm_support_force_n = 0.25
+    palm_support_requires_detach = True
+    palm_support_force_ceiling_n = 8.0
 
 
 __all__ = ["TomatoPickPhysicsV2EnvCfg", "TomatoPickPhysicsV2EventCfg"]

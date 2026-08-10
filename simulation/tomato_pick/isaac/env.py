@@ -297,6 +297,7 @@ class TomatoPickEnv(DirectRLEnv):
         self._tomato = RigidObject(self.cfg.tomato)
         activate_nested_contact_reporters("/World/envs/env_0/Robot", RIGHT_HAND_BODY_NAMES)
         self._contact_sensors: dict[str, ContactSensor] = {}
+        self._aux_contact_sensors: dict[str, ContactSensor] = {}
         for name, sensor_cfg in self.cfg.fingertip_contacts.items():
             sensor_cfg.filter_prim_paths_expr = [
                 value.format(ENV_REGEX_NS=self.scene.env_regex_ns)
@@ -306,6 +307,14 @@ class TomatoPickEnv(DirectRLEnv):
         self.scene.articulations["robot"] = self._robot
         self.scene.rigid_objects["tomato"] = self._tomato
         for name, sensor in self._contact_sensors.items():
+            self.scene.sensors[f"right_{name}_contact"] = sensor
+        for name, sensor_cfg in getattr(self.cfg, "auxiliary_contacts", {}).items():
+            sensor_cfg.filter_prim_paths_expr = [
+                value.format(ENV_REGEX_NS=self.scene.env_regex_ns)
+                for value in sensor_cfg.filter_prim_paths_expr
+            ]
+            sensor = ContactSensor(sensor_cfg)
+            self._aux_contact_sensors[name] = sensor
             self.scene.sensors[f"right_{name}_contact"] = sensor
         self.cfg.stem.spawn.func(
             self.cfg.stem.prim_path,
@@ -821,11 +830,7 @@ class TomatoPickEnv(DirectRLEnv):
         # here so terminal decisions are based on the current physics step.
         self._last_physical_force_n.copy_(self._physical_finger_force())
         fruit_pos = self._tomato.data.root_pos_w.torch
-        tips = self._robot.data.body_pos_w.torch[:, self._fingertip_contact_body_ids]
-        tip_center = tips.mean(dim=1)
-        tip_velocity = self._robot.data.body_lin_vel_w.torch[
-            :, self._fingertip_contact_body_ids
-        ].mean(dim=1)
+        tip_center, tip_velocity = self._retention_reference()
         distance = torch.linalg.vector_norm(fruit_pos - tip_center, dim=1)
         relative_speed = torch.linalg.vector_norm(
             self._tomato.data.root_lin_vel_w.torch - tip_velocity, dim=1
@@ -894,6 +899,16 @@ class TomatoPickEnv(DirectRLEnv):
             "timeout_count": int(self._timed_out.sum().item()),
         }
         return terminated, truncated
+
+    def _retention_reference(self) -> tuple[torch.Tensor, torch.Tensor]:
+        """Return the point and velocity used for retained-distance checks."""
+
+        tips = self._robot.data.body_pos_w.torch[:, self._fingertip_contact_body_ids]
+        tip_center = tips.mean(dim=1)
+        tip_velocity = self._robot.data.body_lin_vel_w.torch[
+            :, self._fingertip_contact_body_ids
+        ].mean(dim=1)
+        return tip_center, tip_velocity
 
     def _get_rewards(self) -> torch.Tensor:
         reach = self._reach_score()

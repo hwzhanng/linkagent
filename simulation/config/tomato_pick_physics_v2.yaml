@@ -45,6 +45,7 @@
       "bounded_hardware_pending_actuator_and_tactile_uncertainty",
       "sim6_xyzw_adapter_at_the_frozen_physics_v1_reset_boundary",
       "true_distal_fingertip_geometry_and_contact_sensor_alignment",
+      "explicit_tomato_filtered_palm_contact_support_after_detach",
       "simulation_derived_low_force_closed_grasp_center",
       "near_nominal_stage8_contact_curriculum"
     ],
@@ -240,21 +241,23 @@
     }
   },
   "success_contract_parity": {
-    "status": "thresholds_aligned_conservative_oracle_semantics_documented",
+    "status": "explicit_palm_support_after_qualified_detach",
     "thresholds": {
       "minimum_supported_fingertips": 2,
       "minimum_support_force_n": 0.25,
       "maximum_center_distance_m": 0.06,
       "maximum_relative_speed_m_s": 0.10,
       "hold_policy_steps": 20,
-      "maximum_fingertip_force_n": 8.0
+      "maximum_fingertip_force_n": 8.0,
+      "minimum_palm_support_force_n": 0.25,
+      "palm_support_requires_detach": true
     },
     "semantic_difference": {
-      "id": "post_detach_palm_support_without_continuous_fingertip_force",
-      "offline_oracle": "requires current physical thumb-opposed fingertip support through success",
-      "integrated_runtime": "allows load transfer to palm or between fingers after a qualified detach while distance, speed, force, and hold constraints remain valid",
-      "consequence": "the offline oracle is conservative and may reject a valid palm-supported runtime retention; it cannot be used as proof of exact runtime-success parity",
-      "resolution_status": "pending_explicit_palm_contact_evidence_and_gpu_requalification_before_formal_training"
+      "id": "explicit_palm_contact_support_after_qualified_detach",
+      "offline_oracle": "accepts physical palm force at or above the palm threshold only after stem detachment; finger opposition remains required at detachment",
+      "integrated_runtime": "uses a tomato-filtered ContactSensor on right_hand_base_link and the same post-detach palm-support rule",
+      "consequence": "palm support is physical contact evidence, not stale tactile state or proximity alone",
+      "resolution_status": "implemented_static_pending_exact_runtime_gpu_validation"
     }
   },
   "deployment_side": {
@@ -271,7 +274,7 @@
     "qualification": "steps_1_to_7_pure_gates_and_exact_runtime_asset_1_64_256_env_integrated_gates_passed",
     "blockers": [
       "formal training remains blocked pending bounded-learning artifact audit, independent evaluation, and real parameter calibration",
-      "post-detach palm-support success semantics require explicit contact evidence and requalification"
+      "explicit palm-support ContactSensor path requires exact-runtime GPU validation"
     ],
     "step1_acceptance": [
       "all frozen Physics-v1 files match their recorded SHA-256",

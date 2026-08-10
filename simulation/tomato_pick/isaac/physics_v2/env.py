@@ -70,6 +70,15 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
         self._tactile_uncertainty_state = initial_tactile_uncertainty_state(
             reference, maximum_delay_steps=maximum_tactile_delay
         )
+        if "palm" not in self._aux_contact_sensors:
+            raise RuntimeError("Physics-v2 requires an explicit palm contact sensor")
+        self._palm_contact_force_n = torch.zeros(self.num_envs, device=self.device)
+        self._palm_support = torch.zeros(
+            self.num_envs, dtype=torch.bool, device=self.device
+        )
+        self._invalid_palm_contact_force_n = torch.zeros(
+            self.num_envs, device=self.device
+        )
 
     def _apply_workspace_reset(self, env_ids: torch.Tensor) -> None:
         """Open the hand before placing a fruit around the closure envelope.
@@ -223,6 +232,132 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
             dt_s=float(self.cfg.sim.dt) * float(self.cfg.decimation),
         )
         return self._tactile_uncertainty_state["measured_n"]
+
+    def _physical_palm_force(self) -> torch.Tensor:
+        """Return tomato-filtered physical force on the palm body."""
+
+        sensor = self._aux_contact_sensors["palm"]
+        matrix = sensor.data.force_matrix_w
+        if matrix is None:
+            raise RuntimeError("tomato-filtered palm contact sensor did not initialize")
+        force = torch.linalg.vector_norm(matrix.torch[:, 0, 0], dim=-1).clamp(0.0, 25.0)
+        contact_position = sensor.data.contact_pos_w
+        if contact_position is None:
+            valid = torch.ones(self.num_envs, dtype=torch.bool, device=self.device)
+        else:
+            radius = torch.linalg.vector_norm(
+                contact_position.torch[:, 0, 0] - self._tomato.data.root_pos_w.torch,
+                dim=1,
+            )
+            valid = radius <= (
+                self._fruit_axes_m.amax(dim=1)
+                + self.cfg.contact_point_maximum_surface_gap_m
+            )
+        self._invalid_palm_contact_force_n.copy_(
+            torch.where(valid, torch.zeros_like(force), force)
+        )
+        return torch.where(valid, force, torch.zeros_like(force))
+
+    def _retention_reference(self) -> tuple[torch.Tensor, torch.Tensor]:
+        """Use the palm as the retained-distance frame when it bears the fruit."""
+
+        tips = self._robot.data.body_pos_w.torch[:, self._fingertip_contact_body_ids]
+        tip_center = tips.mean(dim=1)
+        tip_velocity = self._robot.data.body_lin_vel_w.torch[
+            :, self._fingertip_contact_body_ids
+        ].mean(dim=1)
+        palm_position = self._robot.data.body_pos_w.torch[:, self._ee_body_id]
+        palm_velocity = self._robot.data.body_lin_vel_w.torch[:, self._ee_body_id]
+        palm_force = self._physical_palm_force()
+        palm_support = palm_force >= self.cfg.minimum_palm_support_force_n
+        self._palm_contact_force_n.copy_(palm_force)
+        self._palm_support.copy_(palm_support)
+        use_palm = self._stem_detached & palm_support
+        return (
+            torch.where(use_palm.unsqueeze(1), palm_position, tip_center),
+            torch.where(use_palm.unsqueeze(1), palm_velocity, tip_velocity),
+        )
+
+    def _retention_support_mask(self) -> torch.Tensor:
+        """Require finger opposition for detachment, then allow palm support."""
+
+        supported_mask = (
+            self._last_physical_force_n >= self.cfg.minimum_support_force_n
+        )
+        supported = supported_mask.sum(dim=1)
+        fingertip_support = supported >= self.cfg.minimum_supported_fingertips
+        if self.cfg.thumb_opposition_required:
+            fingertip_support &= supported_mask[:, 0] & supported_mask[:, 1:].any(dim=1)
+        palm_force = self._physical_palm_force()
+        palm_support = palm_force >= self.cfg.minimum_palm_support_force_n
+        self._palm_contact_force_n.copy_(palm_force)
+        self._palm_support.copy_(palm_support)
+        if self.cfg.palm_support_requires_detach:
+            palm_support = self._stem_detached & palm_support
+        return fingertip_support | palm_support
+
+    def _get_dones(self) -> tuple[torch.Tensor, torch.Tensor]:
+        """Re-credit post-detachment palm support without changing Physics-v1."""
+
+        previous_hold_streak = self._hold_streak.clone()
+        super()._get_dones()
+        additional_excess = self._additional_excess_force_mask()
+        if additional_excess.shape != self._excess_force.shape:
+            raise RuntimeError("additional excess-force mask has the wrong shape")
+        self._excess_force |= additional_excess
+        self._terminal_failure |= additional_excess
+
+        secure_support = self._retention_support_mask()
+        self._shadow_secure_support.copy_(secure_support)
+        tip_center, tip_velocity = self._retention_reference()
+        fruit_position = self._tomato.data.root_pos_w.torch
+        fruit_velocity = self._tomato.data.root_lin_vel_w.torch
+        distance = torch.linalg.vector_norm(fruit_position - tip_center, dim=1)
+        relative_speed = torch.linalg.vector_norm(fruit_velocity - tip_velocity, dim=1)
+        kinematic_retained = (
+            self._stem_detached
+            & (distance <= self.cfg.maximum_retained_distance_m)
+            & (relative_speed <= self.cfg.maximum_retained_relative_speed_m_s)
+            & ~self._dropped
+            & ~self._excess_force
+        )
+        self._retained = kinematic_retained & secure_support
+        self._hold_streak = torch.where(
+            self._retained,
+            previous_hold_streak + 1,
+            torch.zeros_like(previous_hold_streak),
+        )
+        self._success = self._retained & (
+            self._hold_streak >= self.cfg.success_hold_steps
+        )
+        self._timed_out = (
+            (self.episode_length_buf >= self.max_episode_length - 1)
+            & ~self._success
+            & ~self._terminal_failure
+        )
+        terminated = self._success | self._terminal_failure
+        truncated = self._timed_out
+        self.extras["step"].update(self._retention_support_diagnostics())
+        self.extras["step"]["success_count"] = int(self._success.sum().item())
+        self.extras["step"]["retained_count"] = int(self._retained.sum().item())
+        self.extras["step"]["timeout_count"] = int(self._timed_out.sum().item())
+        self.extras["step"]["shadow_secure_support_count"] = int(
+            self._shadow_secure_support.sum().item()
+        )
+        return terminated, truncated
+
+    def _additional_excess_force_mask(self) -> torch.Tensor:
+        return self._physical_palm_force() > self.cfg.palm_support_force_ceiling_n
+
+    def _retention_support_diagnostics(self) -> dict[str, int | float | bool]:
+        return {
+            "physics_v2_palm_support_enabled": True,
+            "physics_v2_palm_support_count": int(self._palm_support.sum().item()),
+            "physics_v2_max_palm_force_n": float(self._palm_contact_force_n.max().item()),
+            "physics_v2_invalid_palm_contact_force_n": float(
+                self._invalid_palm_contact_force_n.max().item()
+            ),
+        }
 
     def _apply_attachment_wrench(self) -> None:
         """Apply the v1 attachment dynamics with four-mode v2 failure load."""
@@ -398,6 +533,9 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
         if env_ids is None:
             env_ids = torch.arange(self.num_envs, device=self.device)
         self._fruit_estimated_indentation_m[env_ids] = 0.0
+        self._palm_contact_force_n[env_ids] = 0.0
+        self._palm_support[env_ids] = False
+        self._invalid_palm_contact_force_n[env_ids] = 0.0
         for values in self._fruit_damage_state.values():
             values[env_ids] = 0.0
         for values in self._stem_load_components_v2.values():

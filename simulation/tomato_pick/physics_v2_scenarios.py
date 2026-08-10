@@ -41,6 +41,9 @@ def physical_task_predicates(
     relative_speed_m_s: torch.Tensor,
     hold_steps: torch.Tensor,
     maximum_fingertip_force_n: float = 8.0,
+    physical_palm_force_n: torch.Tensor | None = None,
+    minimum_palm_support_force_n: float = 0.25,
+    palm_support_requires_detach: bool = True,
 ) -> dict[str, torch.Tensor]:
     """Evaluate a conservative support/retention oracle from physical state.
 
@@ -61,16 +64,37 @@ def physical_task_predicates(
     maximum_speed_m_s = float(secure_cfg["maximum_relative_speed_m_s"])
     success_hold_steps = int(secure_cfg["hold_policy_steps"])
     contact = physical_finger_force_n >= minimum_force_n
-    secure_support = (
+    fingertip_support = (
         (contact.sum(dim=1) >= minimum_fingertips)
         & contact[:, 0]
         & contact[:, 1:].any(dim=1)
     )
+    if physical_palm_force_n is None:
+        palm_force = torch.zeros(
+            physical_finger_force_n.shape[0],
+            dtype=physical_finger_force_n.dtype,
+            device=physical_finger_force_n.device,
+        )
+    else:
+        if physical_palm_force_n.shape not in {
+            (physical_finger_force_n.shape[0],),
+            (physical_finger_force_n.shape[0], 1),
+        }:
+            raise ValueError("physical_palm_force_n must have shape (N,) or (N, 1)")
+        palm_force = physical_palm_force_n.reshape(-1)
+    if minimum_palm_support_force_n <= 0.0:
+        raise ValueError("minimum_palm_support_force_n must be positive")
+    palm_contact = palm_force >= minimum_palm_support_force_n
+    palm_support = stem_detached.bool() & palm_contact
+    if not palm_support_requires_detach:
+        palm_support = palm_contact
+    secure_support = fingertip_support | palm_support
     kinematic_retained = (
         center_distance_m <= maximum_distance_m
     ) & (relative_speed_m_s <= maximum_speed_m_s)
     within_force_limit = (
-        physical_finger_force_n.amax(dim=1) <= maximum_fingertip_force_n
+        (physical_finger_force_n.amax(dim=1) <= maximum_fingertip_force_n)
+        & (palm_force <= maximum_fingertip_force_n)
     )
     retained = (
         stem_detached.bool()
@@ -81,6 +105,9 @@ def physical_task_predicates(
     success = retained & (hold_steps >= success_hold_steps)
     return {
         "secure_support": secure_support,
+        "fingertip_support": fingertip_support,
+        "palm_support": palm_support,
+        "palm_contact": palm_contact,
         "kinematic_retained": kinematic_retained,
         "within_force_limit": within_force_limit,
         "retained": retained,
