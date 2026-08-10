@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "curriculum_id": "tomato_pick_physics_v2_cpu_draft_v1",
+  "status": "draft_not_runtime_active",
+  "task_id": "LinkAgent-TomatoPick-Physics-v2",
+  "scope": "Five-finger-capable enveloping tomato grasp; no tennis-ball pose prior and no fixed finger-count policy.",
+  "activation_guard": {
+    "requires_new_profile_revision": true,
+    "requires_from_scratch_training": true,
+    "requires_cpu_gate": true,
+    "requires_64_env_gpu_gate": true,
+    "requires_256x4_gpu_probe": true,
+    "requires_explicit_authorization": true
+  },
+  "grasp_contract": {
+    "reference_joint_pose_required": false,
+    "tennis_ball_demo_used_as_prior": false,
+    "fixed_active_finger_count": false,
+    "thumb_opposition_required_for_detach_credit": true,
+    "minimum_supported_fingertips": 2,
+    "maximum_supported_fingertips": 5,
+    "palm_contact_allowed": true,
+    "policy_selects_contact_distribution": true,
+    "success_requires_detach_and_retention": true,
+    "physical_force_not_measured_tactile_gates_success": true
+  },
+  "stages": [
+    {
+      "index": 0,
+      "id": "reach",
+      "single_primary_objective": "move the hand enclosure centre near the attached tomato",
+      "promotion_metric": "reach_score_p50",
+      "promotion_threshold": 0.65,
+      "consecutive_evaluations": 3,
+      "randomization_fraction": 0.10,
+      "stem_mode": "learnability",
+      "detachment_enabled": false,
+      "damage_proxy": "diagnostic_only"
+    },
+    {
+      "index": 1,
+      "id": "enclosure",
+      "single_primary_objective": "establish thumb-opposed multi-finger physical contact",
+      "promotion_metric": "opposed_contact_episode_rate",
+      "promotion_threshold": 0.35,
+      "consecutive_evaluations": 3,
+      "randomization_fraction": 0.20,
+      "stem_mode": "learnability",
+      "detachment_enabled": false,
+      "damage_proxy": "diagnostic_only"
+    },
+    {
+      "index": 2,
+      "id": "gentle_hold",
+      "single_primary_objective": "maintain an enclosure while reducing peak and sustained force",
+      "promotion_metric": "safe_hold_episode_rate",
+      "promotion_threshold": 0.30,
+      "consecutive_evaluations": 3,
+      "randomization_fraction": 0.35,
+      "stem_mode": "learnability",
+      "detachment_enabled": false,
+      "damage_proxy": "diagnostic_only_until_calibrated"
+    },
+    {
+      "index": 3,
+      "id": "stem_manipulation",
+      "single_primary_objective": "apply sustained supported bend or twist load without excessive fruit force",
+      "promotion_metric": "secure_stem_progress_episode_rate",
+      "promotion_threshold": 0.20,
+      "consecutive_evaluations": 4,
+      "randomization_fraction": 0.50,
+      "stem_mode": "learnability",
+      "detachment_enabled": true,
+      "damage_proxy": "diagnostic_only_until_calibrated"
+    },
+    {
+      "index": 4,
+      "id": "detach_retain",
+      "single_primary_objective": "detach and retain the tomato through the full hold window",
+      "promotion_metric": "multi_seed_success_rate",
+      "promotion_threshold": 0.10,
+      "consecutive_evaluations": 5,
+      "randomization_fraction": 0.70,
+      "stem_mode": "learnability",
+      "detachment_enabled": true,
+      "damage_proxy": "diagnostic_only_until_calibrated"
+    },
+    {
+      "index": 5,
+      "id": "robustness",
+      "single_primary_objective": "retain success across size, ripeness, wetness, delay and actuator uncertainty buckets",
+      "promotion_metric": "worst_bucket_success_rate",
+      "promotion_threshold": 0.05,
+      "consecutive_evaluations": 5,
+      "randomization_fraction": 1.00,
+      "stem_mode": "learnability",
+      "detachment_enabled": true,
+      "damage_proxy": "diagnostic_only_until_calibrated"
+    }
+  ],
+  "regression_rules": {
+    "demote_after_consecutive_failures": 3,
+    "promotion_uses_deterministic_multi_seed_evaluation": true,
+    "training_rollout_metrics_alone_cannot_promote": true,
+    "worst_bucket_metrics_required_at_final_stage": true
+  },
+  "future_calibration_boundary": {
+    "non_hookean_fruit_model": "deferred",
+    "cultivar_specific_damage_probability": "deferred",
+    "real_tactile_mapping": "hardware_pending",
+    "real_actuator_identification": "hardware_pending"
+  }
+}

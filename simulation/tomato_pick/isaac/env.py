@@ -100,6 +100,14 @@ class TomatoPickEnv(DirectRLEnv):
 
     def __init__(self, cfg: TomatoPickEnvCfg, render_mode: str | None = None, **kwargs):
         if (
+            len(cfg.action_delay_steps) != 2
+            or cfg.action_delay_steps[0] < 0
+            or cfg.action_delay_steps[0] > cfg.action_delay_steps[1]
+        ):
+            raise ValueError(
+                "action_delay_steps must be an ordered non-negative (minimum, maximum) pair"
+            )
+        if (
             not isinstance(cfg.stem_break_persistence_substeps, int)
             or cfg.stem_break_persistence_substeps < 1
         ):
@@ -174,7 +182,10 @@ class TomatoPickEnv(DirectRLEnv):
         self._joint_targets = self._nominal_joint_targets.clone()
         self._actions = torch.zeros((self.num_envs, ACTION_DIM), device=self.device)
         self._previous_actions = torch.zeros_like(self._actions)
-        self._action_history = torch.zeros((2, self.num_envs, ACTION_DIM), device=self.device)
+        self._action_history = torch.zeros(
+            (cfg.action_delay_steps[1] + 1, self.num_envs, ACTION_DIM),
+            device=self.device,
+        )
         self._action_delay = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
         self._ee_reference_pose_w = torch.zeros((self.num_envs, 7), device=self.device)
         self._ee_reference_pose_w[:, 6] = 1.0
@@ -319,7 +330,7 @@ class TomatoPickEnv(DirectRLEnv):
             raise ValueError("actions contain NaN or Inf")
         bounded = actions.clamp(-1.0, 1.0)
         self._previous_actions.copy_(self._actions)
-        self._action_history[1].copy_(self._action_history[0])
+        self._action_history[1:].copy_(self._action_history[:-1].clone())
         self._action_history[0].copy_(bounded)
         env_ids = torch.arange(self.num_envs, device=self.device)
         self._actions.copy_(self._action_history[self._action_delay, env_ids])

@@ -1,0 +1,25 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "LinkAgent TomatoPick Physics-v2 offline lineage"
+        string physicsV2ParentAssetSha256 = "2b5bc9d8f25d3b4b9e618f509ebccd2d7f85b02be245aa0279517aa6d925bf49"
+        string physicsV2ParentProfile = "tomato_pick_physics_v1"
+        string physicsV2Qualification = "stage2_composition_only_no_physical_parameter_change"
+    }
+    defaultPrim = "linkbot_bimanual_sdk"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "linkbot_bimanual_sdk" (
+    customData = {
+        int physicsV2Stage = 2
+        string physicsV2AssetPolicy = "independent_composition_layer_over_frozen_actual_parent"
+        string physicsV2HardwareCalibration = "pending"
+        string physicsV2TrainingPermission = "blocked"
+    }
+    prepend references = @./linkbot_bimanual_sdk_training_mass1kg_physics_v1.usda@</linkbot_bimanual_sdk>
+)
+{
+}

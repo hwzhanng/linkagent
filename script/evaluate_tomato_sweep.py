@@ -50,6 +50,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--wandb-run-id", required=True)
     parser.add_argument("--wandb-url", required=True)
+    parser.add_argument("--task", default="LinkAgent-TomatoPick-Clean-v5")
+    parser.add_argument(
+        "--external-callback",
+        default="simulation.tomato_pick.isaac.register_task",
+    )
     args = parser.parse_args(argv)
     if args.workers < 1:
         parser.error("--workers must be at least 1")
@@ -96,6 +101,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             str(args.steps),
             "--seed",
             str(seed),
+            "--task",
+            args.task,
+            "--external_callback",
+            args.external_callback,
             "--viz",
             "none",
         ]
@@ -174,7 +183,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     best_path = Path(best["checkpoint"])
     manifest = {
         "schema_version": 1,
-        "task": "LinkAgent-TomatoPick-Clean-v5",
+        "task": args.task,
         "evaluation": {
             "deterministic_policy": True,
             "full_environment_randomization": True,

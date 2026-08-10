@@ -1,0 +1,327 @@
+{
+  "schema_version": 1,
+  "profile_id": "tomato_pick_physics_v2",
+  "status": "stage9_bounded_learning_artifact_and_evaluation_pending",
+  "purpose": "Independent offline physics-improvement lineage with an audited, separately identified robot composition layer.",
+  "parent_baseline": {
+    "profile_id": "tomato_pick_physics_v1",
+    "task_id": "LinkAgent-TomatoPick-Physics-v1",
+    "source_commit": "edc4197b1e4ff0277092db678eccfcf60c1c654a",
+    "known_issues": [
+      {
+        "id": "physics_v1_derived_usd_declared_hash_mismatch",
+        "status": "confirmed_parent_issue_preserved",
+        "path": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg_physics_v1.usda",
+        "declared_in_physics_v1_profile_sha256": "6bde6855bcd0d6c2ab9e23c5588b516c684743cff980d7b37b5981834dc5aa35",
+        "actual_head_file_sha256": "2b5bc9d8f25d3b4b9e618f509ebccd2d7f85b02be245aa0279517aa6d925bf49",
+        "interpretation": "The mismatch is present in parent commit edc4197; Physics-v2 freezes the actual checked-in file and does not rewrite Physics-v1 evidence."
+      }
+    ],
+    "frozen_files": {
+      "simulation/config/tomato_pick_physics_v1.yaml": "cded796070e053ec187a7d236894f3518bea6821d418dab868f77d77ebbc367f",
+      "simulation/tomato_pick/physics_v1.py": "9c736a79b66b5516d7a52dda19e1b933f63dec9382dd6578afd7d6fe84ad713b",
+      "simulation/tomato_pick/reset_v1.py": "376d9977637f968899c17ff6377bb1016b5cc3da0fbaa36565feb0bd44408c56",
+      "simulation/tomato_pick/isaac/physics_v1/env.py": "efae96a277d1009c241bcd5399bcbf6a1c6fd5598fdabf3f57273f53eacc1e16",
+      "simulation/tomato_pick/isaac/physics_v1/env_cfg.py": "f091a79713ab7d8ecf04b28d7b2d2a38fcbf6da4bc6418c84443a00e8333cdee",
+      "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg_physics_v1.usda": "2b5bc9d8f25d3b4b9e618f509ebccd2d7f85b02be245aa0279517aa6d925bf49"
+    }
+  },
+  "learning_contract": {
+    "actor_observation_dim": 66,
+    "critic_state_dim": 83,
+    "action_dim": 11,
+    "physics_rate_hz": 120,
+    "policy_rate_hz": 20,
+    "inheritance": "exact_physics_v1_contract_until_an_explicit_stage_gate_changes_it"
+  },
+  "implementation_boundary": {
+    "physics_behavior": "physics_v1_learning_contract_with_explicit_v2_contact_stem_damage_actuator_and_tactile_priors",
+    "semantic_changes": [
+      "independent_physics_v2_robot_asset_identity_without_parameter_change",
+      "correlated_fruit_geometry_mass_ripeness_wetness_and_linear_contact_priors",
+      "diagnostic_only_fruit_damage_exposure_telemetry",
+      "separate_learnability_literature_axial_and_bend_twist_stem_modes",
+      "four_component_tension_shear_bending_torsion_load_duration_failure",
+      "bounded_hardware_pending_actuator_and_tactile_uncertainty",
+      "sim6_xyzw_adapter_at_the_frozen_physics_v1_reset_boundary",
+      "true_distal_fingertip_geometry_and_contact_sensor_alignment",
+      "simulation_derived_low_force_closed_grasp_center",
+      "near_nominal_stage8_contact_curriculum"
+    ],
+    "derived_robot_asset": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg_physics_v2.usda",
+    "training_allowed": false,
+    "bounded_learning_validation_allowed": true
+  },
+  "robot_asset_v2": {
+    "path": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg_physics_v2.usda",
+    "sha256": "58e17d1c033f6983f09dc3be615ea7f1d55fe378003f647967753409ac99ce8d",
+    "parent_actual_sha256": "2b5bc9d8f25d3b4b9e618f509ebccd2d7f85b02be245aa0279517aa6d925bf49",
+    "composition_policy": "independent_layer_references_frozen_actual_physics_v1_asset",
+    "physical_parameter_changes": [],
+    "static_audit_report": "logs/qualification/tomato_physics_v2/step2_robot_asset_audit.json"
+  },
+  "fruit_contact_v2": {
+    "model": "rigid_oriented_ellipsoid_with_linear_compliant_contact",
+    "model_scope": "offline_prior_not_deformable_fruit_validation",
+    "equatorial_radius_m": [0.025, 0.035],
+    "polar_aspect_ratio": [0.86, 1.04],
+    "density_kg_m3": [880.0, 1060.0],
+    "effective_stiffness_n_m": [3000.0, 9000.0],
+    "effective_damping_n_s_m": [18.0, 40.0],
+    "static_friction": [0.32, 0.72],
+    "dynamic_to_static_ratio": [0.78, 0.88],
+    "restitution": 0.01,
+    "material_bank": {
+      "friction_bins": 4,
+      "compliance_bins": 4
+    },
+    "fixed_cases": {
+      "soft": {
+        "axes_m": [0.030, 0.029, 0.027],
+        "density_kg_m3": 960.0,
+        "static_friction": 0.50,
+        "dynamic_friction": 0.41,
+        "effective_stiffness_n_m": 3500.0,
+        "effective_damping_n_s_m": 22.0
+      },
+      "nominal": {
+        "axes_m": [0.031, 0.030, 0.029],
+        "density_kg_m3": 980.0,
+        "static_friction": 0.55,
+        "dynamic_friction": 0.45,
+        "effective_stiffness_n_m": 5500.0,
+        "effective_damping_n_s_m": 28.0
+      },
+      "firm": {
+        "axes_m": [0.032, 0.031, 0.031],
+        "density_kg_m3": 1010.0,
+        "static_friction": 0.60,
+        "dynamic_friction": 0.50,
+        "effective_stiffness_n_m": 8000.0,
+        "effective_damping_n_s_m": 35.0
+      }
+    }
+  },
+  "fruit_damage_proxy_v2": {
+    "status": "diagnostic_only_numerical_guard_not_calibrated",
+    "affects_reward": false,
+    "affects_termination": false,
+    "safe_force_n": 5.0,
+    "reference_peak_force_n": 8.0,
+    "safe_indentation_m": 0.003,
+    "reference_indentation_m": 0.0095,
+    "safe_force_exposure_budget_n_s": 0.60,
+    "safe_compression_exposure_budget_m_s": 0.0008,
+    "impact_force_rate_threshold_n_s": 120.0,
+    "impact_exposure_budget_n": 2.0,
+    "score_weights": {
+      "peak_force": 0.25,
+      "peak_indentation": 0.25,
+      "force_time_exposure": 0.25,
+      "compression_time_exposure": 0.15,
+      "impact": 0.10
+    },
+    "interpretation": "A bounded relative risk/exposure indicator, not a prediction of bruising or rupture probability."
+  },
+  "stem_modes_v2": {
+    "active_offline_mode": "learnability",
+    "selection_rule": "Mode identity is episode-fixed and must be recorded; thresholds from different modes may not be mixed.",
+    "common": {
+      "abscission_diameter_m": [0.0045, 0.0075],
+      "critical_duration_s": [0.035, 0.075],
+      "damage_onset_ratio": 0.55,
+      "damage_recovery_time_s": 0.12,
+      "safe_supported_fingertips": 3,
+      "safe_maximum_fingertip_force_n": 8.0,
+      "safe_wrench_utilization_fraction": 0.75,
+      "conservative_moment_arm_m": 0.025
+    },
+    "learnability": {
+      "evidence_status": "numerical_guard",
+      "tensile_force_n": [4.0, 8.0],
+      "safe_capacity_fraction": 0.90,
+      "shear_to_tension_ratio": [0.60, 0.80],
+      "bending_lever_arm_m": [0.006, 0.012],
+      "torsion_to_bending_ratio": [0.45, 0.70],
+      "claim": "Algorithm-chain feasibility only; explicitly bounded to ninety percent of conservative sampled hand capacity and not a measured tomato distribution."
+    },
+    "literature_axial": {
+      "evidence_status": "literature_prior",
+      "tensile_force_n": [20.0, 75.0],
+      "shear_to_tension_ratio": [0.60, 0.80],
+      "bending_lever_arm_m": [0.006, 0.012],
+      "torsion_to_bending_ratio": [0.45, 0.70],
+      "claim": "Order-check axial envelope; expected to be mostly infeasible under the current gentle-contact limit."
+    },
+    "bend_twist_prior": {
+      "evidence_status": "literature_prior",
+      "tensile_force_n": [12.0, 30.0],
+      "shear_force_n": [8.0, 20.0],
+      "bending_moment_nm": [0.05, 0.16],
+      "torsional_moment_nm": [0.03, 0.10],
+      "claim": "Uncalibrated mixed-mode prior for exploring lower-pressure harvesting; not experimental ground truth."
+    }
+  },
+  "uncertainty_v2": {
+    "status": "hardware_pending_bounded_offline_robustness_prior",
+    "episode_fixed": {
+      "hand_response_scale": [0.85, 1.15],
+      "hand_target_bias_rad": [-0.005, 0.005],
+      "hand_deadband_rad": [0.001, 0.008],
+      "hand_backlash_rad": [0.0, 0.012],
+      "arm_response_scale": [0.90, 1.08],
+      "tactile_gain": [0.80, 1.20],
+      "tactile_bias_n": [-0.20, 0.20],
+      "tactile_drift_rate_n_s": [-0.02, 0.02],
+      "tactile_saturation_n": [18.0, 25.0],
+      "tactile_release_time_constant_s": [0.02, 0.10],
+      "tactile_delay_policy_steps": [0, 2],
+      "tactile_dropout_probability": [0.0, 0.02]
+    },
+    "action_delay_policy_steps": [0, 2],
+    "rules": [
+      "all sampled values are deterministic under an explicit seed",
+      "joint targets remain inside USD limits and measured/vendor speed envelopes",
+      "tactile uncertainty affects actor measurements only",
+      "secure support, break credit, retention, success, and excess-force checks continue to use validated physical contact force",
+      "non-contact stale measurements decay and cannot create physical support"
+    ]
+  },
+  "parameter_evidence_schema": {
+    "allowed_statuses": [
+      "vendor_verified",
+      "literature_prior",
+      "geometry_derived",
+      "numerical_guard",
+      "hardware_pending"
+    ],
+    "rule": "Every physical family must declare current evidence, uncertainty, and the stage that can change it."
+  },
+  "parameter_families": {
+    "robot_geometry_and_collision": {
+      "evidence_status": "geometry_derived",
+      "uncertainty": "Static topology/inertia audit passed; the scalable 12-body distal/palm proxy intentionally omits full-arm and proximal-hand contact fidelity.",
+      "next_stage": 6
+    },
+    "hand_mass_inertia_and_actuation": {
+      "evidence_status": "hardware_pending",
+      "uncertainty": "The asset uses 1.0 kg while the vendor prior is about 1.2 kg; bounded target response, bias, deadband, and backlash are robustness priors rather than identified dynamics.",
+      "next_stage": 6
+    },
+    "arm_mass_inertia_and_actuation": {
+      "evidence_status": "hardware_pending",
+      "uncertainty": "A7 gains remain provisional; bounded target-response scaling is an offline robustness prior, not system identification.",
+      "next_stage": 6
+    },
+    "fruit_geometry_mass_and_density": {
+      "evidence_status": "literature_prior",
+      "uncertainty": "Physics-v2 enforces mass-volume-density consistency and correlated geometry, but cultivar-specific distributions are unavailable.",
+      "next_stage": 6
+    },
+    "finger_pad_fruit_contact": {
+      "evidence_status": "literature_prior",
+      "uncertainty": "Soft/nominal/firm linear contact cases and correlated priors are bounded but are not measurements of the deployed pad and tomato.",
+      "next_stage": 6
+    },
+    "fruit_damage_proxy": {
+      "evidence_status": "numerical_guard",
+      "uncertainty": "The new force, indentation, exposure, and impact score is diagnostic-only and not a calibrated damage probability.",
+      "next_stage": 6
+    },
+    "stem_detachment": {
+      "evidence_status": "numerical_guard",
+      "uncertainty": "Learnability, literature-axial, and bend/twist priors are now separated; none is cultivar-calibrated and only learnability is the active offline mode.",
+      "next_stage": 6
+    },
+    "tactile_measurement": {
+      "evidence_status": "hardware_pending",
+      "uncertainty": "Gain, bias, drift, saturation, delay, dropout, and release lag are now modeled with bounded priors but remain uncalibrated.",
+      "next_stage": 6
+    }
+  },
+  "deployment_side": {
+    "current_simulation": "right_arm_right_hand",
+    "left_hand_transfer": "blocked_pending_explicit_axis_zero_limit_sensor_and_mount_audit"
+  },
+  "stage_gate": {
+    "current_stage": 9,
+    "ready": false,
+    "numerical_ppo_probe_ready": true,
+    "numerical_ppo_probe_passed": true,
+    "bounded_learning_validation_started": true,
+    "formal_training_started": false,
+    "qualification": "steps_1_to_7_pure_gates_and_exact_runtime_asset_1_64_256_env_integrated_gates_passed",
+    "blockers": [
+      "formal training remains blocked pending bounded-learning artifact audit, independent evaluation, and real parameter calibration"
+    ],
+    "step1_acceptance": [
+      "all frozen Physics-v1 files match their recorded SHA-256",
+      "the pre-existing Physics-v1 declared-versus-actual USD hash mismatch is recorded for stage 2",
+      "Physics-v2 task and config classes inherit Physics-v1 without behavior overrides",
+      "66D/83D/11D and 120 Hz/20 Hz contracts are explicit",
+      "all parameter families use an allowed evidence status",
+      "formal training remains fail-closed"
+    ],
+    "step2_acceptance": [
+      "URDF structural audit passes for topology, mass, inertia, collision, mimic, tactile links, and left/right pairing",
+      "Physics-v1 identity mismatch is preserved as parent evidence rather than silently rewritten",
+      "Physics-v2 has an independent composition layer and SHA-256",
+      "the Physics-v2 task selects the independent asset",
+      "no robot physical parameter changes are introduced before stage 3"
+    ],
+    "step3_acceptance": [
+      "fruit mass is derived from sampled axes and density",
+      "soft, nominal, and firm fixed cases preserve ordered stiffness and damping",
+      "linear contact force is non-negative and monotonic in compression",
+      "damage telemetry is bounded, deterministic, and monotonic under damaging exposure",
+      "damage telemetry does not yet alter reward, success, or termination"
+    ],
+    "step4_acceptance": [
+      "learnability, literature-axial, and bend/twist priors have disjoint explicit identities",
+      "literature axial thresholds are never silently clamped to hand capacity",
+      "combined failure includes tension, shear, bending, and torsion",
+      "one 120 Hz overload step cannot detach",
+      "weak, median, and strong sustained unit-load cases detach by duration",
+      "per-mode conservative translational and moment feasibility fractions are reported"
+    ],
+    "step5_acceptance": [
+      "uncertainty sampling is deterministic under fixed seed and bounded by config",
+      "hand and arm targets remain inside joint and speed limits",
+      "tactile gain, bias, drift, saturation, delay, dropout, and release lag are represented",
+      "stale non-contact measurements decay monotonically",
+      "measurement-only noise cannot create physical secure support or success"
+    ],
+    "step6_acceptance": [
+      "free fall reproduces gravity without numerical energy gain",
+      "fixed contact cases have ordered incline, compression, damping, and rebound behavior",
+      "all correlated physics and uncertainty samples remain finite and repeatable across seeds",
+      "static self-collision and passive mimic evidence is complete",
+      "analytic results are never represented as integrated Isaac or PhysX qualification"
+    ],
+    "step7_acceptance": [
+      "weak, median, and strong learnability cases detach and retain through the real stem and reward primitives",
+      "unsupported pull, unsupported fracture, high-speed fracture, same-side contact, stale tactile, and drop cannot produce success",
+      "zero action, drop, and excess force are penalized at the aligned reward endpoint",
+      "wrench-level feasibility is never represented as robot kinematic or PhysX feasibility"
+    ],
+    "step8_integrated_acceptance": [
+      "the exact Isaac Lab v3.0.0-beta2.patch1 runtime loads the formal Physics-v2 USD on CUDA PhysX",
+      "the formal articulation exposes 71 bodies, 56 independent joints, and ten authored mimic relations",
+      "Sim 6 xyzw quaternions keep the fruit pull axis within the configured five-degree vertical tilt",
+      "reward geometry and contact sensing use the formal distal fingertip bodies",
+      "a low-force scripted reach-close trajectory produces physical fingertip contact without pressure-limit termination",
+      "64-environment and 256-environment finite random-action rollouts pass",
+      "the explicitly authorized 256-environment four-update numerical PPO probe passed",
+      "formal training remains blocked until bounded-learning artifacts and independent multi-seed evaluation pass"
+    ],
+    "step9_bounded_learning_validation": [
+      "the user explicitly authorized approximately eight hours of autonomous simulation-only PPO work",
+      "the run is bounded to 256 environments, at most 500 updates, and a wall-clock monitor",
+      "the numerical probe is preserved as separate evidence and the learning run starts from scratch",
+      "runtime monitoring is an operator-controlled helper and is not itself qualification evidence",
+      "training artifacts are hashed and only nominated for later evaluation; training metrics cannot name a best checkpoint",
+      "candidate checkpoints require independent multi-seed evaluation before a best checkpoint can be frozen",
+      "no real robot SDK, CAN interface, or hardware connection is in scope"
+    ]
+  }
+}
