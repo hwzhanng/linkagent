@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "protocol_id": "tomato_pick_physics_v2_data_protocol_v1",
+  "status": "cpu_authored_inactive",
+  "task_id": "LinkAgent-TomatoPick-Physics-v2",
+  "purpose": "Freeze train-validation-test separation, episode records, aggregation, and checkpoint evaluation before any PPO run.",
+  "splits": {
+    "train": {
+      "seeds": [43],
+      "randomization": "profile_default",
+      "checkpoint_selection_allowed": false
+    },
+    "validation": {
+      "seeds": [17],
+      "randomization": "profile_default",
+      "checkpoint_selection_allowed": false
+    },
+    "test": {
+      "seeds": [42, 2026],
+      "randomization": "all_declared_robustness_buckets",
+      "checkpoint_selection_allowed": true
+    }
+  },
+  "seed_derivation": {
+    "method": "split_seed + 1000003 * bucket_index + episode_index",
+    "episode_index_origin": 0,
+    "collision_check_required": true
+  },
+  "episode_record": {
+    "required_fields": [
+      "episode_id",
+      "split",
+      "seed",
+      "robustness_bucket",
+      "episode_steps",
+      "detached",
+      "success",
+      "retained",
+      "dropped",
+      "excess_force",
+      "timeout",
+      "peak_fingertip_force_n",
+      "peak_palm_force_n",
+      "damage_proxy_mean",
+      "damage_proxy_peak"
+    ],
+    "boolean_fields": [
+      "detached",
+      "success",
+      "retained",
+      "dropped",
+      "excess_force",
+      "timeout"
+    ],
+    "finite_numeric_fields": [
+      "episode_steps",
+      "peak_fingertip_force_n",
+      "peak_palm_force_n",
+      "damage_proxy_mean",
+      "damage_proxy_peak"
+    ]
+  },
+  "aggregation": {
+    "primary_unit": "episode",
+    "group_by": ["split", "robustness_bucket", "seed"],
+    "required_metrics": [
+      "success_rate",
+      "retained_rate",
+      "detach_rate",
+      "drop_rate",
+      "excess_force_rate",
+      "timeout_rate",
+      "peak_fingertip_force_n",
+      "peak_palm_force_n",
+      "damage_proxy_mean",
+      "damage_proxy_peak",
+      "worst_bucket_success_rate"
+    ],
+    "rate_denominator": "episode_count",
+    "worst_bucket_rule": "minimum success_rate over test buckets and seeds"
+  },
+  "robustness_buckets": [
+    "small_soft_dry",
+    "small_soft_wet",
+    "large_firm_dry",
+    "large_firm_wet",
+    "high_actuator_delay",
+    "high_tactile_delay_dropout"
+  ],
+  "checkpoint_policy": {
+    "training_metrics_may_nominate": true,
+    "training_metrics_may_release": false,
+    "release_requires_independent_test": true,
+    "selection_order": [
+      "success_rate_descending",
+      "damage_proxy_ascending",
+      "drop_rate_ascending",
+      "peak_force_ascending"
+    ],
+    "minimum_test_seeds": 2,
+    "hardware_deployment_allowed": false
+  }
+}

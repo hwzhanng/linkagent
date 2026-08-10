@@ -41,3 +41,4 @@ def test_resume_manifest_never_authorizes_gpu_training_without_external_checks(t
     assert report["hardware_connection_authorized"] is False
     assert report["cpu_qualification"]["passed"] is False
     assert len(report["external_checks_pending"]) >= 6
+    assert report["static_checks"]["data_protocol_is_valid_and_inactive"] is True
