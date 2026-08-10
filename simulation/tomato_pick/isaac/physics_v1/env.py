@@ -45,6 +45,37 @@ class TomatoPickPhysicsV1Env(TomatoPickEnv):
 
     def __init__(self, cfg: TomatoPickPhysicsV1EnvCfg, render_mode: str | None = None, **kwargs):
         super().__init__(cfg, render_mode, **kwargs)
+        self._all_env_ids = torch.arange(self.num_envs, device=self.device)
+        target_dtype = self._joint_targets.dtype
+        self._hand_center_rad = torch.tensor(
+            CALIBRATED_HAND_CENTER_RAD, device=self.device, dtype=target_dtype
+        )
+        self._hand_negative_endpoints_rad = torch.tensor(
+            CALIBRATED_HAND_NEGATIVE_ENDPOINTS_RAD,
+            device=self.device,
+            dtype=target_dtype,
+        )
+        self._hand_positive_endpoints_rad = torch.tensor(
+            CALIBRATED_HAND_POSITIVE_ENDPOINTS_RAD,
+            device=self.device,
+            dtype=target_dtype,
+        )
+        self._hand_coordinate_mask = torch.zeros(
+            (5, 16), device=self.device, dtype=target_dtype
+        )
+        self._hand_coordinate_mask[
+            :4, list(CALIBRATED_FINGER_ACTIVE_JOINT_INDICES)
+        ] = 1.0
+        self._hand_coordinate_mask[
+            4, list(CALIBRATED_THUMB_ACTIVE_JOINT_INDICES)
+        ] = 1.0
+        self._gravity_w = torch.tensor(
+            self.cfg.sim.gravity, device=self.device, dtype=target_dtype
+        )
+        self._stem_local_attachment = torch.zeros(
+            (self.num_envs, 3), device=self.device, dtype=target_dtype
+        )
+        self._stem_local_attachment[:, 2] = self._fruit_axes_m[:, 2]
         profiles = self._prestartup_physics_v1_profiles
         self._stem_tensile_limit_n = profiles["stem_tensile_force_n"].to(self.device)
         self._stem_shear_limit_n = profiles["stem_shear_force_n"].to(self.device)
@@ -178,33 +209,18 @@ class TomatoPickPhysicsV1Env(TomatoPickEnv):
         if synergy.shape != (self.num_envs, 5):
             raise ValueError("hand synergy tensor must have shape (num_envs, 5)")
         action = synergy.clamp(-1.0, 1.0)
-        center = torch.tensor(
-            CALIBRATED_HAND_CENTER_RAD,
-            device=self.device,
-            dtype=action.dtype,
-        )
-        negative = torch.tensor(
-            CALIBRATED_HAND_NEGATIVE_ENDPOINTS_RAD,
-            device=self.device,
-            dtype=action.dtype,
-        )
-        positive = torch.tensor(
-            CALIBRATED_HAND_POSITIVE_ENDPOINTS_RAD,
-            device=self.device,
-            dtype=action.dtype,
-        )
+        center = self._hand_center_rad
+        negative = self._hand_negative_endpoints_rad
+        positive = self._hand_positive_endpoints_rad
         endpoints = torch.where(
             (action >= 0.0).unsqueeze(2),
             positive.unsqueeze(0),
             negative.unsqueeze(0),
         )
-        coordinate_mask = torch.zeros((5, 16), device=self.device, dtype=action.dtype)
-        coordinate_mask[:4, list(CALIBRATED_FINGER_ACTIVE_JOINT_INDICES)] = 1.0
-        coordinate_mask[4, list(CALIBRATED_THUMB_ACTIVE_JOINT_INDICES)] = 1.0
         targets = center.unsqueeze(0) + (
             action.abs().unsqueeze(2)
             * (endpoints - center.view(1, 1, -1))
-            * coordinate_mask.unsqueeze(0)
+            * self._hand_coordinate_mask.unsqueeze(0)
         ).sum(dim=1)
         limits = self._robot.data.joint_pos_limits.torch[
             :, self._hand_joint_ids
@@ -212,7 +228,6 @@ class TomatoPickPhysicsV1Env(TomatoPickEnv):
         self._joint_targets[:, self._hand_joint_ids] = torch.maximum(
             limits[..., 0], torch.minimum(limits[..., 1], targets)
         )
-        self._update_mimic_targets(torch.arange(self.num_envs, device=self.device))
 
     def _pre_physics_step(self, actions: torch.Tensor) -> None:
         previous = self._joint_targets[:, self._hand_joint_ids].clone()
@@ -225,7 +240,7 @@ class TomatoPickPhysicsV1Env(TomatoPickEnv):
             min=-maximum_delta, max=maximum_delta
         )
         self._joint_targets[:, self._hand_joint_ids] = rate_limited
-        self._update_mimic_targets(torch.arange(self.num_envs, device=self.device))
+        self._update_mimic_targets(self._all_env_ids)
 
     def _physical_finger_force(self) -> torch.Tensor:
         force = super()._physical_finger_force()
@@ -333,16 +348,15 @@ class TomatoPickPhysicsV1Env(TomatoPickEnv):
         fruit_pose = self._tomato.data.root_pose_w.torch
         fruit_lin_vel = self._tomato.data.root_lin_vel_w.torch
         fruit_ang_vel = self._tomato.data.root_ang_vel_w.torch
-        local_attachment = torch.zeros((self.num_envs, 3), device=self.device)
-        local_attachment[:, 2] = self._fruit_axes_m[:, 2]
-        attachment_offset_w = quat_apply(fruit_pose[:, 3:7], local_attachment)
+        attachment_offset_w = quat_apply(
+            fruit_pose[:, 3:7], self._stem_local_attachment
+        )
         attachment_pos_w = fruit_pose[:, :3] + attachment_offset_w
         attachment_velocity_w = fruit_lin_vel + torch.linalg.cross(
             fruit_ang_vel, attachment_offset_w, dim=1
         )
         position_error = self._stem_rest_attachment_pos_w - attachment_pos_w
         rotation_error = quat_box_minus(self._stem_anchor_quat_w, fruit_pose[:, 3:7])
-        gravity = torch.tensor(self.cfg.sim.gravity, device=self.device)
         omega = self.cfg.stem_linear_natural_frequency_rad_s
         acceleration = (
             omega * omega * position_error
@@ -350,7 +364,7 @@ class TomatoPickPhysicsV1Env(TomatoPickEnv):
             * self.cfg.stem_linear_damping_ratio
             * omega
             * attachment_velocity_w
-            - gravity.unsqueeze(0)
+            - self._gravity_w.unsqueeze(0)
         )
         force = self._fruit_mass_kg.unsqueeze(1) * acceleration
         angular_omega = self.cfg.stem_angular_natural_frequency_rad_s
@@ -497,9 +511,14 @@ class TomatoPickPhysicsV1Env(TomatoPickEnv):
         )
         terminated = self._success | self._terminal_failure
         truncated = self._timed_out
-        self.extras["step"]["success_count"] = int(self._success.sum().item())
-        self.extras["step"]["retained_count"] = int(self._retained.sum().item())
-        self.extras["step"]["timeout_count"] = int(self._timed_out.sum().item())
+        success_count, retained_count, timeout_count = torch.stack(
+            (self._success.sum(), self._retained.sum(), self._timed_out.sum())
+        ).tolist()
+        self.extras["step"]["success_count"] = int(success_count)
+        self.extras["step"]["retained_count"] = int(retained_count)
+        self.extras["step"]["timeout_count"] = int(timeout_count)
+        if not self.cfg.detailed_step_diagnostics:
+            return terminated, truncated
         self.extras["step"]["shadow_secure_support_count"] = int(
             self._shadow_secure_support.sum().item()
         )
@@ -944,10 +963,41 @@ class TomatoPickPhysicsV1Env(TomatoPickEnv):
         self.sim.forward()
         self.scene.update(dt=0.0)
 
+    def _consume_discarded_clean_reset_random_stream(
+        self, env_ids: torch.Tensor
+    ) -> None:
+        """Preserve the released Physics-v1 reset RNG stream without its pose.
+
+        The former override executed a complete Clean-v5 pose reset and then
+        overwrote it with the workspace reset.  These inexpensive draws retain
+        the exact downstream random sequence while avoiding its simulator
+        writes, collision clearance pass, and forward/update cycle.
+        """
+
+        count = len(env_ids)
+        noise_rad = math.radians(self.cfg.pregrasp_arm_joint_noise_deg)
+        torch.empty((count, 7), device=self.device).uniform_(-noise_rad, noise_rad)
+        torch.empty(count, device=self.device).uniform_(
+            *self.cfg.pregrasp_distance_range_m
+        )
+        torch.empty(count, device=self.device).uniform_(
+            *self.cfg.pregrasp_lateral_offset_range_m
+        )
+        torch.empty(count, device=self.device).uniform_(-math.pi, math.pi)
+        torch.empty(count, device=self.device).uniform_(
+            -self.cfg.pregrasp_axial_noise_m,
+            self.cfg.pregrasp_axial_noise_m,
+        )
+        torch.empty(count, device=self.device).uniform_(
+            *self.cfg.break_force_range_n
+        )
+
     def _reset_idx(self, env_ids: torch.Tensor | None) -> None:
-        super()._reset_idx(env_ids)
         if env_ids is None:
             env_ids = torch.arange(self.num_envs, device=self.device)
+        self._prepare_reset_common(env_ids)
+        self._consume_discarded_clean_reset_random_stream(env_ids)
+        self._reset_measurement_randomization(env_ids)
         center = torch.tensor(
             CALIBRATED_HAND_CENTER_RAD,
             device=self.device,
@@ -961,6 +1011,8 @@ class TomatoPickPhysicsV1Env(TomatoPickEnv):
         )
         self._update_mimic_targets(env_ids)
         self._apply_workspace_reset(env_ids)
+        self._clear_stem_episode_state(env_ids)
+        self._clear_task_episode_state(env_ids)
         # Clear contact history only after the final sampled arm and fruit
         # poses have been forwarded. Intermediate parking/reset poses must not
         # leak a force into the first policy observation.

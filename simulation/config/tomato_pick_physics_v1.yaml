@@ -23,11 +23,20 @@
     "source_usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg.usda",
     "source_usd_sha256": "e4b190443b3b9aedf68826ce16e007737ecd4ee487321ded2c265c2e5a88a097",
     "derived_usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_training_mass1kg_physics_v1.usda",
-    "derived_usd_sha256": "6bde6855bcd0d6c2ab9e23c5588b516c684743cff980d7b37b5981834dc5aa35",
+    "derived_usd_sha256": "44647a9d51eb381d69e1fe3fb4d66d47e46bfae46ac9c0280592ceffd361226d",
+    "physics_v1_base_usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/payloads/base_physics_v1.usda",
+    "physics_v1_base_usd_sha256": "40d7104a26e1912cb8fb9c4b609418697c6ec23ada1c200eca16e6aa752aec79",
+    "physics_v1_instances_usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/payloads/instances_physics_v1.usda",
+    "physics_v1_instances_usd_sha256": "b26b416592a1f6c4116f377e674cfed4d8693fd2ae437ec10775a9a6f2557315",
     "collision_matrix_baked": true,
-    "self_collision_representation": "distal_envelope_filtered_pairs_outside_solve_contact_disabled_v2",
+    "self_collision_representation": "distal_envelope_instanced_prototypes_v5_source_convex_decomposition",
     "stored_active_hand_filtered_pair_count": 7,
     "outside_solve_contact_disabled_body_count": 59,
+    "outside_collision_disabled_shape_count": 59,
+    "active_collider_approximation": "convexDecomposition",
+    "active_collider_shape_count": 12,
+    "active_collision_prototype_count": 8,
+    "disabled_collision_prototype_count": 41,
     "runtime_authored_collision_pairs": 0,
     "passive_mimics_baked": true,
     "runtime_authored_passive_mimics": 0,
@@ -80,6 +89,15 @@
     "provisional_stiffness_nm_rad": 1200.0,
     "provisional_damping_nm_s_rad": 80.0
   },
+  "simulation": {
+    "physics_rate_hz": 120,
+    "control_decimation": 6,
+    "solver_position_iteration_count": 8,
+    "solver_velocity_iteration_count": 4,
+    "enable_self_collisions": true,
+    "replicate_physics": false,
+    "clone_in_fabric": false
+  },
   "contact": {
     "status": "isolated_gate_passed_literature_prior_not_user_calibrated",
     "finger_static_friction": 0.55,
@@ -93,6 +111,7 @@
     "compliant_contact_damping_n_s_m": 25.0,
     "contact_offset_m": 0.0015,
     "rest_offset_m": 0.0,
+    "contact_sensor_max_data_count_per_prim": 64,
     "contact_point_maximum_surface_gap_m": 0.008,
     "maximum_depenetration_velocity_m_s": 0.25,
     "calibration_search_only": {
@@ -128,7 +147,7 @@
     "tensile_strength_pa": [1200000.0, 1900000.0],
     "shear_to_tension_ratio": [0.60, 0.80],
     "bending_lever_arm_m": [0.006, 0.012],
-    "critical_duration_s": [0.035, 0.075],
+    "critical_duration_s": [0.075, 0.150],
     "damage_onset_ratio": 0.55,
     "damage_recovery_time_s": 0.12,
     "experimental_reference": {
@@ -266,10 +285,13 @@
     "passed_gates": [
       "baked scalable self-collision matrix with zero runtime pair authoring",
       "one and sixty-four environment articulation, passive-linkage, reset, and contact gates",
-      "isolated friction, compression, rebound, and stem-duration gate",
+      "perf-v7 isolated friction, compression, rebound, and 75-150 ms stem-duration gate",
       "two-hundred-thousand-profile abscission-envelope feasibility gate",
-      "two-hundred-fifty-six environment four-update PPO numerical preflight after secure-plus-kinematic break-credit alignment",
-      "from-scratch 8192-environment 50-update secure-plus-kinematic first-success gate with first success at update 42 and passing tail trends"
+      "perf-v7 sixty-four environment 256-step five-dimensional hand, self-collision, and contact-capacity gate",
+      "perf-v7 fixed-action 1024, 4096, and 8192 environment fair performance gate at 120 Hz and decimation 6",
+      "perf-v7 two-hundred-fifty-six environment four-update PPO numerical preflight after secure-plus-kinematic break-credit alignment",
+      "perf-v7 from-scratch 8192-environment 50-update first-success gate with first success at update 25 and passing tail trends",
+      "post-qualification formal-readiness audit with finite reset, rollout, five-dimensional hand, self-collision, contact-capacity, and stem-duration invariants"
     ],
     "required_before_hardware_transfer": [
       "measure actual L20 mass, actuator response, and passive linkage error",

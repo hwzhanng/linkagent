@@ -236,7 +236,7 @@ def main() -> int:
             attached=attached,
         )
         break_step = torch.full(critical.shape, -1, dtype=torch.long)
-        for step in range(1, 16):
+        for step in range(1, 24):
             damage, broken = physics.update_stem_damage(
                 damage,
                 torch.ones_like(critical),

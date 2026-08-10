@@ -1,0 +1,76 @@
+{
+  "checks": {
+    "completed_four_updates": true,
+    "final_checkpoint_is_nonempty": true,
+    "losses_and_std_are_finite": true,
+    "no_traceback_nan_inf_overflow_or_oom": true
+  },
+  "credit_gate": {
+    "break_substep_kinematic_retained_required": true,
+    "break_substep_secure_support_required": true,
+    "maximum_center_distance_m": 0.06,
+    "maximum_relative_speed_m_s": 0.1
+  },
+  "final_checkpoint": "/home/descfly/linkagent-physics-perf/logs/rsl_rl/tomato_pick_physics_v1_preflight/2026-08-10_02-32-43_numeric_gate_not_formal_training/model_3.pt",
+  "final_checkpoint_sha256": "27565d939e887a192d509fd9fedf3f6482e10c203dbe110bd4bef49f89cdff27",
+  "input_sha256": {
+    "simulation/config/tomato_pick_physics_v1.yaml": "e2b0fc24e8af10e39c5060a7b490db7aebbf83be666c93b3ca7c90f1e010375b",
+    "simulation/tomato_pick/isaac/physics_v1/assets.py": "4d6aee7974ac05fff67ac7d0c2239bbdba6d9731e8e24f9bf5f8e883c5f4c064",
+    "simulation/tomato_pick/isaac/physics_v1/env.py": "5402791387d97798a89f780b582a7b8924c6b19573852f45f7e958e6d7569dac",
+    "simulation/tomato_pick/isaac/physics_v1/env_cfg.py": "218053080db9d537c1df7f446074e6baae1c232eb1cb27b067c20f871d7477fe",
+    "simulation/tomato_pick/physics_v1.py": "9c736a79b66b5516d7a52dda19e1b933f63dec9382dd6578afd7d6fe84ad713b",
+    "tests/test_tomato_physics_v1.py": "2cf6b9a383667c3a3c98b6c71dc23b683bd264e6d792337a8d8435e9a208a0e0"
+  },
+  "iterations": [
+    {
+      "entropy_loss": 9.994,
+      "iteration": 0,
+      "mean_action_std": 0.6,
+      "mean_reward": 2.75,
+      "steps_per_second": 1470.0,
+      "surrogate_loss": 0.0011,
+      "value_loss": 5.8195
+    },
+    {
+      "entropy_loss": 9.9996,
+      "iteration": 1,
+      "mean_action_std": 0.6,
+      "mean_reward": 1.78,
+      "steps_per_second": 1362.0,
+      "surrogate_loss": -0.0159,
+      "value_loss": 0.0093
+    },
+    {
+      "entropy_loss": 10.0044,
+      "iteration": 2,
+      "mean_action_std": 0.6,
+      "mean_reward": 0.08,
+      "steps_per_second": 1272.0,
+      "surrogate_loss": -0.0014,
+      "value_loss": 3.0053
+    },
+    {
+      "entropy_loss": 10.0139,
+      "iteration": 3,
+      "mean_action_std": 0.6,
+      "mean_reward": 0.61,
+      "steps_per_second": 1348.0,
+      "surrogate_loss": -0.005,
+      "value_loss": 0.1059
+    }
+  ],
+  "log": "/tmp/tomato_physics_v1_ppo_preflight_perf_v7_duration.log",
+  "num_envs": 256,
+  "passed": true,
+  "physics_representation": {
+    "self_collision_representation": "distal_envelope_instanced_prototypes_v5_source_convex_decomposition",
+    "solver_position_iteration_count": 8,
+    "solver_velocity_iteration_count": 4
+  },
+  "qualification": "numerical_preflight_not_formal_training",
+  "run_directory": "/home/descfly/linkagent-physics-perf/logs/rsl_rl/tomato_pick_physics_v1_preflight/2026-08-10_02-32-43_numeric_gate_not_formal_training",
+  "schema_version": 1,
+  "seed": 42,
+  "task_id": "LinkAgent-TomatoPick-Physics-v1",
+  "total_transitions": 32768
+}

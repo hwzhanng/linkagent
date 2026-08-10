@@ -8,6 +8,7 @@ updates, then emits a machine-readable qualification report.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import os
@@ -24,9 +25,19 @@ if not _isaac_root_value:
 ISAAC_ROOT = Path(_isaac_root_value).expanduser().resolve()
 ISAAC_ENV = ISAAC_ROOT / "env_isaaclab"
 QUALIFICATION_ROOT = PROJECT_ROOT / "logs/qualification/tomato_physics_v1"
+PROFILE_PATH = PROJECT_ROOT / "simulation/config/tomato_pick_physics_v1.yaml"
+DEFAULT_PERFORMANCE_GATE = QUALIFICATION_ROOT / "performance/performance_gate_v4.json"
 DEFAULT_OUTPUT = QUALIFICATION_ROOT / "first_success_8192x50_gate.json"
 DEFAULT_LOG = Path("/tmp/tomato_physics_v1_first_success_8192x50.log")
 ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _metric(line: str, name: str) -> float | None:
@@ -48,6 +59,8 @@ def _parse_training_log(text: str) -> list[dict[str, float | int]]:
         "Mean value loss": "mean_value_loss",
         "Mean surrogate loss": "mean_surrogate_loss",
         "Mean reward": "mean_reward",
+        "Steps per second": "steps_per_second",
+        "Iteration time": "iteration_time_seconds",
         "Episode_Reward/break_grasped": "break_grasped_reward",
         "Episode_Reward/retention_progress": "retention_progress_reward",
         "Episode_Reward/stable_detach": "stable_detach_reward",
@@ -128,9 +141,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--log", type=Path, default=DEFAULT_LOG)
+    parser.add_argument("--run-name", default="from_scratch_8192x50_not_formal")
+    parser.add_argument("--performance-gate", type=Path, default=DEFAULT_PERFORMANCE_GATE)
     args = parser.parse_args(argv)
     if (args.num_envs, args.iterations, args.seed) != (8192, 50, 42):
         raise ValueError("first-success gate is frozen at 8192 envs, 50 updates, seed 42")
+    performance_gate_path = args.performance_gate.resolve()
+    performance_gate = json.loads(performance_gate_path.read_text(encoding="utf-8"))
+    if performance_gate.get("passed") is not True:
+        raise RuntimeError("selected Physics-v1 performance gate has not passed")
 
     environment = dict(os.environ)
     environment.update(
@@ -168,7 +187,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--experiment_name",
         "tomato_pick_physics_v1_first_success_gate",
         "--run_name",
-        "from_scratch_8192x50_not_formal",
+        args.run_name,
         "--viz",
         "none",
     ]
@@ -220,6 +239,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
         **tail_checks,
     }
+    profile = json.loads(PROFILE_PATH.read_text(encoding="utf-8"))
+    tracked_inputs = [
+        PROFILE_PATH,
+        PROJECT_ROOT / "simulation/tomato_pick/isaac/physics_v1/env_cfg.py",
+        PROJECT_ROOT / "simulation/tomato_pick/isaac/physics_v1/env.py",
+        PROJECT_ROOT / "simulation/tomato_pick/isaac/physics_v1/assets.py",
+        PROJECT_ROOT / "simulation/tomato_pick/physics_v1.py",
+        PROJECT_ROOT / "simulation/tomato_pick/reset_v1.py",
+        PROJECT_ROOT / "simulation/tomato_pick/reward.py",
+        performance_gate_path,
+    ]
+    iteration_times = [
+        float(record["iteration_time_seconds"])
+        for record in records
+        if "iteration_time_seconds" in record
+    ]
     report = {
         "schema_version": 1,
         "passed": all(checks.values()),
@@ -238,6 +273,23 @@ def main(argv: Sequence[str] | None = None) -> int:
         "records": records,
         "log": str(args.log),
         "command": command,
+        "run_name": args.run_name,
+        "physics_representation": {
+            "self_collision_representation": profile["robot_asset"][
+                "self_collision_representation"
+            ],
+            **profile["simulation"],
+        },
+        "performance": {
+            "iteration_time_seconds_mean": (
+                sum(iteration_times) / len(iteration_times) if iteration_times else None
+            ),
+            "iteration_time_seconds_min": min(iteration_times) if iteration_times else None,
+            "iteration_time_seconds_max": max(iteration_times) if iteration_times else None,
+        },
+        "input_sha256": {
+            str(path.relative_to(PROJECT_ROOT)): _sha256(path) for path in tracked_inputs
+        },
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")

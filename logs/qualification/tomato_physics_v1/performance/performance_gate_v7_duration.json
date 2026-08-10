@@ -1,0 +1,125 @@
+{
+  "checks": {
+    "8192_rollout_within_budget": true,
+    "8192_speedup_meets_target": true,
+    "control_decimation_6": true,
+    "faster_1024": true,
+    "faster_4096": true,
+    "faster_8192": true,
+    "finite_1024": true,
+    "finite_4096": true,
+    "finite_8192": true,
+    "matched_inputs_1024": true,
+    "matched_inputs_4096": true,
+    "matched_inputs_8192": true,
+    "no_termination_regression_1024": true,
+    "no_termination_regression_4096": true,
+    "no_termination_regression_8192": true,
+    "physics_rate_120hz": true
+  },
+  "comparisons": {
+    "1024": {
+      "baseline": {
+        "measurement_seconds": 12.434429902001284,
+        "path": "logs/qualification/tomato_physics_v1/performance/baseline_1024.json",
+        "sha256": "b5516591a734eb4af84222ca887c4deddd7d23f99c68cb6c3c86e705e13eda98",
+        "terminated_count": 7,
+        "transitions_per_second": 2635.263559186263
+      },
+      "candidate": {
+        "measurement_seconds": 4.989975267089903,
+        "path": "logs/qualification/tomato_physics_v1/performance/final_candidate_v7_duration_fair_1024.json",
+        "sha256": "d121865af712a09a8ff91e56be5714cc35b852413e1e29efc15593c10fe784cb",
+        "terminated_count": 4,
+        "transitions_per_second": 6566.766015076849
+      },
+      "improvement_fraction": 0.598696899944984,
+      "matched_fields": {
+        "action_scale": true,
+        "benchmark": true,
+        "block_steps": true,
+        "decimation": true,
+        "measure_steps": true,
+        "num_envs": true,
+        "physics_dt_s": true,
+        "seed": true,
+        "warmup_steps": true
+      },
+      "speedup": 2.4918820708409846
+    },
+    "4096": {
+      "baseline": {
+        "measurement_seconds": 24.793145308969542,
+        "path": "logs/qualification/tomato_physics_v1/performance/baseline_4096.json",
+        "sha256": "c61039e8874473a1666f85e57813d99f57b0bf724fdf4612c51bb0ee50ef8694",
+        "terminated_count": 47,
+        "transitions_per_second": 5286.622506607962
+      },
+      "candidate": {
+        "measurement_seconds": 11.47580996202305,
+        "path": "logs/qualification/tomato_physics_v1/performance/final_candidate_v7_duration_fair_4096.json",
+        "sha256": "9fcc57eddf8df29258dcb5555dc62bc72aa26b63a8fac2746c2bb3c2a792171b",
+        "terminated_count": 30,
+        "transitions_per_second": 11421.590322056323
+      },
+      "improvement_fraction": 0.5371377927643821,
+      "matched_fields": {
+        "action_scale": true,
+        "benchmark": true,
+        "block_steps": true,
+        "decimation": true,
+        "measure_steps": true,
+        "num_envs": true,
+        "physics_dt_s": true,
+        "seed": true,
+        "warmup_steps": true
+      },
+      "speedup": 2.1604701882496844
+    },
+    "8192": {
+      "baseline": {
+        "measurement_seconds": 48.202102118055336,
+        "path": "logs/qualification/tomato_physics_v1/performance/baseline_8192.json",
+        "sha256": "19bd645b35c4915fe5ebc2dbf8b6f9e738b2b7a7755a37c093a85b9f7b6248be",
+        "terminated_count": 88,
+        "transitions_per_second": 5438.435015924487
+      },
+      "candidate": {
+        "measurement_seconds": 17.756115878000855,
+        "path": "logs/qualification/tomato_physics_v1/performance/final_candidate_v7_duration_fair_8192.json",
+        "sha256": "b4f1d27d5643033b2f51c45421ea77cdbfce78b5b123828bb989b1ba80d25854",
+        "terminated_count": 52,
+        "transitions_per_second": 14763.589165623003
+      },
+      "improvement_fraction": 0.6316319185724921,
+      "matched_fields": {
+        "action_scale": true,
+        "benchmark": true,
+        "block_steps": true,
+        "decimation": true,
+        "measure_steps": true,
+        "num_envs": true,
+        "physics_dt_s": true,
+        "seed": true,
+        "warmup_steps": true
+      },
+      "speedup": 2.7146760276427284
+    }
+  },
+  "constraints": {
+    "control_decimation": 6,
+    "fixed_action_scale": 0.45,
+    "fixed_measure_steps": 32,
+    "fixed_seed": 42,
+    "fixed_warmup_steps": 16,
+    "no_environment_count_reduction": true,
+    "physics_rate_hz": 120
+  },
+  "gate": "tomato_physics_v1_fixed_action_performance",
+  "passed": true,
+  "schema_version": 1,
+  "thresholds": {
+    "max_8192_rollout_seconds": 20.0,
+    "min_8192_speedup": 2.0
+  }
+}

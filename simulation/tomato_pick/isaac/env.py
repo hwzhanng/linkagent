@@ -1000,9 +1000,9 @@ class TomatoPickEnv(DirectRLEnv):
             * break_quality
         )
 
-    def _reset_idx(self, env_ids: torch.Tensor | None) -> None:
-        if env_ids is None:
-            env_ids = wp.to_torch(self._robot._ALL_INDICES)
+    def _prepare_reset_common(self, env_ids: torch.Tensor) -> None:
+        """Reset manager state and buffers shared by every tomato task."""
+
         super()._reset_idx(env_ids)
         self._log_episodes(env_ids)
         count = len(env_ids)
@@ -1015,6 +1015,55 @@ class TomatoPickEnv(DirectRLEnv):
             (count,),
             device=self.device,
         )
+
+    def _reset_measurement_randomization(self, env_ids: torch.Tensor) -> None:
+        """Sample observation-side reset randomization shared by task variants."""
+
+        count = len(env_ids)
+        self._perceived_fruit_position_error_w[env_ids] = torch.randn(
+            (count, 3), device=self.device
+        ) * self.cfg.target_position_noise_m
+        measured_axes = self._fruit_axes_m[env_ids] * (
+            1.0
+            + torch.randn((count, 3), device=self.device)
+            * self.cfg.fruit_axis_relative_noise
+        )
+        self._measured_fruit_axes_m[env_ids] = measured_axes.clamp(0.025, 0.035)
+        self._tactile_gain[env_ids] = torch.empty(
+            (count, 5), device=self.device
+        ).uniform_(*self.cfg.tactile_force_gain)
+        self._tactile_bias_n[env_ids] = torch.empty(
+            (count, 5), device=self.device
+        ).uniform_(*self.cfg.tactile_force_bias_n)
+
+    def _clear_stem_episode_state(self, env_ids: torch.Tensor) -> None:
+        self._stem_detached[env_ids] = False
+        self._stem_break_event[env_ids] = False
+        self._stem_overload_substeps[env_ids] = 0
+        self._last_stem_force_w[env_ids] = 0.0
+        self._last_stem_torque_w[env_ids] = 0.0
+
+    def _clear_task_episode_state(self, env_ids: torch.Tensor) -> None:
+        self._best_grasp_score[env_ids] = 0.0
+        self._best_opposed_score[env_ids] = 0.0
+        self._best_stem_load_score[env_ids] = 0.0
+        self._best_stable_detach_score[env_ids] = 0.0
+        self._best_retention_score[env_ids] = 0.0
+        self._hold_streak[env_ids] = 0
+        self._success[env_ids] = False
+        self._dropped[env_ids] = False
+        self._excess_force[env_ids] = False
+        self._out_of_bounds[env_ids] = False
+        self._retained[env_ids] = False
+        self._terminal_failure[env_ids] = False
+        self._timed_out[env_ids] = False
+        self._last_physical_force_n[env_ids] = 0.0
+
+    def _reset_idx(self, env_ids: torch.Tensor | None) -> None:
+        if env_ids is None:
+            env_ids = wp.to_torch(self._robot._ALL_INDICES)
+        self._prepare_reset_common(env_ids)
+        count = len(env_ids)
 
         joint_pos = self._nominal_joint_targets[env_ids].clone()
         noise_rad = math.radians(self.cfg.pregrasp_arm_joint_noise_deg)
@@ -1188,30 +1237,12 @@ class TomatoPickEnv(DirectRLEnv):
         self._stem_rest_attachment_pos_w[env_ids] = fruit_side
         self._stem_plant_anchor_pos_w[env_ids] = plant_side
         self._stem_anchor_quat_w[env_ids] = fruit_pose[:, 3:7]
-        self._stem_detached[env_ids] = False
-        self._stem_break_event[env_ids] = False
-        self._stem_overload_substeps[env_ids] = 0
-        self._last_stem_force_w[env_ids] = 0.0
-        self._last_stem_torque_w[env_ids] = 0.0
+        self._clear_stem_episode_state(env_ids)
         self._break_force_n[env_ids] = torch.empty(count, device=self.device).uniform_(
             *self.cfg.break_force_range_n
         )
 
-        self._perceived_fruit_position_error_w[env_ids] = torch.randn(
-            (count, 3), device=self.device
-        ) * self.cfg.target_position_noise_m
-        measured_axes = self._fruit_axes_m[env_ids] * (
-            1.0
-            + torch.randn((count, 3), device=self.device)
-            * self.cfg.fruit_axis_relative_noise
-        )
-        self._measured_fruit_axes_m[env_ids] = measured_axes.clamp(0.025, 0.035)
-        self._tactile_gain[env_ids] = torch.empty((count, 5), device=self.device).uniform_(
-            *self.cfg.tactile_force_gain
-        )
-        self._tactile_bias_n[env_ids] = torch.empty((count, 5), device=self.device).uniform_(
-            *self.cfg.tactile_force_bias_n
-        )
+        self._reset_measurement_randomization(env_ids)
 
         self._move_stem_visual(env_ids, fruit_side, plant_side)
         self._best_reach_score[env_ids] = self._reach_score_for(
@@ -1220,20 +1251,7 @@ class TomatoPickEnv(DirectRLEnv):
             ee_pose[:, :3],
             self._fruit_axes_m[env_ids],
         )
-        self._best_grasp_score[env_ids] = 0.0
-        self._best_opposed_score[env_ids] = 0.0
-        self._best_stem_load_score[env_ids] = 0.0
-        self._best_stable_detach_score[env_ids] = 0.0
-        self._best_retention_score[env_ids] = 0.0
-        self._hold_streak[env_ids] = 0
-        self._success[env_ids] = False
-        self._dropped[env_ids] = False
-        self._excess_force[env_ids] = False
-        self._out_of_bounds[env_ids] = False
-        self._retained[env_ids] = False
-        self._terminal_failure[env_ids] = False
-        self._timed_out[env_ids] = False
-        self._last_physical_force_n[env_ids] = 0.0
+        self._clear_task_episode_state(env_ids)
 
     def _reach_score_for(
         self,

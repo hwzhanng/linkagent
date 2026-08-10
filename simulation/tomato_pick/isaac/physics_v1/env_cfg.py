@@ -74,6 +74,10 @@ class TomatoPickPhysicsV1EnvCfg(TomatoPickEnvCfg):
     """Clean-v5 interface with independent, calibration-gated physics."""
 
     events = TomatoPickPhysicsV1EventCfg()
+    # Full fracture/contact telemetry is useful for qualification and failure
+    # audits, but it performs many host-visible reductions every policy step.
+    # Formal training keeps only the task metrics that affect monitoring.
+    detailed_step_diagnostics = False
     robot = copy.deepcopy(_CLEAN_V5_CFG.robot)
     robot.spawn.usd_path = str(PHYSICS_V1_ROBOT_USD)
     # The USD contains instance-proxy collision meshes.  The generic spawn
@@ -86,6 +90,8 @@ class TomatoPickPhysicsV1EnvCfg(TomatoPickEnvCfg):
     # pairs remain active so the thumb cannot pass through the fingers, while
     # adjacent/same-digit and out-of-scope coarse robot geometry are filtered.
     robot.spawn.articulation_props.enabled_self_collisions = True
+    robot.spawn.articulation_props.solver_position_iteration_count = 8
+    robot.spawn.articulation_props.solver_velocity_iteration_count = 4
     robot.actuators = {
         "arms": ImplicitActuatorCfg(
             joint_names_expr=[ARM_PATTERN],
@@ -143,9 +149,17 @@ class TomatoPickPhysicsV1EnvCfg(TomatoPickEnvCfg):
 
     fingertip_contacts = copy.deepcopy(_CLEAN_V5_CFG.fingertip_contacts)
     for sensor in fingertip_contacts.values():
+        # The task consumes normal force matrices and contact points only.
+        # Sensor pose and friction-force tensors are never read by reward,
+        # observation, termination, or qualification logic.  Keep contact
+        # points for the fruit-surface validity gate and cap the one-fruit
+        # filtered stream with ample headroom.
+        sensor.track_pose = False
         sensor.track_contact_points = True
-        sensor.track_friction_forces = True
-        sensor.max_contact_data_count_per_prim = 64
+        sensor.track_friction_forces = False
+        sensor.max_contact_data_count_per_prim = CONTACT[
+            "contact_sensor_max_data_count_per_prim"
+        ]
 
     maximum_arm_joint_delta_rad = ARM[
         "maximum_joint_target_delta_rad_per_policy_step"

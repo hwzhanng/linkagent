@@ -82,6 +82,8 @@ def main(
         env_cfg.seed = args_cli.seed
         env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
         env_cfg.log_dir = str(checkpoint.parent)
+        if hasattr(env_cfg, "detailed_step_diagnostics"):
+            env_cfg.detailed_step_diagnostics = True
 
         configure_seed(args_cli.seed, True)
         gym_env = gym.make(args_cli.task, cfg=env_cfg)

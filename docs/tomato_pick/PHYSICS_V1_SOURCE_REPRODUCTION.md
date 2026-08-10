@@ -1,5 +1,9 @@
 # Physics-v1 source-only reproducibility handoff
 
+> This is the historical source-only handoff for commit `edc4197`. The current
+> perf-v7 code and the safely paused formal run now include a resumable
+> iteration-1200 checkpoint; see `PHYSICS_V1_INCOMPLETE_RUN_1200.md`.
+
 This release freezes the current Physics-v1 source baseline so another team
 member can modify the hand manifold, physics, randomization, or reward credit
 without inheriting an opaque local state. It intentionally contains **no new
