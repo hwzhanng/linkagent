@@ -160,7 +160,7 @@ def build_reward_audit() -> dict[str, object]:
             center_distance_m=torch.tensor([scenario["distance_m"]], dtype=torch.float64),
             relative_speed_m_s=torch.tensor([scenario["speed_m_s"]], dtype=torch.float64),
             hold_steps=torch.tensor([scenario["hold_steps"]], dtype=torch.long),
-            maximum_fingertip_force_n=15.0,
+            maximum_fingertip_force_n=8.0,
         )
         success = bool(result["success"].item())
         observed.append(

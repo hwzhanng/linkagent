@@ -121,7 +121,7 @@ def test_v2_excessive_physical_force_cannot_succeed() -> None:
         center_distance_m=torch.tensor([0.03]),
         relative_speed_m_s=torch.tensor([0.02]),
         hold_steps=torch.tensor([20]),
-        maximum_fingertip_force_n=15.0,
+        maximum_fingertip_force_n=8.0,
     )
     assert not bool(result["within_force_limit"].item())
     assert not bool(result["success"].item())

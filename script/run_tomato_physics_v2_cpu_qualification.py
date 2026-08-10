@@ -27,6 +27,7 @@ TEST_FILES = (
     "tests/test_tomato_physics_v2_curriculum.py",
     "tests/test_tomato_physics_v2_experiment.py",
     "tests/test_tomato_physics_v2_calibration.py",
+    "tests/test_tomato_physics_v2_contract_parity.py",
 )
 
 
@@ -68,6 +69,15 @@ def qualification_commands(python: Path, output: Path) -> list[tuple[str, list[s
                     str(ROOT / "script/audit_tomato_physics_v2_reward_counterfactuals.py"),
                     "--output",
                     str(output / "reward_counterfactuals.json"),
+                ],
+            ),
+            (
+                "success_contract_parity",
+                [
+                    str(python),
+                    str(ROOT / "script/audit_tomato_physics_v2_contract_parity.py"),
+                    "--output",
+                    str(output / "success_contract_parity.json"),
                 ],
             ),
             (

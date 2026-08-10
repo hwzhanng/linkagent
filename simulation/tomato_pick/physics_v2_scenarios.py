@@ -40,7 +40,7 @@ def physical_task_predicates(
     center_distance_m: torch.Tensor,
     relative_speed_m_s: torch.Tensor,
     hold_steps: torch.Tensor,
-    maximum_fingertip_force_n: float = 15.0,
+    maximum_fingertip_force_n: float = 8.0,
 ) -> dict[str, torch.Tensor]:
     """Evaluate a conservative support/retention oracle from physical state.
 

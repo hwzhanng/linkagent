@@ -25,7 +25,8 @@ The runner executes an explicit allow-list:
 1. Static and analytic Physics-v2 gates 1 through 7.
 2. A 50,000-sample correlated parameter sensitivity screen.
 3. Reward/success counterfactuals and curriculum validation.
-4. Physics-v2 CPU unit and property tests.
+4. Static success-contract parity and unresolved-semantic registration.
+5. Physics-v2 CPU unit and property tests.
 
 It sets `CUDA_VISIBLE_DEVICES` to an empty value, disables W&B, rejects the
 Omniverse EULA for child commands, and removes known robot/ROS endpoint
@@ -77,6 +78,19 @@ pose, a fixed joint reference, or a fixed finger count as the tomato strategy.
 The draft is fail-closed. Activation requires a new profile revision,
 from-scratch training, CPU qualification, 64-environment integration,
 256x4 numerical PPO probing, and explicit authorization.
+
+## Success-contract parity
+
+The Physics-v1/Physics-v2 inherited runtime thresholds and the offline oracle
+now agree on two supported fingertips, 0.25 N minimum support, 6 cm retained
+distance, 0.10 m/s relative speed, 20 policy steps, and an 8 N force ceiling.
+
+One semantic difference remains intentionally visible: the conservative
+offline oracle requires continuous thumb-opposed fingertip support, while the
+integrated runtime allows load to transfer to the palm or between fingers after
+a qualified detach. The CPU parity report therefore sets exact semantic parity
+to false and blocks formal claims until palm contact evidence and GPU
+requalification resolve the choice.
 
 ## Deferred until power or hardware returns
 

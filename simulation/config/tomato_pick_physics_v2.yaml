@@ -239,6 +239,24 @@
       "next_stage": 6
     }
   },
+  "success_contract_parity": {
+    "status": "thresholds_aligned_conservative_oracle_semantics_documented",
+    "thresholds": {
+      "minimum_supported_fingertips": 2,
+      "minimum_support_force_n": 0.25,
+      "maximum_center_distance_m": 0.06,
+      "maximum_relative_speed_m_s": 0.10,
+      "hold_policy_steps": 20,
+      "maximum_fingertip_force_n": 8.0
+    },
+    "semantic_difference": {
+      "id": "post_detach_palm_support_without_continuous_fingertip_force",
+      "offline_oracle": "requires current physical thumb-opposed fingertip support through success",
+      "integrated_runtime": "allows load transfer to palm or between fingers after a qualified detach while distance, speed, force, and hold constraints remain valid",
+      "consequence": "the offline oracle is conservative and may reject a valid palm-supported runtime retention; it cannot be used as proof of exact runtime-success parity",
+      "resolution_status": "pending_explicit_palm_contact_evidence_and_gpu_requalification_before_formal_training"
+    }
+  },
   "deployment_side": {
     "current_simulation": "right_arm_right_hand",
     "left_hand_transfer": "blocked_pending_explicit_axis_zero_limit_sensor_and_mount_audit"
@@ -252,7 +270,8 @@
     "formal_training_started": false,
     "qualification": "steps_1_to_7_pure_gates_and_exact_runtime_asset_1_64_256_env_integrated_gates_passed",
     "blockers": [
-      "formal training remains blocked pending bounded-learning artifact audit, independent evaluation, and real parameter calibration"
+      "formal training remains blocked pending bounded-learning artifact audit, independent evaluation, and real parameter calibration",
+      "post-detach palm-support success semantics require explicit contact evidence and requalification"
     ],
     "step1_acceptance": [
       "all frozen Physics-v1 files match their recorded SHA-256",
