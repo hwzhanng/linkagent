@@ -1,5 +1,10 @@
 # Physics-v1 perf-v7 incomplete run: checkpoint 1200
 
+> Historical handoff: this run was later resumed without changing the PPO or
+> environment contract and stopped by user authorization at the best tested
+> full-state checkpoint, iter 5150. See
+> `PHYSICS_V1_PERF_V7_FINAL_5150.md` for the final reproducibility release.
+
 This handoff deliberately publishes an **unfinished** formal training run. It
 is a recovery point for continuing the same experiment, not a selected model,
 fixed-seed result, deployable skill, or replacement for the released Clean-v5

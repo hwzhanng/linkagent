@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
-  "status": "safe_pause_ready_for_exact_resume",
+  "status": "resumed_full_state_from_safe_pause",
+  "resumed_at_local": "2026-08-10T21:20:38+08:00",
   "paused_at_local": "2026-08-10T10:30:27+08:00",
   "workspace": "/home/descfly/linkagent-physics-perf",
   "task_id": "LinkAgent-TomatoPick-Physics-v1",
@@ -30,17 +31,19 @@
     "additional_iterations": 600,
     "reward_iteration_offset": 1200,
     "restore_full_runner_state": true,
-    "reuse_same_wandb_run": true,
-    "wandb_run_id": "hs0bad5e",
-    "wandb_url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/hs0bad5e",
+    "reuse_same_wandb_run": false,
+    "wandb_parent_run_id": "hs0bad5e",
+    "wandb_run_id": "u5dgy4u1",
+    "wandb_url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/u5dgy4u1",
+    "wandb_lineage_reason": "The parent run rejected the changed resume train_cfg as immutable. A linked continuation run preserves truthful configuration without changing PPO state.",
     "environment": {
       "LINKAGENT_ISAACLAB_ROOT": "/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1",
       "OMNI_KIT_ACCEPT_EULA": "YES",
       "PYTHONPATH": "/home/descfly/linkagent-physics-perf",
       "TOMATO_REWARD_ITERATION_OFFSET": "1200",
-      "WANDB_RUN_ID": "hs0bad5e",
-      "WANDB_RESUME": "allow",
-      "WANDB_INIT_TIMEOUT": "300"
+      "WANDB_INIT_TIMEOUT": "300",
+      "WANDB_NOTES": "Full-state continuation from parent run hs0bad5e at model_1200.pt; reward iteration offset 1200; 600 additional updates to absolute iteration 1800.",
+      "WANDB_TAGS": "perf-v7,resume1200,parent-hs0bad5e"
     },
     "command": [
       "/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python",
@@ -62,7 +65,7 @@
       "--experiment_name",
       "tomato_pick_physics_v1",
       "--run_name",
-      "tomato_pick_physics_v1_from_scratch_8192",
+      "tomato_pick_physics_v1_resume1200_to1800_8192",
       "--resume",
       "--load_run",
       "^2026-08-10_03-22-34_tomato_pick_physics_v1_from_scratch_8192$",

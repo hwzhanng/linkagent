@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "selected_after_user_requested_stop",
+  "selected_checkpoint": "logs/rsl_rl/tomato_pick_physics_v1/2026-08-12_09-39-56_tomato_pick_physics_v1_resume5000_to5400_8192/model_5150.pt",
+  "selected_checkpoint_iteration_field": 5150,
+  "selected_checkpoint_sha256": "655806f86a1bcf9e1472c064a5580523f6d8344d94a04c39f07112dcdcceacb0",
+  "selection_rule": "Highest fixed deterministic multi-seed success; candidates within 0.1 percentage point are treated as tied and broken by lower drop rate, then higher worst-seed success, then later iteration.",
+  "fixed_evaluation": {
+    "seeds": [
+      17,
+      42,
+      2026
+    ],
+    "num_envs_per_seed": 1024,
+    "steps_per_seed": 400,
+    "completed_episodes": 20102,
+    "success_rate": 0.8597154511988857,
+    "success_ci_95": [
+      0.8548459217126132,
+      0.8644475249018946
+    ],
+    "drop_rate": 0.06780419858720525,
+    "worst_seed_success": 0.8562180066245106,
+    "seed_spread": 0.009300770279155657
+  },
+  "runner_up": {
+    "checkpoint": "model_4995.pt",
+    "iteration": 5000,
+    "success_rate": 0.8596035748165161,
+    "drop_rate": 0.07014828498676919
+  },
+  "original_success_target": 0.9,
+  "formal_target_reached": false,
+  "formal_curve_plateau_reached": false,
+  "curve": {
+    "previous_100_mean_success": 0.7612760000000001,
+    "latest_100_mean_success": 0.774907,
+    "gain": 0.013630999999999949
+  },
+  "interpretation": "Fixed deterministic evaluation is on an 85-86% plateau, while the latest stochastic training-curve comparison still shows modest growth. The selected checkpoint is the best tested candidate, but neither the original 90% target nor the prior combined formal stop rule was reached; stopping is user-authorized."
+}
