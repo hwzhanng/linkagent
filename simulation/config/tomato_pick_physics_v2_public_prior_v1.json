@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "profile_id": "tomato_pick_physics_v2_public_prior_v1",
+  "task_id": "LinkAgent-TomatoPick-Physics-v2-PublicPrior-v1",
+  "status": "qualified_ready_for_external_audit_training_not_started",
+  "public_prior": {
+    "path": "research/physics_v2_public_priors/physics_v2_public_priors.json",
+    "sha256": "3d22c0d387c5c968cbd547ebd21b288af76031be99345b426f1db63dbd99d941",
+    "profile_id": "tomato_pick_physics_v2_public_priors_v1",
+    "evidence_role_policy": [
+      "DIRECT_PRIOR",
+      "DERIVED_PRIOR",
+      "ENGINEERING_HYPERPARAMETER",
+      "HARDWARE_CALIBRATION_REQUIRED"
+    ]
+  },
+  "engineering_prior": {
+    "path": "research/physics_v2_public_priors/ENGINEERING_PRIOR_SUPPLEMENT.json",
+    "sha256": "9f6a20e42ce6069dd6c4810892cde2e5e03b6ca0df72b61b5b3757e5ad8b02db",
+    "profile_id": "tomato_pick_physics_v2_engineering_prior_v1",
+    "policy": "bounded simulation and ablation priors only; target hardware measurements override them"
+  },
+  "frozen_parent": {
+    "physics_v1_profile": "simulation/config/tomato_pick_physics_v1.yaml",
+    "physics_v1_profile_sha256": "cfeedb9b52661ca1a5864b23c78cd440a4fb4a45dc10a38c1d95523848266d18",
+    "reuse": [
+      "robot USD and collision matrix",
+      "robot USD, collision matrix and qualified provisional actuator skeleton",
+      "66D actor observation and 83D critic state layouts",
+      "11D Cartesian plus five-dimensional hand action layout",
+      "secure retention success predicate",
+      "Clean-v5 PPO hyperparameters"
+    ],
+    "do_not_reuse": [
+      "Physics-v1 checkpoints or optimizer state",
+      "4-8 N effective detachment-force prior",
+      "Physics-v1 tension/shear/bending failure semantics",
+      "independent fruit geometry or mass sampling"
+    ]
+  },
+  "morphology": {
+    "core_profile_ids": [
+      "sibede_semi_ripe",
+      "sibede_early_firm",
+      "sibede_mid_late_firm"
+    ],
+    "core_profile_weights": [0.15, 0.55, 0.30],
+    "shared_size_latent_correlation": 0.85,
+    "truncated_standard_normal_bounds": [-2.0, 2.0],
+    "polar_aspect_ratio_gate": [0.65, 1.20],
+    "mass_gate_kg": [0.05, 0.40],
+    "density_gate_kg_m3": [800.0, 1200.0],
+    "maximum_sampling_attempts": 128,
+    "large_fruit_ood_training_weight": 0.0
+  },
+  "abscission": {
+    "diameter_sampler_m": [0.005, 0.008],
+    "axial_sampler": "piecewise_linear_mean_sd_positive_truncated_normal",
+    "bending_sampler": "diameter_group_mean_sd_positive_truncated_normal",
+    "shear_ratio_triangular": [0.60, 0.7423, 0.90],
+    "torsion_limit_triangular_nm": [0.05, 0.14709975, 0.30],
+    "torsion_ood_envelope_nm": [0.02, 0.40],
+    "twist_integrity_k_per_rad": 0.214162,
+    "twist_integrity_q": 1.0,
+    "subcritical_damage_onset_ratio": 0.60,
+    "subcritical_damage_exponent": 2.0,
+    "subcritical_time_constant_s": 0.55,
+    "subcritical_parameter_sampling": "episode_fixed_triangular_from_engineering_prior",
+    "subcritical_recovery": "none_within_episode",
+    "instantaneous_failure_ratio": 1.25,
+    "torsion_detach_integrity_threshold": 0.15,
+    "duration_damage_modes": "tension_shear_bending_only_to_avoid_double_counting_twist_integrity",
+    "capacity_floor_fraction": 0.001
+  },
+  "task_distribution": {
+    "world_orientation_categories": ["front", "back", "left", "right"],
+    "world_orientation_probabilities": [0.119, 0.111, 0.063, 0.706],
+    "continuous_orientation_sampling": "category_conditioned_azimuth_jitter_and_polar_tilt_from_engineering_prior",
+    "mapping": "world_generator_only_local_policy_remains_grasp_frame_invariant"
+  },
+  "policy_interface": {
+    "baseline_hand_manifold_dim": 5,
+    "action_space_change_in_this_profile": false,
+    "future_ablation": "5D versus 8D only after per-dimension saturation audit"
+  },
+  "paper_strategy_audit": {
+    "diagnostic_only_not_rewarded": true,
+    "effective_twist_minimum_rad": 6.283185307179586,
+    "bending_utilization_minimum": 0.50,
+    "final_axial_pull_n": [1.0, 15.29],
+    "requires_break_substep_secure_support": true,
+    "requires_break_substep_kinematic_retention": true,
+    "requires_final_secure_retention_success": true
+  },
+  "contact": {
+    "policy": "episode_fixed_engineering_pair_friction_and_compliance_bank",
+    "effective_pair_static_friction_triangular": [0.30, 0.45, 0.70],
+    "effective_dynamic_to_static_ratio": 0.85,
+    "effective_stiffness_triangular_n_m": [3000.0, 5385.0, 12000.0],
+    "effective_damping_bounds_n_s_m": [10.0, 60.0],
+    "public_rubber_friction_is_support_anchor_not_pair_calibration": true,
+    "hardware_transfer_ready": false
+  },
+  "actuator_surrogate": {
+    "action_delay_steps_uniform_inclusive": [0, 2],
+    "policy_period_s": 0.05,
+    "a7_and_l20_values": "engineering_prior.a7_l20_effective_actuator",
+    "hardware_identified": false
+  },
+  "qualification": {
+    "script": "script/qualify_tomato_physics_v2_public_priors.py",
+    "minimum_morphology_samples": 100000,
+    "required_gates": ["Q1", "Q2", "Q3", "Q4", "Q5", "Q6"],
+    "output": "logs/qualification/tomato_physics_v2/public_prior_cpu_gate.json",
+    "isaac_smoke_output": "logs/qualification/tomato_physics_v2/isaac_smoke_gate_64x128.json",
+    "passed": true
+  },
+  "training": {
+    "from_scratch_required": true,
+    "physics_v1_checkpoint_resume_allowed": false,
+    "same_profile_full_state_resume_allowed": true,
+    "same_profile_resume_requirement": "Actor_Critic_both_normalizers_policy_std_and_optimizer",
+    "default_num_envs": 8192,
+    "default_seed": 42,
+    "curve_controller": "script/run_tomato_physics_v2_curve_controller.sh",
+    "segment_updates": 400,
+    "fixed_total_iterations": null,
+    "convergence_policy": "two consecutive deterministic multi-seed evaluations >= 90%, <= 1 percentage point apart, plus two consecutive 100-vs-100 training-curve plateaus",
+    "start_requires_cpu_q1_q6_pass": true,
+    "start_requires_isaac_smoke_gate": true
+  },
+  "hardware_transfer": {
+    "ready": false,
+    "blockers": [
+      "A7 controller response and command latency fit",
+      "deployed L20/G20 alias resolution plus command/joint response and effort fit",
+      "deployed fingertip-pad x target-tomato dry/wet friction",
+      "deployed fingertip-pad x target-tomato indentation stiffness and damping",
+      "target-cultivar abscission validation",
+      "camera and perception error model"
+    ]
+  }
+}

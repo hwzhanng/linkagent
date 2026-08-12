@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "profile_id": "tomato_pick_physics_v2_engineering_prior_v1",
+  "status": "simulation_ready_hardware_calibration_required",
+  "scope": "Explicit bounded engineering distributions for public-data gaps. These values make simulation and ablation reproducible; none is a claim of deployed A7/L20 hardware calibration.",
+  "natural_pedicel_orientation": {
+    "world_category_order": ["front", "back", "left", "right"],
+    "category_azimuth_center_deg": [0.0, 180.0, 90.0, -90.0],
+    "within_category_azimuth_jitter_deg": {
+      "distribution": "truncated_normal",
+      "mean": 0.0,
+      "sd": 18.0,
+      "bounds": [-45.0, 45.0]
+    },
+    "polar_tilt_from_vertical_deg": {
+      "distribution": "triangular",
+      "parameters": [0.0, 8.0, 15.0]
+    },
+    "classification": "ENGINEERING_HYPERPARAMETER",
+    "rationale": "S09 identifies category prevalence but not a continuous local tilt density. The smooth within-category model preserves those measured probabilities and stays inside the already qualified 15 degree fruit-stem workspace envelope."
+  },
+  "abscission_zone_shear": {
+    "capacity_ratio_to_diameter_conditioned_tensile": {
+      "distribution": "triangular",
+      "parameters": [0.60, 0.7423, 0.90]
+    },
+    "mode_derivation": "S05 distal pedicel cutting mean divided by the 6.27 mm abscission tensile mean: 33.241 / 44.781 = 0.7423.",
+    "classification": "ENGINEERING_HYPERPARAMETER constrained by an adjacent-section experiment",
+    "replacement_gate": "Replace with target-cultivar abscission-zone lateral load tests; do not relabel the cutting fixture as direct AZ shear."
+  },
+  "cyclic_fatigue": {
+    "subcritical_onset_ratio": {
+      "distribution": "triangular",
+      "parameters": [0.45, 0.60, 0.75]
+    },
+    "damage_exponent": {
+      "distribution": "triangular",
+      "parameters": [1.5, 2.0, 3.0]
+    },
+    "time_constant_s": {
+      "distribution": "triangular",
+      "parameters": [0.20, 0.55, 1.20]
+    },
+    "recovery": "none_within_episode",
+    "classification": "ENGINEERING_HYPERPARAMETER",
+    "rationale": "S08 supports fatigue under reciprocating combined loading but does not identify constants. The time support is bounded by the 0.26-1.56 s human separation-stage reference, with a conservative lower tail for full-capacity loading.",
+    "replacement_gate": "Fit force-displacement-cycle traces for the target cultivar, holding reward and PPO fixed."
+  },
+  "g20_pad_tomato_contact": {
+    "effective_pair_static_friction": {
+      "distribution": "triangular",
+      "parameters": [0.30, 0.45, 0.70]
+    },
+    "effective_dynamic_to_static_ratio": 0.85,
+    "effective_linear_contact_stiffness_n_m": {
+      "distribution": "triangular",
+      "parameters": [3000.0, 5385.0, 12000.0]
+    },
+    "effective_contact_damping_n_s_m": {
+      "distribution": "coupled_linear_with_stiffness_quantile",
+      "bounds": [10.0, 60.0],
+      "nominal": 25.0
+    },
+    "physx_friction_combine_mode": "average",
+    "baked_finger_material_static_dynamic": [0.55, 0.45],
+    "tomato_material_mapping": "mu_tomato = 2 * mu_effective_pair - mu_baked_finger",
+    "classification": "HARDWARE_SURROGATE_PRIOR",
+    "rationale": "The friction support contains the S03 tomato-on-rubber mean 0.305 while allowing textured-pad and surface-condition uncertainty. The stiffness mode is the S03 whole-fruit rupture secant 51.27 N / 0.00952 m = 5385 N/m; it is only an effective rigid-body contact surrogate.",
+    "replacement_gate": "Incline-slip and 1/2/3/5 mm compression tests on the deployed pad, cultivar, ripeness and wetness states."
+  },
+  "a7_l20_effective_actuator": {
+    "task_naming_note": "The task historically says G20; the checked-in vendor model and current Physics-v1 profile identify the hand as Linker Hand L20.",
+    "policy_period_s": 0.05,
+    "action_delay_steps_uniform_inclusive": [0, 2],
+    "action_delay_s_support": [0.0, 0.10],
+    "a7": {
+      "urdf_joint_velocity_limit_rad_s": [10.47, 10.47, 9.10, 9.10, 9.10, 7.33, 7.33],
+      "urdf_joint_effort_limit_nm": [80.0, 80.0, 36.0, 36.0, 36.0, 18.0, 18.0],
+      "implicit_drive_stiffness_nm_rad": 1200.0,
+      "implicit_drive_damping_nm_s_rad": 80.0,
+      "maximum_joint_target_delta_rad_per_policy_step": 0.04,
+      "maximum_joint_target_lead_rad": 0.06
+    },
+    "l20": {
+      "vendor_command_rate_hz": 500.0,
+      "vendor_full_open_close_time_s": 0.9,
+      "vendor_thumb_fingertip_force_limit_n": 18.0,
+      "vendor_finger_fingertip_force_limit_n": 20.0,
+      "active_drive_effort_limit_nm": 0.45,
+      "implicit_drive_stiffness_nm_rad": 10.0,
+      "implicit_drive_damping_nm_s_rad": 0.8,
+      "active_drive_armature_kg_m2": 0.002,
+      "passive_mimic_natural_frequency_rad_s": 150.0,
+      "passive_mimic_damping_ratio": 1.2
+    },
+    "classification": "VENDOR_ENVELOPE plus QUALIFIED_SIMULATION_SURROGATE",
+    "rationale": "Vendor URDF/manual limits are used as hard envelopes. The implicit gains, armature and 0-2 policy-step delay are simulation priors that passed the existing Isaac gates but are not identified controller dynamics.",
+    "replacement_gate": "Timestamped isolated A7 joint steps and L20 open/close/reversal trials with measured joint position, velocity and effort."
+  }
+}
