@@ -1,0 +1,295 @@
+{
+  "schema_version": 1,
+  "profile_id": "tomato_pick_physics_v2_public_priors_v1",
+  "generated_on": "2026-08-12",
+  "scope": "public crop/task priors only; SI units unless source_units is explicit",
+  "status": "research_prior_not_hardware_calibrated",
+  "fruit": {
+    "standard_harvest_ready_profiles": [
+      {
+        "id": "sibede_semi_ripe",
+        "source": "S01",
+        "n": 14,
+        "mean_axes_m": [0.06583, 0.06378, 0.06177],
+        "sd_axes_m": [0.00430, 0.00374, 0.00487],
+        "mean_mass_kg": 0.151347,
+        "sd_mass_kg": 0.024799,
+        "derived_mean_ellipsoid_radii_m": [0.032915, 0.03189, 0.030885],
+        "derived_mean_ellipsoid_volume_m3": 0.0001357953
+      },
+      {
+        "id": "sibede_early_firm",
+        "source": "S01",
+        "n": 14,
+        "mean_axes_m": [0.07215, 0.06939, 0.05700],
+        "sd_axes_m": [0.00811, 0.00765, 0.00312],
+        "mean_mass_kg": 0.167489,
+        "sd_mass_kg": 0.043937,
+        "derived_mean_ellipsoid_radii_m": [0.036075, 0.034695, 0.02850],
+        "derived_mean_ellipsoid_volume_m3": 0.0001494193
+      },
+      {
+        "id": "sibede_mid_late_firm",
+        "source": "S01",
+        "n": 14,
+        "mean_axes_m": [0.07170, 0.06854, 0.06207],
+        "sd_axes_m": [0.00669, 0.00563, 0.02044],
+        "mean_mass_kg": 0.156586,
+        "sd_mass_kg": 0.044144,
+        "derived_mean_ellipsoid_radii_m": [0.03585, 0.03427, 0.031035],
+        "derived_mean_ellipsoid_volume_m3": 0.0001597142,
+        "warning": "published height SD/range contains large outliers; cap sampled aspect ratio rather than using raw maximum"
+      }
+    ],
+    "density_reference": {
+      "source": "S02",
+      "fully_ripe_kg_m3": {
+        "naveen": 1000.0,
+        "cv_613": 1040.0
+      },
+      "semi_ripe_kg_m3": {
+        "naveen": 940.0,
+        "cv_613": 1030.0
+      },
+      "recommended_consistency_gate_kg_m3": [800.0, 1200.0],
+      "role": "consistency/rejection gate; sample mass jointly with geometry rather than forcing one density"
+    },
+    "small_fruit_reference": {
+      "source": "S02",
+      "fully_ripe": {
+        "naveen": {"geometric_mean_diameter_m": 0.0563, "mass_kg": 0.1130, "volume_m3": 0.000118, "density_kg_m3": 1000.0},
+        "cv_613": {"geometric_mean_diameter_m": 0.0521, "mass_kg": 0.1148, "volume_m3": 0.000110, "density_kg_m3": 1040.0}
+      }
+    },
+    "large_cluster_tomato_ood": {
+      "source": "S04",
+      "sample_count": 200,
+      "lateral_diameter_m_range": [0.0664, 0.0927],
+      "longitudinal_diameter_m_range": [0.0526, 0.0813],
+      "lateral_height_m_range": [0.0351, 0.0627],
+      "mass_kg_range": [0.1527, 0.3782],
+      "lateral_diameter_histogram": [
+        {"bin_m": [0.065, 0.070], "probability": 0.01},
+        {"bin_m": [0.070, 0.075], "probability": 0.065},
+        {"bin_m": [0.075, 0.080], "probability": 0.36},
+        {"bin_m": [0.080, 0.085], "probability": 0.315},
+        {"bin_m": [0.085, 0.090], "probability": 0.22},
+        {"bin_m": [0.090, 0.095], "probability": 0.03}
+      ],
+      "recommended_role": "OOD/robustness distribution until the deployed cultivar is known"
+    },
+    "damage_references": {
+      "exocarp_puncture_2mm_probe": {
+        "source": "S01",
+        "speed_m_s": 0.001,
+        "rupture_force_n": {
+          "green": [9.224, 0.901],
+          "semi": [5.996, 0.952],
+          "early_firm": [5.408, 0.688],
+          "mid_late_firm": [4.521, 0.654]
+        },
+        "role": "damage/OOD constraint only; not a fingertip normal-force limit"
+      },
+      "whole_fruit_platen_compression": {
+        "source": "S01",
+        "platen_diameter_m": 0.100,
+        "mean_axial_rupture_force_n": {"green": 708.68, "semi": 116.24, "early_firm": 141.10, "mid_late_firm": 113.60},
+        "mean_radial_rupture_force_n": {"green": 534.97, "semi": 109.71, "early_firm": 98.91, "mid_late_firm": 85.33},
+        "role": "anisotropy/damage reference only; fixture geometry differs from fingertip contact"
+      },
+      "impact_energy_classes_j": {
+        "source": "S14",
+        "values": [0.023, 0.071, 0.158, 0.216],
+        "role": "OOD bruise-risk evaluation; not a universal hard damage threshold"
+      }
+    },
+    "tissue_mechanics_reference": {
+      "source": "S12",
+      "exocarp_tensile_failure_stress_pa_range": [421000.0, 582000.0],
+      "exocarp_elastic_modulus_pa_range": [4601000.0, 9590000.0],
+      "mesocarp_compression_failure_stress_pa_range": [122000.0, 229000.0],
+      "mesocarp_elastic_modulus_pa_range": [726000.0, 846000.0],
+      "locular_gel_compression_failure_stress_pa_range": [12000.0, 16000.0],
+      "locular_gel_elastic_modulus_pa_range": [48000.0, 124000.0],
+      "role": "future deformable-fruit model / damage proxy; never direct-map to rigid PhysX contact stiffness"
+    },
+    "xfem_exocarp_reference": {
+      "source": "S13",
+      "elastic_modulus_pa": 20350000.0,
+      "poisson_ratio": 0.40,
+      "failure_stress_pa": 1440000.0,
+      "fracture_energy_j_m2": 4320.0,
+      "role": "model-specific light-red JinshengF1 fracture reference; sensitivity/OOD only"
+    }
+  },
+  "pedicel_and_abscission": {
+    "geometry": {
+      "abscission_zone_diameter_m": {
+        "source": "S05",
+        "observed_majority_range": [0.005, 0.008],
+        "recommended_sampler": {"distribution": "uniform_maximum_entropy", "min": 0.005, "max": 0.008}
+      },
+      "distal_pedicel_diameter_m": {
+        "source": "S05",
+        "observed_majority_range": [0.003, 0.005]
+      },
+      "greenhouse_pedicel_length_m": {
+        "source": "S07",
+        "mean": 0.0332,
+        "varietal_mean_range": [0.0292, 0.0388],
+        "recommended_sampler": {"distribution": "uniform_maximum_entropy", "min": 0.0292, "max": 0.0388},
+        "transfer_note": "long-shelf-life varieties; geometry randomization only"
+      },
+      "distance_from_abscission_layer_m": {
+        "source": "S07",
+        "greenhouse_mean": 0.0090,
+        "varietal_mean_range": [0.0070, 0.0104]
+      }
+    },
+    "pure_axial_pull_off": {
+      "source": "S05",
+      "loading_speed_m_s": 0.001,
+      "diameter_nodes": [
+        {"diameter_m": 0.00552, "diameter_sd_m": 0.000221, "force_mean_n": 40.262, "force_sd_n": 12.437, "tensile_strength_mean_pa": 1691000.0, "tensile_strength_sd_pa": 554000.0},
+        {"diameter_m": 0.00627, "diameter_sd_m": 0.000207, "force_mean_n": 44.781, "force_sd_n": 15.156, "tensile_strength_mean_pa": 1441000.0, "tensile_strength_sd_pa": 427000.0},
+        {"diameter_m": 0.00775, "diameter_sd_m": 0.000451, "force_mean_n": 72.003, "force_sd_n": 23.401, "tensile_strength_mean_pa": 1534000.0, "tensile_strength_sd_pa": 511000.0}
+      ],
+      "recommended_sampler": "linearly interpolate force mean/SD by sampled abscission diameter; sample a positive truncated normal; do not use an independent 4-8 N uniform as pure axial strength"
+    },
+    "three_point_bending": {
+      "source": "S05",
+      "span_m": 0.012,
+      "loading_speed_m_s": 0.001,
+      "groups": [
+        {"diameter_group_m": [0.005, 0.006], "force_mean_n": 22.384, "force_sd_n": 6.389, "derived_center_load_moment_mean_nm": 0.067152, "derived_moment_sd_nm": 0.019167},
+        {"diameter_group_m": [0.006, 0.007], "force_mean_n": 37.378, "force_sd_n": 4.691, "derived_center_load_moment_mean_nm": 0.112134, "derived_moment_sd_nm": 0.014073},
+        {"diameter_group_m": [0.007, 0.008], "force_mean_n": 41.607, "force_sd_n": 9.853, "derived_center_load_moment_mean_nm": 0.124821, "derived_moment_sd_nm": 0.029559}
+      ],
+      "force_regression": {"input_diameter_mm": "x", "force_n": "-21.364 + 8.710*x", "r2": 0.707, "valid_diameter_mm": [5.0, 8.5]},
+      "derivation": "for the published center-load 3-point fixture, M_max = F*L/4"
+    },
+    "pedicel_cutting_shear_reference": {
+      "source": "S05",
+      "proximal_mean_force_n": 62.054,
+      "proximal_sd_n": 15.727,
+      "distal_mean_force_n": 33.241,
+      "distal_sd_n": 7.962,
+      "warning": "this is fixture shearing/cutting data on pedicel sections, not direct abscission-zone shear strength; do not use as Fs* without an explicit model assumption"
+    },
+    "torsion": {
+      "source": "S06",
+      "test_angular_speed_rad_s": [0.5, 1.5],
+      "h1370_max_moment_nm_range": [0.04903325, 0.392266],
+      "chico_max_moment_nm_range": [0.0196133, 0.2941995],
+      "suitable_maturity_typical_moment_nm": {"h1370": 0.16671305, "chico": 0.12748645},
+      "twist_to_detachment_deg_range": {"h1370": [50.0, 500.0], "chico": [30.0, 250.0]},
+      "suitable_maturity_typical_twist_deg": {"h1370": 270.0, "chico": 160.0},
+      "conservative_harvest_statement_deg": 550.0,
+      "conversion": "1 kgf*cm = 0.0980665 N*m"
+    },
+    "manual_twist_assisted_detachment": {
+      "source": "S04",
+      "rotation_distribution": [
+        {"range_deg": [0.0, 180.0], "probability": 0.06},
+        {"range_deg": [180.0, 360.0], "probability": 0.165},
+        {"range_deg": [360.0, 540.0], "probability": 0.775}
+      ],
+      "best_picking_state_pull_after_rotation": {
+        "rotation_deg": 360.0,
+        "sample_count": 50,
+        "instantaneous_pull_mean_n": 11.66,
+        "instantaneous_pull_max_n": 15.29,
+        "pull_distance_m": [0.03, 0.05]
+      },
+      "cross_study_residual_axial_capacity_targets": [
+        {"reference_diameter_m": 0.00552, "mean_ratio_after_360deg": 0.2896031, "max_observed_pull_ratio": 0.3797626},
+        {"reference_diameter_m": 0.00627, "mean_ratio_after_360deg": 0.2603783, "max_observed_pull_ratio": 0.3414394},
+        {"reference_diameter_m": 0.00775, "mean_ratio_after_360deg": 0.1619377, "max_observed_pull_ratio": 0.2123523}
+      ],
+      "warning": "ratios combine S04 and S05 cultivars/tests; use as a medium-confidence Physics-v2 calibration target and report sensitivity"
+    },
+    "fatigue": {
+      "source": "S08",
+      "mechanism_supported": true,
+      "identified_numeric_fatigue_law": false,
+      "required_treatment": "fatigue exponent/onset/recovery are method hyperparameters; tune to public qualification targets and ablate rather than label as measured biology"
+    }
+  },
+  "task_distribution": {
+    "greenhouse_peduncle_orientation": {
+      "source": "S09",
+      "sample_count": 378,
+      "categorical_probability": {"front": 0.119, "back": 0.111, "left": 0.063, "right": 0.706},
+      "recommended_mapping": "sample world-level quadrant category then sample continuous orientation inside the corresponding measured region if region bounds are reconstructed; if bounds are unavailable, use maximum-entropy within a declared quadrant and keep the local PPO grasp-frame invariant"
+    },
+    "human_grasp": {
+      "source": "S04",
+      "sample_count": 200,
+      "grasp_type_probability": {"fingertip_pinch": 0.10, "semi_enclosed": 0.85, "full_coverage": 0.05},
+      "semi_enclosed_main_force_digits": ["thumb", "index", "ring"],
+      "source_geometry_note": "75% of pinch-picked fruit were <75 mm; all full-coverage examples were >90 mm; 167 semi-enclosed examples were 75-90 mm"
+    },
+    "human_grasp_size_reference": {
+      "source": "S10",
+      "major_diameter_mm_mean_sd": {
+        "power_palm_thumb_abduction": [79.8, 12.9],
+        "power_pad_thumb_abduction": [71.7, 10.4],
+        "pinch": [61.2, 11.1]
+      }
+    },
+    "manual_timing_and_digit_priority": {
+      "source": "S11",
+      "sample_count": 60,
+      "whole_pick_duration_s": [2.28, 4.54],
+      "fruit_stem_separation_duration_s": [0.26, 1.56],
+      "release_duration_s": [0.34, 2.02],
+      "first_contact_region": "thumb_distal",
+      "largest_pressure_contributors": ["thumb_distal", "middle_distal", "index_distal"]
+    }
+  },
+  "public_contact_reference_not_hardware_calibration": {
+    "source": "S03",
+    "tomato_static_friction": {
+      "galvanized": {"mean": 0.249, "range": [0.221, 0.286]},
+      "aluminum": {"mean": 0.212, "range": [0.194, 0.249]},
+      "wood": {"mean": 0.364, "range": [0.338, 0.404]},
+      "rubber": {"mean": 0.305, "range": [0.284, 0.344]}
+    },
+    "policy": "rubber value is a sensitivity reference only; deployed G20 pad x cultivar/wetness friction remains HARDWARE_CALIBRATION_REQUIRED"
+  },
+  "recommended_physics_v2_method_defaults": {
+    "evidence_role": "ENGINEERING_HYPERPARAMETER constrained by public qualification targets",
+    "combined_load_ratio": "u=sqrt((Ft/Ft*)^2+(Fs/Fs*)^2+(Mb/Mb*)^2+(Mt/Mt*)^2)",
+    "abscission_shear_ratio_prior": {"distribution": "triangular", "min": 0.60, "mode": 0.74, "max": 0.85, "meaning": "Fs*=ratio*Ft*; method assumption because S05 shear fixture is not AZ shear"},
+    "twist_integrity_model": "C <- C*exp(-k_theta*abs(dtheta_rad)*(abs(Mt)/Mt*)^q); scale Ft*, Fs*, Mb*, Mt* by remaining integrity C",
+    "twist_damage_q": 1.0,
+    "twist_k_theta_nominal_per_rad_for_6_27mm": 0.2141620,
+    "twist_k_theta_derivation": "-ln(11.66/44.781)/(2*pi), so a representative full-normalized-torque 360-deg twist leaves about 26.0% axial capacity; cross-study medium-confidence target",
+    "instantaneous_failure_ratio": 1.25,
+    "subcritical_damage_onset_ratio": 0.55,
+    "subcritical_damage_exponent": 2.0,
+    "subcritical_time_constant_s": 0.20,
+    "note": "instantaneous/subcritical constants are research hyperparameters, not public biological measurements; include sensitivity/ablation"
+  },
+  "public_qualification_targets": [
+    "pure axial: conditional mean/SD should reproduce S05 diameter nodes at 1 mm/s",
+    "three-point bending: center-load moment distribution should reproduce S05 12-mm-span groups/regression",
+    "pure torsion: torque and angle-to-detachment should remain inside S06 broad cultivar envelopes at 0.5-1.5 rad/s",
+    "twist-then-pull: after 360 deg, representative best-picking-state residual pull should target ~11.66 N mean and remain near/below 15.29 N observed maximum, acknowledging cross-cultivar uncertainty",
+    "behavioral: a 360-540 deg twist region must be feasible and should outperform pure axial pulling in peak grasp/load demand if the proposed mechanism is working"
+  ],
+  "must_remain_hardware_calibrated": [
+    "A7 controller response and command latency",
+    "G20 command/joint mapping, speed, latency, damping, friction and effort envelope",
+    "G20 fingertip-pad x target-tomato friction under actual dry/wet surface conditions",
+    "raw G20 tactile mapping if Newton-valued force is consumed",
+    "robot/hand mass, center of mass and inertia when vendor asset values are not trusted",
+    "actual camera/perception/extrinsic error model"
+  ],
+  "known_public_data_gaps": [
+    "no defensible continuous natural pedicel tilt distribution was found; only categorical greenhouse orientation evidence is frozen here",
+    "no direct abscission-zone shear failure distribution was found; pedicel cutting/shear tests must not be relabeled",
+    "no sufficiently matched numeric cyclic-fatigue law for the target tomato abscission zone was found; fatigue constants remain method hyperparameters",
+    "no public tomato-on-this-G20-pad friction or effective compliant-contact stiffness exists; these are pair-specific hardware measurements"
+  ]
+}
