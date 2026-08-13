@@ -50,5 +50,30 @@
       }
     ],
     "final_output": "Offline tomato pick workflow finished."
+  },
+  "offline_hardware_capability_validation": {
+    "type": "mock",
+    "tool_sequence": [
+      {
+        "name": "get_validation_capabilities",
+        "arguments": {}
+      },
+      {
+        "name": "probe_inverse_kinematics",
+        "arguments": {
+          "target_x_m": 0.18,
+          "target_y_m": -0.04,
+          "target_z_m": 0.32
+        }
+      },
+      {
+        "name": "probe_camera_preview",
+        "arguments": {
+          "camera_name": "wrist",
+          "frame_id": 0
+        }
+      }
+    ],
+    "final_output": "Offline capability probes completed without hardware access."
   }
 }

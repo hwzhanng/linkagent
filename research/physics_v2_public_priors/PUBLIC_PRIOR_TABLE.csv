@@ -1,0 +1,41 @@
+category,parameter,source,value_or_distribution,unit,role,simulation_use
+fruit,semi_ripe_axes,S01,"65.83+/-4.30;63.78+/-3.74;61.77+/-4.87",mm,DIRECT_PRIOR,core correlated morphology
+fruit,semi_ripe_mass,S01,151.347+/-24.799,g,DIRECT_PRIOR,core correlated morphology
+fruit,early_firm_axes,S01,"72.15+/-8.11;69.39+/-7.65;57.00+/-3.12",mm,DIRECT_PRIOR,core correlated morphology
+fruit,early_firm_mass,S01,167.489+/-43.937,g,DIRECT_PRIOR,core correlated morphology
+fruit,mid_late_axes,S01,"71.70+/-6.69;68.54+/-5.63;62.07+/-20.44",mm,DIRECT_PRIOR,core correlated morphology with aspect rejection
+fruit,mid_late_mass,S01,156.586+/-44.144,g,DIRECT_PRIOR,core correlated morphology
+fruit,fully_ripe_density_naveen,S02,1000,kg/m3,DIRECT_PRIOR,density consistency gate
+fruit,fully_ripe_density_cv613,S02,1040,kg/m3,DIRECT_PRIOR,density consistency gate
+fruit,large_lateral_diameter,S04,66.4-92.7,mm,DIRECT_PRIOR,large-fruit OOD
+fruit,large_mass,S04,152.7-378.2,g,DIRECT_PRIOR,large-fruit OOD
+damage,2mm_puncture_early_firm,S01,5.408+/-0.688,N,DIRECT_PRIOR,damage OOD not fingertip limit
+damage,2mm_puncture_mid_late,S01,4.521+/-0.654,N,DIRECT_PRIOR,damage OOD not fingertip limit
+damage,platen_axial_early_firm,S01,141.10+/-6.41,N,DIRECT_PRIOR,damage anisotropy reference
+damage,platen_radial_early_firm,S01,98.91+/-28.65,N,DIRECT_PRIOR,damage anisotropy reference
+pedicel,abscission_diameter,S05,5-8,mm,DIRECT_PRIOR,max-entropy geometry sampler
+pedicel,axial_pull_5_52mm,S05,40.262+/-12.437,N,DIRECT_PRIOR,conditional intact Ft*
+pedicel,axial_pull_6_27mm,S05,44.781+/-15.156,N,DIRECT_PRIOR,conditional intact Ft*
+pedicel,axial_pull_7_75mm,S05,72.003+/-23.401,N,DIRECT_PRIOR,conditional intact Ft*
+pedicel,bending_moment_5_6mm,S05,0.067152+/-0.019167,Nm,DERIVED_PRIOR,M=F*0.012/4
+pedicel,bending_moment_6_7mm,S05,0.112134+/-0.014073,Nm,DERIVED_PRIOR,M=F*0.012/4
+pedicel,bending_moment_7_8mm,S05,0.124821+/-0.029559,Nm,DERIVED_PRIOR,M=F*0.012/4
+pedicel,distal_cutting_shear,S05,33.241+/-7.962,N,DIRECT_PRIOR,cutting reference only not AZ Fs*
+pedicel,proximal_cutting_shear,S05,62.054+/-15.727,N,DIRECT_PRIOR,cutting reference only not AZ Fs*
+pedicel,torsion_H1370_range,S06,0.0490-0.3923,Nm,DERIVED_PRIOR,torsion qualification envelope
+pedicel,torsion_Chico_range,S06,0.0196-0.2942,Nm,DERIVED_PRIOR,torsion qualification envelope
+pedicel,twist_H1370_range,S06,50-500,deg,DIRECT_PRIOR,torsion qualification envelope
+pedicel,twist_Chico_range,S06,30-250,deg,DIRECT_PRIOR,torsion qualification envelope
+pedicel,greenhouse_length,S07,29.2-38.8,mm,DIRECT_PRIOR,geometry randomization
+detachment,best_state_rotation,S04,"360-540 (77.5%)",deg,DIRECT_PRIOR,behavior/strategy target
+detachment,pull_after_360_mean,S04,11.66,N,DIRECT_PRIOR,twist-damage qualification
+detachment,pull_after_360_max,S04,15.29,N,DIRECT_PRIOR,twist-damage qualification
+detachment,residual_ratio_6_27mm,"S04+S05",0.2604,ratio,DERIVED_PRIOR,cross-study medium-confidence target
+detachment,k_theta_nominal_6_27mm,"S04+S05",0.2142,1/rad,ENGINEERING_HYPERPARAMETER,fit exp integrity to C360=0.2604
+task,peduncle_orientation,S09,"front .119;back .111;left .063;right .706",probability,DIRECT_PRIOR,world generator
+human,grasp_type,S04,"pinch .10;semi-enclosed .85;full .05",probability,DIRECT_PRIOR,hand-manifold/curriculum evidence
+human,separation_duration,S11,0.26-1.56,s,DIRECT_PRIOR,episode/action-temporal reference
+contact,tomato_rubber_static_friction,S03,0.305 [0.284-0.344],coefficient,REFERENCE_ONLY,sensitivity only; real G20 pad calibration required
+model,AZ_shear_ratio,method,"Triangular(0.60,0.74,0.85)",ratio,ENGINEERING_HYPERPARAMETER,ablate because direct AZ shear missing
+model,subcritical_onset,method,0.55,ratio,ENGINEERING_HYPERPARAMETER,ablate
+model,subcritical_tau,method,0.20,s,ENGINEERING_HYPERPARAMETER,ablate

@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "generated_on": "2026-08-12",
+  "sources": [
+    {
+      "id": "S01",
+      "title": "Study on Mechanical Properties of Tomatoes for the End-Effector Design of the Harvesting Robot",
+      "year": 2023,
+      "venue": "Agriculture",
+      "doi": "10.3390/agriculture13122201",
+      "url": "https://doi.org/10.3390/agriculture13122201",
+      "evidence_grade": "A",
+      "used_for": ["fruit_geometry_mass", "ripeness", "puncture_damage", "whole_fruit_compression"],
+      "notes": "Primary modern experiment; Syngenta Sibede; 14 fruits per ripening group for physical parameters. Some reported height maxima are outliers/suspicious, so means/SD are preferred to raw max values."
+    },
+    {
+      "id": "S02",
+      "title": "Physicochemical Properties and Respiration Rates of Tomato Cultivars (CV-613 and Naveen) at Different Maturity Stages",
+      "year": 2026,
+      "venue": "Current Agriculture Research Journal",
+      "doi": "10.12944/CARJ.14.1.8",
+      "url": "https://doi.org/10.12944/CARJ.14.1.8",
+      "evidence_grade": "A-",
+      "used_for": ["fruit_density", "fruit_mass_volume", "firmness", "small_fruit_ood"],
+      "notes": "Thirty fruits used for dimensional measurements; fully-ripe true density 1000 kg/m^3 (Naveen) and 1040 kg/m^3 (cv.613). Table reports mean +/- SE."
+    },
+    {
+      "id": "S03",
+      "title": "Evaluation of engineering properties for waste control of tomato during harvesting and postharvesting",
+      "year": 2019,
+      "venue": "Food Science & Nutrition",
+      "doi": "10.1002/fsn3.986",
+      "url": "https://doi.org/10.1002/fsn3.986",
+      "evidence_grade": "B",
+      "used_for": ["public_friction_reference", "impact_and_rupture_reference"],
+      "notes": "Tomato-on-rubber static friction is not transferable to the deployed G20 pad. Use only for sensitivity/OOD reference."
+    },
+    {
+      "id": "S04",
+      "title": "Design and simulation of a gripper structure of cluster tomato based on manual picking behavior",
+      "year": 2022,
+      "venue": "Frontiers in Plant Science",
+      "doi": "10.3389/fpls.2022.974456",
+      "url": "https://doi.org/10.3389/fpls.2022.974456",
+      "evidence_grade": "A-",
+      "used_for": ["large_fruit_geometry_mass", "human_grasp_distribution", "twist_angle", "twist_assisted_pull", "pull_distance"],
+      "notes": "200 Jiangshu No.1 tomatoes for geometry/grasp/rotation statistics; 50 best-picking-state tomatoes for pull after 360-degree rotation. Strong behavioral evidence, but cross-cultivar mechanical transfer remains medium confidence."
+    },
+    {
+      "id": "S05",
+      "title": "Tomato Pedicel Physical Characterization for Fruit-Pedicel Separation Tomato Harvesting Robot",
+      "year": 2024,
+      "venue": "Agronomy",
+      "doi": "10.3390/agronomy14102274",
+      "url": "https://doi.org/10.3390/agronomy14102274",
+      "evidence_grade": "A",
+      "used_for": ["abscission_diameter", "axial_pull_off", "three_point_bending", "pedicel_cutting_shear"],
+      "notes": "Syngenta Spectrum at early firm ripening. Axial tensile n=24 in three diameter groups; three-point bending span 12 mm. Distal/proximal shearing values are cutting-mode data, not direct abscission-zone shear strength."
+    },
+    {
+      "id": "S06",
+      "title": "Studies of Torsional Resistance of a Tomato Peduncle",
+      "year": 1989,
+      "venue": "Bulletin of the Faculty of Agriculture, Shimane University",
+      "doi": null,
+      "url": "https://ir.lib.shimane-u.ac.jp/1939",
+      "evidence_grade": "B-",
+      "used_for": ["torsional_moment", "twist_to_detachment", "torsion_test_rate"],
+      "notes": "Older open-access study on H1370 and Chico. Valuable because direct tomato torsion measurements are scarce. Use broad ranges/qualification targets, not cultivar-specific nominal truth."
+    },
+    {
+      "id": "S07",
+      "title": "Insights Into the Adaptation to Greenhouse Cultivation of the Traditional Mediterranean Long Shelf-Life Tomato Carrying the alc Mutation",
+      "year": 2018,
+      "venue": "Frontiers in Plant Science",
+      "doi": "10.3389/fpls.2018.01774",
+      "url": "https://doi.org/10.3389/fpls.2018.01774",
+      "evidence_grade": "B",
+      "used_for": ["pedicel_length", "abscission_position"],
+      "notes": "Twelve long-shelf-life varieties. Greenhouse pedicel-length varietal mean range 2.92-3.88 cm; transfer as geometry randomization only."
+    },
+    {
+      "id": "S08",
+      "title": "Experimental and theoretical analysis of fruit plucking patterns for robotic tomato harvesting",
+      "year": 2020,
+      "venue": "Computers and Electronics in Agriculture",
+      "doi": "10.1016/j.compag.2020.105330",
+      "url": "https://doi.org/10.1016/j.compag.2020.105330",
+      "evidence_grade": "A-mechanism/B-numeric",
+      "used_for": ["combined_loading_mechanism", "twisting_fatigue_mechanism"],
+      "notes": "Strong support for combined loading and fatigue under reciprocating twisting; no fatigue exponent/time constant is treated as identified by this package."
+    },
+    {
+      "id": "S09",
+      "title": "Structural Parameter Optimization of a Tomato Robotic Harvesting Arm: Considering Collision-Free Operation Requirements",
+      "year": 2024,
+      "venue": "Plants",
+      "doi": "10.3390/plants13223211",
+      "url": "https://doi.org/10.3390/plants13223211",
+      "evidence_grade": "A-",
+      "used_for": ["greenhouse_peduncle_orientation", "greenhouse_workspace"],
+      "notes": "378 tomato bunches; categorical peduncle orientation distribution is directly usable in a world/task generator."
+    },
+    {
+      "id": "S10",
+      "title": "Factors affecting human hand grasp type in tomato fruit-picking: A statistical investigation for ergonomic development of harvesting robot",
+      "year": 2019,
+      "venue": "Computers and Electronics in Agriculture",
+      "doi": "10.1016/j.compag.2018.12.047",
+      "url": "https://doi.org/10.1016/j.compag.2018.12.047",
+      "evidence_grade": "A-",
+      "used_for": ["human_grasp_type_vs_fruit_size"],
+      "notes": "Supports size-dependent grasp manifold/curriculum, not a robot joint-space calibration."
+    },
+    {
+      "id": "S11",
+      "title": "Grasping behavior of the human hand during tomato picking",
+      "year": 2021,
+      "venue": "Computers and Electronics in Agriculture",
+      "doi": "10.1016/j.compag.2020.105901",
+      "url": "https://doi.org/10.1016/j.compag.2020.105901",
+      "evidence_grade": "A",
+      "used_for": ["manual_stage_duration", "finger_pressure_priority"],
+      "notes": "60 greenhouse tomatoes, 16-channel e-glove. Distal thumb/index/middle pressure dominance and 0.26-1.56 s separation-stage duration are useful behavior priors."
+    },
+    {
+      "id": "S12",
+      "title": "Mechanical properties of tomato exocarp, mesocarp and locular gel tissues",
+      "year": 2012,
+      "venue": "Journal of Food Engineering",
+      "doi": "10.1016/j.jfoodeng.2012.01.023",
+      "url": "https://doi.org/10.1016/j.jfoodeng.2012.01.023",
+      "evidence_grade": "A-",
+      "used_for": ["tissue_modulus", "tissue_failure_stress", "deformable_fruit_reference"],
+      "notes": "Layer-specific tissue properties; do not map directly to a rigid-body contact spring."
+    },
+    {
+      "id": "S13",
+      "title": "An extended finite element model for fracture mechanical response of tomato fruit",
+      "year": 2021,
+      "venue": "Postharvest Biology and Technology",
+      "doi": null,
+      "url": "https://www.sciencedirect.com/science/article/pii/S0925521421000077",
+      "evidence_grade": "B+",
+      "used_for": ["exocarp_poisson_modulus_fracture_energy", "damage_model_reference"],
+      "notes": "Light-red JinshengF1; XFEM model validated against whole-fruit compression. Useful for future deformable/damage proxy, not direct G20 contact calibration."
+    },
+    {
+      "id": "S14",
+      "title": "Factors that affect tomato bruise development as a result of mechanical impact",
+      "year": 2006,
+      "venue": "Postharvest Biology and Technology",
+      "doi": "10.1016/j.postharvbio.2006.07.001",
+      "url": "https://doi.org/10.1016/j.postharvbio.2006.07.001",
+      "evidence_grade": "B+",
+      "used_for": ["impact_ood_energy", "bruise_risk"],
+      "notes": "Uses impact classes 23, 71, 158, 216 mJ. Treat as OOD/damage evaluation metadata rather than a hard safe threshold."
+    }
+  ],
+  "grade_definition": {
+    "A": "direct primary experiment, closely matched quantity and clearly reported test",
+    "A-": "direct primary experiment with cultivar/setup transfer caveat",
+    "B+": "good primary evidence but mapping to current rigid-body simulator is indirect",
+    "B": "direct evidence with substantial cultivar/environment or age/setup transfer uncertainty",
+    "B-": "scarce/older direct evidence, retained as broad prior only"
+  }
+}

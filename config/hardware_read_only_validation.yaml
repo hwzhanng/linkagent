@@ -1,0 +1,29 @@
+{
+  "models_file": "_model.yaml",
+  "agent": {
+    "model": "ark_openai_doubao",
+    "max_iterations": 3,
+    "max_tool_calls": 1,
+    "max_tool_calls_per_turn": 1
+  },
+  "env": {
+    "type": "mock",
+    "observations": [
+      {
+        "sequence": 0,
+        "timestamp_s": 0.0,
+        "metadata": {"validation": "p5.5-live-read-only"}
+      }
+    ]
+  },
+  "task": {
+    "type": "hardware_read_only_validation",
+    "required_tools": ["get_live_arm_state"],
+    "deployment_path": "config/robot_bimanual_offline.yaml",
+    "viewer_status_url": "http://127.0.0.1:8080/api/status",
+    "viewer_url": "http://127.0.0.1:8080/",
+    "rgb_stream_url": "http://127.0.0.1:8080/stream/rgb.mjpg",
+    "depth_stream_url": "http://127.0.0.1:8080/stream/depth.mjpg"
+  },
+  "runtime": {"max_steps": 1}
+}

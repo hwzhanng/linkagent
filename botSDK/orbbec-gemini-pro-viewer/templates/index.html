@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#080c12" />
+    <title>Gemini Pro 视觉台</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <h1>Gemini Pro 视觉台</h1>
+        <div class="header-actions">
+          <div class="device-status" id="device-status" aria-live="polite">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="device-status-label">正在连接设备</span>
+          </div>
+          <button class="settings-button" id="settings-button" type="button">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M12 15.25A3.25 3.25 0 1 0 12 8.75a3.25 3.25 0 0 0 0 6.5Z" />
+              <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.86 1.86-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.55V20h-2.64v-.05A1.7 1.7 0 0 0 11.3 18.4a1.7 1.7 0 0 0-1.88.34l-.06.06-1.86-1.86.06-.06A1.7 1.7 0 0 0 7.9 15a1.7 1.7 0 0 0-1.55-1.03H6v-2.64h.35A1.7 1.7 0 0 0 7.9 10.3a1.7 1.7 0 0 0-.34-1.88l-.06-.06L9.36 6.5l.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.03-1.55V5h2.64v.35A1.7 1.7 0 0 0 16 6.9a1.7 1.7 0 0 0 1.88-.34l.06-.06 1.86 1.86-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.55 1.03H21v2.64h-.05A1.7 1.7 0 0 0 19.4 15Z" />
+            </svg>
+            <span>设置</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="viewer-grid">
+        <section class="stream-section" aria-labelledby="rgb-title">
+          <div class="section-heading">
+            <h2 id="rgb-title">RGB 彩色画面</h2>
+          </div>
+          <div class="stream-frame" id="rgb-frame">
+            <img
+              id="rgb-stream"
+              src="/stream/rgb.mjpg"
+              alt="Gemini Pro RGB 实时画面"
+            />
+            <div class="stream-overlay" id="rgb-overlay">
+              <span class="overlay-spinner" aria-hidden="true"></span>
+              <strong id="rgb-overlay-title">正在连接 RGB</strong>
+              <span id="rgb-overlay-detail">等待 UVC 视频节点</span>
+            </div>
+          </div>
+          <div class="telemetry">
+            <div class="telemetry-item">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="13" rx="1.5" />
+                <path d="M8 21h8M12 17v4" />
+              </svg>
+              <span id="rgb-resolution">— × —</span>
+            </div>
+            <div class="telemetry-item">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M20 13a8 8 0 1 1-2.34-5.66" />
+                <path d="m12 13 4-5" />
+              </svg>
+              <span id="rgb-fps">— FPS</span>
+            </div>
+            <div class="telemetry-item telemetry-time">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" />
+              </svg>
+              <time id="rgb-time">尚无画面</time>
+            </div>
+          </div>
+        </section>
+
+        <section class="stream-section" aria-labelledby="depth-title">
+          <div class="section-heading">
+            <h2 id="depth-title">深度画面</h2>
+          </div>
+          <div class="stream-frame" id="depth-frame">
+            <img
+              id="depth-stream"
+              src="/stream/depth.mjpg"
+              alt="Gemini Pro 深度实时画面"
+            />
+            <div class="stream-overlay" id="depth-overlay">
+              <span class="overlay-spinner" aria-hidden="true"></span>
+              <strong id="depth-overlay-title">正在连接深度传感器</strong>
+              <span id="depth-overlay-detail">等待 Orbbec SDK</span>
+            </div>
+          </div>
+          <div class="depth-legend" aria-label="深度颜色范围">
+            <span>100 mm</span>
+            <div class="legend-gradient" aria-hidden="true"></div>
+            <span id="depth-max-label">5000 mm</span>
+          </div>
+          <div class="telemetry">
+            <div class="telemetry-item">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="13" rx="1.5" />
+                <path d="M8 21h8M12 17v4" />
+              </svg>
+              <span id="depth-resolution">— × —</span>
+            </div>
+            <div class="telemetry-item">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M20 13a8 8 0 1 1-2.34-5.66" />
+                <path d="m12 13 4-5" />
+              </svg>
+              <span id="depth-fps">— FPS</span>
+            </div>
+            <div class="telemetry-item telemetry-time">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" />
+              </svg>
+              <time id="depth-time">尚无画面</time>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="status-bar">
+        <div class="status-bar-item">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M8 12h8M12 8v8M7 5l-3 3 3 3M17 13l3 3-3 3" />
+            <path d="M4 8h8a4 4 0 0 1 4 4v4h4" />
+          </svg>
+          <span id="usb-label">USB 2.0</span>
+        </div>
+        <span class="status-divider" aria-hidden="true"></span>
+        <div class="status-bar-item stream-state" id="stream-state">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M8.5 15.5a5 5 0 0 1 0-7M5.5 18.5a9 9 0 0 1 0-13M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
+            <circle cx="12" cy="12" r="1.5" />
+          </svg>
+          <span id="stream-state-label">正在初始化</span>
+        </div>
+      </footer>
+    </div>
+
+    <dialog class="settings-dialog" id="settings-dialog">
+      <form method="dialog" id="settings-form">
+        <div class="dialog-header">
+          <div>
+            <h2>画面设置</h2>
+            <p>调整深度显示范围与网页传输质量。</p>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭设置" type="submit">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <label class="control-row">
+          <span>
+            <strong>最远深度</strong>
+            <small>固定色标的最大距离</small>
+          </span>
+          <output id="depth-range-value">5000 mm</output>
+          <input
+            id="depth-range"
+            name="depth_max_mm"
+            type="range"
+            min="1000"
+            max="10000"
+            step="500"
+            value="5000"
+          />
+        </label>
+        <label class="control-row">
+          <span>
+            <strong>传输质量</strong>
+            <small>数值越高，局域网带宽占用越大</small>
+          </span>
+          <output id="quality-value">84%</output>
+          <input
+            id="quality"
+            name="jpeg_quality"
+            type="range"
+            min="50"
+            max="95"
+            step="1"
+            value="84"
+          />
+        </label>
+        <p class="form-error" id="settings-error" role="alert"></p>
+        <div class="dialog-actions">
+          <button class="secondary-button" id="retry-button" type="button">重新连接设备</button>
+          <button class="primary-button" id="save-settings" type="button">应用设置</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

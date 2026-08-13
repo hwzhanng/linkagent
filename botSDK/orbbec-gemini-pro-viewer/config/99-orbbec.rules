@@ -1,0 +1,4 @@
+# Read-only access for the Orbbec Gemini Pro USB RGB/depth pair.
+# The viewer never enables robot/CAN control; this only allows members of the
+# local video group to open the camera USB nodes without running the server as root.
+SUBSYSTEM=="usb", ATTR{idVendor}=="2bc5", MODE="0660", GROUP="video", TAG+="uaccess"
