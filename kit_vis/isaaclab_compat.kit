@@ -1,0 +1,28 @@
+[package]
+title = "Isaac Lab Compatibility Visualization"
+description = "Isaac Lab visualization app with local compatibility extensions."
+version = "3.0.0"
+[dependencies]
+"isaacsim.exp.base" = {}
+"isaaclab" = { order = 1000 }
+"isaaclab_physx" = { order = 1000 }
+"isaaclab_assets" = { order = 1000 }
+"isaaclab_tasks" = { order = 1000 }
+"isaaclab_mimic" = { order = 1000 }
+"isaaclab_rl" = { order = 1000 }
+[settings.app]
+name = "Isaac Lab"
+version = "3.0.0"
+window.title = "Isaac Lab - Tomato PPO"
+vulkan = true
+[settings.app.exts.folders]
+'++' = [
+    "/home/miobarnacle/linkbot/linkagent/kit_stubs",
+    "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source",
+    "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/exts",
+    "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/extscore",
+    "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/exts",
+    "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/extscache",
+    "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/extsPhysics",
+    "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/extsDeprecated",
+]

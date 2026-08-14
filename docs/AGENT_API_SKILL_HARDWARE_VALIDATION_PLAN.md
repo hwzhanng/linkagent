@@ -2,7 +2,7 @@
 
 > 文档状态：持续更新（Living Document）  
 > 初始版本：2026-08-13  
-> 当前阶段：P7 已完成（Agent 臂 + RGB-D 相机只读组合；灵巧手跳过）
+> 当前阶段：P8 已完成（只读能力 + 一次授权的右臂 IK 微动作；灵巧手跳过）
 > 适用项目：`/home/miobarnacle/linkbot/linkagent`  
 > 目标设备：LinkBot 左右机械臂、左右灵巧手、Orbbec Gemini Pro 深度相机  
 
@@ -65,6 +65,9 @@ Agent 能够在明确权限边界内完成以下真实调用链：
 - P7 已完成右臂 + RGB-D 的真实在线只读调用；后续若要执行运动，必须另开 R3 单次授权
   阶段，不能由本阶段只读结果推导运动许可。
 - 灵巧手尚未连接，手部状态、触觉和手部控制 Skill 仍未接入；当前结果不包含手部能力。
+- P8 已分别由真实 Ark Agent 调用右臂状态、右臂 Shadow IK 和 RGB-D 相机；三项均有
+  `tool_call_id`/`execution_id`。同一调用中要求三个并行工具时曾出现 Provider 空响应，
+  因此不把该次失败包装成通过；分拆后的三个真实 Agent 调用作为当前有效证据。
 - 当前 `task/factory.py` 尚未注册远端新增的 `harvest_cycle`，本地目录是保留差异后的混合树，
   正式验证前需要完成组合一致性检查。
 - `linkbot_g20_shadow` 只能读状态与做 FK/IK，不能发送运动命令。
@@ -399,6 +402,44 @@ P6-预检通过条件：
 - 结论：PASS；P7 验收完成。后续若接入实机运动，必须另开 R3 单次人工授权阶段；手部
   接入与触觉验证另行规划。
 
+### P8：Agent 状态 + Shadow IK + RGB-D 只读能力（灵巧手跳过）
+
+状态：`PASS（分拆的真实 Ark Agent 调用）；实机 IK 微动作待授权`
+
+- 右臂状态：真实 Agent 调用 `get_live_arm_state(side=right)`，7/7 关节健康，软件未使能。
+- Shadow IK：真实 Agent 调用 `compute_live_shadow_ik(side=right,target=z_plus_5mm)`，
+  `solution_found=true`，位置误差约 `6.45e-13 m`，旋转误差约 `1.95e-12 rad`，在限位内；
+  仍明确 `motion_executed=false`。
+- 相机：真实 Agent 调用 `get_live_camera_preview()`，序列号 `AY2PB4200YY`，RGB/Depth
+  均 live，Viewer 为 `http://127.0.0.1:8080/`。
+- 真实性约束：以上三项均由 Ark API → `TopAgent` → 白名单 Skill → 真实 CAN/Viewer
+  完成；本次没有将本地直接 Skill 调用计入验收。
+- 证据：
+  `logs/agent_skill_validation/p8-separate-20260814T034445Z/manifest.json`（状态/相机）；
+  `logs/agent_skill_validation/p8-ik-retry-20260814T034640Z/manifest.json`（IK）。
+- 限制：完整 `check_harvest_system` 仍不能在当前条件下宣称通过，因为它会检查手部、
+  触觉以及“臂已使能”等采摘准入项；手部未连接且右臂按安全要求保持失能，因此该 Skill
+  没有被伪造为通过。
+- 下一步：若要展示实机 IK 微动作，必须由操作者在当次窗口确认工作区清空、急停可触达，
+  并授权右臂一个极小、低速、单目标动作；动作前仍需重新读取反馈和预演。
+
+### Run `p8-right-ik-micro-20260814T034902Z`
+
+- 日期：2026-08-14
+- 阶段：P8-R3 一次授权实机 IK 微动作
+- 操作者授权：用户确认周围安全且急停可达；使用一次性 `RIGHT_ARM_AREA_CLEAR`。
+- 执行目标：右臂当前反馈出发，末端 Z+1 mm，姿态保持不变；先完成 IK/FK 和限位检查，
+  再执行 4.0 s Smooth MoveJ。
+- 轨迹结果：401 个规划采样、201 个实际目标写入；最大关节速度约 `0.0394 rad/s`，
+  低于 `0.08 rad/s` 上限；IK 位置误差约 `1.24e-12 m`，旋转误差约 `3.56e-13 rad`；
+  最终反馈最大关节误差约 `0.00361 rad`。
+- 状态回传：动作后 7/7 关节健康、无错误；成功路径已发送失能帧，最终软件失能为 false。
+- 安全结果：无重试、无第二目标、未访问灵巧手；`motion_executed=true` 仅对应本次已授权
+  的 1 mm 微动作，后续不自动追加动作。
+- 证据目录：`logs/agent_skill_validation/p8-right-ik-micro-20260814T034902Z/manifest.json`
+- 运行脚本：`script/run_p8_authorized_right_ik_micro_motion.py`
+- 结论：PASS；实机微动作和最终失能状态均核验通过。
+
 ## 6. 安全与权限规则
 
 ### 6.1 工具分级
@@ -671,3 +712,5 @@ logs/agent_skill_validation/<run_id>/
 | 2026-08-13 | 0.8 | 完成 P6 无运动预检：左右臂当前反馈生成 5 s/501 点 z+5 mm 候选轨迹，速度和端点门禁通过 | P6 实机动作待授权 |
 | 2026-08-13 | 0.9 | 经用户确认执行右臂一次 z+5 mm、5 s 低速轨迹；到达并完成反馈核验，保持使能，禁止自动追加动作 | P6 PASS |
 | 2026-08-13 | 1.0 | 右臂安全失能；将下一阶段改为同一次 Agent 调用读取右臂与 RGB-D 相机，灵巧手跳过；真实 Ark API 2/2 只读工具通过 | P7 PASS |
+| 2026-08-14 | 1.1 | 三个真实 Ark Agent 分拆调用分别通过右臂状态、右臂 Shadow IK 与 RGB-D；记录 Provider 空响应未通过，不执行实机运动 | P8 只读 PASS；R3 待授权 |
+| 2026-08-14 | 1.2 | 用户确认安全后执行一次右臂末端 Z+1 mm、4 s 平滑 IK 微动作；反馈核验通过并成功失能 | P8-R3 PASS |
