@@ -120,6 +120,27 @@ class ActiveViewRepositionSkillTests(unittest.TestCase):
             skill.close()
             bundle.close()  # type: ignore[attr-defined]
 
+    def test_hardware_mode_uses_the_same_port_motion_path(self) -> None:
+        bundle, skill = _active_skill(mode="hardware")
+        reference = bundle.arm.get_state(ArmSide.RIGHT).ee_pose  # type: ignore[attr-defined]
+        try:
+            result = skill.run(
+                ActiveViewRepositionRequest(
+                    execution_id="active-view-hardware-routing",
+                    target=_target(bundle.clock),  # type: ignore[attr-defined]
+                    arm_side=ArmSide.RIGHT,
+                    reference_pose=reference,
+                    viewpoint_index=0,
+                )
+            )
+            self.assertTrue(result.success)
+            self.assertTrue(result.output["motion_executed"])
+            self.assertFalse(result.output["simulated_safety_only"])
+            self.assertFalse(result.output["shadow_only"])
+        finally:
+            skill.close()
+            bundle.close()  # type: ignore[attr-defined]
+
     def test_unknown_viewpoint_index_fails_without_motion(self) -> None:
         bundle, skill = _active_skill()
         reference = bundle.arm.get_state(ArmSide.RIGHT).ee_pose  # type: ignore[attr-defined]

@@ -42,6 +42,37 @@ Orbbec 状态三个只读工具。真机适配器默认关闭，必须同时由�
 
 </details>
 
+## 从原始触觉到可复现抓取评估
+
+G20 每根手指提供一张 `12×6` 触觉矩阵。LinkAgent 现在保留完整的五指原始空间信息，
+同时把采样过程记录成可回放 episode，再由独立 Verifier 判断抓取是否真正形成掌心支撑、
+五指包络和断梗后稳定保持。整条链路是现有 Agent 的证据旁路，不会绕过 Task/Skill
+边界直接控制硬件。
+
+```mermaid
+flowchart LR
+    SDK["G20 SDK<br/>5 指 × 12 × 6 原始矩阵"] --> FRAME["TactileFrame<br/>时间戳、有效位、原始阵列"]
+    FRAME --> RAW["50D 空间触觉特征<br/>每指 10 个可解释量"]
+    FRAME --> EP["Episode JSONL<br/>关节、触觉、物体位姿、阶段"]
+    RAW --> EP
+    EP --> REPLAY["离线回放 / 仿真证据"]
+    REPLAY --> VERIFY["Enveloping Verifier<br/>掌心优先、五指包络、保持、掉落"]
+    VERIFY --> RESULT["通过或明确失败原因"]
+    FRAME --> PPO["现有 Physics-v1<br/>5D 压力 → 冻结 66D Actor"]
+    RAW -.->|未来策略输入，需重新训练| NEXT["下一版触觉策略"]
+```
+
+| 新增能力 | 直接产物 | 现在解决什么问题 |
+|---|---|---|
+| [原始矩阵特征](./module/skills/tomato_pick/tactile_matrix.py) | 五指共 50D：总载荷、峰值、接触面积、压力中心、分布宽度、载荷变化率、有效/掉线标记 | 区分“没有接触”和“传感器无效”，保留接触在指腹上的位置与形状 |
+| [触觉 Episode](./module/skills/tomato_pick/tactile_episode.py) | 可流式保存、可确定性回放的 JSONL | 把 16D 手部关节、`5×12×6` 原始矩阵、采样年龄、物体位姿和动作阶段对齐到同一时间线 |
+| [包络抓取 Verifier](./module/skills/tomato_pick/enveloping_verifier.py) | `pass` 或掌心支撑缺失、包络不足、拇指对向不足、远端关节空闲、掉落等明确原因 | 用独立证据评价抓取，不把 PPO reward 或单帧接触当作任务成功 |
+
+这里的触觉矩阵仍是 SDK 原始量纲，不宣称等价于牛顿；真实力阈值需要后续标定数据。
+新增 50D 特征也没有替换已发布模型的输入：Physics-v1/Clean-v5 继续使用冻结的
+`g20_pressure_5d_v1` 与 66D Actor，保证现有 checkpoint 契约不漂移。Verifier 当前用于
+CPU、仿真和记录回放，它的通过结果不等于真机运动授权。
+
 ## 三项 PPO 实验成果
 
 | 实验 | 发布 checkpoint | 固定评测成功率 | 定位 |

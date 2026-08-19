@@ -18,6 +18,7 @@ from .mock import (
 from .bundle import RoboticsBundle
 from .shadow import build_linkbot_g20_shadow_bundle
 from .fake_gateway import build_fake_gateway_robotics_bundle
+from .hardware import build_linkbot_g20_hardware_bundle
 
 
 ARM_PORT_REGISTRY: dict[str, type[MockArmControlPort]] = {"mock": MockArmControlPort}
@@ -28,6 +29,7 @@ RoboticsBuilder = Callable[..., RoboticsBundle]
 ROBOTICS_REGISTRY: dict[str, RoboticsBuilder] = {
     "fake_gateway": build_fake_gateway_robotics_bundle,
     "linkbot_g20_shadow": build_linkbot_g20_shadow_bundle,
+    "linkbot_g20_hardware": build_linkbot_g20_hardware_bundle,
     "mock": build_mock_robotics_bundle,
 }
 

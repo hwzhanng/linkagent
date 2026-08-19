@@ -42,8 +42,8 @@ class BotSdkLinkBotGateway:
             (side if isinstance(side, ArmSide) else ArmSide(side)): dict(config)
             for side, config in endpoints.items()
         }
-        if set(self.endpoints) != {ArmSide.LEFT, ArmSide.RIGHT}:
-            raise ValueError("both LinkBot arm endpoints are required")
+        if not self.endpoints:
+            raise ValueError("at least one LinkBot arm endpoint is required")
         self.clock = clock
         self.hardware_write_authorized = bool(hardware_write_authorized)
         self._runtime_factory = runtime_factory
@@ -105,11 +105,27 @@ class BotSdkLinkBotGateway:
 
     def _require(self, side: ArmSide, *, writable: bool = False) -> tuple[Any, Any]:
         side = side if isinstance(side, ArmSide) else ArmSide(side)
+        if side not in self.endpoints:
+            raise ValueError(f"{side.value} arm is not configured in this gateway")
         if not self._opened or self._closed:
             raise RuntimeError("LinkBot gateway is not open")
         if writable and self._read_only:
             raise RuntimeError("LinkBot gateway is read-only")
         return self._runtimes[side], self._controllers[side]
+
+    def set_enabled(
+        self,
+        side: ArmSide,
+        enabled: bool,
+        confirmation: str | None = None,
+    ) -> None:
+        """Use the validated HAL enable/disable sequence explicitly."""
+
+        if not isinstance(enabled, bool):
+            raise TypeError("enabled must be a bool")
+        runtime, controller = self._require(side, writable=True)
+        runtime.set_enabled(enabled, confirmation if enabled else None)
+        controller.set_enabled_state(enabled)
 
     def read_state(self, side: ArmSide) -> ArmSdkState:
         side = side if isinstance(side, ArmSide) else ArmSide(side)
@@ -160,9 +176,11 @@ class BotSdkLinkBotGateway:
 
     def _submit(self, owner_id: str, command_id: str, side: ArmSide, call: Callable[[Any, str], bool]) -> ExecutionHandle:
         _, controller = self._require(side, writable=True)
-        token = str(self.endpoints[side].get("physical_confirmation", ""))
         now = self.clock.monotonic_ns()
         try:
+            token = self.endpoints[side].get("physical_confirmation")
+            if not isinstance(token, str) or not token:
+                raise ValueError("physical confirmation is missing for arm motion")
             accepted = bool(call(controller, token))
             state = ExecutionState.SUCCEEDED if accepted else ExecutionState.FAILED
             message = "vendor command completed" if accepted else "vendor command rejected"
@@ -228,12 +246,22 @@ class BotSdkG20Gateway:
         self, *, side: ArmSide, can_interface: str, clock: Clock,
         calibration_file: str | Path | None = None,
         hardware_write_authorized: bool = False,
+        continuous_speed_raw: int = 204,
+        torque_limit_raw: int = 153,
         api_factory: Callable[..., Any] | None = None,
     ) -> None:
         self.side = side if isinstance(side, ArmSide) else ArmSide(side)
         self.can_interface = can_interface
         self.clock = clock
         self.hardware_write_authorized = bool(hardware_write_authorized)
+        for name, value in {
+            "continuous_speed_raw": continuous_speed_raw,
+            "torque_limit_raw": torque_limit_raw,
+        }.items():
+            if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= 255:
+                raise ValueError(f"{name} must be an integer in 0..255")
+        self.continuous_speed_raw = continuous_speed_raw
+        self.torque_limit_raw = torque_limit_raw
         self._api_factory = api_factory
         self._api: Any = None
         self._opened = False
@@ -269,6 +297,12 @@ class BotSdkG20Gateway:
         if not read_only and not self.hardware_write_authorized:
             raise PermissionError("G20 write mode lacks explicit authorization")
         self._api = self._factory()(hand_type=side.value, hand_joint="G20", can=self.can_interface)
+        if not read_only:
+            # Values are the connected-G20 motion-calibration settings that
+            # passed 100/100 hot steady-state trials.  The torque API sets a
+            # maximum limit; it is not measured output torque.
+            self._api.set_speed([self.continuous_speed_raw] * 5)
+            self._api.set_torque([self.torque_limit_raw] * 5)
         self._read_only, self._opened = read_only, True
 
     def _require(self, *, writable: bool = False) -> Any:
@@ -353,7 +387,12 @@ class BotSdkG20Gateway:
             return
         self._closed = True
         if self._api is not None:
-            self._api.close_can()
+            hand = getattr(self._api, "hand", None)
+            close_interface = getattr(hand, "close_can_interface", None)
+            if callable(close_interface):
+                close_interface()
+            else:
+                self._api.close_can()
 
 
 __all__ = ["BotSdkG20Gateway", "BotSdkLinkBotGateway"]

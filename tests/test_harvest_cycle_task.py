@@ -224,6 +224,35 @@ def _run_through_retreat(tools: dict[str, object]) -> None:
 
 
 class HarvestCycleTaskTests(unittest.TestCase):
+    def test_pick_ready_hardware_mode_uses_the_existing_arm_port(self) -> None:
+        config = _task_config()
+        config["atomic_skills"]["move_to_pick_ready"][  # type: ignore[index]
+            "execution_mode"
+        ] = "hardware"
+        task = build_task(config)
+        env = MockEnv(observations=[_observation()])
+        context = RuntimeContext(env)
+        context.update_observation(env.reset())
+        tools = _tool_map(task, context)
+        try:
+            tools["check_harvest_system"].handler()  # type: ignore[attr-defined]
+            tools["detect_tomatoes"].handler()  # type: ignore[attr-defined]
+            tools["select_harvest_target"].handler()  # type: ignore[attr-defined]
+            tools["reobserve_tomato"].handler(target_id="tomato-1")  # type: ignore[attr-defined]
+            tools["plan_tomato_grasp"].handler(target_id="tomato-1")  # type: ignore[attr-defined]
+            tools["check_pregrasp_clearance"].handler(  # type: ignore[attr-defined]
+                grasp_plan_id="plan-tomato-1-right-0"
+            )
+            ready = tools["move_to_pick_ready"].handler(  # type: ignore[attr-defined]
+                grasp_plan_id="plan-tomato-1-right-0"
+            )
+            self.assertEqual("hardware", ready["output"]["execution_mode"])
+            self.assertIsNotNone(ready["output"]["command_id"])
+            self.assertFalse(ready["output"]["shadow_only"])
+        finally:
+            task.close()
+            env.close()
+
     def test_task_exposes_exactly_sixteen_bounded_tools(self) -> None:
         task = build_task(_task_config())
         env = MockEnv(observations=[_observation()])

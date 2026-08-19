@@ -170,7 +170,12 @@ class ArchitectureBoundaryTests(unittest.TestCase):
             set(TASK_REGISTRY),
         )
         self.assertEqual(
-            {"mock", "fake_gateway", "linkbot_g20_shadow"},
+            {
+                "mock",
+                "fake_gateway",
+                "linkbot_g20_shadow",
+                "linkbot_g20_hardware",
+            },
             set(ROBOTICS_REGISTRY),
         )
         self.assertEqual({"mock"}, set(ARM_PORT_REGISTRY))

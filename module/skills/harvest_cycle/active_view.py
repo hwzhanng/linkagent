@@ -1,4 +1,4 @@
-"""Bounded simulation/shadow motion to a reviewed active-view waypoint."""
+"""Bounded motion or shadow planning to a reviewed active-view waypoint."""
 
 from __future__ import annotations
 
@@ -123,8 +123,15 @@ class ActiveViewRepositionSkill(AtomicSkillBase):
         super().__init__(clock=robotics.clock)
         if not isinstance(robotics, RoboticsBundle):
             raise TypeError("robotics must be a RoboticsBundle")
-        if execution_mode not in {"offline_mock", "simulation", "shadow"}:
-            raise ValueError("execution_mode must be offline_mock, simulation, or shadow")
+        if execution_mode not in {
+            "offline_mock",
+            "simulation",
+            "shadow",
+            "hardware",
+        }:
+            raise ValueError(
+                "execution_mode must be offline_mock, simulation, shadow, or hardware"
+            )
         if (
             execution_mode == "offline_mock"
             and robotics.verifier_context().get("mock_world") is None
@@ -241,7 +248,7 @@ class ActiveViewRepositionSkill(AtomicSkillBase):
             return self._failed(
                 trace,
                 AtomicSkillFailureCode.SAFETY_REJECTED,
-                "active-view pose is outside the configured simulation workspace",
+                "active-view pose is outside the configured workspace",
             )
         arm_state = self._robotics.arm.get_state(request.arm_side)
         if not arm_state.enabled or not arm_state.stamp.valid:
@@ -262,7 +269,7 @@ class ActiveViewRepositionSkill(AtomicSkillBase):
                 "active-view pose failed inverse kinematics",
             )
         trace.record(
-            "simulation_safety",
+            "motion_safety",
             SkillTraceEventKind.CHECKPOINT,
             output_summary={
                 "ik_reachable": True,
@@ -353,13 +360,13 @@ class ActiveViewRepositionSkill(AtomicSkillBase):
         trace.record(
             "pose_readback",
             SkillTraceEventKind.SUCCEEDED,
-            message="active-view MoveL reached the reviewed simulation viewpoint",
+            message="active-view MoveL reached the reviewed viewpoint",
             output_summary=evidence.as_dict(),
         )
         return self._result(
             trace,
             status=AtomicSkillStatus.SUCCEEDED,
-            message="active-view simulation motion completed",
+            message="active-view motion completed",
             output=evidence.as_dict(),
         )
 
@@ -381,7 +388,7 @@ class ActiveViewRepositionSkill(AtomicSkillBase):
             actual_pose=actual_pose,
             motion_executed=motion_executed,
             shadow_only=self._execution_mode == "shadow",
-            simulated_safety_only=True,
+            simulated_safety_only=self._execution_mode != "hardware",
             ik_reachable=True,
             position_error_m=_distance(actual_pose, requested_pose),
             orientation_error_rad=_orientation_error(actual_pose, requested_pose),

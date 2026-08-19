@@ -55,8 +55,15 @@ class MoveToPickReadySkill(AtomicSkillBase):
             raise TypeError("robotics must be a RoboticsBundle")
         if not isinstance(safety, PickReadySafetyPort):
             raise TypeError("safety must implement PickReadySafetyPort")
-        if execution_mode not in {"offline_mock", "simulation", "shadow"}:
-            raise ValueError("execution_mode must be offline_mock, simulation, or shadow")
+        if execution_mode not in {
+            "offline_mock",
+            "simulation",
+            "shadow",
+            "hardware",
+        }:
+            raise ValueError(
+                "execution_mode must be offline_mock, simulation, shadow, or hardware"
+            )
         if (
             execution_mode == "offline_mock"
             and robotics.verifier_context().get("mock_world") is None
@@ -136,7 +143,7 @@ class MoveToPickReadySkill(AtomicSkillBase):
         )
         command_id: str | None = None
         actual_pose = request.plan.pregrasp_pose
-        if self._execution_mode in {"offline_mock", "simulation"}:
+        if self._execution_mode != "shadow":
             try:
                 lease = self._robotics.leases.acquire(
                     owner_id=f"pick-ready:{request.execution_id}",
