@@ -116,8 +116,7 @@ Anthropic 或 LangChain SDK 类型。
 当前结论：核心 nominal 35--40 mm 半轴域的三种子严格成功率约 39.17%，尚未达到
 80% 门槛；轻度随机化约 23.82%，宽域压力测试约 0.9%。主要失败模式是摘取后掉落和
 断梗后保持不足。所有结果来自离线 PhysX，不能直接用于实机，也不能把代理接触当作
-真实触觉标定。大体积 checkpoint/teacher dataset 保留在本地实验工作区，GitHub 中
-同步了源码、报告、JSON/JSONL 诊断和失败证据，避免仓库膨胀。
+真实触觉标定。本次通过 Git LFS 发布了精选的 checkpoint/teacher dataset（当前/最佳模型、教师数据及关键物理阶段权重）；大量重复的周期性评估快照仍保留在本地实验工作区，后续可按需要再补充或清理。GitHub 中同步了源码、报告、JSON/JSONL 诊断和失败证据。
 
 - [设备能力基线](./docs/tomato_pick/SDK_CAPABILITY_BASELINE.md)：7 轴机械臂、G20、触觉、
   仿真资产和旧 PPO 的审计结论；

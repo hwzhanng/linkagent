@@ -22,5 +22,6 @@
 
 - 全部结果均为离线 Isaac Sim/PhysX，不包含实机控制授权或实机成功声明。
 - 代理指尖碰撞和 measured link4 接触仅用于仿真诊断，不等价于真实触觉标定。
-- `.pt` checkpoint、teacher dataset 和其他大体积二进制仍保留在本地工作区，未上传，
+- 精选 `.pt` checkpoint、teacher dataset 和关键物理阶段权重已通过 Git LFS 上传；
+  大量重复的周期性评估快照仍保留在本地工作区，未上传，
   以避免 GitHub 大文件限制；其 JSON 摘要、配置和失败证据已同步。
