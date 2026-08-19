@@ -1,0 +1,92 @@
+{
+  "version": "v2_contact_closed_loop_probe_v1",
+  "profile": "v1_nominal_reliable",
+  "seed": 20261177,
+  "num_envs": 64,
+  "steps": 700,
+  "candidate": [
+    1.0,
+    0.3418999910354614,
+    -0.5659000277519226,
+    1.0,
+    -0.24060000479221344,
+    -0.06769999861717224,
+    0.9230999946594238,
+    -0.2513999938964844,
+    0.011800000444054604,
+    -0.7802000045776367,
+    0.12880000472068787,
+    0.041200000792741776,
+    -1.0,
+    -0.06279999762773514
+  ],
+  "controller": {
+    "approach_steps": 500,
+    "per_digit_steps": 0,
+    "hold_steps": 200,
+    "contact_target_n": 0.18,
+    "retreat_limit_n": 0.5,
+    "contact_streak": 5,
+    "step_fraction": 0.1,
+    "retreat_fraction": 0.2,
+    "command_rate_rad_s": 0.1,
+    "digit_order": [
+      "index",
+      "middle",
+      "ring",
+      "little"
+    ],
+    "simultaneous_reach": true,
+    "retention_only": false,
+    "digit_scales": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "resolved_contact_geometry": {
+    "physical_fingertip_proxy": true,
+    "radius_m": 0.008,
+    "contact_offset_m": 0.0003,
+    "rest_offset_m": 0.0001,
+    "virtual_distal_contact": false,
+    "fixed_fruit": true,
+    "retention_only": false,
+    "debug_collision_digit": "all"
+  },
+  "per_digit_measured_contact_rate": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "measured_distal_all_rate": 1.0,
+  "strict_success_rate": 0.0,
+  "drop_rate": 0.0,
+  "overload_rate": 0.0,
+  "palm_support_rate": 1.0,
+  "max_link4_force_n_mean": [
+    0.511005163192749,
+    1.344395399093628,
+    0.8277616500854492,
+    1.343639612197876
+  ],
+  "max_link4_force_n_max": [
+    0.7502092123031616,
+    8.058650970458984,
+    1.9329010248184204,
+    1.6833418607711792
+  ],
+  "max_palm_force_n_mean": 1.1999962329864502,
+  "min_height_m_min": 0.20749999582767487,
+  "max_center_distance_m_max": 0.0,
+  "contact_first_step_mean": [
+    700.0,
+    700.0,
+    700.0,
+    700.0
+  ],
+  "hardware_command_allowed": false,
+  "interpretation": "simulation_only_low_force_contact_hold_retreat_diagnostic"
+}

@@ -1,0 +1,276 @@
+{
+  "version": "v2_independent_eval_1",
+  "checkpoint": "/home/miobarnacle/linkbot/ppo_tomato_grasp_stage01_work/artifacts/enveloping_grasp_v2/t0ag_residual_masked_phasegate_20260819/latest.pt",
+  "checkpoint_version": "palm_enveloping_grasp_v2",
+  "profile": "v1_nominal_reliable",
+  "profile_values": {
+    "axis_range_m": [
+      0.0375,
+      0.0375
+    ],
+    "isotropic_axes": true,
+    "accepted_mass_kg": [
+      0.05,
+      0.25
+    ],
+    "density_range_kg_m3": [
+      850.0,
+      850.0
+    ],
+    "position_jitter": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "friction_range": [
+      0.7,
+      0.7
+    ],
+    "restitution_range": [
+      0.0,
+      0.0
+    ],
+    "stiffness_range_n_m": [
+      18000.0,
+      18000.0
+    ],
+    "tactile_gain_range": [
+      1.0,
+      1.0
+    ],
+    "tactile_bias_range_n": [
+      0.0,
+      0.0
+    ],
+    "sensor_delay_steps_max": 0,
+    "sensor_dropout_probability": 0.0,
+    "sensor_stale_probability": 0.0,
+    "actuator_response_scale_range": [
+      1.0,
+      1.0
+    ],
+    "actuator_bias_range_rad": [
+      0.0,
+      0.0
+    ],
+    "actuator_deadband_range_rad": [
+      0.0,
+      0.0
+    ],
+    "actuator_backlash_range_rad": [
+      0.0,
+      0.0
+    ]
+  },
+  "seed": 20260820,
+  "ablation": "full14",
+  "residual_base_controller": true,
+  "residual_scale": 0.0,
+  "residual_mask": "thumb_distal",
+  "residual_phase_gate": true,
+  "residual_approach_steps": 240,
+  "residual_per_digit_steps": 60,
+  "residual_simultaneous_reach": false,
+  "resolved_contact_geometry": {
+    "tomato_contact_offset_m": 0.0003,
+    "tomato_rest_offset_m": 0.0001,
+    "fingertip_proxy_radius_m": 0.006,
+    "fingertip_proxy_contact_offset_m": 0.0003,
+    "fingertip_proxy_rest_offset_m": 0.0001,
+    "proxy_only_collision": true,
+    "accepted_mass_kg": [
+      0.05,
+      0.25
+    ],
+    "density_range_kg_m3": [
+      850.0,
+      850.0
+    ],
+    "per_digit_root_residual_span_fraction": null,
+    "pregrasp_settle_steps": 20
+  },
+  "num_envs": 64,
+  "steps": 620,
+  "stage": 1,
+  "completed_episodes": 72,
+  "success_rate": 0.0,
+  "drop_rate": 0.2222222238779068,
+  "overload_rate": 0.0,
+  "damage_rate": 0.0,
+  "timeout_rate": 0.7777777910232544,
+  "five_digit_rate": 0.0,
+  "palm_supported_rate": 0.7777777910232544,
+  "measured_palm_supported_rate": 0.7777777910232544,
+  "distal_all_rate": 1.0,
+  "distal_contact_all_rate": 0.7777777910232544,
+  "measured_distal_contact_all_rate": 0.7777777910232544,
+  "palm_first_rate": 0.7777777910232544,
+  "measured_geometry_rate": 0.7777777910232544,
+  "post_break_hold_rate": 0.0,
+  "digit_peak_force_n_mean": [
+    0.006132810842245817,
+    0.0036222960334271193,
+    0.0012260860530659556,
+    0.002417890354990959,
+    0.0011636633425951004
+  ],
+  "episode_peak_force_n_mean": [
+    0.4827226996421814,
+    0.3408954441547394,
+    3.2284650802612305,
+    2.6438143253326416,
+    0.5971498489379883
+  ],
+  "episode_peak_palm_force_n_mean": 6.227267742156982,
+  "episode_peak_force_n_max": [
+    0.777350902557373,
+    1.4289026260375977,
+    10.982260704040527,
+    7.60183572769165,
+    9.181400299072266
+  ],
+  "episode_peak_palm_force_n_max": 13.866921424865723,
+  "first_contact_step_mean": [
+    201.55555725097656,
+    189.63888549804688,
+    227.11111450195312,
+    222.1666717529297,
+    198.88888549804688
+  ],
+  "contact_occupancy_mean": [
+    0.14827586710453033,
+    0.44415709376335144,
+    0.24784483015537262,
+    0.36159002780914307,
+    0.3227490186691284
+  ],
+  "pre_break_contact_occupancy_mean": [
+    0.14827586710453033,
+    0.44415709376335144,
+    0.24784483015537262,
+    0.36159002780914307,
+    0.3227490186691284
+  ],
+  "post_break_contact_occupancy_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "distal_contact_observed_rate": [
+    0.7777777910232544,
+    1.0,
+    1.0,
+    0.7777777910232544
+  ],
+  "measured_distal_contact_observed_rate": [
+    0.7777777910232544,
+    1.0,
+    1.0,
+    0.7777777910232544
+  ],
+  "link3_force_mean_n": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "measured_link4_force_mean_n": [
+    0.0007212839554995298,
+    0.0023736287839710712,
+    0.00040925160283222795,
+    0.0014389808056876063,
+    0.0004680029524024576
+  ],
+  "link4_force_mean_n": [
+    0.0007212839554995298,
+    0.0023736287839710712,
+    0.00040925160283222795,
+    0.0014389808056876063,
+    0.0004680029524024576
+  ],
+  "measured_link4_force_integral_n_s_mean": [
+    1.6456056833267212,
+    1.1207228899002075,
+    1.3774845600128174,
+    0.7611677646636963
+  ],
+  "measured_distal_contact_steps_mean": [
+    257.6111145019531,
+    143.75,
+    209.72222900390625,
+    187.19444274902344
+  ],
+  "measured_distal_max_streak_mean": [
+    245.88888549804688,
+    29.02777862548828,
+    128.44444274902344,
+    45.97222137451172
+  ],
+  "measured_palm_force_mean_n": 0.029707040637731552,
+  "max_lost_contact_gap_steps_mean": [
+    9.946429252624512,
+    9.733631134033203,
+    9.431547164916992,
+    9.476190567016602,
+    9.915675163269043
+  ],
+  "force_integral_share_mean": [
+    0.15126749873161316,
+    0.22990025579929352,
+    0.254406213760376,
+    0.25813695788383484,
+    0.1062890812754631
+  ],
+  "actor_action_mean": [
+    0.4639969766139984,
+    -0.6989339590072632,
+    0.4066261351108551,
+    -0.006460112053900957,
+    0.4639969766139984,
+    -0.24309541285037994,
+    0.17172116041183472,
+    0.459913969039917,
+    -0.1577121466398239,
+    -0.1934681534767151,
+    -0.28326985239982605,
+    0.2384551465511322,
+    -0.07068119198083878,
+    0.10690847784280777
+  ],
+  "actor_action_abs_mean": [
+    0.7039163112640381,
+    0.6989339590072632,
+    0.4066261351108551,
+    0.006460112053900957,
+    0.7039163112640381,
+    0.24309541285037994,
+    0.4743737280368805,
+    0.700545608997345,
+    0.26764824986457825,
+    0.2514660358428955,
+    0.28326985239982605,
+    0.2384551465511322,
+    0.07068119198083878,
+    0.10690847784280777
+  ],
+  "actor_action_max": [
+    1.0,
+    -0.004166666883975267,
+    0.5817804336547852,
+    -3.851169822155498e-05,
+    1.0,
+    -0.011672675609588623,
+    0.5818946361541748,
+    0.9941582679748535,
+    0.11048948764801025,
+    0.059331536293029785,
+    0.0,
+    0.654211699962616,
+    0.0,
+    0.5135738253593445
+  ],
+  "hardware_command_allowed": false
+}

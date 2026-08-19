@@ -1,0 +1,141 @@
+{
+  "version": "v2_multichannel_reach_primitive_v1",
+  "profile": "v1_nominal_reliable",
+  "seed": 20261130,
+  "base_action": [
+    0.864469110965,
+    0.517134726048,
+    -0.583076238632,
+    0.901439428329,
+    0.113878421485,
+    -0.767623305321,
+    0.276706576348,
+    -0.15316349268,
+    0.629932641983,
+    -0.107332348824,
+    0.584053039551,
+    0.197868227959,
+    -0.820022583008,
+    0.175772547722
+  ],
+  "channels": [
+    0
+  ],
+  "delta": 0.0,
+  "per_digit_root_residual_span_fraction": 0.4,
+  "approach_steps": 120,
+  "hold_steps": 60,
+  "isolation": {
+    "finger_collision_response": false,
+    "physical_fingertip_proxy": false,
+    "virtual_distal_contact": false,
+    "support_surface": true
+  },
+  "max_tomato_drift_m": 0.0,
+  "rows": [
+    {
+      "label": "baseline",
+      "channel": null,
+      "sign": 0.0,
+      "min_tip_distance_m": [
+        0.03282328322529793,
+        0.028186660259962082,
+        0.02943146415054798,
+        0.03241608291864395
+      ],
+      "final_tip_distance_m": [
+        0.03437110409140587,
+        0.03539086878299713,
+        0.02943146415054798,
+        0.03241608291864395
+      ],
+      "max_tomato_drift_m": 0.0
+    },
+    {
+      "label": "ch0_plus",
+      "channel": 0,
+      "sign": 1.0,
+      "min_tip_distance_m": [
+        0.03279224783182144,
+        0.02755705453455448,
+        0.029342759400606155,
+        0.0325055867433548
+      ],
+      "final_tip_distance_m": [
+        0.033397551625967026,
+        0.03448968380689621,
+        0.029596388339996338,
+        0.0325319878757
+      ],
+      "max_tomato_drift_m": 0.0,
+      "distance_change_vs_baseline_m": [
+        -3.1035393476486206e-05,
+        -0.0006296057254076004,
+        -8.870474994182587e-05,
+        8.950382471084595e-05
+      ],
+      "closure_gain_vs_baseline_m": [
+        3.1035393476486206e-05,
+        0.0006296057254076004,
+        8.870474994182587e-05,
+        -8.950382471084595e-05
+      ],
+      "final_distance_change_vs_baseline_m": [
+        -0.0009735524654388428,
+        -0.0009011849761009216,
+        0.00016492418944835663,
+        0.00011590495705604553
+      ],
+      "final_closure_gain_vs_baseline_m": [
+        0.0009735524654388428,
+        0.0009011849761009216,
+        -0.00016492418944835663,
+        -0.00011590495705604553
+      ]
+    },
+    {
+      "label": "ch0_minus",
+      "channel": 0,
+      "sign": -1.0,
+      "min_tip_distance_m": [
+        0.03282328322529793,
+        0.028186660259962082,
+        0.02943146415054798,
+        0.03241608291864395
+      ],
+      "final_tip_distance_m": [
+        0.03437110409140587,
+        0.03539086878299713,
+        0.02943146415054798,
+        0.03241608291864395
+      ],
+      "max_tomato_drift_m": 0.0,
+      "distance_change_vs_baseline_m": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "closure_gain_vs_baseline_m": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_distance_change_vs_baseline_m": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_closure_gain_vs_baseline_m": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "hardware_command_allowed": false,
+  "interpretation": "kinematic_action_map_only_no_training_no_success_no_hardware"
+}

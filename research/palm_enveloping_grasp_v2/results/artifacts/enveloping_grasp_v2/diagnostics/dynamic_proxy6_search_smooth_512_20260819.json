@@ -1,0 +1,2968 @@
+{
+  "version": "link4_action_search_v1",
+  "profile": "v1_nominal_reliable",
+  "seed": 20260831,
+  "num_envs": 512,
+  "approach_steps": 300,
+  "hold_steps": 160,
+  "resolved_config": {
+    "maximum_stem_force_n": 120.0,
+    "maximum_stem_torque_nm": 0.8,
+    "virtual_distal_contact_enabled": false,
+    "virtual_distal_contact_gain_n_per_m": 45.0,
+    "distal_proximal_reach_assist_gain": 0.0,
+    "distal_proximal_reach_assist_gain_per_digit": [
+      0.45,
+      0.45,
+      0.3,
+      0.25
+    ],
+    "distal_action_filter_alpha": 0.999,
+    "coarse_action_smoothing_alpha": 0.1,
+    "fingertip_collision_proxy_physical": true,
+    "fingertip_collision_proxy_radius_m": 0.006,
+    "contact_threshold_n": 0.04,
+    "safe_force_n": 6.0,
+    "force_ceiling_n": [
+      6.0,
+      7.0,
+      7.0,
+      6.0,
+      5.0
+    ]
+  },
+  "resolved_object_randomization": {
+    "object_mass_kg": {
+      "min": [
+        0.18775926530361176
+      ],
+      "max": [
+        0.18775926530361176
+      ],
+      "mean": [
+        0.18775926530361176
+      ]
+    },
+    "tomato_axes_m": {
+      "min": [
+        0.03750000149011612,
+        0.03750000149011612,
+        0.03750000149011612
+      ],
+      "max": [
+        0.03750000149011612,
+        0.03750000149011612,
+        0.03750000149011612
+      ],
+      "mean": [
+        0.03750000149011612,
+        0.03750000149011612,
+        0.03750000149011612
+      ]
+    },
+    "tomato_density_kg_m3": {
+      "min": [
+        850.0
+      ],
+      "max": [
+        850.0
+      ],
+      "mean": [
+        850.0
+      ]
+    },
+    "object_friction": {
+      "min": [
+        0.699999988079071
+      ],
+      "max": [
+        0.699999988079071
+      ],
+      "mean": [
+        0.699999988079071
+      ]
+    },
+    "object_stiffness_n_m": {
+      "min": [
+        18000.0
+      ],
+      "max": [
+        18000.0
+      ],
+      "mean": [
+        18000.0
+      ]
+    }
+  },
+  "ranked_candidates": [
+    {
+      "candidate_id": 125,
+      "score": 8.359415054321289,
+      "action": [
+        1.0,
+        -1.0,
+        -0.20089459419250488,
+        -0.08618403971195221,
+        1.0,
+        0.6458039283752441,
+        1.0,
+        0.5775589346885681,
+        1.0,
+        -0.6184170842170715,
+        -0.3140897750854492,
+        0.5679434537887573,
+        -1.0,
+        0.38346022367477417
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.051325179636478424,
+        0.3686586320400238
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.051325179636478424,
+        0.3686586320400238
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.046304624527692795,
+        0.04300134256482124,
+        0.04271376505494118,
+        0.0408111996948719
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.1227126121520996,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.04610917344689369,
+      "min_tomato_height_m": 0.2020597606897354,
+      "max_center_distance_m": 0.01899596117436886,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 107,
+      "score": 8.35880184173584,
+      "action": [
+        1.0,
+        -1.0,
+        0.09900462627410889,
+        0.3305938243865967,
+        0.7079615592956543,
+        0.32350751757621765,
+        0.6152282357215881,
+        0.944249153137207,
+        1.0,
+        0.8833799958229065,
+        -0.9296112656593323,
+        -0.24724161624908447,
+        -0.6148737072944641,
+        0.27548304200172424
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.1843225210905075,
+        0.35939905047416687
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.1843225210905075,
+        0.35939905047416687
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.046260811388492584,
+        0.04225349798798561,
+        0.042720112949609756,
+        0.04141245409846306
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.0873546600341797,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06006668135523796,
+      "min_tomato_height_m": 0.20205974578857422,
+      "max_center_distance_m": 0.020717764273285866,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 471,
+      "score": 8.308326721191406,
+      "action": [
+        0.7403311729431152,
+        -1.0,
+        0.8597277998924255,
+        -0.6891907453536987,
+        -0.6808900833129883,
+        -0.29722103476524353,
+        0.9383478164672852,
+        0.8453953266143799,
+        1.0,
+        0.7718350887298584,
+        -0.8230035305023193,
+        0.05877913534641266,
+        -0.09168627858161926,
+        1.0
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.05018588528037071,
+        0.3156680464744568
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.05018588528037071,
+        0.3156680464744568
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.0460430346429348,
+        0.043745651841163635,
+        0.0438181571662426,
+        0.04152365401387215
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.181302309036255,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.11619885265827179,
+      "min_tomato_height_m": 0.20206117630004883,
+      "max_center_distance_m": 0.019007809460163116,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 345,
+      "score": 8.307038307189941,
+      "action": [
+        1.0,
+        -0.011311054229736328,
+        -1.0,
+        -0.8195098042488098,
+        1.0,
+        0.4248707890510559,
+        1.0,
+        0.8759921193122864,
+        1.0,
+        -0.3088129758834839,
+        -0.5213131904602051,
+        -0.4802108407020569,
+        -1.0,
+        1.0
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.25559428334236145,
+        0.2192649394273758
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.25559428334236145,
+        0.2192649394273758
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04744121804833412,
+        0.04263993725180626,
+        0.041905954480171204,
+        0.04020940512418747
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.2909867763519287,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06269100308418274,
+      "min_tomato_height_m": 0.20205914974212646,
+      "max_center_distance_m": 0.020907267928123474,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 479,
+      "score": 8.271014213562012,
+      "action": [
+        0.48905181884765625,
+        -0.4889766573905945,
+        -0.23544621467590332,
+        0.6434690952301025,
+        0.32757413387298584,
+        0.28705790638923645,
+        1.0,
+        -0.2844093441963196,
+        -0.4502573013305664,
+        -0.806025505065918,
+        -1.0,
+        -0.6709712743759155,
+        0.4135895371437073,
+        0.2100619077682495
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.05936224386096001,
+        0.2659602761268616
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.05936224386096001,
+        0.2659602761268616
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04739786311984062,
+        0.04643412306904793,
+        0.04320840910077095,
+        0.04089180380105972
+      ],
+      "near_surface": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.1683504581451416,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.05781758204102516,
+      "min_tomato_height_m": 0.20205974578857422,
+      "max_center_distance_m": 0.019022976979613304,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 38,
+      "score": 8.245492935180664,
+      "action": [
+        0.8757623434066772,
+        -0.7631853222846985,
+        -0.3329358994960785,
+        0.7696607112884521,
+        0.7740058302879333,
+        -0.5752276182174683,
+        0.9349480867385864,
+        0.5338737368583679,
+        1.0,
+        -0.6895124912261963,
+        0.40731191635131836,
+        0.1258525252342224,
+        -1.0,
+        0.6026257276535034
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.16141200065612793,
+        0.4554220736026764
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.16141200065612793,
+        0.4554220736026764
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04594186320900917,
+        0.04356502369046211,
+        0.04263219237327576,
+        0.04076438397169113
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.3870351314544678,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06126751750707626,
+      "min_tomato_height_m": 0.20205974578857422,
+      "max_center_distance_m": 0.019022976979613304,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 353,
+      "score": 8.190503120422363,
+      "action": [
+        0.32777807116508484,
+        -0.2936955690383911,
+        -1.0,
+        -0.4194924235343933,
+        0.5180531740188599,
+        0.06380980461835861,
+        1.0,
+        1.0,
+        0.0865972638130188,
+        -0.3289563059806824,
+        -0.6498149037361145,
+        0.12413637340068817,
+        -0.11690247058868408,
+        0.9372512698173523
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.09869951009750366,
+        0.31154826283454895
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.09869951009750366,
+        0.31154826283454895
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.050826359540224075,
+        0.04650591313838959,
+        0.04372147098183632,
+        0.04048522934317589
+      ],
+      "near_surface": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.012500000186264515
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.197697401046753,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.060532331466674805,
+      "min_tomato_height_m": 0.20206063985824585,
+      "max_center_distance_m": 0.01891745813190937,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 152,
+      "score": 8.184086799621582,
+      "action": [
+        1.0,
+        -0.9544430375099182,
+        -0.2989283800125122,
+        0.09371942281723022,
+        1.0,
+        0.10240963846445084,
+        0.6809396743774414,
+        0.4347560405731201,
+        1.0,
+        0.16576525568962097,
+        0.4025156497955322,
+        -0.46508586406707764,
+        -0.26683053374290466,
+        0.5839883089065552
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.209905743598938,
+        0.6301380395889282
+      ],
+      "max_aggregate_force_n": [
+        0.37881749868392944,
+        0.0,
+        0.0,
+        0.209905743598938,
+        0.6301380395889282
+      ],
+      "max_thumb_sensor_force_n": [
+        0.37881749868392944,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04591327905654907,
+        0.04296772927045822,
+        0.0425739586353302,
+        0.041531533002853394
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.04374999925494194
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.483400583267212,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.042054858058691025,
+      "min_tomato_height_m": 0.20205973088741302,
+      "max_center_distance_m": 0.01905149035155773,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 64,
+      "score": 8.15323257446289,
+      "action": [
+        0.8863892555236816,
+        -0.8028556704521179,
+        -0.8785593509674072,
+        0.0022659003734588623,
+        1.0,
+        0.15686750411987305,
+        0.3878297805786133,
+        1.0,
+        0.606745719909668,
+        -0.016546815633773804,
+        -1.0,
+        0.5351842641830444,
+        -1.0,
+        1.0
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.15456892549991608,
+        0.6932198405265808
+      ],
+      "max_aggregate_force_n": [
+        0.6543132066726685,
+        0.0,
+        0.0,
+        0.15456892549991608,
+        0.6932198405265808
+      ],
+      "max_thumb_sensor_force_n": [
+        0.6543132066726685,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.047469768673181534,
+        0.043602198362350464,
+        0.04277563840150833,
+        0.041553474962711334
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.05000000074505806
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.4523298740386963,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.04151178523898125,
+      "min_tomato_height_m": 0.2020542472600937,
+      "max_center_distance_m": 0.02150942012667656,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 475,
+      "score": 8.14828872680664,
+      "action": [
+        0.8700050711631775,
+        -0.8532459735870361,
+        -1.0,
+        0.09728571772575378,
+        1.0,
+        -0.0007813889533281326,
+        1.0,
+        1.0,
+        1.0,
+        -0.32831448316574097,
+        -0.4455263614654541,
+        -1.0,
+        -0.9890883564949036,
+        1.0
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.23891626298427582,
+        0.5531931519508362
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.23891626298427582,
+        0.5531931519508362
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04707096144556999,
+        0.04418298974633217,
+        0.04269324615597725,
+        0.04146762937307358
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.012500000186264515
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.4873526096343994,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.061775822192430496,
+      "min_tomato_height_m": 0.20206065475940704,
+      "max_center_distance_m": 0.020509671419858932,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 445,
+      "score": 8.115574836730957,
+      "action": [
+        0.6939799189567566,
+        -0.017322123050689697,
+        -0.6032391786575317,
+        0.4314536452293396,
+        0.6239179372787476,
+        0.26911503076553345,
+        1.0,
+        0.361784428358078,
+        0.2679542601108551,
+        0.43529245257377625,
+        -0.3251614570617676,
+        -0.5096523761749268,
+        -0.10575231909751892,
+        0.9465373158454895
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.16919681429862976,
+        0.7618104219436646
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.16919681429862976,
+        0.7618104219436646
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.046022359281778336,
+        0.04335775226354599,
+        0.042708829045295715,
+        0.04142233356833458
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.012500000186264515
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.628584623336792,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06050088256597519,
+      "min_tomato_height_m": 0.20205974578857422,
+      "max_center_distance_m": 0.019976558163762093,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 135,
+      "score": 8.114858627319336,
+      "action": [
+        1.0,
+        -0.42375269532203674,
+        -1.0,
+        -0.5677604675292969,
+        0.4972434639930725,
+        -0.19234558939933777,
+        0.862115740776062,
+        0.5960702300071716,
+        0.3723902702331543,
+        0.29827016592025757,
+        -0.715113639831543,
+        0.030908435583114624,
+        -1.0,
+        1.0
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.0425424762070179,
+        0.848950207233429
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0425424762070179,
+        0.848950207233429
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04660375043749809,
+        0.04273996502161026,
+        0.04209931194782257,
+        0.04087970033288002
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.7049765586853027,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.05924666300415993,
+      "min_tomato_height_m": 0.20203720033168793,
+      "max_center_distance_m": 0.023655518889427185,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 286,
+      "score": 8.107223510742188,
+      "action": [
+        0.4860799312591553,
+        0.44858479499816895,
+        -1.0,
+        -0.47054314613342285,
+        0.4553316831588745,
+        0.49608391523361206,
+        1.0,
+        0.9042377471923828,
+        0.24401253461837769,
+        -0.018654078245162964,
+        0.10444492101669312,
+        0.5495967864990234,
+        -0.8112973570823669,
+        0.79339998960495
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.18199756741523743,
+        0.8118579387664795
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.18199756741523743,
+        0.8118579387664795
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.0465070977807045,
+        0.04341612011194229,
+        0.04268919676542282,
+        0.04155297949910164
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.5973613262176514,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.05798354744911194,
+      "min_tomato_height_m": 0.20206014811992645,
+      "max_center_distance_m": 0.01899721659719944,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 426,
+      "score": 8.104482650756836,
+      "action": [
+        0.530270516872406,
+        -1.0,
+        -0.4816640615463257,
+        -0.3471611738204956,
+        0.6693572998046875,
+        0.349806547164917,
+        1.0,
+        0.07174399495124817,
+        1.0,
+        0.772234320640564,
+        -0.7911516427993774,
+        -0.009517967700958252,
+        -1.0,
+        0.5385553240776062
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.26491063833236694,
+        0.19408874213695526
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.26491063833236694,
+        0.19408874213695526
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04926493763923645,
+        0.050577033311128616,
+        0.043753523379564285,
+        0.04037993773818016
+      ],
+      "near_surface": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.012500000186264515
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.3156545162200928,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.0613999143242836,
+      "min_tomato_height_m": 0.20206117630004883,
+      "max_center_distance_m": 0.019007809460163116,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 104,
+      "score": 8.099324226379395,
+      "action": [
+        0.3645716607570648,
+        -0.7962729334831238,
+        -1.0,
+        0.029032260179519653,
+        0.8194485902786255,
+        0.35248467326164246,
+        0.6834437847137451,
+        0.8854504823684692,
+        0.8125147223472595,
+        0.24176597595214844,
+        -0.23151135444641113,
+        0.5690794587135315,
+        -1.0,
+        -0.44385862350463867
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.04892539978027344,
+        0.6199724674224854
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.04892539978027344,
+        0.6199724674224854
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.056441739201545715,
+        0.04976256191730499,
+        0.04344785213470459,
+        0.040320586413145065
+      ],
+      "near_surface": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.012500000186264515
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 1.9525535106658936,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06163284182548523,
+      "min_tomato_height_m": 0.20205974578857422,
+      "max_center_distance_m": 0.019022976979613304,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 105,
+      "score": 8.097331047058105,
+      "action": [
+        0.8393820524215698,
+        -0.3050776720046997,
+        -0.14065620303153992,
+        -0.4313909113407135,
+        0.37920159101486206,
+        -0.06673096865415573,
+        0.37209707498550415,
+        0.37664806842803955,
+        0.30311059951782227,
+        0.2665029466152191,
+        0.6956338286399841,
+        0.4734158515930176,
+        -1.0,
+        0.1214863657951355
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.13950641453266144,
+        0.9028097987174988
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.13950641453266144,
+        0.9028097987174988
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04630013927817345,
+        0.04248465970158577,
+        0.04274601489305496,
+        0.04155155271291733
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.6630191802978516,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.0589495487511158,
+      "min_tomato_height_m": 0.20205974578857422,
+      "max_center_distance_m": 0.020733941346406937,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 21,
+      "score": 8.076557159423828,
+      "action": [
+        1.0,
+        -1.0,
+        -0.589245080947876,
+        -1.0,
+        0.7030810117721558,
+        0.9684540033340454,
+        1.0,
+        1.0,
+        0.8377983570098877,
+        -0.05924144387245178,
+        -0.6016601920127869,
+        -0.47243791818618774,
+        -0.025892317295074463,
+        1.0
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.25221264362335205,
+        0.8386651873588562
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.25221264362335205,
+        0.8386651873588562
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04618825018405914,
+        0.04275808483362198,
+        0.042669057846069336,
+        0.041540224105119705
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.703465223312378,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.05933060869574547,
+      "min_tomato_height_m": 0.20206014811992645,
+      "max_center_distance_m": 0.020644536241889,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 212,
+      "score": 8.07620906829834,
+      "action": [
+        0.5461335778236389,
+        -1.0,
+        -0.5155357718467712,
+        -0.9420499801635742,
+        0.9364452362060547,
+        -0.09340303391218185,
+        0.6786066889762878,
+        0.016686320304870605,
+        0.4171437621116638,
+        0.38201847672462463,
+        0.5741726756095886,
+        -0.2814161777496338,
+        -0.4063543975353241,
+        0.9329829812049866
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.6350046992301941,
+        0.5193566083908081
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.6350046992301941,
+        0.5193566083908081
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04970967024564743,
+        0.04829809442162514,
+        0.04357806220650673,
+        0.04033256322145462
+      ],
+      "near_surface": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.012500000186264515
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.2425694465637207,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06106485053896904,
+      "min_tomato_height_m": 0.20206066966056824,
+      "max_center_distance_m": 0.01888851821422577,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 486,
+      "score": 8.071032524108887,
+      "action": [
+        1.0,
+        -0.9076824188232422,
+        -0.12836146354675293,
+        -0.4251296818256378,
+        0.7769231796264648,
+        0.9873652458190918,
+        0.3548234701156616,
+        0.20228707790374756,
+        1.0,
+        0.4456825852394104,
+        -1.0,
+        0.1829545795917511,
+        -0.48335742950439453,
+        1.0
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.1928417980670929,
+        0.9116800427436829
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.1928417980670929,
+        0.9116800427436829
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.0460222065448761,
+        0.04300040379166603,
+        0.042592838406562805,
+        0.04158947616815567
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.08125000447034836
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.712459087371826,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.059553347527980804,
+      "min_tomato_height_m": 0.20205974578857422,
+      "max_center_distance_m": 0.01988278701901436,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 240,
+      "score": 8.061914443969727,
+      "action": [
+        0.9760611057281494,
+        -1.0,
+        -0.35978174209594727,
+        -0.7228513956069946,
+        0.8073906898498535,
+        -0.16617844998836517,
+        0.26117730140686035,
+        0.4511398375034332,
+        0.7596971392631531,
+        1.0,
+        -0.3949549198150635,
+        0.02986668050289154,
+        -0.5335601568222046,
+        0.7337526082992554
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.4189082682132721,
+        0.8965121507644653
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.4189082682132721,
+        0.8965121507644653
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04629304260015488,
+        0.043530434370040894,
+        0.04263588786125183,
+        0.04143858328461647
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.012500000186264515,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.6260762214660645,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.051726941019296646,
+      "min_tomato_height_m": 0.20206023752689362,
+      "max_center_distance_m": 0.020244669169187546,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 66,
+      "score": 8.058965682983398,
+      "action": [
+        0.8352559208869934,
+        -0.3862619996070862,
+        -0.43917471170425415,
+        0.29605990648269653,
+        0.8825349807739258,
+        0.23185572028160095,
+        -0.2208002805709839,
+        1.0,
+        0.2782171070575714,
+        0.49060583114624023,
+        -0.7676688432693481,
+        -0.03139743208885193,
+        0.00925910472869873,
+        0.6616170406341553
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.14985765516757965,
+        1.0113162994384766
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.14985765516757965,
+        1.0113162994384766
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.046322621405124664,
+        0.04228174686431885,
+        0.042739421129226685,
+        0.04147712141275406
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.03750000149011612
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.7466187477111816,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06091877818107605,
+      "min_tomato_height_m": 0.20205974578857422,
+      "max_center_distance_m": 0.020270956680178642,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 37,
+      "score": 8.052484512329102,
+      "action": [
+        0.7963518500328064,
+        -1.0,
+        -0.5084651708602905,
+        -0.26891711354255676,
+        1.0,
+        0.5950881242752075,
+        1.0,
+        1.0,
+        0.803067684173584,
+        -0.8644050359725952,
+        -1.0,
+        0.6702878475189209,
+        -0.5924068689346313,
+        0.29608938097953796
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.489967405796051,
+        0.7587167620658875
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.489967405796051,
+        0.7587167620658875
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04693828150629997,
+        0.04453453794121742,
+        0.042441658675670624,
+        0.04046237841248512
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.012500000186264515,
+        0.012500000186264515
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.6554477214813232,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.05943025276064873,
+      "min_tomato_height_m": 0.2020597606897354,
+      "max_center_distance_m": 0.01899596117436886,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 48,
+      "score": 8.05233383178711,
+      "action": [
+        0.7126269340515137,
+        0.6482082605361938,
+        -1.0,
+        -0.6487996578216553,
+        1.0,
+        0.10561037063598633,
+        0.7059378623962402,
+        1.0,
+        0.7440924644470215,
+        0.0038700997829437256,
+        -1.0,
+        0.18024209141731262,
+        -0.5315353274345398,
+        0.28337234258651733
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.326287180185318,
+        0.7342807650566101
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.326287180185318,
+        0.7342807650566101
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.0467536523938179,
+        0.04246167093515396,
+        0.04194273054599762,
+        0.04083655774593353
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.01875000074505806
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.845552444458008,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06289038062095642,
+      "min_tomato_height_m": 0.20205974578857422,
+      "max_center_distance_m": 0.019886597990989685,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 56,
+      "score": 8.052265167236328,
+      "action": [
+        1.0,
+        -0.9814313650131226,
+        -1.0,
+        -0.24516886472702026,
+        0.8370341658592224,
+        0.5209060907363892,
+        0.8021533489227295,
+        0.5930083394050598,
+        0.1126367449760437,
+        -0.5440177321434021,
+        -1.0,
+        0.5727407932281494,
+        -1.0,
+        0.24613448977470398
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.16090336441993713,
+        0.947925329208374
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.16090336441993713,
+        0.947925329208374
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04663347080349922,
+        0.04388182610273361,
+        0.04274531826376915,
+        0.04149309918284416
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.689711093902588,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06103242188692093,
+      "min_tomato_height_m": 0.20205983519554138,
+      "max_center_distance_m": 0.020153701305389404,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 337,
+      "score": 8.050032615661621,
+      "action": [
+        1.0,
+        -0.1886628270149231,
+        -0.9054967164993286,
+        -1.0,
+        -0.18723952770233154,
+        -0.08489426970481873,
+        0.7983806133270264,
+        0.8588424921035767,
+        1.0,
+        -0.11809560656547546,
+        -0.12426936626434326,
+        -0.25262707471847534,
+        -1.0,
+        0.1107407808303833
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.9185850620269775,
+        0.26247185468673706
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.9185850620269775,
+        0.26247185468673706
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04679102823138237,
+        0.04218636825680733,
+        0.04210192710161209,
+        0.040069594979286194
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.8495590686798096,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06425047665834427,
+      "min_tomato_height_m": 0.20205722749233246,
+      "max_center_distance_m": 0.02001137100160122,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 336,
+      "score": 8.044845581054688,
+      "action": [
+        0.9917957782745361,
+        -0.49933451414108276,
+        -0.6802677512168884,
+        0.4845750331878662,
+        0.5075169801712036,
+        0.027091754600405693,
+        -0.02591240406036377,
+        -0.41321325302124023,
+        0.6305511593818665,
+        0.8890997767448425,
+        -0.6303958296775818,
+        0.6994929313659668,
+        -0.39074257016181946,
+        0.7621612548828125
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.05126805976033211,
+        0.6232922077178955
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.05126805976033211,
+        0.6232922077178955
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.046528205275535583,
+        0.0439876951277256,
+        0.041898343712091446,
+        0.04081704840064049
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.02500000037252903,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.950939893722534,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06069577857851982,
+      "min_tomato_height_m": 0.20205843448638916,
+      "max_center_distance_m": 0.021525869145989418,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 482,
+      "score": 8.042165756225586,
+      "action": [
+        1.0,
+        0.11069566011428833,
+        -0.9379558563232422,
+        -0.5037760138511658,
+        0.9634409546852112,
+        -0.11554577946662903,
+        1.0,
+        0.44664621353149414,
+        1.0,
+        -0.8505120277404785,
+        0.30333322286605835,
+        -0.14362406730651855,
+        -0.8223533630371094,
+        1.0
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.3686058223247528,
+        0.3299807608127594
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.3686058223247528,
+        0.3299807608127594
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04796217381954193,
+        0.042569439858198166,
+        0.04213516786694527,
+        0.04089011996984482
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0062500000931322575
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.9336862564086914,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06209081411361694,
+      "min_tomato_height_m": 0.20205941796302795,
+      "max_center_distance_m": 0.020485201850533485,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 314,
+      "score": 8.040613174438477,
+      "action": [
+        0.5523691773414612,
+        0.1587677001953125,
+        -0.7688544392585754,
+        0.9446698427200317,
+        0.9723786115646362,
+        0.4260428845882416,
+        1.0,
+        -0.5818819403648376,
+        0.7200422883033752,
+        0.14021022617816925,
+        -0.39968952536582947,
+        1.0,
+        0.0010741353034973145,
+        1.0
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.1243109256029129,
+        1.1302533149719238
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.1243109256029129,
+        1.1302533149719238
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04627689719200134,
+        0.04624402895569801,
+        0.04281395673751831,
+        0.04126295447349548
+      ],
+      "near_surface": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.4000000059604645
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.5778067111968994,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06164240837097168,
+      "min_tomato_height_m": 0.2020530104637146,
+      "max_center_distance_m": 0.02248595841228962,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 455,
+      "score": 8.036836624145508,
+      "action": [
+        1.0,
+        -0.8808669447898865,
+        -0.6604417562484741,
+        -1.0,
+        1.0,
+        -0.7492852210998535,
+        0.11189526319503784,
+        0.0998903214931488,
+        0.20415902137756348,
+        0.35778093338012695,
+        -0.7831872701644897,
+        -0.4790535569190979,
+        -0.07782340049743652,
+        0.5276190638542175
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.16969354450702667,
+        1.0100269317626953
+      ],
+      "max_aggregate_force_n": [
+        0.3207123279571533,
+        0.0,
+        0.0,
+        0.16969354450702667,
+        1.0100269317626953
+      ],
+      "max_thumb_sensor_force_n": [
+        0.3207123279571533,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.04661765322089195,
+        0.043923746794462204,
+        0.04271561652421951,
+        0.04147529974579811
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.0625
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.7104830741882324,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.040709976106882095,
+      "min_tomato_height_m": 0.20205877721309662,
+      "max_center_distance_m": 0.020443271845579147,
+      "invalid_in_hand_seen": false
+    },
+    {
+      "candidate_id": 181,
+      "score": 8.020195007324219,
+      "action": [
+        1.0,
+        -1.0,
+        -0.708250105381012,
+        -0.5722099542617798,
+        1.0,
+        0.9816416501998901,
+        1.0,
+        0.08162358403205872,
+        0.7740234136581421,
+        -0.34797757863998413,
+        -0.5166682004928589,
+        1.0,
+        -0.2755904793739319,
+        1.0
+      ],
+      "max_link3_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_link4_force_n": [
+        0.0,
+        0.0,
+        0.17785851657390594,
+        0.8113553524017334
+      ],
+      "max_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.17785851657390594,
+        0.8113553524017334
+      ],
+      "max_thumb_sensor_force_n": [
+        0.0,
+        0.0
+      ],
+      "min_tip_distance_m": [
+        0.046057529747486115,
+        0.04458720609545708,
+        0.04256414994597435,
+        0.04154073819518089
+      ],
+      "near_surface": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "measured_link4_contact_seen": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "hold_contact_occupancy": [
+        0.0,
+        0.0,
+        0.0062500000931322575,
+        0.01875000074505806
+      ],
+      "hold_all_four_occupancy": 0.0,
+      "weakest_hold_occupancy": 0.0,
+      "max_palm_force_n": 2.8309781551361084,
+      "overload_seen": false,
+      "max_coverage_deg": 0.0,
+      "max_strict_hold_steps": 0.0,
+      "all_five_contact_seen": false,
+      "aggregate_all_five_contact_seen": false,
+      "min_thumb_distance_m": 0.06132305786013603,
+      "min_tomato_height_m": 0.20206022262573242,
+      "max_center_distance_m": 0.0201595276594162,
+      "invalid_in_hand_seen": false
+    }
+  ],
+  "best_hold_candidate": {
+    "candidate_id": 0,
+    "action": [
+      1.0,
+      0.2103443145751953,
+      -0.7847797870635986,
+      -0.251901239156723,
+      0.8236803412437439,
+      0.3137647211551666,
+      0.31877458095550537,
+      0.5561853647232056,
+      0.5242348313331604,
+      0.3703189790248871,
+      -1.0,
+      0.48308065533638,
+      -1.0,
+      0.3257105350494385
+    ],
+    "hold_contact_occupancy": [
+      0.0,
+      0.0,
+      0.0,
+      0.0062500000931322575
+    ],
+    "hold_all_four_occupancy": 0.0,
+    "weakest_hold_occupancy": 0.0,
+    "max_link4_force_n": [
+      0.0,
+      0.0,
+      0.0035268019419163465,
+      2.1924266815185547
+    ],
+    "max_palm_force_n": 4.083746910095215,
+    "max_coverage_deg": 0.0,
+    "min_thumb_distance_m": 0.06152724102139473,
+    "max_strict_hold_steps": 0.0,
+    "all_five_contact_seen": false,
+    "aggregate_all_five_contact_seen": false,
+    "overload_seen": false,
+    "invalid_in_hand_seen": false,
+    "resolved_env": {
+      "object_mass_kg": 0.18775926530361176,
+      "tomato_axes_m": [
+        0.03750000149011612,
+        0.03750000149011612,
+        0.03750000149011612
+      ],
+      "tomato_density_kg_m3": 850.0,
+      "object_friction": 0.699999988079071,
+      "object_stiffness_n_m": 18000.0,
+      "tomato_position_m": [
+        17.274173736572266,
+        -15.74145221710205,
+        0.20206116139888763
+      ]
+    }
+  },
+  "best_safe_hold_candidate": {
+    "candidate_id": 0,
+    "action": [
+      1.0,
+      0.2103443145751953,
+      -0.7847797870635986,
+      -0.251901239156723,
+      0.8236803412437439,
+      0.3137647211551666,
+      0.31877458095550537,
+      0.5561853647232056,
+      0.5242348313331604,
+      0.3703189790248871,
+      -1.0,
+      0.48308065533638,
+      -1.0,
+      0.3257105350494385
+    ],
+    "hold_contact_occupancy": [
+      0.0,
+      0.0,
+      0.0,
+      0.0062500000931322575
+    ],
+    "hold_all_four_occupancy": 0.0,
+    "weakest_hold_occupancy": 0.0,
+    "max_link4_force_n": [
+      0.0,
+      0.0,
+      0.0035268019419163465,
+      2.1924266815185547
+    ],
+    "max_palm_force_n": 4.083746910095215,
+    "max_coverage_deg": 0.0,
+    "min_thumb_distance_m": 0.06152724102139473,
+    "max_strict_hold_steps": 0.0,
+    "all_five_contact_seen": false,
+    "aggregate_all_five_contact_seen": false,
+    "overload_seen": false,
+    "invalid_in_hand_seen": false,
+    "resolved_env": {
+      "object_mass_kg": 0.18775926530361176,
+      "tomato_axes_m": [
+        0.03750000149011612,
+        0.03750000149011612,
+        0.03750000149011612
+      ],
+      "tomato_density_kg_m3": 850.0,
+      "object_friction": 0.699999988079071,
+      "object_stiffness_n_m": 18000.0,
+      "tomato_position_m": [
+        17.274173736572266,
+        -15.74145221710205,
+        0.20206116139888763
+      ]
+    }
+  },
+  "best_coverage_candidate": {
+    "candidate_id": 0,
+    "action": [
+      1.0,
+      0.2103443145751953,
+      -0.7847797870635986,
+      -0.251901239156723,
+      0.8236803412437439,
+      0.3137647211551666,
+      0.31877458095550537,
+      0.5561853647232056,
+      0.5242348313331604,
+      0.3703189790248871,
+      -1.0,
+      0.48308065533638,
+      -1.0,
+      0.3257105350494385
+    ],
+    "hold_contact_occupancy": [
+      0.0,
+      0.0,
+      0.0,
+      0.0062500000931322575
+    ],
+    "hold_all_four_occupancy": 0.0,
+    "weakest_hold_occupancy": 0.0,
+    "max_link4_force_n": [
+      0.0,
+      0.0,
+      0.0035268019419163465,
+      2.1924266815185547
+    ],
+    "max_palm_force_n": 4.083746910095215,
+    "max_coverage_deg": 0.0,
+    "min_thumb_distance_m": 0.06152724102139473,
+    "max_strict_hold_steps": 0.0,
+    "all_five_contact_seen": false,
+    "aggregate_all_five_contact_seen": false,
+    "overload_seen": false,
+    "invalid_in_hand_seen": false,
+    "resolved_env": {
+      "object_mass_kg": 0.18775926530361176,
+      "tomato_axes_m": [
+        0.03750000149011612,
+        0.03750000149011612,
+        0.03750000149011612
+      ],
+      "tomato_density_kg_m3": 850.0,
+      "object_friction": 0.699999988079071,
+      "object_stiffness_n_m": 18000.0,
+      "tomato_position_m": [
+        17.274173736572266,
+        -15.74145221710205,
+        0.20206116139888763
+      ]
+    }
+  },
+  "best_thumb_distance_candidate": {
+    "candidate_id": 274,
+    "action": [
+      0.41268348693847656,
+      -0.9290066957473755,
+      -1.0,
+      -0.1039947122335434,
+      1.0,
+      -0.5854686498641968,
+      1.0,
+      0.503976047039032,
+      0.2462148368358612,
+      0.15777473151683807,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+    ],
+    "hold_contact_occupancy": [
+      0.0,
+      0.0,
+      0.0,
+      0.0062500000931322575
+    ],
+    "hold_all_four_occupancy": 0.0,
+    "weakest_hold_occupancy": 0.0,
+    "max_link4_force_n": [
+      0.0,
+      0.0,
+      0.0,
+      0.38090211153030396
+    ],
+    "max_palm_force_n": 2.413550853729248,
+    "max_coverage_deg": 0.0,
+    "min_thumb_distance_m": 0.03993743658065796,
+    "max_strict_hold_steps": 0.0,
+    "all_five_contact_seen": false,
+    "aggregate_all_five_contact_seen": false,
+    "overload_seen": false,
+    "invalid_in_hand_seen": false,
+    "resolved_env": {
+      "object_mass_kg": 0.18775926530361176,
+      "tomato_axes_m": [
+        0.03750000149011612,
+        0.03750000149011612,
+        0.03750000149011612
+      ],
+      "tomato_density_kg_m3": 850.0,
+      "object_friction": 0.699999988079071,
+      "object_stiffness_n_m": 18000.0,
+      "tomato_position_m": [
+        -0.7269894480705261,
+        -0.7482898831367493,
+        0.20256827771663666
+      ]
+    }
+  },
+  "best_all_five_coverage_candidate": {
+    "candidate_id": 0,
+    "action": [
+      1.0,
+      0.2103443145751953,
+      -0.7847797870635986,
+      -0.251901239156723,
+      0.8236803412437439,
+      0.3137647211551666,
+      0.31877458095550537,
+      0.5561853647232056,
+      0.5242348313331604,
+      0.3703189790248871,
+      -1.0,
+      0.48308065533638,
+      -1.0,
+      0.3257105350494385
+    ],
+    "hold_contact_occupancy": [
+      0.0,
+      0.0,
+      0.0,
+      0.0062500000931322575
+    ],
+    "hold_all_four_occupancy": 0.0,
+    "weakest_hold_occupancy": 0.0,
+    "max_link4_force_n": [
+      0.0,
+      0.0,
+      0.0035268019419163465,
+      2.1924266815185547
+    ],
+    "max_palm_force_n": 4.083746910095215,
+    "max_coverage_deg": 0.0,
+    "min_thumb_distance_m": 0.06152724102139473,
+    "max_strict_hold_steps": 0.0,
+    "all_five_contact_seen": false,
+    "aggregate_all_five_contact_seen": false,
+    "overload_seen": false,
+    "invalid_in_hand_seen": false,
+    "resolved_env": {
+      "object_mass_kg": 0.18775926530361176,
+      "tomato_axes_m": [
+        0.03750000149011612,
+        0.03750000149011612,
+        0.03750000149011612
+      ],
+      "tomato_density_kg_m3": 850.0,
+      "object_friction": 0.699999988079071,
+      "object_stiffness_n_m": 18000.0,
+      "tomato_position_m": [
+        17.274173736572266,
+        -15.74145221710205,
+        0.20206116139888763
+      ]
+    }
+  },
+  "all_five_contact_seen_count": 0,
+  "aggregate_all_five_contact_seen_count": 0,
+  "any_link4_contact_rate": [
+    0.0,
+    0.0,
+    1.0,
+    1.0
+  ],
+  "any_measured_link4_contact_rate": [
+    0.0,
+    0.0,
+    1.0,
+    1.0
+  ],
+  "hold_contact_occupancy_mean": [
+    0.0,
+    0.0,
+    0.0041259764693677425,
+    0.02767334133386612
+  ],
+  "hold_contact_occupancy_best_min": 0.0,
+  "hold_all_four_occupancy_best": 0.0,
+  "best_link4_force_n": [
+    0.0,
+    0.0,
+    4.199588775634766,
+    8.841795921325684
+  ],
+  "max_thumb_sensor_force_n": [
+    0.7359778881072998,
+    0.0
+  ],
+  "hardware_command_allowed": false,
+  "interpretation": "diagnostic_only_no_training_or_hardware_command"
+}

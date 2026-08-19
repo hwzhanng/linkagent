@@ -1,0 +1,75 @@
+{
+  "version": "v2_p2_event_window_probe_v1",
+  "profile": "v1_nominal_reliable",
+  "seed": 20261130,
+  "candidate": [
+    1.0,
+    -1.0,
+    0.5314251780509949,
+    -0.5596628189086914,
+    1.0,
+    -0.01167266070842743,
+    0.58189457654953,
+    0.9941583275794983,
+    0.11048947274684906,
+    0.05933154374361038,
+    -0.6171775460243225,
+    0.6542128324508667,
+    -0.24184483289718628,
+    0.5135747194290161
+  ],
+  "cases": [
+    {
+      "prepick_hold_steps": 3,
+      "num_envs": 1,
+      "approach_steps": 120,
+      "post_steps": 80,
+      "stem_break_event_count": 0,
+      "stem_break_event_env_rate": 0.0,
+      "pick_started_rate": 0.0,
+      "drop_rate": 0.0,
+      "overload_rate": 1.0,
+      "peak_force_n_mean": [
+        0.0,
+        0.0,
+        8.122042655944824,
+        0.0,
+        1.7971025705337524
+      ],
+      "peak_force_n_max": [
+        0.0,
+        0.0,
+        8.122042655944824,
+        0.0,
+        1.7971025705337524
+      ],
+      "max_center_distance_m_mean": 0.009269404225051403,
+      "max_center_distance_m_max": 0.009269404225051403,
+      "event_windows": [],
+      "resolved_contact_geometry": {
+        "proxy_only_collision": true,
+        "physical_fingertip_proxy": true,
+        "proxy_radius_m": 0.006,
+        "proxy_contact_offset_m": 0.0003,
+        "proxy_rest_offset_m": 0.0001,
+        "tomato_contact_offset_m": 0.0003,
+        "tomato_rest_offset_m": 0.0001,
+        "root_span": 0.4,
+        "distal_filter_alpha": 0.999,
+        "assist_per_digit": [
+          0.45,
+          0.45,
+          0.3,
+          0.25
+        ],
+        "fixed_fruit": false,
+        "kinematic_approach": false,
+        "dynamic_no_gravity": false,
+        "stem_limit_n": null
+      },
+      "hardware_command_allowed": false
+    }
+  ],
+  "interpretation": "simulation-only open-loop diagnostic; event windows are not PPO success evidence",
+  "hardware_command_allowed": false
+}

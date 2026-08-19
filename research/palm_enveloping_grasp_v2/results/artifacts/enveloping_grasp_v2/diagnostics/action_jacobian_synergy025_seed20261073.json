@@ -1,0 +1,430 @@
+{
+  "version": "v2_action_jacobian_probe_v1",
+  "checkpoint": "/home/miobarnacle/linkbot/ppo_tomato_grasp_stage01_work/artifacts/enveloping_grasp_v2/p4_contact_retention_radius8_ppo80/latest.pt",
+  "profile": "v1_nominal_reliable",
+  "seed": 20261073,
+  "steps": 240,
+  "physical_fingertip_proxy": true,
+  "fingertip_proxy_radius_m": 0.008,
+  "hardware_command_allowed": false,
+  "rows": [
+    {
+      "label": "baseline",
+      "target_kind": "baseline",
+      "digit": null,
+      "synergy_channel": null,
+      "sign": 0.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.05708683282136917,
+        0.05637966841459274,
+        0.05728964880108833,
+        0.054386038333177567
+      ],
+      "peak_contact_force_n": [
+        0.636403501033783,
+        0.001993919024243951,
+        0.17920216917991638,
+        0.10687001794576645,
+        0.07210367918014526
+      ],
+      "peak_measured_link4_force_n": [
+        0.636403501033783,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    },
+    {
+      "label": "global_flexion_plus",
+      "target_kind": "synergy",
+      "digit": null,
+      "synergy_channel": 0,
+      "sign": 1.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.05773502215743065,
+        0.05629429221153259,
+        0.05832989141345024,
+        0.05409100651741028
+      ],
+      "peak_contact_force_n": [
+        0.41615116596221924,
+        0.0,
+        0.040194541215896606,
+        0.0,
+        0.09708637744188309
+      ],
+      "peak_measured_link4_force_n": [
+        0.41615116596221924,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    },
+    {
+      "label": "global_flexion_minus",
+      "target_kind": "synergy",
+      "digit": null,
+      "synergy_channel": 0,
+      "sign": -1.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.05856921151280403,
+        0.05744044482707977,
+        0.060213565826416016,
+        0.055361028760671616
+      ],
+      "peak_contact_force_n": [
+        0.5323216915130615,
+        0.0,
+        0.0,
+        0.20111018419265747,
+        0.0
+      ],
+      "peak_measured_link4_force_n": [
+        0.5323216915130615,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    },
+    {
+      "label": "curl_shape_plus",
+      "target_kind": "synergy",
+      "digit": null,
+      "synergy_channel": 1,
+      "sign": 1.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.057031840085983276,
+        0.0554015189409256,
+        0.05490826442837715,
+        0.04348807409405708
+      ],
+      "peak_contact_force_n": [
+        0.7095817923545837,
+        0.46729785203933716,
+        0.7029885053634644,
+        0.8344396352767944,
+        3.327928304672241
+      ],
+      "peak_measured_link4_force_n": [
+        0.7095817923545837,
+        0.0,
+        0.0,
+        0.0,
+        0.22897489368915558
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    },
+    {
+      "label": "curl_shape_minus",
+      "target_kind": "synergy",
+      "digit": null,
+      "synergy_channel": 1,
+      "sign": -1.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.0586366131901741,
+        0.05486519634723663,
+        0.05630060285329819,
+        0.04101977497339249
+      ],
+      "peak_contact_force_n": [
+        0.829021155834198,
+        0.04756484553217888,
+        0.17191576957702637,
+        0.22563916444778442,
+        3.631110429763794
+      ],
+      "peak_measured_link4_force_n": [
+        0.829021155834198,
+        0.0,
+        0.0,
+        0.0,
+        2.5322906970977783
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        13.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    },
+    {
+      "label": "balance_plus",
+      "target_kind": "synergy",
+      "digit": null,
+      "synergy_channel": 2,
+      "sign": 1.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.05447671189904213,
+        0.05316982418298721,
+        0.05486788973212242,
+        0.04216839745640755
+      ],
+      "peak_contact_force_n": [
+        0.576343297958374,
+        0.7211132049560547,
+        0.2672954201698303,
+        0.9369557499885559,
+        5.474453449249268
+      ],
+      "peak_measured_link4_force_n": [
+        0.576343297958374,
+        0.0,
+        0.0,
+        0.0,
+        0.9185690879821777
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        10.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    },
+    {
+      "label": "balance_minus",
+      "target_kind": "synergy",
+      "digit": null,
+      "synergy_channel": 2,
+      "sign": -1.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.05749616026878357,
+        0.05475027859210968,
+        0.05626102164387703,
+        0.04391847923398018
+      ],
+      "peak_contact_force_n": [
+        0.8512061834335327,
+        0.07190007716417313,
+        0.46949487924575806,
+        0.40312108397483826,
+        8.121183395385742
+      ],
+      "peak_measured_link4_force_n": [
+        0.8512061834335327,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    },
+    {
+      "label": "spread_plus",
+      "target_kind": "synergy",
+      "digit": null,
+      "synergy_channel": 3,
+      "sign": 1.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.05701678991317749,
+        0.055925946682691574,
+        0.05581989884376526,
+        0.04142572358250618
+      ],
+      "peak_contact_force_n": [
+        0.9223601222038269,
+        0.0,
+        0.19283075630664825,
+        0.11126965284347534,
+        5.323258876800537
+      ],
+      "peak_measured_link4_force_n": [
+        0.9223601222038269,
+        0.0,
+        0.0,
+        0.0,
+        2.140287160873413
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        5.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    },
+    {
+      "label": "spread_minus",
+      "target_kind": "synergy",
+      "digit": null,
+      "synergy_channel": 3,
+      "sign": -1.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.057324811816215515,
+        0.05658465623855591,
+        0.056754060089588165,
+        0.054004013538360596
+      ],
+      "peak_contact_force_n": [
+        0.5637960433959961,
+        0.0,
+        0.24435338377952576,
+        0.18667224049568176,
+        0.21974901854991913
+      ],
+      "peak_measured_link4_force_n": [
+        0.5637960433959961,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    },
+    {
+      "label": "thumb_opposition_plus",
+      "target_kind": "synergy",
+      "digit": null,
+      "synergy_channel": 4,
+      "sign": 1.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.058558057993650436,
+        0.056153226643800735,
+        0.05833789333701134,
+        0.05433160439133644
+      ],
+      "peak_contact_force_n": [
+        1.23367178440094,
+        0.0,
+        0.0,
+        0.2141268402338028,
+        0.19225004315376282
+      ],
+      "peak_measured_link4_force_n": [
+        1.23367178440094,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    },
+    {
+      "label": "thumb_opposition_minus",
+      "target_kind": "synergy",
+      "digit": null,
+      "synergy_channel": 4,
+      "sign": -1.0,
+      "distal_delta": 0.25,
+      "proximal_delta": 0.0,
+      "min_tip_distance_m": [
+        0.05940432474017143,
+        0.057222627103328705,
+        0.0603506974875927,
+        0.05533105134963989
+      ],
+      "peak_contact_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.1433763951063156,
+        0.0
+      ],
+      "peak_measured_link4_force_n": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "measured_link4_contact_steps": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "palm_support_seen": true,
+      "dropped": false,
+      "overloaded": false
+    }
+  ]
+}

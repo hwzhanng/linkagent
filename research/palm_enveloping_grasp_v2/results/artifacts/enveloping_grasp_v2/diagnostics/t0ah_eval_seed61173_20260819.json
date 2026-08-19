@@ -1,0 +1,276 @@
+{
+  "version": "v2_independent_eval_1",
+  "checkpoint": "/home/miobarnacle/linkbot/ppo_tomato_grasp_stage01_work/artifacts/enveloping_grasp_v2/t0ah_residual_masked_little_target_20260819/latest.pt",
+  "checkpoint_version": "palm_enveloping_grasp_v2",
+  "profile": "v1_nominal_reliable",
+  "profile_values": {
+    "axis_range_m": [
+      0.0375,
+      0.0375
+    ],
+    "isotropic_axes": true,
+    "accepted_mass_kg": [
+      0.05,
+      0.25
+    ],
+    "density_range_kg_m3": [
+      850.0,
+      850.0
+    ],
+    "position_jitter": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "friction_range": [
+      0.7,
+      0.7
+    ],
+    "restitution_range": [
+      0.0,
+      0.0
+    ],
+    "stiffness_range_n_m": [
+      18000.0,
+      18000.0
+    ],
+    "tactile_gain_range": [
+      1.0,
+      1.0
+    ],
+    "tactile_bias_range_n": [
+      0.0,
+      0.0
+    ],
+    "sensor_delay_steps_max": 0,
+    "sensor_dropout_probability": 0.0,
+    "sensor_stale_probability": 0.0,
+    "actuator_response_scale_range": [
+      1.0,
+      1.0
+    ],
+    "actuator_bias_range_rad": [
+      0.0,
+      0.0
+    ],
+    "actuator_deadband_range_rad": [
+      0.0,
+      0.0
+    ],
+    "actuator_backlash_range_rad": [
+      0.0,
+      0.0
+    ]
+  },
+  "seed": 20261173,
+  "ablation": "full14",
+  "residual_base_controller": true,
+  "residual_scale": 0.1,
+  "residual_mask": "thumb_distal",
+  "residual_phase_gate": true,
+  "residual_approach_steps": 240,
+  "residual_per_digit_steps": 60,
+  "residual_simultaneous_reach": false,
+  "resolved_contact_geometry": {
+    "tomato_contact_offset_m": 0.0003,
+    "tomato_rest_offset_m": 0.0001,
+    "fingertip_proxy_radius_m": 0.006,
+    "fingertip_proxy_contact_offset_m": 0.0003,
+    "fingertip_proxy_rest_offset_m": 0.0001,
+    "proxy_only_collision": true,
+    "accepted_mass_kg": [
+      0.05,
+      0.25
+    ],
+    "density_range_kg_m3": [
+      850.0,
+      850.0
+    ],
+    "per_digit_root_residual_span_fraction": null,
+    "pregrasp_settle_steps": 0
+  },
+  "num_envs": 16,
+  "steps": 620,
+  "stage": 1,
+  "completed_episodes": 16,
+  "success_rate": 0.0,
+  "drop_rate": 0.0,
+  "overload_rate": 0.0,
+  "damage_rate": 0.0,
+  "timeout_rate": 1.0,
+  "five_digit_rate": 0.0,
+  "palm_supported_rate": 1.0,
+  "measured_palm_supported_rate": 1.0,
+  "distal_all_rate": 1.0,
+  "distal_contact_all_rate": 1.0,
+  "measured_distal_contact_all_rate": 1.0,
+  "palm_first_rate": 1.0,
+  "measured_geometry_rate": 1.0,
+  "post_break_hold_rate": 0.0,
+  "digit_peak_force_n_mean": [
+    0.01900518499314785,
+    0.015888161957263947,
+    0.0021261884830892086,
+    0.012945546768605709,
+    0.0054688346572220325
+  ],
+  "episode_peak_force_n_mean": [
+    0.6085528135299683,
+    0.26686781644821167,
+    0.4760993719100952,
+    0.3712667226791382,
+    0.10611717402935028
+  ],
+  "episode_peak_palm_force_n_mean": 2.5361297130584717,
+  "episode_peak_force_n_max": [
+    0.6916891932487488,
+    0.2927616834640503,
+    0.49763867259025574,
+    0.7935962677001953,
+    0.1216876283288002
+  ],
+  "episode_peak_palm_force_n_max": 2.6139931678771973,
+  "first_contact_step_mean": [
+    259.75,
+    248.5,
+    234.75,
+    229.0,
+    261.25
+  ],
+  "contact_occupancy_mean": [
+    0.17974138259887695,
+    0.5711206793785095,
+    0.35905173420906067,
+    0.5883620977401733,
+    0.40905171632766724
+  ],
+  "pre_break_contact_occupancy_mean": [
+    0.17974138259887695,
+    0.5711206793785095,
+    0.35905173420906067,
+    0.5883620977401733,
+    0.40905171632766724
+  ],
+  "post_break_contact_occupancy_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "distal_contact_observed_rate": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "measured_distal_contact_observed_rate": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "link3_force_mean_n": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "measured_link4_force_mean_n": [
+    0.010417226701974869,
+    0.01254173181951046,
+    0.0005315471207723022,
+    0.009101089090108871,
+    0.0035762847401201725
+  ],
+  "link4_force_mean_n": [
+    0.010417226701974869,
+    0.01254173181951046,
+    0.0005315471207723022,
+    0.009101089090108871,
+    0.0035762847401201725
+  ],
+  "measured_link4_force_integral_n_s_mean": [
+    2.1573636531829834,
+    1.2751429080963135,
+    2.0640475749969482,
+    0.8589565753936768
+  ],
+  "measured_distal_contact_steps_mean": [
+    331.25,
+    208.25,
+    341.25,
+    237.25
+  ],
+  "measured_distal_max_streak_mean": [
+    331.0,
+    56.25,
+    307.25,
+    28.75
+  ],
+  "measured_palm_force_mean_n": 0.12603244185447693,
+  "max_lost_contact_gap_steps_mean": [
+    16.171875,
+    15.46875,
+    14.609375,
+    14.25,
+    16.265625
+  ],
+  "force_integral_share_mean": [
+    0.1735915243625641,
+    0.2805446982383728,
+    0.16417881846427917,
+    0.2697821259498596,
+    0.1119028776884079
+  ],
+  "actor_action_mean": [
+    0.5483871102333069,
+    -0.7411290407180786,
+    0.43117669224739075,
+    -0.00684801209717989,
+    0.5483871102333069,
+    -0.19118675589561462,
+    0.23851656913757324,
+    0.544058620929718,
+    -0.11085537075996399,
+    -0.007459677290171385,
+    -0.3336295485496521,
+    0.2798038721084595,
+    -0.072817362844944,
+    0.16199971735477448
+  ],
+  "actor_action_abs_mean": [
+    0.7403225898742676,
+    0.7411290407180786,
+    0.43117669224739075,
+    0.00684801209717989,
+    0.7403225898742676,
+    0.19883447885513306,
+    0.4816121757030487,
+    0.7365667819976807,
+    0.2361147701740265,
+    0.30060482025146484,
+    0.3336295485496521,
+    0.2798038721084595,
+    0.07821210473775864,
+    0.16199971735477448
+  ],
+  "actor_action_max": [
+    1.0,
+    -0.004166666883975267,
+    0.5817800164222717,
+    -3.849999848171137e-05,
+    1.0,
+    0.011628545820713043,
+    0.5818939208984375,
+    0.9941580295562744,
+    0.11048901081085205,
+    0.25,
+    0.0,
+    0.6654969453811646,
+    0.021241305395960808,
+    0.6702378988265991
+  ],
+  "hardware_command_allowed": false
+}

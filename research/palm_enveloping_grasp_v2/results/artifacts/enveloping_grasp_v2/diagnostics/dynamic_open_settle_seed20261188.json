@@ -1,0 +1,100 @@
+{
+  "version": "v2_contact_closed_loop_probe_v1",
+  "profile": "v1_nominal_reliable",
+  "seed": 20261188,
+  "num_envs": 32,
+  "steps": 300,
+  "candidate": [
+    -1.0,
+    0.0,
+    0.0,
+    0.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "controller": {
+    "approach_steps": 300,
+    "per_digit_steps": 0,
+    "hold_steps": 0,
+    "contact_target_n": 0.18,
+    "retreat_limit_n": 0.8,
+    "contact_streak": 5,
+    "step_fraction": 0.08,
+    "retreat_fraction": 0.12,
+    "command_rate_rad_s": 0.1,
+    "digit_order": [
+      "index",
+      "middle",
+      "ring",
+      "little"
+    ],
+    "simultaneous_reach": false,
+    "retention_only": false,
+    "kinematic_bootstrap_steps": 0,
+    "released_at_step": null,
+    "digit_scales": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "resolved_contact_geometry": {
+    "physical_fingertip_proxy": true,
+    "radius_m": 0.008,
+    "contact_offset_m": 0.0003,
+    "rest_offset_m": 0.0001,
+    "virtual_distal_contact": false,
+    "fixed_fruit": false,
+    "retention_only": false,
+    "debug_collision_digit": "all",
+    "palm_cup_inner_half_extent_m": [
+      0.055,
+      0.045
+    ],
+    "palm_cup_rim_height_m": 0.02
+  },
+  "per_digit_measured_contact_rate": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "measured_distal_all_rate": 0.0,
+  "strict_success_rate": 0.0,
+  "drop_rate": 0.0,
+  "overload_rate": 0.0,
+  "palm_support_rate": 1.0,
+  "max_link4_force_n_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "max_link4_force_n_max": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "max_palm_force_n_mean": 2.956833839416504,
+  "min_height_m_min": 0.20195932686328888,
+  "max_center_distance_m_max": 0.018949061632156372,
+  "post_release": null,
+  "contact_first_step_mean": [
+    300.0,
+    300.0,
+    300.0,
+    300.0
+  ],
+  "hardware_command_allowed": false,
+  "interpretation": "simulation_only_low_force_contact_hold_retreat_diagnostic"
+}

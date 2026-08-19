@@ -1,0 +1,276 @@
+{
+  "version": "v2_independent_eval_1",
+  "checkpoint": "/home/miobarnacle/linkbot/ppo_tomato_grasp_stage01_work/artifacts/enveloping_grasp_v2/t0ag_residual_masked_phasegate_20260819/latest.pt",
+  "checkpoint_version": "palm_enveloping_grasp_v2",
+  "profile": "v1_nominal_reliable",
+  "profile_values": {
+    "axis_range_m": [
+      0.0375,
+      0.0375
+    ],
+    "isotropic_axes": true,
+    "accepted_mass_kg": [
+      0.05,
+      0.25
+    ],
+    "density_range_kg_m3": [
+      850.0,
+      850.0
+    ],
+    "position_jitter": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "friction_range": [
+      0.7,
+      0.7
+    ],
+    "restitution_range": [
+      0.0,
+      0.0
+    ],
+    "stiffness_range_n_m": [
+      18000.0,
+      18000.0
+    ],
+    "tactile_gain_range": [
+      1.0,
+      1.0
+    ],
+    "tactile_bias_range_n": [
+      0.0,
+      0.0
+    ],
+    "sensor_delay_steps_max": 0,
+    "sensor_dropout_probability": 0.0,
+    "sensor_stale_probability": 0.0,
+    "actuator_response_scale_range": [
+      1.0,
+      1.0
+    ],
+    "actuator_bias_range_rad": [
+      0.0,
+      0.0
+    ],
+    "actuator_deadband_range_rad": [
+      0.0,
+      0.0
+    ],
+    "actuator_backlash_range_rad": [
+      0.0,
+      0.0
+    ]
+  },
+  "seed": 20260820,
+  "ablation": "full14",
+  "residual_base_controller": true,
+  "residual_scale": 0.1,
+  "residual_mask": "thumb_distal",
+  "residual_phase_gate": true,
+  "residual_approach_steps": 240,
+  "residual_per_digit_steps": 60,
+  "residual_simultaneous_reach": false,
+  "resolved_contact_geometry": {
+    "tomato_contact_offset_m": 0.0003,
+    "tomato_rest_offset_m": 0.0001,
+    "fingertip_proxy_radius_m": 0.006,
+    "fingertip_proxy_contact_offset_m": 0.0003,
+    "fingertip_proxy_rest_offset_m": 0.0001,
+    "proxy_only_collision": true,
+    "accepted_mass_kg": [
+      0.05,
+      0.25
+    ],
+    "density_range_kg_m3": [
+      850.0,
+      850.0
+    ],
+    "per_digit_root_residual_span_fraction": null,
+    "pregrasp_settle_steps": 0
+  },
+  "num_envs": 16,
+  "steps": 620,
+  "stage": 1,
+  "completed_episodes": 16,
+  "success_rate": 0.0,
+  "drop_rate": 0.0,
+  "overload_rate": 0.0,
+  "damage_rate": 0.0,
+  "timeout_rate": 1.0,
+  "five_digit_rate": 0.0,
+  "palm_supported_rate": 1.0,
+  "measured_palm_supported_rate": 1.0,
+  "distal_all_rate": 1.0,
+  "distal_contact_all_rate": 1.0,
+  "measured_distal_contact_all_rate": 1.0,
+  "palm_first_rate": 1.0,
+  "measured_geometry_rate": 1.0,
+  "post_break_hold_rate": 0.0,
+  "digit_peak_force_n_mean": [
+    0.0286850742995739,
+    0.014858120121061802,
+    0.003977417014539242,
+    0.02819059230387211,
+    0.15992394089698792
+  ],
+  "episode_peak_force_n_mean": [
+    0.5859822630882263,
+    1.8171472549438477,
+    0.4939950704574585,
+    0.4207044243812561,
+    2.5113959312438965
+  ],
+  "episode_peak_palm_force_n_mean": 5.351308822631836,
+  "episode_peak_force_n_max": [
+    0.6067176461219788,
+    6.479617118835449,
+    0.5107782483100891,
+    0.7935962677001953,
+    8.85392951965332
+  ],
+  "episode_peak_palm_force_n_max": 13.52496337890625,
+  "first_contact_step_mean": [
+    259.25,
+    247.5,
+    234.75,
+    229.0,
+    261.0
+  ],
+  "contact_occupancy_mean": [
+    0.1767241358757019,
+    0.5237069129943848,
+    0.3784482777118683,
+    0.584482729434967,
+    0.5004310607910156
+  ],
+  "pre_break_contact_occupancy_mean": [
+    0.1767241358757019,
+    0.5237069129943848,
+    0.3784482777118683,
+    0.584482729434967,
+    0.5004310607910156
+  ],
+  "post_break_contact_occupancy_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "distal_contact_observed_rate": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "measured_distal_contact_observed_rate": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "link3_force_mean_n": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "measured_link4_force_mean_n": [
+    0.011547725647687912,
+    0.009312205947935581,
+    0.0017634581308811903,
+    0.01266912929713726,
+    0.04174355790019035
+  ],
+  "link4_force_mean_n": [
+    0.011547725647687912,
+    0.009312205947935581,
+    0.0017634581308811903,
+    0.01266912929713726,
+    0.04174355790019035
+  ],
+  "measured_link4_force_integral_n_s_mean": [
+    1.9884268045425415,
+    1.3595731258392334,
+    2.382019519805908,
+    5.024390697479248
+  ],
+  "measured_distal_contact_steps_mean": [
+    303.75,
+    219.5,
+    339.0,
+    290.25
+  ],
+  "measured_distal_max_streak_mean": [
+    303.75,
+    65.25,
+    274.75,
+    117.0
+  ],
+  "measured_palm_force_mean_n": 0.14899367094039917,
+  "max_lost_contact_gap_steps_mean": [
+    16.140625,
+    15.40625,
+    14.609375,
+    14.25,
+    16.25
+  ],
+  "force_integral_share_mean": [
+    0.14318907260894775,
+    0.2218361794948578,
+    0.13743652403354645,
+    0.22053056955337524,
+    0.27700772881507874
+  ],
+  "actor_action_mean": [
+    0.5483871102333069,
+    -0.7411290407180786,
+    0.43117669224739075,
+    -0.00684801209717989,
+    0.5483871102333069,
+    -0.2040831446647644,
+    0.23851656913757324,
+    0.544058620929718,
+    -0.11085537075996399,
+    -0.013629085384309292,
+    -0.3375725746154785,
+    0.26877039670944214,
+    -0.07247728109359741,
+    0.13420814275741577
+  ],
+  "actor_action_abs_mean": [
+    0.7403225898742676,
+    0.7411290407180786,
+    0.43117669224739075,
+    0.00684801209717989,
+    0.7403225898742676,
+    0.2040831446647644,
+    0.4816121757030487,
+    0.7365667819976807,
+    0.2361147701740265,
+    0.29443448781967163,
+    0.3375725746154785,
+    0.2687704861164093,
+    0.07811962068080902,
+    0.13420814275741577
+  ],
+  "actor_action_max": [
+    1.0,
+    -0.004166666883975267,
+    0.5817800164222717,
+    -3.849999848171137e-05,
+    1.0,
+    -0.009605351835489273,
+    0.5818939208984375,
+    0.9941580295562744,
+    0.11048901081085205,
+    0.25,
+    0.0,
+    0.6633487343788147,
+    0.021458700299263,
+    0.6643515825271606
+  ],
+  "hardware_command_allowed": false
+}

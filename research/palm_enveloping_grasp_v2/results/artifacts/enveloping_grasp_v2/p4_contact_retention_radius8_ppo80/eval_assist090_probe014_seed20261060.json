@@ -1,0 +1,202 @@
+{
+  "version": "v2_independent_eval_1",
+  "checkpoint": "/home/miobarnacle/linkbot/ppo_tomato_grasp_stage01_work/artifacts/enveloping_grasp_v2/p4_contact_retention_radius8_ppo80/latest.pt",
+  "checkpoint_version": "palm_enveloping_grasp_v2",
+  "profile": "v1_nominal_reliable",
+  "profile_values": {
+    "axis_range_m": [
+      0.0375,
+      0.0375
+    ],
+    "isotropic_axes": true,
+    "accepted_mass_kg": [
+      0.05,
+      0.25
+    ],
+    "density_range_kg_m3": [
+      850.0,
+      850.0
+    ],
+    "position_jitter": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "friction_range": [
+      0.7,
+      0.7
+    ],
+    "restitution_range": [
+      0.0,
+      0.0
+    ],
+    "stiffness_range_n_m": [
+      18000.0,
+      18000.0
+    ],
+    "tactile_gain_range": [
+      1.0,
+      1.0
+    ],
+    "tactile_bias_range_n": [
+      0.0,
+      0.0
+    ],
+    "sensor_delay_steps_max": 0,
+    "sensor_dropout_probability": 0.0,
+    "sensor_stale_probability": 0.0,
+    "actuator_response_scale_range": [
+      1.0,
+      1.0
+    ],
+    "actuator_bias_range_rad": [
+      0.0,
+      0.0
+    ],
+    "actuator_deadband_range_rad": [
+      0.0,
+      0.0
+    ],
+    "actuator_backlash_range_rad": [
+      0.0,
+      0.0
+    ]
+  },
+  "seed": 20261060,
+  "ablation": "full14",
+  "resolved_contact_geometry": {
+    "tomato_contact_offset_m": 0.002,
+    "tomato_rest_offset_m": 0.0,
+    "fingertip_proxy_radius_m": 0.008,
+    "fingertip_proxy_contact_offset_m": 0.002,
+    "fingertip_proxy_rest_offset_m": 0.0,
+    "accepted_mass_kg": [
+      0.05,
+      0.25
+    ],
+    "density_range_kg_m3": [
+      850.0,
+      850.0
+    ]
+  },
+  "num_envs": 128,
+  "steps": 240,
+  "stage": 1,
+  "completed_episodes": 129,
+  "success_rate": 0.0,
+  "drop_rate": 0.1550387591123581,
+  "overload_rate": 0.007751937955617905,
+  "damage_rate": 0.0,
+  "timeout_rate": 0.8372092843055725,
+  "five_digit_rate": 0.0,
+  "palm_supported_rate": 0.8449612259864807,
+  "measured_palm_supported_rate": 0.8449612259864807,
+  "distal_all_rate": 0.6589147448539734,
+  "distal_contact_all_rate": 0.1860465109348297,
+  "measured_distal_contact_all_rate": 0.13953489065170288,
+  "palm_first_rate": 0.9689922332763672,
+  "measured_geometry_rate": 0.03100775182247162,
+  "post_break_hold_rate": 0.0,
+  "digit_peak_force_n_mean": [
+    0.005949285347014666,
+    0.007150608580559492,
+    0.01000534649938345,
+    0.007089776452630758,
+    0.009444668889045715
+  ],
+  "first_contact_step_mean": [
+    15.410852432250977,
+    76.96124267578125,
+    72.82946014404297,
+    22.294572830200195,
+    60.58139419555664
+  ],
+  "contact_occupancy_mean": [
+    0.868766188621521,
+    0.3031330704689026,
+    0.2721899151802063,
+    0.41085270047187805,
+    0.22038114070892334
+  ],
+  "pre_break_contact_occupancy_mean": [
+    0.868766188621521,
+    0.3031330704689026,
+    0.2721899151802063,
+    0.41085270047187805,
+    0.22038114070892334
+  ],
+  "post_break_contact_occupancy_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "distal_contact_observed_rate": [
+    0.20155039429664612,
+    0.20155039429664612,
+    0.21705426275730133,
+    0.7209302186965942
+  ],
+  "measured_distal_contact_observed_rate": [
+    0.1705426424741745,
+    0.19379845261573792,
+    0.20930232107639313,
+    0.5813953280448914
+  ],
+  "link3_force_mean_n": [
+    0.0,
+    0.0010641611879691482,
+    0.0018389696488156915,
+    0.0009034411632455885,
+    0.0005237135337665677
+  ],
+  "measured_link4_force_mean_n": [
+    0.003831581212580204,
+    5.030328793509398e-06,
+    5.937678361078724e-05,
+    8.910996984923258e-05,
+    0.0
+  ],
+  "link4_force_mean_n": [
+    0.003831581212580204,
+    2.5851781174424104e-05,
+    6.243007373996079e-05,
+    0.0001026765676215291,
+    0.0
+  ],
+  "measured_link4_force_integral_n_s_mean": [
+    0.004735177382826805,
+    0.04096870869398117,
+    0.012127816677093506,
+    0.042775314301252365
+  ],
+  "measured_distal_contact_steps_mean": [
+    0.6589147448539734,
+    2.9844961166381836,
+    0.604651153087616,
+    1.5503876209259033
+  ],
+  "measured_distal_max_streak_mean": [
+    0.41860464215278625,
+    2.2635657787323,
+    0.5348837375640869,
+    1.4728682041168213
+  ],
+  "measured_palm_force_mean_n": 0.02890455164015293,
+  "max_lost_contact_gap_steps_mean": [
+    2.7320556640625,
+    10.376327514648438,
+    10.482988357543945,
+    5.235141754150391,
+    13.207508087158203
+  ],
+  "force_integral_share_mean": [
+    0.562160849571228,
+    0.0912819355726242,
+    0.10150822252035141,
+    0.1241145059466362,
+    0.12093444913625717
+  ],
+  "hardware_command_allowed": false
+}

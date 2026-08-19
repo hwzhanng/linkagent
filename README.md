@@ -106,6 +106,19 @@ Anthropic 或 LangChain SDK 类型。
 
 ## 番茄采摘与离线设备适配
 
+### 2026-08-19 掌托式五指包络抓取增量
+
+本次增量同步了掌部支撑、五指包络、断梗后保持和触觉/接触诊断的全部可审计结果，
+包括通过、失败和被否决的实验，不将失败结果隐藏或改写。材料位于
+[掌托式包络抓取实验资料](./docs/tomato_pick/enveloping_grasp_v2/) 和
+[实验源码与结果索引](./research/palm_enveloping_grasp_v2/)。
+
+当前结论：核心 nominal 35--40 mm 半轴域的三种子严格成功率约 39.17%，尚未达到
+80% 门槛；轻度随机化约 23.82%，宽域压力测试约 0.9%。主要失败模式是摘取后掉落和
+断梗后保持不足。所有结果来自离线 PhysX，不能直接用于实机，也不能把代理接触当作
+真实触觉标定。大体积 checkpoint/teacher dataset 保留在本地实验工作区，GitHub 中
+同步了源码、报告、JSON/JSONL 诊断和失败证据，避免仓库膨胀。
+
 - [设备能力基线](./docs/tomato_pick/SDK_CAPABILITY_BASELINE.md)：7 轴机械臂、G20、触觉、
   仿真资产和旧 PPO 的审计结论；
 - [接口规范](./docs/tomato_pick/INTERFACE_SPEC.md)：Ports、Task tools、114D/7D PPO、

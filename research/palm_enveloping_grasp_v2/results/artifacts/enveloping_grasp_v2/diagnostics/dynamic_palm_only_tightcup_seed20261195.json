@@ -1,0 +1,126 @@
+{
+  "version": "v2_contact_closed_loop_probe_v1",
+  "profile": "v1_nominal_reliable",
+  "seed": 20261195,
+  "num_envs": 16,
+  "steps": 300,
+  "candidate": [
+    -1.0,
+    0.0,
+    0.0,
+    0.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "controller": {
+    "approach_steps": 300,
+    "per_digit_steps": 0,
+    "hold_steps": 0,
+    "contact_target_n": 0.18,
+    "retreat_limit_n": 0.8,
+    "contact_streak": 5,
+    "step_fraction": 0.08,
+    "retreat_fraction": 0.12,
+    "command_rate_rad_s": 0.1,
+    "digit_order": [
+      "index",
+      "middle",
+      "ring",
+      "little"
+    ],
+    "simultaneous_reach": false,
+    "retention_only": false,
+    "kinematic_bootstrap_steps": 0,
+    "released_at_step": null,
+    "digit_scales": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "resolved_contact_geometry": {
+    "physical_fingertip_proxy": true,
+    "radius_m": 0.008,
+    "contact_offset_m": 0.0003,
+    "rest_offset_m": 0.0001,
+    "virtual_distal_contact": false,
+    "fixed_fruit": false,
+    "retention_only": false,
+    "debug_collision_digit": "palm",
+    "palm_cup_inner_half_extent_m": [
+      0.025,
+      0.025
+    ],
+    "palm_cup_rim_height_m": 0.02,
+    "tomato_contact_offset_m": 0.002,
+    "tomato_rest_offset_m": 0.0,
+    "palm_support_contact_offset_m": 0.0003,
+    "palm_support_rest_offset_m": 0.0001,
+    "tomato_reset_clearance_m": 0.0
+  },
+  "per_digit_measured_contact_rate": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "measured_distal_all_rate": 0.0,
+  "strict_success_rate": 0.0,
+  "drop_rate": 0.0,
+  "overload_rate": 0.0,
+  "palm_support_rate": 1.0,
+  "max_link4_force_n_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "max_link4_force_n_max": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "max_palm_force_n_mean": 4.106453895568848,
+  "min_height_m_min": 0.2137388437986374,
+  "max_center_distance_m_max": 0.013132281601428986,
+  "final_center_offset_mean_m": [
+    0.0008270889520645142,
+    -0.0014178603887557983,
+    0.007239580154418945
+  ],
+  "final_center_offset_max_abs_m": [
+    0.0008373856544494629,
+    0.0014178752899169922,
+    0.007240369915962219
+  ],
+  "base_link_world_position_mean_m": [
+    0.0,
+    0.0,
+    -6.705522537231445e-08
+  ],
+  "base_link_world_quaternion_mean": [
+    1.0000001192092896,
+    5.7595109237418285e-12,
+    1.7105015182039551e-09,
+    -2.5584345753060234e-10
+  ],
+  "post_release": null,
+  "contact_first_step_mean": [
+    300.0,
+    300.0,
+    300.0,
+    300.0
+  ],
+  "hardware_command_allowed": false,
+  "interpretation": "simulation_only_low_force_contact_hold_retreat_diagnostic"
+}
