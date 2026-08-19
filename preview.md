@@ -27,8 +27,8 @@
   生命周期、只读门禁、租约、幂等、急停和四设备部署模板；
 - 初态是可达、零接触的局部预抓取分布；PPO 可连续调整末端局部六维位姿与五维手型，
   自行搜索接近、包络、拉/扭断梗和保持；`MockTomatoPickPolicy` 不是训练后的 PPO；
-- 旧复杂 PPO、奖励补丁和审计脚本已移出活动路径，并可从
-  `archive/tomato_ppo_legacy_20260806/` 恢复；SDK 旧 Fruit-Grasp baseline 不被复用；
+- 旧复杂 PPO、奖励补丁和审计脚本已从当前工作树删除；需要审计时可从 Git 历史追溯，
+  SDK 旧 Fruit-Grasp baseline 不被复用；
 - Agent 默认运行不加载本地模型权重，不连接仿真器、相机或机器人，也不执行真实
   下游动作；Isaac smoke 只在隔离运行时显式执行，从未连接 vendor SDK/CAN/真机；
 - LangChain、RoboTwin、YOLO、SAM、GraspGenX 和常驻 service 仍是后续适配项。进入

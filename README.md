@@ -20,51 +20,38 @@ LinkAgent 不是一群 Agent 相互讨论，而是一个 `TopAgent` 在明确边
 这样设计的重点不是“让模型自由发挥”，而是让每一步都有权限边界、执行记录和可验证结果。
 下方展示的番茄采摘，就是这套架构中的一个可运行任务。
 
-真实相机、感知模型和真机动作仍未接入；默认 Agent 示例继续使用 mock。第三阶段 C1
-已加入可运行的离线番茄采摘闭环，C2 已实现 Sim 6 中的番茄椭球、可断果梗和
-DirectRLEnv，并完成 Clean-v5 正式 PPO 训练。当前推荐的 `model_1350.pt` 在三个固定
-种子、26,077 个 episode 上取得 **96.18%** 汇总成功率，最差种子仍为 96.06%；模型、
-训练配置、续训 checkpoint、固定评测证据和可直接加载的推理导出均随仓库发布。C4-O
-已加入不连接设备的 LinkBot/G20 适配边界。
+当前仓库收敛为两条清晰主线：一套单 Agent 闭环框架，以及三项可复现的 PPO 实验。
+真实相机、感知模型和真机动作尚未接入；默认 Agent 示例仍使用确定性 mock，PPO 结果均来自
+Isaac 仿真。训练 checkpoint、resolved config、固定评测和续训入口随对应实验发布。
 
-番茄采摘第三阶段已经完成 C0 接口冻结和 C1 离线实现：设备按双臂、每臂 7 关节及
-左右 G20 建模；Skill 使用 114 维部署观测和 7 维“末端残差 + 手部协同量”动作；
-`AgriPickTask` 只暴露 5 个任务级工具，并由独立 Verifier 确认果实脱离、稳定持有且
-没有滑落。默认 C1 policy、感知、规划、安全、设备和验证器仍是确定性 mock；它与已
-训练的 C2 Isaac PPO skill 保持隔离。SDK 中旧 Fruit-Grasp baseline 已清理，审计结论
-只保留在文档中。
+<details>
+<summary><strong>展开查看 Agent 能力与集成边界</strong></summary>
 
-采摘策略之外新增了 `HarvestCycleTask`：首先执行只读 `system_self_check` 准入门禁，
-随后在原有 PPO pick 前增加同步 RGB-D、实例支持区域、VLM 候选选择、对齐深度三维椭球、
-确定性 `select_harvest_target` 筛选、遮挡时的 `active_view_reposition`、目标重观察、训练分布规划、
-无动作 `pregrasp_clearance_check` 和 `move_to_pick_ready`，在其后增加带载回撤、低冲击运输、容器放置、独立闭环验收，
-并提供失败后的安全撤离。新增能力使用统一
-`AtomicSkill` 合约和有界结构化轨迹；视觉链现有核心内 replay 后端，以及 loopback HTTP
-隔离 Worker。Worker 可运行 replay、Ultralytics YOLO-seg + VLM，也可用 Ark 多模态框选临时
-替代 YOLO；后者仍由本地 aligned depth 生成三维数据，不让 VLM 直接提供位姿或动作。
-带载阶段检测到掉果后，任务会进入 `dropped_payload_recovery`，先由
-`localize_dropped_payload` 使用固定顶置视角判断果实是否已入容器、位于专用回收区或需要人工
-处理；该技能不授权运动，也不会误用为悬挂果实训练的 PPO。
-Isaac 验收相机固定安装在双臂中间顶部并斜向前下看；主动换视角只移动机械臂去遮挡，不移动
-相机。当前代码和可复现的完整 PhysX 验收命令见
-[`docs/harvest_cycle/ISAAC_SIM_ACCEPTANCE.md`](./docs/harvest_cycle/ISAAC_SIM_ACCEPTANCE.md)。
+`AgriPickTask` 只开放 5 个任务级工具，设备按双臂、每臂 7 关节及左右 G20 建模；独立
+Verifier 负责确认果实脱离、稳定持有且没有滑落。`HarvestCycleTask` 在 PPO pick 前后串联
+系统自检、RGB-D 感知、目标筛选、遮挡重观察、净空检查、带载运输、容器放置、掉果恢复和
+闭环验收。所有新增能力使用统一 `AtomicSkill` 合约和有界结构化轨迹。
 
-当前正式 minimal-v3 策略使用 66D actor observation、83D privileged critic state 和
-11D action。训练前的旧布局不进入当前 checkpoint 兼容边界。
+视觉 Worker 与 Agent 核心进程隔离；三维几何始终由本地 aligned depth 和相机内参计算，
+VLM 不直接提供机器人位姿或动作。完整 PhysX 验收边界见
+[`ISAAC_SIM_ACCEPTANCE.md`](./docs/harvest_cycle/ISAAC_SIM_ACCEPTANCE.md)。
 
-## PPO Clean-v5 model 1350
+</details>
 
-可恢复训练的 checkpoint、精确 resolved config、TensorBoard history、确定性推理导出、
-推理 canary 和固定三种子评估结果均随仓库发布。模型 SHA-256 为
-`c4ca9ac27aaa20806b630496362bcb9154d1e8076605f9d7026b58f719d124d0`。
+## 三项 PPO 实验成果
 
-安装环境、复现 96.18% 结果以及从 iteration 1350 继续训练的完整命令见
+| 实验 | 发布 checkpoint | 固定评测成功率 | 定位 |
+|---|---:|---:|---|
+| 1. Minimal-v3 / GraspCredit | `model_1450.pt` | **62.57%**；seed 2026 为 **63.65%** | 首个完整可复现基线 |
+| 2. Clean-v5 | `model_1350.pt` | **96.18%** | 当前成功率最高、推荐使用 |
+| 3. Physics-v1 perf-v7 | `model_5150.pt` | **85.97%** | 更完整物理约束与可视化 Demo |
+
+三项实验都按“一个实验、一个最终选定 checkpoint”介绍。训练过程中的恢复点只保留在所属
+实验的谱系中，不作为独立成果。Minimal-v3 的配置、评测与续训命令见
+[`PPO_MODEL1450_REPRODUCTION.md`](./docs/tomato_pick/PPO_MODEL1450_REPRODUCTION.md)；Clean-v5 见
 [`PPO_CLEAN_V5_MODEL1350_REPRODUCTION.md`](./docs/tomato_pick/PPO_CLEAN_V5_MODEL1350_REPRODUCTION.md)。
-旧版 62.57% minimal-v3 基线继续保留在
-[`PPO_MODEL1450_REPRODUCTION.md`](./docs/tomato_pick/PPO_MODEL1450_REPRODUCTION.md)，但不再是
-推荐模型。
 
-## Physics-v1：从 PPO 训练到可复现 Demo
+### Physics-v1：从 PPO 训练到可复现 Demo
 
 <p align="center">
   <a href="./docs/tomato_pick/assets/physics_v1/physics_v1_demo.mp4">
@@ -94,12 +81,12 @@ Physics-v1 展示了 A7 双臂与多指手在大量并行仿真环境中，从�
 也随仓库提供，可重新检查每个采样点。
 
 [查看完整图文成果页](./docs/tomato_pick/PHYSICS_V1_SHOWCASE.md) ·
-[查看最终训练与复现说明](./docs/tomato_pick/PHYSICS_V1_PERF_V7_FINAL_5150.md) ·
-[查看历史 iter 1200 恢复节点](./docs/tomato_pick/PHYSICS_V1_INCOMPLETE_RUN_1200.md)
+[查看最终训练与复现说明](./docs/tomato_pick/PHYSICS_V1_PERF_V7_FINAL_5150.md)
 
-## Physics-v2 PublicPrior 下一轮可复现候选
+## Physics-v2 Research Preview（不计入三项 PPO 成果）
 
-Physics-v2 已冻结下一轮首成功门禁候选
+Physics-v2 当前没有可发布的成功 checkpoint，也不计入上面的三项实验结果。下一轮首成功
+门禁候选已冻结为
 `physics_v2_retention_objective_v1`。当前随仓证据中，CPU public-prior Q1--Q6
 资格检查通过，64 环境 x 128 步的 managed-Isaac 无训练 smoke 为 25/25 通过；
 上一版 repair 46 的 `8192 x 32 x 50`、seed 42 门禁完整运行但仍为零成功和零尾段
@@ -114,6 +101,9 @@ PPO、观测、断裂、保持和最终成功判据不变。这个新版候选�
 和
 [`TRAINING_REPAIR_AUDIT_2026-08-14.md`](./research/physics_v2_public_priors/TRAINING_REPAIR_AUDIT_2026-08-14.md)。
 
+<details>
+<summary><strong>展开查看 Physics-v2 预检命令</strong></summary>
+
 在不启动 Isaac 或 PPO 的情况下核对下一次精确训练命令：
 
 ```bash
@@ -126,6 +116,8 @@ PYTHONPATH="$PWD" \
 预检必须输出 `training_started=false`、上述候选 ID，以及固定的
 `8192 x 32 x 50`、seed 42 from-scratch 命令。只有该门禁产生当前哈希匹配的通过报告后，
 曲线控制器才允许开始正式长训。
+
+</details>
 
 ## 快速开始
 
