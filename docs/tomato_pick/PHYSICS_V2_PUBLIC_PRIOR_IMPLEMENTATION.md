@@ -12,8 +12,24 @@ reward profile, checkpoint, or optimizer state.
   `research/physics_v2_public_priors/ENGINEERING_PRIOR_SUPPLEMENT.json`
 - Training: from scratch only when entering V2; a Physics-v1 checkpoint is
   rejected. Later V2 continuation must restore the complete V2 state.
-- Baseline interface: 66D actor observation, 83D critic state, 11D action with
-  the existing 5D hand manifold. An 8D hand ablation remains future work.
+- Frozen parent interface: 66D actor observation, 83D critic state, 11D action
+  with the existing 5D hand manifold. Physics-v2 extends only its from-scratch
+  actor to 103D and critic to 120D with one previous perceived fruit-to-palm
+  sample, a current/previous perceived fruit-to-fingertip-centroid pair, and
+  the two newest issued 11D commands needed to make the public 0--2-step
+  actuator queue observable. The current 6D command-to-actual end-effector
+  tracking error is expressed in the local grasp basis and normalized by the existing
+  per-action translation/rotation scales. The controller target and encoder
+  forward kinematics are deployment inputs. The added fingertip-centroid pair
+  uses the same noisy fruit perception plus robot forward kinematics. Exact
+  velocity, sampled delay, stem wrench, damage, detachment, and acceptance
+  thresholds remain hidden from the actor. An 8D hand ablation remains future
+  work.
+- Controlled-break credit is latched at the exact 120 Hz fracture substep.
+  The later 20 Hz policy boundary no longer erases a valid break after the
+  remainder of the issued action moves the fruit. The same grasp-quality,
+  secure-support, distance, and relative-speed predicates remain required;
+  reward weights and all outcome thresholds are unchanged.
 - Hardware: no SDK, CAN, or real robot is used by the qualification scripts.
   Hardware transfer remains blocked on the measurements listed in the profile.
 
@@ -50,6 +66,11 @@ reward profile, checkpoint, or optimizer state.
     latency is randomized uniformly over `0-2` steps (`0-100 ms`). The current
     checked-in hand is L20; historical G20 naming is treated as an alias that
     must be resolved before hardware transfer.
+11. The audited first-success curriculum preserves public tensile and shear
+    capacities throughout. Bending and torsion start at 10% and smoothstep to
+    100% at update 40, and that temporary assistance is active only in the
+    unchanged secure and kinematically retained envelope. Evaluation and the
+    complete update-40--49 gate tail use 100% public capacity for every mode.
 
 ## Qualification
 
@@ -81,11 +102,13 @@ OMNI_KIT_ACCEPT_EULA=YES PYTHONPATH="$PWD" \
   --num-envs 64 --steps 128 --viz none --device cuda:0
 ```
 
-This does not train. Its 22 checks cover task registration, scene cloning,
+This does not train. Its 25 checks cover task registration, scene cloning,
 material authoring, resets, finite rollout/reward/runtime tensors, disjoint
 termination masks, V2 capacity state, force/torque clamps, continuous
 orientation, episode-fixed fatigue, pair-friction mapping, compliance,
-three-slot action history for the sampled `0-2` delay, material diversity,
+three-slot action history for the sampled `0-2` delay, deployable actor access
+to its relative-motion history, normalized controller tracking error, and two
+newest issued commands, material diversity,
 the unchanged secure-retain predicate, hash pinning, and no runtime mutation of
 the Physics-v1 profile. The additional paper-strategy audit check verifies that
 effective twist never exceeds raw rotation, the pull interval is nontrivial,
@@ -101,7 +124,45 @@ retention, and the unchanged final success predicate. Raw unloaded rotation
 does not count as effective twist, and a zero-pull pure bend does not count as
 moderate pull. These are measurements, not reward shortcuts.
 
+The V2 actor uses a single-layer 128-unit GRU over the validated 103D
+deployable observation, followed by the inherited `512-256-128` ELU policy
+head. The critic remains the inherited feed-forward 120D model. This supplies
+bounded memory across the partially observable fracture-to-retention sequence;
+it does not expose detachment or privileged stem state and changes no reward,
+physics, PPO optimization, threshold, or acceptance criterion. Episode-level
+`ever_retained_rate` and `mean_max_hold_steps` are audit latches only.
+
+V2 uses gate-scale outcome alignment from update 10 through update 40 for the
+existing failure and stable-detach channels. Its exact-substep
+`break_grasped` precursor remains available with the unchanged 40-point weight:
+unlike the inherited coarse event, this one-shot score already requires grasp
+quality, secure thumb opposition, and the unchanged distance and speed
+retention predicates at fracture. The V2 dense time cost remains at its
+unchanged discovery endpoint (`-0.01` per nonterminal step); terminal failure,
+stable-detach, and success channels still follow the gate-scale alignment.
+This avoids allowing an episode-length baseline to dominate the sparse
+physical credit while preserving the anti-stall sign and every terminal
+penalty. Clean-v5 and Physics-v1 keep their original aligned-endpoint blends.
+
 ## Preparing the next training run
+
+The frozen next-gate candidate is
+`physics_v2_retention_objective_v1`. The CPU and managed-Isaac prerequisites
+record hashes for every shared runtime input; the 8192x50 gate rejects stale
+reports or a different candidate ID. This preparation does not authorize or
+start training.
+
+The exact first-success command can be audited without starting Isaac or PPO:
+
+```bash
+LINKAGENT_ISAACLAB_ROOT=/path/to/IsaacLab PYTHONPATH="$PWD" \
+  /path/to/IsaacLab/env_isaaclab/bin/python \
+  script/gate_tomato_physics_v2_first_success.py --preflight-only
+```
+
+The preflight must report `training_started=false`, the frozen candidate ID,
+and the exact `8192 x 32 x 50`, seed-42 command. The next authorized experiment
+is that bounded from-scratch gate, not a curve-controller segment.
 
 The planner is non-mutating unless both `--execute` and the exact confirmation
 string are supplied:
@@ -112,7 +173,7 @@ LINKAGENT_ISAACLAB_ROOT=/path/to/IsaacLab \
   --write-manifest logs/qualification/tomato_physics_v2/training_manifest.json
 ```
 
-After review, an explicitly authorized start uses:
+Only after that gate passes may an explicitly authorized long-run plan use:
 
 ```bash
 LINKAGENT_ISAACLAB_ROOT=/path/to/IsaacLab \

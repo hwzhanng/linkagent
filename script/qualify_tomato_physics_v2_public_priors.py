@@ -27,6 +27,10 @@ from simulation.tomato_pick.physics_v2 import (  # noqa: E402
     update_multimode_abscission,
     update_twist_integrity,
 )
+from script.physics_v2_audit_inputs import (  # noqa: E402
+    AUDITED_RUNTIME_INPUTS,
+    input_sha256,
+)
 
 
 DEFAULT_OUTPUT = (
@@ -719,6 +723,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         "task_id": profile["task_id"],
         "seed": args.seed,
         "passed": passed,
+        "candidate_id": profile["training"]["first_success_gate"][
+            "candidate_id"
+        ],
+        "input_sha256": input_sha256(
+            PROJECT_ROOT,
+            (
+                *AUDITED_RUNTIME_INPUTS,
+                "script/qualify_tomato_physics_v2_public_priors.py",
+            ),
+        ),
         "training_authorized": False,
         "training_authorization_note": (
             "CPU Q1-Q6 pass only; an Isaac one-environment and vectorized smoke "

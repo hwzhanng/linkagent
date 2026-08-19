@@ -63,6 +63,36 @@ checkpoint SHA-256 为
 此前的源码基线说明保留在
 [`PHYSICS_V1_SOURCE_REPRODUCTION.md`](./docs/tomato_pick/PHYSICS_V1_SOURCE_REPRODUCTION.md)。
 
+## Physics-v2 PublicPrior 下一轮可复现候选
+
+Physics-v2 已冻结下一轮首成功门禁候选
+`physics_v2_retention_objective_v1`。当前随仓证据中，CPU public-prior Q1--Q6
+资格检查通过，64 环境 x 128 步的 managed-Isaac 无训练 smoke 为 25/25 通过；
+上一版 repair 46 的 `8192 x 32 x 50`、seed 42 门禁完整运行但仍为零成功和零尾段
+保持，因此不能作为成功模型或可续训发布 checkpoint。
+
+repair 47 只把 Physics-v2 的稠密防停滞代价保持在原有 `-0.01` 端点，其余物理、
+PPO、观测、断裂、保持和最终成功判据不变。这个新版候选尚未运行正式规模的首成功门禁，
+正式长训也未获授权或启动；真实硬件仍未连接。代码、冻结配置、输入哈希、历史失败报告、
+门禁策略和逐项修复依据见
+[`PHYSICS_V2_EXTERNAL_AUDIT.md`](./docs/tomato_pick/PHYSICS_V2_EXTERNAL_AUDIT.md)、
+[`PHYSICS_V2_PUBLIC_PRIOR_IMPLEMENTATION.md`](./docs/tomato_pick/PHYSICS_V2_PUBLIC_PRIOR_IMPLEMENTATION.md)
+和
+[`TRAINING_REPAIR_AUDIT_2026-08-14.md`](./research/physics_v2_public_priors/TRAINING_REPAIR_AUDIT_2026-08-14.md)。
+
+在不启动 Isaac 或 PPO 的情况下核对下一次精确训练命令：
+
+```bash
+export LINKAGENT_ISAACLAB_ROOT=/absolute/path/to/IsaacLab-3.0.0-beta2.patch1
+PYTHONPATH="$PWD" \
+  "$LINKAGENT_ISAACLAB_ROOT/env_isaaclab/bin/python" \
+  script/gate_tomato_physics_v2_first_success.py --preflight-only
+```
+
+预检必须输出 `training_started=false`、上述候选 ID，以及固定的
+`8192 x 32 x 50`、seed 42 from-scratch 命令。只有该门禁产生当前哈希匹配的通过报告后，
+曲线控制器才允许开始正式长训。
+
 ## 快速开始
 
 要求 Python 3.11 或更高版本。项目没有第三方运行时硬依赖。

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 
+import pytest
 import torch
 
 from module.skills.tomato_pick import (
@@ -192,6 +193,8 @@ def _reward_step(
     out_of_bounds: bool = False,
     timeout: bool = False,
     alpha: float = 0.0,
+    break_scale: float | None = None,
+    time_cost_scale: float | None = None,
 ):
     scalar = lambda value: torch.tensor([value])
     boolean = lambda value: torch.tensor([value], dtype=torch.bool)
@@ -216,6 +219,8 @@ def _reward_step(
         timed_out=boolean(timeout),
         stem_detached=boolean(detached),
         alignment_alpha=alpha,
+        break_grasped_alignment_scale=break_scale,
+        time_cost_alignment_scale=time_cost_scale,
     )
 
 
@@ -287,6 +292,35 @@ def test_aligned_endpoint_removes_break_and_repeated_hold_farming() -> None:
     )
     assert math.isclose(reward.item(), -0.1, abs_tol=1.0e-7)
     assert terms["break_grasped"].item() == 0.0
+
+
+def test_explicit_strict_break_bridge_can_persist_at_aligned_endpoint() -> None:
+    reward, *_, terms = _reward_step(
+        break_grasped=1.0,
+        detached=True,
+        alpha=1.0,
+        break_scale=1.0,
+    )
+    assert math.isclose(
+        terms["break_grasped"].item(), BREAK_GRASPED_WEIGHT, abs_tol=1.0e-7
+    )
+    assert math.isclose(
+        reward.item(), BREAK_GRASPED_WEIGHT - 0.1, abs_tol=2.0e-6
+    )
+
+
+def test_explicit_time_cost_scale_can_preserve_discovery_step_cost() -> None:
+    reward, *_, terms = _reward_step(
+        alpha=1.0,
+        time_cost_scale=0.0,
+    )
+    assert math.isclose(terms["time_cost"].item(), -0.01, abs_tol=1.0e-7)
+    assert math.isclose(reward.item(), -0.01, abs_tol=1.0e-7)
+
+
+def test_explicit_time_cost_scale_rejects_invalid_values() -> None:
+    with pytest.raises(ValueError, match="time_cost_alignment_scale"):
+        _reward_step(alpha=1.0, time_cost_scale=1.01)
 
 
 def test_aligned_success_strongly_dominates_near_success_failure() -> None:

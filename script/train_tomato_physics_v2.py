@@ -10,6 +10,11 @@ from pathlib import Path
 import subprocess
 from typing import Sequence
 
+from script.physics_v2_audit_inputs import (
+    AUDITED_RUNTIME_INPUTS,
+    require_current_input_sha256,
+)
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 _isaac_root_value = os.environ.get("LINKAGENT_ISAACLAB_ROOT")
@@ -44,8 +49,6 @@ def _read_passed(path: Path) -> dict:
 
 
 def build_plan(*, num_envs: int, seed: int) -> dict:
-    if num_envs != 8192 or seed != 42:
-        raise ValueError("Physics-v2 initial plan is frozen at 8192 envs and seed 42")
     profile = json.loads(PROFILE_PATH.read_text(encoding="utf-8"))
     if profile.get("profile_id") != "tomato_pick_physics_v2_public_prior_v1":
         raise RuntimeError("unexpected Physics-v2 profile")
@@ -56,6 +59,13 @@ def build_plan(*, num_envs: int, seed: int) -> dict:
     if profile.get("qualification", {}).get("passed") is not True:
         raise RuntimeError("Physics-v2 profile qualification is not marked passed")
     training = profile["training"]
+    gate_spec = training["first_success_gate"]
+    if num_envs != int(gate_spec["num_envs"]) or seed != int(gate_spec["seed"]):
+        raise ValueError(
+            "Physics-v2 initial plan must match the audited first-success "
+            "environment count and seed"
+        )
+    first_success_gate = PROJECT_ROOT / str(gate_spec["output"])
     if not (
         training["from_scratch_required"] is True
         and training["physics_v1_checkpoint_resume_allowed"] is False
@@ -63,6 +73,7 @@ def build_plan(*, num_envs: int, seed: int) -> dict:
         raise RuntimeError("Physics-v2 from-scratch boundary changed")
     cpu = _read_passed(CPU_GATE)
     isaac = _read_passed(ISAAC_GATE)
+    first_success = _read_passed(first_success_gate)
     if cpu.get("qualification") != "physics_v2_public_prior_cpu_q1_q6":
         raise RuntimeError("unexpected Physics-v2 CPU qualification identity")
     if set(cpu.get("gates", {})) != {
@@ -97,12 +108,29 @@ def build_plan(*, num_envs: int, seed: int) -> dict:
         raise RuntimeError("Physics-v2 Isaac gate unexpectedly started training")
     if len(isaac.get("checks", {})) < 21 or not all(isaac["checks"].values()):
         raise RuntimeError("Physics-v2 Isaac gate is incomplete or failed")
+    if (
+        first_success.get("qualification")
+        != "physics_v2_formal_scale_first_success_gate"
+        or first_success.get("num_envs") != int(gate_spec["num_envs"])
+        or first_success.get("iterations") != int(gate_spec["updates"])
+        or first_success.get("seed") != int(gate_spec["seed"])
+        or first_success.get("configured_gate_spec", {}).get("candidate_id")
+        != gate_spec["candidate_id"]
+    ):
+        raise RuntimeError("Physics-v2 first-success gate identity changed")
+    require_current_input_sha256(
+        first_success,
+        PROJECT_ROOT,
+        (*AUDITED_RUNTIME_INPUTS, "script/gate_tomato_physics_v2_first_success.py"),
+        report_name=str(first_success_gate.relative_to(PROJECT_ROOT)),
+    )
 
     tracked = [
         PROFILE_PATH,
         PROJECT_ROOT / profile["public_prior"]["path"],
         PROJECT_ROOT / profile["engineering_prior"]["path"],
         PROJECT_ROOT / "simulation/tomato_pick/physics_v2.py",
+        PROJECT_ROOT / "simulation/tomato_pick/isaac/env.py",
         PROJECT_ROOT / "simulation/tomato_pick/isaac/physics_v2/__init__.py",
         PROJECT_ROOT / "simulation/tomato_pick/isaac/physics_v2/assets.py",
         PROJECT_ROOT / "simulation/tomato_pick/isaac/physics_v2/env_cfg.py",
@@ -110,12 +138,14 @@ def build_plan(*, num_envs: int, seed: int) -> dict:
         PROJECT_ROOT
         / "simulation/tomato_pick/isaac/physics_v2/agents/rsl_rl_ppo_cfg.py",
         PROJECT_ROOT / "script/qualify_tomato_physics_v2_public_priors.py",
+        PROJECT_ROOT / "script/physics_v2_audit_inputs.py",
         PROJECT_ROOT / "script/check_tomato_physics_v2.py",
         PROJECT_ROOT / "script/evaluate_tomato_checkpoint.py",
         PROJECT_ROOT / "script/run_tomato_physics_v2_curve_controller.sh",
         PROJECT_ROOT / "script/train_tomato_physics_v2.py",
         CPU_GATE,
         ISAAC_GATE,
+        first_success_gate,
     ]
     input_sha256 = {
         str(path.relative_to(PROJECT_ROOT)): _sha256(path) for path in tracked
@@ -154,6 +184,7 @@ def build_plan(*, num_envs: int, seed: int) -> dict:
         "schema_version": 1,
         "task_id": profile["task_id"],
         "profile_id": profile["profile_id"],
+        "candidate_id": gate_spec["candidate_id"],
         "status": "ready_for_user_authorized_from_scratch_training",
         "from_scratch": True,
         "physics_v1_checkpoint_loaded": None,
@@ -171,10 +202,14 @@ def build_plan(*, num_envs: int, seed: int) -> dict:
             "OMNI_KIT_ACCEPT_EULA": "YES",
             "PYTHONPATH": str(PROJECT_ROOT),
             "TOMATO_REWARD_ITERATION_OFFSET": "0",
+            "TOMATO_V2_DISCOVERY_CAPACITY_CURRICULUM": "1",
         },
         "qualification_reports": {
             "Q1_Q6_cpu": str(CPU_GATE.relative_to(PROJECT_ROOT)),
             "isaac_64x128": str(ISAAC_GATE.relative_to(PROJECT_ROOT)),
+            "first_success_configured_gate": str(
+                first_success_gate.relative_to(PROJECT_ROOT)
+            ),
         },
         "input_sha256": input_sha256,
         "hardware_boundary": "no SDK, CAN, or real-hardware connection",

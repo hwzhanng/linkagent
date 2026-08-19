@@ -6,16 +6,38 @@ import math
 
 import torch
 
-from isaaclab.utils.math import quat_apply, quat_box_minus
+from isaaclab.utils.math import (
+    compute_pose_error,
+    quat_apply,
+    quat_apply_inverse,
+    quat_box_minus,
+)
 
+from simulation.tomato_pick.reward import break_grasp_quality
 from simulation.tomato_pick.isaac.physics_v1.env import TomatoPickPhysicsV1Env
 from simulation.tomato_pick.physics_v1 import (
     secure_support_credit_gate,
     stem_load_damage_progress_score,
 )
-from simulation.tomato_pick.physics_v2 import update_multimode_abscission
+from simulation.tomato_pick.physics_v2 import (
+    combined_abscission_load_ratio,
+    discovery_capacity_scale,
+    issued_command_history_observation,
+    kinematic_retention_margin_score,
+    load_bearing_opposition_score,
+    load_bearing_opposition_target_n,
+    normalized_controller_tracking_error,
+    retention_ready_conditioned_capacity_scale,
+    relative_position_history_observation,
+    update_multimode_abscission,
+    v2_outcome_alignment_alpha_for_iteration,
+)
 
-from .env_cfg import TomatoPickPhysicsV2EnvCfg
+from .env_cfg import (
+    PHYSICS_V2_CRITIC_STATE_DIM,
+    PHYSICS_V2_OBSERVATION_DIM,
+    TomatoPickPhysicsV2EnvCfg,
+)
 
 
 def _quat_multiply_wxyz(left: torch.Tensor, right: torch.Tensor) -> torch.Tensor:
@@ -43,7 +65,46 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
         render_mode: str | None = None,
         **kwargs,
     ):
+        if not (
+            0.0 < cfg.discovery_tensile_shear_initial_scale <= 1.0
+            and 0.0 < cfg.discovery_bending_torsion_initial_scale <= 1.0
+        ):
+            raise ValueError("discovery capacity scales must lie in (0, 1]")
+        if not (
+            0.0
+            <= cfg.discovery_capacity_hold_initial_scale_iterations
+            < cfg.discovery_capacity_full_iteration
+        ):
+            raise ValueError(
+                "discovery capacity hold must precede full capacity"
+            )
+        if cfg.discovery_capacity_full_iteration <= 0.0:
+            raise ValueError("discovery full-capacity iteration must be positive")
+        if (
+            cfg.discovery_bending_torsion_requires_secure_support
+            is not True
+        ):
+            raise ValueError(
+                "bending/torsion discovery assistance must require secure support"
+            )
+        if (
+            cfg.discovery_bending_torsion_requires_kinematic_retention
+            is not True
+        ):
+            raise ValueError(
+                "bending/torsion discovery assistance must require current "
+                "kinematic retention"
+            )
         super().__init__(cfg, render_mode, **kwargs)
+        # Episode-level audit latches.  Terminal-only retained logging can miss
+        # a valid transient retention chain that is later lost; these metrics
+        # expose that distinction without changing reward or termination.
+        self._ever_retained = torch.zeros(
+            self.num_envs, dtype=torch.bool, device=self.device
+        )
+        self._maximum_hold_streak = torch.zeros(
+            self.num_envs, dtype=torch.long, device=self.device
+        )
         required_action_history = int(max(cfg.action_delay_steps)) + 1
         if self._action_history.shape[0] < required_action_history:
             self._action_history = torch.zeros(
@@ -56,6 +117,17 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
                 dtype=self._actions.dtype,
             )
         profiles = self._prestartup_physics_v2_profiles
+        actual_pair_static_friction = self._prestartup_contact_material_profiles[
+            "effective_pair_static_friction"
+        ].to(self.device)
+        self._load_bearing_opposition_target_n = (
+            load_bearing_opposition_target_n(
+                self._fruit_mass_kg,
+                actual_pair_static_friction,
+                full_contact_force_n=self.cfg.grasp_full_contact_force_n,
+                safety_factor=self.cfg.load_bearing_opposition_safety_factor,
+            )
+        )
         self._stem_torsion_limit_nm = profiles["stem_torsion_moment_nm"].to(
             self.device
         )
@@ -81,6 +153,21 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
         self._stem_torsion_load_ratio = torch.zeros(
             self.num_envs, device=self.device
         )
+        # Training assistance may lower the fracture threshold, but the
+        # best-ever load-progress reward must retain one fixed normalization.
+        # Otherwise a 10%-capacity fracture exhausts the unit load score and
+        # leaves no incremental signal while capacity returns to the public
+        # prior.  This buffer is reward-only; fracture uses the scheduled
+        # capacities in _simulate_stem_substep.
+        self._stem_public_combined_load_ratio = torch.zeros(
+            self.num_envs, device=self.device
+        )
+        self._stem_load_progress_ready = torch.zeros(
+            self.num_envs, dtype=torch.bool, device=self.device
+        )
+        self._stem_load_progress_retention_margin = torch.zeros(
+            self.num_envs, device=self.device
+        )
         self._task_orientation_category = profiles[
             "world_orientation_category"
         ].to(device=self.device, dtype=torch.long)
@@ -103,6 +190,22 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
         self._break_effective_twist_rad = torch.zeros(
             self.num_envs, device=self.device
         )
+        self._break_thumb_force_n = torch.zeros(
+            self.num_envs, device=self.device
+        )
+        self._break_other_force_n = torch.zeros(
+            self.num_envs, device=self.device
+        )
+        self._break_load_bearing_opposition_score = torch.zeros(
+            self.num_envs, device=self.device
+        )
+        # Fracture happens inside a 120 Hz substep, but reward is evaluated at
+        # the later 20 Hz policy boundary. Preserve the exact-substep grasp
+        # quality so the remainder of an already-issued action cannot erase a
+        # valid controlled-break event before it receives credit.
+        self._break_substep_grasp_quality = torch.zeros(
+            self.num_envs, device=self.device
+        )
         self._break_twist_assisted = torch.zeros(
             self.num_envs, dtype=torch.bool, device=self.device
         )
@@ -114,6 +217,21 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
         )
         self._break_paper_strategy_candidate = torch.zeros(
             self.num_envs, dtype=torch.bool, device=self.device
+        )
+        self._break_bending_torsion_curriculum_assisted = torch.zeros(
+            self.num_envs, dtype=torch.bool, device=self.device
+        )
+        self._current_discovery_capacity_scale = 1.0
+        self._current_tensile_shear_capacity_scale = 1.0
+        self._current_bending_torsion_capacity_scale = 1.0
+        self._previous_perceived_relative_position = torch.zeros(
+            (self.num_envs, 3), device=self.device
+        )
+        self._previous_perceived_relative_position_reset_pending = torch.ones(
+            self.num_envs, dtype=torch.bool, device=self.device
+        )
+        self._previous_perceived_tip_center_relative_position = torch.zeros(
+            (self.num_envs, 3), device=self.device
         )
 
     def _pre_physics_step(self, actions: torch.Tensor) -> None:
@@ -131,6 +249,98 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
             )
         super()._pre_physics_step(actions)
 
+    def _get_observations(self) -> dict[str, torch.Tensor]:
+        """Expose deployable motion and delayed-command history to V2 only.
+
+        The inherited observation contains the current noisy fruit position
+        relative to the palm but no fruit-motion signal. The explicit
+        current/previous deployable pairs were retained because completed gates
+        improved support and speed before recurrent phase memory was introduced.
+        Current command-vs-actual end-effector tracking error provides
+        deployable proprioceptive load information that cannot be reconstructed
+        from the finite action queue alone. V2 also samples a two-step actuator delay,
+        so append the two newest issued commands that may still be queued
+        beyond the inherited previously-applied command. Exact simulator fruit
+        velocity and sampled delay remain hidden, and the frozen 66D Clean-v5/
+        V1 interface is unchanged.
+        """
+
+        observations = super()._get_observations()
+        base_policy = observations["policy"]
+        current_relative_position = base_policy[:, :3]
+        previous_relative_position = torch.where(
+            self._previous_perceived_relative_position_reset_pending.unsqueeze(1),
+            current_relative_position,
+            self._previous_perceived_relative_position,
+        )
+        fruit_pose = self._tomato.data.root_pose_w.torch
+        ee_pose = self._robot.data.body_pose_w.torch[:, self._ee_body_id]
+        fingertip_center = self._robot.data.body_pos_w.torch[
+            :, self._fingertip_contact_body_ids
+        ].mean(dim=1)
+        perceived_fruit = (
+            fruit_pose[:, :3] + self._perceived_fruit_position_error_w
+        )
+        tip_center_relative_position = (
+            quat_apply_inverse(
+                ee_pose[:, 3:7], perceived_fruit - fingertip_center
+            )
+            / 0.15
+        ).clamp(-1.0, 1.0)
+        tip_center_position_history = relative_position_history_observation(
+            tip_center_relative_position,
+            self._previous_perceived_tip_center_relative_position,
+            self._previous_perceived_relative_position_reset_pending,
+        )
+        position_error_w, rotation_error_w = compute_pose_error(
+            ee_pose[:, :3],
+            ee_pose[:, 3:7],
+            self._ee_command_pose_w[:, :3],
+            self._ee_command_pose_w[:, 3:7],
+        )
+        controller_tracking_error = normalized_controller_tracking_error(
+            position_error_w,
+            rotation_error_w,
+            self._grasp_basis_w,
+            torch.tensor(
+                self.cfg.action_scales,
+                device=self.device,
+                dtype=position_error_w.dtype,
+            ),
+        )
+        issued_command_history = issued_command_history_observation(
+            self._action_history,
+            history_steps=2,
+        )
+        policy = torch.cat(
+            (
+                base_policy,
+                previous_relative_position,
+                tip_center_position_history,
+                controller_tracking_error,
+                issued_command_history,
+            ),
+            dim=1,
+        )
+        privileged = observations["critic"][:, base_policy.shape[1] :]
+        critic = torch.cat((policy, privileged), dim=1)
+        self._previous_perceived_relative_position.copy_(
+            current_relative_position
+        )
+        self._previous_perceived_tip_center_relative_position.copy_(
+            tip_center_relative_position
+        )
+        self._previous_perceived_relative_position_reset_pending.fill_(False)
+        if policy.shape[1] != PHYSICS_V2_OBSERVATION_DIM:
+            raise RuntimeError(
+                f"Physics-v2 actor observation drifted to {policy.shape[1]}D"
+            )
+        if critic.shape[1] != PHYSICS_V2_CRITIC_STATE_DIM:
+            raise RuntimeError(
+                f"Physics-v2 critic observation drifted to {critic.shape[1]}D"
+            )
+        return {"policy": policy, "critic": critic}
+
     def _stem_progress_reward_score(self, opposed: torch.Tensor) -> torch.Tensor:
         """Reward physical load plus either twist or load-duration progress."""
 
@@ -138,14 +348,101 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
             self._stem_damage.clamp(0.0, 1.0),
             (1.0 - self._stem_integrity).clamp(0.0, 1.0),
         )
-        return secure_support_credit_gate(
-            stem_load_damage_progress_score(
-                self._stem_combined_load_ratio,
-                public_progress,
-                opposed,
-            ),
-            self._shadow_secure_support,
+        load_progress = stem_load_damage_progress_score(
+            self._stem_public_combined_load_ratio,
+            public_progress,
+            opposed,
         )
+        # Repairs 30-31 proved that a strict boolean envelope alone can align
+        # low-capacity fractures yet still leave support, distance, and speed
+        # margins temporally disjoint as public capacity returns.  Modulate the
+        # same load-progress credit by the centered-and-slow margin *inside*
+        # that unchanged strict envelope.  This is zero at either boundary and
+        # cannot create weak credit outside it.  Evaluation/non-curriculum V2
+        # behavior keeps the released secure-support gate and unit margin.
+        if self.cfg.discovery_capacity_curriculum_enabled:
+            load_progress = (
+                load_progress * self._stem_load_progress_retention_margin
+            )
+            credit_ready = self._stem_load_progress_ready
+        else:
+            credit_ready = self._shadow_secure_support
+        return secure_support_credit_gate(load_progress, credit_ready)
+
+    def _opposed_reward_score(self) -> torch.Tensor:
+        """Normalize opposition by the fruit's actual static load target.
+
+        The reward weight and best-ever topology remain inherited.  Only the
+        saturation point is corrected from contact presence to the grip force
+        required by this environment's mass and quantized pair friction.
+        """
+
+        return load_bearing_opposition_score(
+            self._last_physical_force_n,
+            self._load_bearing_opposition_target_n,
+            full_contact_force_n=self.cfg.grasp_full_contact_force_n,
+        )
+
+    def _break_grasped_reward_score(
+        self, fruit_in_hand: torch.Tensor, break_quality: torch.Tensor
+    ) -> torch.Tensor:
+        """Credit the exact 120 Hz controlled-break state once.
+
+        The inherited arguments are sampled at the later 20 Hz reward
+        boundary. Using them discarded a valid break whenever the fruit moved
+        during the remaining substeps of the already-issued action. The
+        latched replacement is stricter: exact-substep grasp quality,
+        thumb-plus-other secure support, and the unchanged distance and speed
+        predicates must all hold. Only temporal credit changes; mechanics,
+        reward weight, termination, retention, and success are unchanged.
+        """
+
+        del fruit_in_hand, break_quality
+        return (
+            self._stem_break_event.float()
+            * self._break_substep_grasp_quality
+            * self._break_substep_secure_support.float()
+            * self._break_substep_kinematic_retained.float()
+        )
+
+    def _reward_alignment_alpha(self, learning_iteration: float) -> float:
+        """Use V2's bounded gate-scale objective schedule."""
+
+        return v2_outcome_alignment_alpha_for_iteration(learning_iteration)
+
+    def _break_grasped_reward_scale(self, alignment_alpha: float) -> float:
+        """Keep the strict one-shot joint-ready fracture bridge available.
+
+        Clean-v5 fades its coarse fruit-in-hand break credit because that event
+        can be exploited without a controlled release. V2's replacement is
+        already stricter than retained-at-break: it requires exact-substep
+        grasp quality, thumb-plus-other secure support, and the unchanged
+        distance and speed predicates. Repair45 showed that fading this signal
+        to zero also drove exact joint-ready fractures to zero while failure
+        penalties successfully reduced drop. Preserve the same 40-point
+        one-shot term while keeping the aligned failure and stable-detach
+        channels unchanged.
+        """
+
+        del alignment_alpha
+        return 1.0
+
+    def _time_cost_alignment_scale(self, alignment_alpha: float) -> float:
+        """Keep gate-scale V2 returns conditioned on physical outcomes.
+
+        Repair45's terminal failure terms reduced public-tail drop, but the
+        simultaneously strengthened per-step cost contributed about -14.7 per
+        episode, raised tail value loss from 4.67 to 25.82, and erased the
+        transient-retention chain. Repair46's strict break bridge recovered
+        only one joint-ready tail iteration while value loss stayed at 26.49.
+        Preserve the discovery endpoint's small anti-stall cost and keep the
+        proven terminal failure, stable-detach, success, and strict-break
+        channels unchanged. This is a component schedule correction, not a
+        new reward or a relaxed outcome predicate.
+        """
+
+        del alignment_alpha
+        return 0.0
 
     def _apply_public_orientation(self, env_ids: torch.Tensor) -> None:
         """Map S09 world categories to bounded stem-tilt quadrants.
@@ -288,11 +585,124 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
         pull_axis = torch.nn.functional.normalize(
             self._grasp_basis_w[:, :, 2], dim=1
         )
+        learning_iteration = (
+            float(self.cfg.reward_curriculum_iteration_offset)
+            + float(self.common_step_counter) / float(self.cfg.reward_rollout_steps)
+        )
+        physical_force: torch.Tensor | None = None
+        supported_mask: torch.Tensor | None = None
+        substep_distance: torch.Tensor | None = None
+        substep_relative_speed: torch.Tensor | None = None
+        if self.cfg.discovery_capacity_curriculum_enabled:
+            tensile_shear_scale = discovery_capacity_scale(
+                learning_iteration,
+                initial_scale=(
+                    self.cfg.discovery_tensile_shear_initial_scale
+                ),
+                hold_initial_scale_iterations=(
+                    self.cfg.discovery_capacity_hold_initial_scale_iterations
+                ),
+                full_capacity_iteration=(
+                    self.cfg.discovery_capacity_full_iteration
+                ),
+            )
+            bending_torsion_schedule_scale = discovery_capacity_scale(
+                learning_iteration,
+                initial_scale=(
+                    self.cfg.discovery_bending_torsion_initial_scale
+                ),
+                hold_initial_scale_iterations=(
+                    self.cfg.discovery_capacity_hold_initial_scale_iterations
+                ),
+                full_capacity_iteration=(
+                    self.cfg.discovery_capacity_full_iteration
+                ),
+            )
+            # Use the current 120 Hz contact state, not the previous 50 ms
+            # policy boundary, so assistance cannot survive loss of support.
+            physical_force = self._physical_finger_force()
+            supported_mask = physical_force >= self.cfg.minimum_support_force_n
+            curriculum_secure_support = (
+                supported_mask.sum(dim=1)
+                >= self.cfg.minimum_supported_fingertips
+            )
+            if self.cfg.thumb_opposition_required:
+                curriculum_secure_support &= (
+                    supported_mask[:, 0]
+                    & supported_mask[:, 1:].any(dim=1)
+                )
+            tips = self._robot.data.body_pos_w.torch[
+                :, self._fingertip_contact_body_ids
+            ]
+            tip_center = tips.mean(dim=1)
+            tip_velocity = self._robot.data.body_lin_vel_w.torch[
+                :, self._fingertip_contact_body_ids
+            ].mean(dim=1)
+            substep_distance = torch.linalg.vector_norm(
+                fruit_pose[:, :3] - tip_center, dim=1
+            )
+            substep_relative_speed = torch.linalg.vector_norm(
+                fruit_lin_vel - tip_velocity, dim=1
+            )
+            curriculum_kinematic_retention = (
+                substep_distance <= self.cfg.maximum_retained_distance_m
+            ) & (
+                substep_relative_speed
+                <= self.cfg.maximum_retained_relative_speed_m_s
+            )
+            curriculum_retention_ready = (
+                curriculum_secure_support & curriculum_kinematic_retention
+            )
+            self._stem_load_progress_ready.copy_(
+                curriculum_retention_ready
+            )
+            self._stem_load_progress_retention_margin.copy_(
+                kinematic_retention_margin_score(
+                    substep_distance,
+                    substep_relative_speed,
+                    maximum_distance_m=self.cfg.maximum_retained_distance_m,
+                    maximum_relative_speed_m_s=(
+                        self.cfg.maximum_retained_relative_speed_m_s
+                    ),
+                )
+            )
+            bending_torsion_scale = retention_ready_conditioned_capacity_scale(
+                bending_torsion_schedule_scale, curriculum_retention_ready
+            )
+            bending_torsion_assistance_active = (
+                curriculum_retention_ready
+                & (bending_torsion_schedule_scale < 1.0)
+            )
+        else:
+            tensile_shear_scale = 1.0
+            bending_torsion_schedule_scale = 1.0
+            bending_torsion_scale = torch.ones(
+                self.num_envs, device=self.device
+            )
+            bending_torsion_assistance_active = torch.zeros(
+                self.num_envs, dtype=torch.bool, device=self.device
+            )
+            self._stem_load_progress_ready.copy_(
+                self._shadow_secure_support
+            )
+            self._stem_load_progress_retention_margin.fill_(1.0)
+        self._current_tensile_shear_capacity_scale = tensile_shear_scale
+        self._current_bending_torsion_capacity_scale = (
+            bending_torsion_schedule_scale
+        )
+        self._current_discovery_capacity_scale = min(
+            tensile_shear_scale,
+            bending_torsion_schedule_scale,
+        )
+        tensile_limit_n = self._stem_tensile_limit_n * tensile_shear_scale
+        shear_limit_n = self._stem_shear_limit_n * tensile_shear_scale
+        bending_limit_nm = self._stem_bending_limit_nm * bending_torsion_scale
+        torsion_limit_nm = self._stem_torsion_limit_nm * bending_torsion_scale
         # Elastoplastic torsional yielding: cap the restoring torque at the
         # current integrity-scaled torsional capacity.  Rotation beyond this
         # point drives integrity loss instead of an unbounded spring impulse.
         signed_torsion = (torque * pull_axis).sum(dim=1)
-        current_torsion_capacity = self._stem_torsion_limit_nm * (
+        current_torsion_capacity = torsion_limit_nm * (
             self._stem_integrity.clamp_min(self.cfg.stem_capacity_floor_fraction)
         )
         capped_torsion = torch.maximum(
@@ -300,6 +710,19 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
             torch.minimum(current_torsion_capacity, signed_torsion),
         )
         torque += (capped_torsion - signed_torsion).unsqueeze(1) * pull_axis
+        self._stem_public_combined_load_ratio.copy_(
+            combined_abscission_load_ratio(
+                force,
+                torque,
+                pull_axis,
+                self._stem_tensile_limit_n,
+                self._stem_shear_limit_n,
+                self._stem_bending_limit_nm,
+                self._stem_torsion_limit_nm,
+                self._stem_integrity,
+                capacity_floor_fraction=self.cfg.stem_capacity_floor_fraction,
+            )
+        )
         twist_increment = (
             (fruit_ang_vel * pull_axis).sum(dim=1).abs() * float(self.cfg.sim.dt)
         )
@@ -315,10 +738,10 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
             force,
             torque,
             pull_axis,
-            self._stem_tensile_limit_n,
-            self._stem_shear_limit_n,
-            self._stem_bending_limit_nm,
-            self._stem_torsion_limit_nm,
+            tensile_limit_n,
+            shear_limit_n,
+            bending_limit_nm,
+            torsion_limit_nm,
             twist_increment,
             dt_s=float(self.cfg.sim.dt),
             attached=attached,
@@ -350,12 +773,12 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
             )
             self._break_tension_n[break_now] = (
                 state["tension_ratio"]
-                * self._stem_tensile_limit_n
+                * tensile_limit_n
                 * capacity_scale
             )[break_now]
             self._break_shear_n[break_now] = (
                 state["shear_ratio"]
-                * self._stem_shear_limit_n
+                * shear_limit_n
                 * capacity_scale
             )[break_now]
             self._break_bending_ratio[break_now] = state["bending_ratio"][
@@ -389,22 +812,45 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
             self._break_twist_assisted[break_now] = twist_assisted[break_now]
             self._break_bend_assisted[break_now] = bend_assisted[break_now]
             self._break_moderate_pull[break_now] = moderate_pull[break_now]
-            physical_force = self._physical_finger_force()
-            supported_mask = physical_force >= self.cfg.minimum_support_force_n
+            self._break_bending_torsion_curriculum_assisted[break_now] = (
+                bending_torsion_assistance_active[break_now]
+            )
+            if physical_force is None:
+                physical_force = self._physical_finger_force()
+            self._break_thumb_force_n[break_now] = physical_force[break_now, 0]
+            self._break_other_force_n[break_now] = physical_force[
+                break_now, 1:
+            ].amax(dim=1)
+            self._break_load_bearing_opposition_score[break_now] = (
+                load_bearing_opposition_score(
+                    physical_force,
+                    self._load_bearing_opposition_target_n,
+                    full_contact_force_n=self.cfg.grasp_full_contact_force_n,
+                )[break_now]
+            )
+            self._break_substep_grasp_quality[break_now] = break_grasp_quality(
+                physical_force,
+                contact_force_n=self.cfg.grasp_full_contact_force_n,
+            )[break_now]
+            if supported_mask is None:
+                supported_mask = (
+                    physical_force >= self.cfg.minimum_support_force_n
+                )
             supported = supported_mask.sum(dim=1)
-            tips = self._robot.data.body_pos_w.torch[
-                :, self._fingertip_contact_body_ids
-            ]
-            tip_center = tips.mean(dim=1)
-            tip_velocity = self._robot.data.body_lin_vel_w.torch[
-                :, self._fingertip_contact_body_ids
-            ].mean(dim=1)
-            distance = torch.linalg.vector_norm(
-                fruit_pose[:, :3] - tip_center, dim=1
-            )
-            relative_speed = torch.linalg.vector_norm(
-                fruit_lin_vel - tip_velocity, dim=1
-            )
+            if substep_distance is None or substep_relative_speed is None:
+                tips = self._robot.data.body_pos_w.torch[
+                    :, self._fingertip_contact_body_ids
+                ]
+                tip_center = tips.mean(dim=1)
+                tip_velocity = self._robot.data.body_lin_vel_w.torch[
+                    :, self._fingertip_contact_body_ids
+                ].mean(dim=1)
+                substep_distance = torch.linalg.vector_norm(
+                    fruit_pose[:, :3] - tip_center, dim=1
+                )
+                substep_relative_speed = torch.linalg.vector_norm(
+                    fruit_lin_vel - tip_velocity, dim=1
+                )
             self._break_substep_supported_fingertips[break_now] = supported[break_now]
             self._break_substep_thumb_support[break_now] = supported_mask[
                 break_now, 0
@@ -419,16 +865,19 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
                 )
             self._break_substep_secure_support[break_now] = substep_secure[break_now]
             self._break_substep_kinematic_retained[break_now] = (
-                (distance[break_now] <= self.cfg.maximum_retained_distance_m)
+                (
+                    substep_distance[break_now]
+                    <= self.cfg.maximum_retained_distance_m
+                )
                 & (
-                    relative_speed[break_now]
+                    substep_relative_speed[break_now]
                     <= self.cfg.maximum_retained_relative_speed_m_s
                 )
             )
-            self._break_substep_distance_m[break_now] = distance[break_now]
-            self._break_substep_relative_speed_m_s[break_now] = relative_speed[
-                break_now
-            ]
+            self._break_substep_distance_m[break_now] = substep_distance[break_now]
+            self._break_substep_relative_speed_m_s[break_now] = (
+                substep_relative_speed[break_now]
+            )
             self._break_substep_damage[break_now] = state["load_damage"][break_now]
             self._break_substep_load_ratio[break_now] = state[
                 "combined_load_ratio"
@@ -478,6 +927,10 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
 
     def _get_dones(self) -> tuple[torch.Tensor, torch.Tensor]:
         terminated, truncated = super()._get_dones()
+        self._ever_retained |= self._retained
+        self._maximum_hold_streak = torch.maximum(
+            self._maximum_hold_streak, self._hold_streak
+        )
         if self.cfg.detailed_step_diagnostics:
             self.extras["step"]["physics_v2_minimum_integrity"] = float(
                 self._stem_integrity.min().item()
@@ -529,6 +982,21 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
             return float(values[env_ids][detached].float().mean().item())
 
         super()._log_episodes(env_ids)
+        if hasattr(self, "_ever_retained"):
+            self.extras.setdefault("log", {}).update(
+                {
+                    "Metrics/ever_retained_rate": self._ever_retained[env_ids]
+                    .float()
+                    .mean()
+                    .item(),
+                    "Metrics/mean_max_hold_steps": self._maximum_hold_streak[
+                        env_ids
+                    ]
+                    .float()
+                    .mean()
+                    .item(),
+                }
+            )
         self.extras.setdefault("log", {}).update(
             {
                 "PhysicsV2/mean_break_tension_n": detached_mean(
@@ -551,6 +1019,18 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
                 ),
                 "PhysicsV2/mean_break_effective_twist_deg": math.degrees(
                     detached_mean(self._break_effective_twist_rad)
+                ),
+                "PhysicsV2/mean_break_thumb_force_n": detached_mean(
+                    self._break_thumb_force_n
+                ),
+                "PhysicsV2/mean_break_other_force_n": detached_mean(
+                    self._break_other_force_n
+                ),
+                "PhysicsV2/mean_break_opposition_target_n": detached_mean(
+                    self._load_bearing_opposition_target_n
+                ),
+                "PhysicsV2/mean_break_load_bearing_opposition_score": (
+                    detached_mean(self._break_load_bearing_opposition_score)
                 ),
                 "PhysicsV2/twist_assisted_break_rate": self._break_twist_assisted[
                     env_ids
@@ -585,6 +1065,44 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
                     .mean()
                     .item()
                 ),
+                "PhysicsV2/bending_torsion_curriculum_assisted_break_rate": (
+                    detached_mean(
+                        self._break_bending_torsion_curriculum_assisted
+                    )
+                ),
+                "PhysicsV2/mean_break_distance_m": detached_mean(
+                    self._break_substep_distance_m
+                ),
+                "PhysicsV2/mean_break_relative_speed_m_s": detached_mean(
+                    self._break_substep_relative_speed_m_s
+                ),
+                "PhysicsV2/break_secure_support_rate": detached_mean(
+                    self._break_substep_secure_support
+                ),
+                "PhysicsV2/break_distance_ok_rate": detached_mean(
+                    self._break_substep_distance_m
+                    <= self.cfg.maximum_retained_distance_m
+                ),
+                "PhysicsV2/break_speed_ok_rate": detached_mean(
+                    self._break_substep_relative_speed_m_s
+                    <= self.cfg.maximum_retained_relative_speed_m_s
+                ),
+                "PhysicsV2/break_kinematic_retained_rate": detached_mean(
+                    self._break_substep_kinematic_retained
+                ),
+                "PhysicsV2/break_joint_ready_rate": detached_mean(
+                    self._break_substep_secure_support
+                    & self._break_substep_kinematic_retained
+                ),
+                "PhysicsV2/discovery_capacity_scale": (
+                    self._current_discovery_capacity_scale
+                ),
+                "PhysicsV2/tensile_shear_capacity_scale": (
+                    self._current_tensile_shear_capacity_scale
+                ),
+                "PhysicsV2/bending_torsion_capacity_scale": (
+                    self._current_bending_torsion_capacity_scale
+                ),
             }
         )
 
@@ -592,6 +1110,15 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
         if env_ids is None:
             env_ids = torch.arange(self.num_envs, device=self.device)
         super()._reset_idx(env_ids)
+        if hasattr(self, "_ever_retained"):
+            self._ever_retained[env_ids] = False
+            self._maximum_hold_streak[env_ids] = 0
+        if hasattr(
+            self, "_previous_perceived_relative_position_reset_pending"
+        ):
+            self._previous_perceived_relative_position_reset_pending[
+                env_ids
+            ] = True
         if not hasattr(self, "_stem_integrity"):
             return
         self._stem_integrity[env_ids] = 1.0
@@ -599,6 +1126,9 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
         self._stem_effective_twist_rad[env_ids] = 0.0
         self._stem_duration_load_ratio[env_ids] = 0.0
         self._stem_torsion_load_ratio[env_ids] = 0.0
+        self._stem_public_combined_load_ratio[env_ids] = 0.0
+        self._stem_load_progress_ready[env_ids] = False
+        self._stem_load_progress_retention_margin[env_ids] = 0.0
         self._break_tension_n[env_ids] = 0.0
         self._break_shear_n[env_ids] = 0.0
         self._break_bending_ratio[env_ids] = 0.0
@@ -606,10 +1136,15 @@ class TomatoPickPhysicsV2Env(TomatoPickPhysicsV1Env):
         self._break_integrity[env_ids] = 1.0
         self._break_twist_rad[env_ids] = 0.0
         self._break_effective_twist_rad[env_ids] = 0.0
+        self._break_thumb_force_n[env_ids] = 0.0
+        self._break_other_force_n[env_ids] = 0.0
+        self._break_load_bearing_opposition_score[env_ids] = 0.0
+        self._break_substep_grasp_quality[env_ids] = 0.0
         self._break_twist_assisted[env_ids] = False
         self._break_bend_assisted[env_ids] = False
         self._break_moderate_pull[env_ids] = False
         self._break_paper_strategy_candidate[env_ids] = False
+        self._break_bending_torsion_curriculum_assisted[env_ids] = False
 
 
 __all__ = ["TomatoPickPhysicsV2Env"]

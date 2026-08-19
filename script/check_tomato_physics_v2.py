@@ -19,6 +19,11 @@ DEFAULT_OUTPUT = (
     PROJECT_ROOT / "logs/qualification/tomato_physics_v2/isaac_smoke_gate.json"
 )
 
+from script.physics_v2_audit_inputs import (  # noqa: E402
+    AUDITED_RUNTIME_INPUTS,
+    input_sha256,
+)
+
 
 def _all_finite(value: Any, torch) -> bool:
     if isinstance(value, torch.Tensor):
@@ -55,6 +60,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         physics_module = importlib.import_module(
             "simulation.tomato_pick.physics_v2"
         )
+        math_utils = importlib.import_module("isaaclab.utils.math")
         profile = physics_module.load_physics_v2_profile()
         engineering = profile["engineering_prior_data"]
         cfg = cfg_module.TomatoPickPhysicsV2EnvCfg()
@@ -124,7 +130,63 @@ def main(argv: Sequence[str] | None = None) -> int:
         sampled_delays = {
             int(value) for value in torch.unique(env._action_delay).tolist()
         }
+        fruit_pose = env._tomato.data.root_pose_w.torch
+        ee_pose = env._robot.data.body_pose_w.torch[:, env._ee_body_id]
+        fingertip_center = env._robot.data.body_pos_w.torch[
+            :, env._fingertip_contact_body_ids
+        ].mean(dim=1)
+        expected_tip_center_relative = (
+            math_utils.quat_apply_inverse(
+                ee_pose[:, 3:7],
+                fruit_pose[:, :3]
+                + env._perceived_fruit_position_error_w
+                - fingertip_center,
+            )
+            / 0.15
+        ).clamp(-1.0, 1.0)
+        expected_position_error_w, expected_rotation_error_w = (
+            math_utils.compute_pose_error(
+                ee_pose[:, :3],
+                ee_pose[:, 3:7],
+                env._ee_command_pose_w[:, :3],
+                env._ee_command_pose_w[:, 3:7],
+            )
+        )
+        expected_controller_tracking_error = (
+            torch.cat(
+                (
+                    torch.bmm(
+                        env._grasp_basis_w.transpose(1, 2),
+                        expected_position_error_w.unsqueeze(2),
+                    ).squeeze(2),
+                    torch.bmm(
+                        env._grasp_basis_w.transpose(1, 2),
+                        expected_rotation_error_w.unsqueeze(2),
+                    ).squeeze(2),
+                ),
+                dim=1,
+            )
+            / torch.tensor(
+                cfg.action_scales,
+                device=env.device,
+                dtype=expected_position_error_w.dtype,
+            ).unsqueeze(0)
+        ).clamp(-1.0, 1.0)
         material_bins = torch.unique(contact_materials["material_bin"])
+        expected_opposition_target_n = torch.maximum(
+            torch.full_like(
+                env._fruit_mass_kg, cfg.grasp_full_contact_force_n
+            ),
+            cfg.load_bearing_opposition_safety_factor
+            * env._fruit_mass_kg
+            * 9.81
+            / (
+                2.0
+                * contact_materials["effective_pair_static_friction"].to(
+                    env.device
+                )
+            ),
+        )
         checks = {
             "task_identity_is_physics_v2": task.TASK_ID
             == "LinkAgent-TomatoPick-Physics-v2-PublicPrior-v1",
@@ -217,6 +279,76 @@ def main(argv: Sequence[str] | None = None) -> int:
             "vector_gate_exercises_multiple_material_profiles": (
                 args.num_envs < 64 or int(material_bins.numel()) >= 4
             ),
+            "load_bearing_opposition_target_matches_runtime_physics": bool(
+                torch.allclose(
+                    env._load_bearing_opposition_target_n,
+                    expected_opposition_target_n,
+                    rtol=1.0e-6,
+                    atol=1.0e-6,
+                )
+                and torch.isfinite(
+                    env._load_bearing_opposition_target_n
+                ).all()
+                and (env._load_bearing_opposition_target_n > 0.0).all()
+                and (
+                    env._load_bearing_opposition_target_n
+                    <= cfg.maximum_fingertip_force_n
+                ).all()
+            ),
+            "v2_actor_has_deployable_motion_tracking_and_command_history": (
+                tuple(observation["policy"].shape)
+                == (args.num_envs, cfg.observation_space)
+                and cfg.observation_space == 103
+                and cfg.state_space == 120
+                and torch.allclose(
+                    observation["policy"][:, 69:72],
+                    expected_tip_center_relative,
+                    rtol=1.0e-6,
+                    atol=1.0e-6,
+                )
+                and torch.allclose(
+                    observation["policy"][:, 75:81],
+                    expected_controller_tracking_error,
+                    rtol=1.0e-6,
+                    atol=1.0e-6,
+                )
+                and torch.allclose(
+                    observation["policy"][:, -22:],
+                    env._action_history[:2]
+                    .permute(1, 0, 2)
+                    .reshape(args.num_envs, 22),
+                )
+                and profile["training_observation"][
+                    "controller_tracking_error_exposed_to_actor"
+                ]
+                is True
+                and profile["training_observation"][
+                    "controller_tracking_error_history_steps"
+                ]
+                == 1
+                and profile["training_observation"][
+                    "privileged_velocity_exposed_to_actor"
+                ]
+                is False
+                and profile["training_observation"][
+                    "privileged_action_delay_exposed_to_actor"
+                ]
+                is False
+                and profile["training_observation"][
+                    "privileged_stem_wrench_exposed_to_actor"
+                ]
+                is False
+                and profile["training_observation"][
+                    "privileged_detachment_exposed_to_actor"
+                ]
+                is False
+            ),
+            "mode_aware_capacity_curriculum_is_training_only": (
+                not cfg.discovery_capacity_curriculum_enabled
+                and cfg.discovery_tensile_shear_initial_scale == 1.0
+                and cfg.discovery_bending_torsion_initial_scale == 0.10
+                and cfg.discovery_bending_torsion_requires_secure_support
+            ),
             "secure_retain_predicate_is_not_weakened": (
                 cfg.thumb_opposition_required
                 and cfg.minimum_supported_fingertips >= 2
@@ -255,6 +387,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             "steps": args.steps,
             "seed": args.seed,
             "passed": all(checks.values()),
+            "candidate_id": profile["training"]["first_success_gate"][
+                "candidate_id"
+            ],
+            "input_sha256": input_sha256(
+                PROJECT_ROOT,
+                (*AUDITED_RUNTIME_INPUTS, "script/check_tomato_physics_v2.py"),
+            ),
             "checks": checks,
             "profile_summary": {
                 "fruit_mass_kg": {
@@ -322,6 +461,17 @@ def main(argv: Sequence[str] | None = None) -> int:
                         contact_materials[
                             "effective_pair_static_friction"
                         ].max()
+                    ),
+                },
+                "load_bearing_opposition_target_n": {
+                    "mean": float(
+                        env._load_bearing_opposition_target_n.mean()
+                    ),
+                    "minimum": float(
+                        env._load_bearing_opposition_target_n.min()
+                    ),
+                    "maximum": float(
+                        env._load_bearing_opposition_target_n.max()
                     ),
                 },
                 "action_delay_steps_uniform_inclusive": engineering[

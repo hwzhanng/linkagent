@@ -1,6 +1,7 @@
-"""Frozen Clean-v5 PPO hyperparameters with a new V2 experiment identity."""
+"""Frozen Clean-v5 PPO with V2-only recurrent actor memory."""
 
 from isaaclab.utils.configclass import configclass
+from isaaclab_rl.rsl_rl import RslRlMLPModelCfg, RslRlRNNModelCfg
 
 from simulation.tomato_pick.isaac.physics_v1.agents.rsl_rl_ppo_cfg import (
     TomatoPickPhysicsV1PPORunnerCfg,
@@ -18,6 +19,24 @@ class TomatoPickPhysicsV2PPORunnerCfg(TomatoPickPhysicsV1PPORunnerCfg):
     load_run = None
     load_checkpoint = None
     resume = False
+    # Repair44 changes only the V2 actor model: the fracture-to-retention
+    # transition is partially observable to the deployable 103D policy, so a
+    # compact recurrent state supplies phase memory without adding privileged
+    # detachment state or more hand-built observation history.
+    # Critic, PPO optimizer/losses, reward, physics, and observation contracts
+    # remain inherited and unchanged.
+    actor = RslRlRNNModelCfg(
+        hidden_dims=[512, 256, 128],
+        activation="elu",
+        obs_normalization=True,
+        distribution_cfg=RslRlMLPModelCfg.GaussianDistributionCfg(
+            init_std=0.60,
+            std_type="log",
+        ),
+        rnn_type="gru",
+        rnn_hidden_dim=128,
+        rnn_num_layers=1,
+    )
 
 
 __all__ = ["TomatoPickPhysicsV2PPORunnerCfg"]

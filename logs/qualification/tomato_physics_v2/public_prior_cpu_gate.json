@@ -1,11 +1,23 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-12T16:10:08.054547+00:00",
+  "generated_at": "2026-08-17T05:23:45.721099+00:00",
   "qualification": "physics_v2_public_prior_cpu_q1_q6",
   "profile_id": "tomato_pick_physics_v2_public_prior_v1",
   "task_id": "LinkAgent-TomatoPick-Physics-v2-PublicPrior-v1",
   "seed": 2026,
   "passed": true,
+  "candidate_id": "physics_v2_retention_objective_v1",
+  "input_sha256": {
+    "script/physics_v2_audit_inputs.py": "3848dc0993f42f54179db919110d4bb4915293b37356fb1ffcdbdf5190bc9efa",
+    "simulation/config/tomato_pick_physics_v2_public_prior_v1.json": "49ace3296a9664f736591a082fe40162f4f08c85bd8b6ca194b90feb185f871f",
+    "simulation/tomato_pick/physics_v2.py": "e3424108e437d8fd65e7288ea31a33d02a296d8f9a98a5f80426887fcca85c69",
+    "simulation/tomato_pick/isaac/env.py": "dfd6b51ceaaa603f583588241630571e888976c8ea40d7273615ac22005a9655",
+    "simulation/tomato_pick/isaac/physics_v2/env_cfg.py": "f0536146158ec1ff0247f33f61c8ed9947c90bf9790f6fbd041070f2a32fc819",
+    "simulation/tomato_pick/isaac/physics_v2/env.py": "49d1d0207be1e7a20731c733e12c7677abf8a1d4a5cb4e00c152ba337b779363",
+    "simulation/tomato_pick/isaac/physics_v2/agents/rsl_rl_ppo_cfg.py": "154016859a527b14594494c7873c8671b9aa77780ad76ee5a5a700b26d2a462e",
+    "simulation/tomato_pick/reward.py": "a14861aac283e157ae022bcb1f663ec1aafd649968354ece89ee59bc18a36e78",
+    "script/qualify_tomato_physics_v2_public_priors.py": "45bad1841bc4d81351ecbc3582620762b8595cd051e9ab38cf86b44f36e3b5cb"
+  },
   "training_authorized": false,
   "training_authorization_note": "CPU Q1-Q6 pass only; an Isaac one-environment and vectorized smoke gate must pass before from-scratch PPO can be started. Physics-v1 checkpoint resume is forbidden.",
   "gates": {

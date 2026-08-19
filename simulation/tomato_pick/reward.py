@@ -152,6 +152,8 @@ def tomato_pick_reward(
     timed_out: torch.Tensor,
     stem_detached: torch.Tensor,
     alignment_alpha: float,
+    break_grasped_alignment_scale: float | None = None,
+    time_cost_alignment_scale: float | None = None,
 ) -> tuple[
     torch.Tensor,
     torch.Tensor,
@@ -188,6 +190,21 @@ def tomato_pick_reward(
 
     alpha = float(alignment_alpha)
     discovery = 1.0 - alpha
+    if break_grasped_alignment_scale is None:
+        break_credit_scale = discovery
+    else:
+        break_credit_scale = float(break_grasped_alignment_scale)
+        if not 0.0 <= break_credit_scale <= 1.0:
+            raise ValueError(
+                "break_grasped_alignment_scale must lie in [0, 1]"
+            )
+    if time_cost_alignment_scale is None:
+        time_cost_alpha = alpha
+    else:
+        time_cost_alpha = float(time_cost_alignment_scale)
+        if not 0.0 <= time_cost_alpha <= 1.0:
+            raise ValueError("time_cost_alignment_scale must lie in [0, 1]")
+    time_cost_discovery = 1.0 - time_cost_alpha
     success_weight = (
         discovery * DISCOVERY_SUCCESS_WEIGHT + alpha * ALIGNED_SUCCESS_WEIGHT
     )
@@ -210,7 +227,7 @@ def tomato_pick_reward(
         "grasp_progress": GRASP_PROGRESS_WEIGHT * grasp_progress,
         "stem_load_progress": STEM_LOAD_PROGRESS_WEIGHT * stem_progress,
         # Discovery pays maintained opposition and the actual break event.
-        "break_grasped": discovery
+        "break_grasped": break_credit_scale
         * BREAK_GRASPED_WEIGHT
         * break_grasped_score.clamp(0.0, 1.0),
         # Opposition and hold duration are new-best progress from the first
@@ -224,8 +241,8 @@ def tomato_pick_reward(
         # At gamma=.99, -0.1 on every non-terminal step plus -10 on a
         # pre-detach timeout makes waiting for any duration worth exactly -10.
         "time_cost": (
-            discovery * DISCOVERY_TIME_COST_WEIGHT
-            + alpha * ALIGNED_TIME_COST_WEIGHT
+            time_cost_discovery * DISCOVERY_TIME_COST_WEIGHT
+            + time_cost_alpha * ALIGNED_TIME_COST_WEIGHT
         ) * (~terminal).float(),
         "success": success_weight * success.float(),
         "drop_failure": alpha * DROP_FAILURE_WEIGHT * dropped.float(),

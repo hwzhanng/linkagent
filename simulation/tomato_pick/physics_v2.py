@@ -24,6 +24,335 @@ PHYSICS_V2_PROFILE_PATH = (
 )
 
 
+def v2_outcome_alignment_alpha_for_iteration(
+    learning_iteration: float,
+    *,
+    discovery_until_iteration: float = 10.0,
+    fully_aligned_iteration: float = 40.0,
+) -> float:
+    """Blend V2 discovery into outcome alignment inside the audited gate.
+
+    The inherited Clean-v5 schedule keeps drop penalties and stable-detach
+    credit disabled until update 250, which is beyond V2's mandatory
+    50-update first-success gate.  V2 evidence shows that this rewards an
+    increasingly fast break-and-drop shortcut even after transient retention
+    has been discovered.  Preserve ten discovery updates, then smoothstep the
+    unchanged objective endpoints to full alignment when public mechanics are
+    also restored at update 40.
+    """
+
+    if not 0.0 <= discovery_until_iteration < fully_aligned_iteration:
+        raise ValueError(
+            "discovery cutoff must precede the full-alignment iteration"
+        )
+    fraction = min(
+        1.0,
+        max(
+            0.0,
+            (float(learning_iteration) - discovery_until_iteration)
+            / (fully_aligned_iteration - discovery_until_iteration),
+        ),
+    )
+    return float(fraction * fraction * (3.0 - 2.0 * fraction))
+
+
+def discovery_capacity_scale(
+    learning_iteration: float,
+    *,
+    initial_scale: float,
+    hold_initial_scale_iterations: float,
+    full_capacity_iteration: float,
+) -> float:
+    """Return the auditable early-training abscission-capacity scale.
+
+    The scale is a training curriculum, never a crop prior or an evaluation
+    relaxation.  It starts near the released Physics-v1 discovery regime and
+    reaches the complete public-prior capacities before the first-success
+    gate's ten-update tail window.  Smoothstep avoids an abrupt mechanics
+    discontinuity while preserving exact endpoints.
+    """
+
+    if not 0.0 < initial_scale <= 1.0:
+        raise ValueError("initial_scale must lie in (0, 1]")
+    if full_capacity_iteration <= 0.0:
+        raise ValueError("full_capacity_iteration must be positive")
+    if not 0.0 <= hold_initial_scale_iterations < full_capacity_iteration:
+        raise ValueError(
+            "hold_initial_scale_iterations must lie in "
+            "[0, full_capacity_iteration)"
+        )
+    fraction = min(
+        1.0,
+        max(
+            0.0,
+            (
+                float(learning_iteration)
+                - float(hold_initial_scale_iterations)
+            )
+            / (
+                float(full_capacity_iteration)
+                - float(hold_initial_scale_iterations)
+            ),
+        ),
+    )
+    fraction = fraction * fraction * (3.0 - 2.0 * fraction)
+    return float(initial_scale + (1.0 - initial_scale) * fraction)
+
+
+def retention_ready_conditioned_capacity_scale(
+    curriculum_scale: float,
+    retention_ready: torch.Tensor,
+) -> torch.Tensor:
+    """Apply training assistance only to a retention-ready current state.
+
+    The caller combines strict thumb-plus-other-finger support with the
+    current 120 Hz distance and relative-speed retention predicates.  Every
+    other environment retains full public-prior capacity.  This prevents the
+    curriculum from rewarding a supported but dynamically unsafe fracture.
+    Evaluation uses a curriculum scale of one and is unchanged for every
+    environment.
+    """
+
+    if not 0.0 < float(curriculum_scale) <= 1.0:
+        raise ValueError("curriculum_scale must lie in (0, 1]")
+    if retention_ready.dtype is not torch.bool or retention_ready.ndim != 1:
+        raise ValueError("retention_ready must be a one-dimensional bool tensor")
+    assisted = torch.full_like(
+        retention_ready, float(curriculum_scale), dtype=torch.float32
+    )
+    return torch.where(retention_ready, assisted, torch.ones_like(assisted))
+
+
+def kinematic_retention_margin_score(
+    distance_m: torch.Tensor,
+    relative_speed_m_s: torch.Tensor,
+    *,
+    maximum_distance_m: float,
+    maximum_relative_speed_m_s: float,
+) -> torch.Tensor:
+    """Return centered-and-slow margin inside the strict retention envelope.
+
+    This is a bounded modifier for the existing public-load progress credit,
+    not a replacement retention predicate or a new reward term.  The score is
+    exactly zero when either unchanged retention limit is reached and cannot
+    provide credit outside either limit.  A geometric mean preserves a useful
+    gradient only when both safety margins are present.
+    """
+
+    if distance_m.shape != relative_speed_m_s.shape or distance_m.ndim != 1:
+        raise ValueError(
+            "distance and relative speed must have matching one-dimensional shapes"
+        )
+    if not bool(torch.isfinite(distance_m).all()) or bool(
+        (distance_m < 0.0).any()
+    ):
+        raise ValueError("distance must be finite and non-negative")
+    if not bool(torch.isfinite(relative_speed_m_s).all()) or bool(
+        (relative_speed_m_s < 0.0).any()
+    ):
+        raise ValueError("relative speed must be finite and non-negative")
+    if not math.isfinite(maximum_distance_m) or maximum_distance_m <= 0.0:
+        raise ValueError("maximum_distance_m must be finite and positive")
+    if (
+        not math.isfinite(maximum_relative_speed_m_s)
+        or maximum_relative_speed_m_s <= 0.0
+    ):
+        raise ValueError(
+            "maximum_relative_speed_m_s must be finite and positive"
+        )
+
+    distance_margin = (
+        1.0 - distance_m / float(maximum_distance_m)
+    ).clamp(0.0, 1.0)
+    speed_margin = (
+        1.0 - relative_speed_m_s / float(maximum_relative_speed_m_s)
+    ).clamp(0.0, 1.0)
+    return torch.sqrt(distance_margin * speed_margin)
+
+
+def issued_command_history_observation(
+    action_history: torch.Tensor,
+    *,
+    history_steps: int,
+) -> torch.Tensor:
+    """Flatten newest-to-oldest issued commands for a feed-forward actor.
+
+    ``action_history`` is controller-owned state, not a simulator truth.  A
+    delayed actuator can still have newer commands queued after the command
+    reported as previously applied.  Exposing those issued commands restores
+    the finite-order Markov state without revealing the sampled delay.
+    """
+
+    if action_history.ndim != 3:
+        raise ValueError("action_history must have shape (slots, envs, actions)")
+    if not isinstance(history_steps, int) or not 1 <= history_steps <= int(
+        action_history.shape[0]
+    ):
+        raise ValueError("history_steps must select available action-history slots")
+    selected = action_history[:history_steps].permute(1, 0, 2)
+    return selected.reshape(selected.shape[0], -1)
+
+
+def relative_position_history_observation(
+    current_relative_position: torch.Tensor,
+    previous_relative_position: torch.Tensor,
+    reset_pending: torch.Tensor,
+) -> torch.Tensor:
+    """Return a reset-safe current/previous deployable position pair."""
+
+    if (
+        current_relative_position.ndim != 2
+        or current_relative_position.shape[1] != 3
+        or previous_relative_position.shape != current_relative_position.shape
+    ):
+        raise ValueError("relative positions must have matching shape (envs, 3)")
+    if (
+        reset_pending.dtype is not torch.bool
+        or reset_pending.shape != current_relative_position.shape[:1]
+    ):
+        raise ValueError("reset_pending must be a one-dimensional bool tensor")
+    initialized_previous = torch.where(
+        reset_pending.unsqueeze(1),
+        current_relative_position,
+        previous_relative_position,
+    )
+    return torch.cat((current_relative_position, initialized_previous), dim=1)
+
+
+def normalized_controller_tracking_error(
+    position_error_w: torch.Tensor,
+    rotation_error_w: torch.Tensor,
+    grasp_basis_w: torch.Tensor,
+    action_scales: torch.Tensor,
+) -> torch.Tensor:
+    """Encode command tracking error in local one-action-step units.
+
+    Command target and encoder forward kinematics are controller-owned at
+    deployment. Their error is a proprioceptive load/release signal that does
+    not reveal the simulated stem wrench, damage, detachment, or gate state.
+    """
+
+    if (
+        position_error_w.ndim != 2
+        or position_error_w.shape[1] != 3
+        or rotation_error_w.shape != position_error_w.shape
+        or grasp_basis_w.shape
+        != (position_error_w.shape[0], 3, 3)
+        or action_scales.shape != (6,)
+    ):
+        raise ValueError(
+            "tracking errors, basis, and scales must have shapes "
+            "(envs,3), (envs,3,3), and (6,)"
+        )
+    if not bool(
+        torch.isfinite(position_error_w).all()
+        and torch.isfinite(rotation_error_w).all()
+        and torch.isfinite(grasp_basis_w).all()
+        and torch.isfinite(action_scales).all()
+        and (action_scales > 0.0).all()
+    ):
+        raise ValueError("tracking-error inputs must be finite with positive scales")
+    position_error_g = torch.bmm(
+        grasp_basis_w.transpose(1, 2), position_error_w.unsqueeze(2)
+    ).squeeze(2)
+    rotation_error_g = torch.bmm(
+        grasp_basis_w.transpose(1, 2), rotation_error_w.unsqueeze(2)
+    ).squeeze(2)
+    return (
+        torch.cat((position_error_g, rotation_error_g), dim=1)
+        / action_scales.unsqueeze(0)
+    ).clamp(-1.0, 1.0)
+
+
+def load_bearing_opposition_target_n(
+    fruit_mass_kg: torch.Tensor,
+    effective_pair_static_friction: torch.Tensor,
+    *,
+    full_contact_force_n: float,
+    safety_factor: float,
+    gravity_m_s2: float = 9.81,
+) -> torch.Tensor:
+    """Return the per-side pinch force needed to support each fruit.
+
+    A thumb/finger pinch supplies two friction interfaces, so the static load
+    balance is ``2 * mu * normal_force >= mass * gravity``.  The target is a
+    training-only normalization scale: it never changes contact mechanics,
+    termination, retention, or success.  The inherited full-contact force is
+    retained as a floor so easy profiles do not receive denser credit than the
+    released Physics-v1 shaping signal.
+    """
+
+    if fruit_mass_kg.shape != effective_pair_static_friction.shape:
+        raise ValueError("mass and pair friction must have the same shape")
+    if fruit_mass_kg.ndim != 1:
+        raise ValueError("mass and pair friction must have shape (num_envs,)")
+    if not bool(torch.isfinite(fruit_mass_kg).all()) or bool(
+        (fruit_mass_kg <= 0.0).any()
+    ):
+        raise ValueError("fruit mass must be finite and positive")
+    if not bool(torch.isfinite(effective_pair_static_friction).all()) or bool(
+        (effective_pair_static_friction <= 0.0).any()
+    ):
+        raise ValueError("pair friction must be finite and positive")
+    if not math.isfinite(full_contact_force_n) or full_contact_force_n <= 0.0:
+        raise ValueError("full_contact_force_n must be finite and positive")
+    if not math.isfinite(safety_factor) or safety_factor < 1.0:
+        raise ValueError("safety_factor must be finite and at least one")
+    if not math.isfinite(gravity_m_s2) or gravity_m_s2 <= 0.0:
+        raise ValueError("gravity_m_s2 must be finite and positive")
+
+    static_load_target = (
+        float(safety_factor)
+        * fruit_mass_kg
+        * float(gravity_m_s2)
+        / (2.0 * effective_pair_static_friction)
+    )
+    return torch.maximum(
+        static_load_target,
+        torch.full_like(static_load_target, float(full_contact_force_n)),
+    )
+
+
+def load_bearing_opposition_score(
+    finger_force_n: torch.Tensor,
+    opposition_target_n: torch.Tensor,
+    *,
+    full_contact_force_n: float,
+) -> torch.Tensor:
+    """Return staged contact-discovery then load-bearing opposition progress.
+
+    Half of the bounded score preserves the inherited 0.60 N contact-discovery
+    landscape.  The other half continues smoothly toward the profile-specific
+    static-load target.  This reallocates the existing unit score instead of
+    adding reward weight or weakening any outcome predicate.
+    """
+
+    if finger_force_n.ndim != 2 or finger_force_n.shape[1] != 5:
+        raise ValueError("finger_force_n must have shape (num_envs, 5)")
+    if opposition_target_n.shape != (finger_force_n.shape[0],):
+        raise ValueError("opposition_target_n must have shape (num_envs,)")
+    if not bool(torch.isfinite(finger_force_n).all()):
+        raise ValueError("finger force must be finite")
+    if not bool(torch.isfinite(opposition_target_n).all()) or bool(
+        (opposition_target_n <= 0.0).any()
+    ):
+        raise ValueError("opposition target must be finite and positive")
+    if not math.isfinite(full_contact_force_n) or full_contact_force_n <= 0.0:
+        raise ValueError("full_contact_force_n must be finite and positive")
+
+    contact_normalized = (
+        finger_force_n / float(full_contact_force_n)
+    ).clamp(0.0, 1.0)
+    load_normalized = (
+        finger_force_n / opposition_target_n.unsqueeze(1)
+    ).clamp(0.0, 1.0)
+    contact_score = contact_normalized[:, 0] * contact_normalized[
+        :, 1:
+    ].amax(dim=1)
+    load_score = load_normalized[:, 0] * load_normalized[:, 1:].amax(dim=1)
+    return 0.5 * (contact_score + load_score)
+
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -91,6 +420,105 @@ def load_physics_v2_profile(
         raise ValueError("Physics-v2 must reject every Physics-v1 checkpoint")
     if training.get("same_profile_full_state_resume_allowed") is not True:
         raise ValueError("Physics-v2 must allow auditable same-profile continuation")
+    training_curriculum = profile.get("training_curriculum", {})
+    tensile_shear_scale = float(
+        training_curriculum.get("initial_tensile_shear_capacity_scale", 0.0)
+    )
+    bending_torsion_scale = float(
+        training_curriculum.get(
+            "initial_bending_torsion_capacity_scale", 0.0
+        )
+    )
+    hold_iteration = float(
+        training_curriculum.get("hold_initial_scale_iterations", -1.0)
+    )
+    full_iteration = float(
+        training_curriculum.get("full_public_prior_iteration", -1.0)
+    )
+    if tensile_shear_scale != 1.0:
+        raise ValueError(
+            "Physics-v2 discovery must preserve full tensile/shear capacity"
+        )
+    if not 0.0 < bending_torsion_scale <= 1.0:
+        raise ValueError(
+            "initial bending/torsion capacity scale must lie in (0, 1]"
+        )
+    if not 0.0 <= hold_iteration < full_iteration:
+        raise ValueError("Physics-v2 capacity curriculum interval is invalid")
+    if (
+        training_curriculum.get(
+            "bending_torsion_assistance_requires_secure_support"
+        )
+        is not True
+    ):
+        raise ValueError(
+            "Physics-v2 bending/torsion assistance must require secure support"
+        )
+    if (
+        training_curriculum.get(
+            "bending_torsion_assistance_requires_kinematic_retention"
+        )
+        is not True
+    ):
+        raise ValueError(
+            "Physics-v2 bending/torsion assistance must require current "
+            "kinematic retention"
+        )
+    if training_curriculum.get("stem_load_progress_uses_public_capacity") is not True:
+        raise ValueError(
+            "Physics-v2 stem-load progress must use public capacity"
+        )
+    if (
+        training_curriculum.get(
+            "stem_load_progress_requires_kinematic_retention"
+        )
+        is not True
+    ):
+        raise ValueError(
+            "Physics-v2 stem-load progress must require current kinematic "
+            "retention during assisted training"
+        )
+    if (
+        training_curriculum.get(
+            "stem_load_progress_uses_retention_margin"
+        )
+        is not True
+    ):
+        raise ValueError(
+            "Physics-v2 stem-load progress must use the strict-envelope "
+            "retention margin during assisted training"
+        )
+    training_observation = profile.get("training_observation", {})
+    expected_observation_contract = {
+        "base_actor_dimension": 66,
+        "physics_v2_actor_dimension": 103,
+        "base_critic_dimension": 83,
+        "physics_v2_critic_dimension": 120,
+        "issued_command_history_steps": 2,
+        "maximum_sampled_action_delay_steps": 2,
+        "controller_tracking_error_exposed_to_actor": True,
+        "controller_tracking_error_history_steps": 1,
+        "privileged_velocity_exposed_to_actor": False,
+        "privileged_action_delay_exposed_to_actor": False,
+        "privileged_stem_wrench_exposed_to_actor": False,
+        "privileged_detachment_exposed_to_actor": False,
+    }
+    if any(
+        training_observation.get(key) != value
+        for key, value in expected_observation_contract.items()
+    ):
+        raise ValueError(
+            "Physics-v2 temporal observation contract changed or exposed "
+            "privileged simulator state"
+        )
+    opposition_shaping = profile.get("training_shaping", {}).get(
+        "load_bearing_opposition", {}
+    )
+    if opposition_shaping.get("enabled") is not True:
+        raise ValueError("Physics-v2 load-bearing opposition shaping must be enabled")
+    opposition_safety_factor = float(opposition_shaping.get("safety_factor", 0.0))
+    if not math.isfinite(opposition_safety_factor) or opposition_safety_factor < 1.0:
+        raise ValueError("load-bearing opposition safety factor must be at least one")
     shear = engineering["abscission_zone_shear"][
         "capacity_ratio_to_diameter_conditioned_tensile"
     ]["parameters"]
@@ -916,6 +1344,11 @@ def update_multimode_abscission(
 __all__ = [
     "PHYSICS_V2_PROFILE_PATH",
     "combined_abscission_load_ratio",
+    "discovery_capacity_scale",
+    "issued_command_history_observation",
+    "normalized_controller_tracking_error",
+    "relative_position_history_observation",
+    "retention_ready_conditioned_capacity_scale",
     "decompose_abscission_load",
     "load_physics_v2_profile",
     "quantize_engineering_contact_profiles",
@@ -926,4 +1359,5 @@ __all__ = [
     "sample_public_task_orientation_categories",
     "update_multimode_abscission",
     "update_twist_integrity",
+    "v2_outcome_alignment_alpha_for_iteration",
 ]

@@ -16,6 +16,7 @@ task="LinkAgent-TomatoPick-Physics-v2-PublicPrior-v1"
 callback="simulation.tomato_pick.isaac.physics_v2.register_task"
 log_root="${project_root}/logs/rsl_rl/${experiment}"
 qualification_root="${project_root}/logs/qualification/tomato_physics_v2"
+profile="${project_root}/simulation/config/tomato_pick_physics_v2_public_prior_v1.json"
 state_file="${qualification_root}/curve_controller_state.json"
 history_file="${qualification_root}/curve_controller_history.jsonl"
 controller_log="${qualification_root}/curve_controller.log"
@@ -32,13 +33,51 @@ for command_name in flock jq sha256sum awk pgrep; do
     exit 1
   }
 done
+gate_envs="$(jq -r '.training.first_success_gate.num_envs' "${profile}")"
+gate_updates="$(jq -r '.training.first_success_gate.updates' "${profile}")"
+gate_seed="$(jq -r '.training.first_success_gate.seed' "${profile}")"
+gate_candidate="$(jq -r '.training.first_success_gate.candidate_id' "${profile}")"
+gate_output="$(jq -r '.training.first_success_gate.output' "${profile}")"
+first_success_gate="${project_root}/${gate_output}"
 [[ -x "${python_bin}" ]] || { echo "managed Isaac Python is unavailable"; exit 1; }
 [[ -f "${train_entry}" ]] || { echo "Isaac training entry is unavailable"; exit 1; }
+[[ -s "${first_success_gate}" ]] || {
+  echo "Physics-v2 configured first-success gate is missing; refusing training"
+  exit 1
+}
+jq -e \
+  --argjson envs "${gate_envs}" \
+  --argjson updates "${gate_updates}" \
+  --argjson seed "${gate_seed}" \
+  --arg candidate "${gate_candidate}" \
+  '.passed == true and .num_envs == $envs and .iterations == $updates and .seed == $seed and .configured_gate_spec.candidate_id == $candidate and .checks.tail_full_public_prior_capacity == true' \
+  "${first_success_gate}" >/dev/null || {
+  echo "Physics-v2 configured first-success gate did not pass; refusing training"
+  exit 1
+}
+for relative_path in \
+  script/physics_v2_audit_inputs.py \
+  simulation/config/tomato_pick_physics_v2_public_prior_v1.json \
+  simulation/tomato_pick/physics_v2.py \
+  simulation/tomato_pick/isaac/env.py \
+  simulation/tomato_pick/isaac/physics_v2/env_cfg.py \
+  simulation/tomato_pick/isaac/physics_v2/env.py \
+  simulation/tomato_pick/isaac/physics_v2/agents/rsl_rl_ppo_cfg.py \
+  simulation/tomato_pick/reward.py \
+  script/gate_tomato_physics_v2_first_success.py; do
+  expected_hash="$(jq -r --arg path "${relative_path}" '.input_sha256[$path] // empty' "${first_success_gate}")"
+  current_hash="$(sha256sum "${project_root}/${relative_path}" | awk '{print $1}')"
+  [[ -n "${expected_hash}" && "${expected_hash}" == "${current_hash}" ]] || {
+    echo "Physics-v2 first-success gate is stale for ${relative_path}; refusing training"
+    exit 1
+  }
+done
 exec 9>"${lock_file}"
 flock -n 9 || { echo "another Physics-v2 curve controller owns the lock"; exit 1; }
 
 export OMNI_KIT_ACCEPT_EULA=YES
 export PYTHONPATH="${project_root}"
+export TOMATO_V2_DISCOVERY_CAPACITY_CURRICULUM=1
 unset WANDB_RUN_ID WANDB_RESUME
 
 latest_matching_run() {

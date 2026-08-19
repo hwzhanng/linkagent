@@ -890,10 +890,7 @@ class TomatoPickEnv(DirectRLEnv):
             self._last_physical_force_n,
             full_contact_force_n=self.cfg.grasp_full_contact_force_n,
         )
-        opposed = opposed_contact_score(
-            self._last_physical_force_n,
-            full_contact_force_n=self.cfg.grasp_full_contact_force_n,
-        )
+        opposed = self._opposed_reward_score()
         break_quality = break_grasp_quality(
             self._last_physical_force_n,
             contact_force_n=self.cfg.grasp_full_contact_force_n,
@@ -919,7 +916,7 @@ class TomatoPickEnv(DirectRLEnv):
             float(self.cfg.reward_curriculum_iteration_offset)
             + float(self.common_step_counter) / float(self.cfg.reward_rollout_steps)
         )
-        alignment_alpha = alignment_alpha_for_iteration(learning_iteration)
+        alignment_alpha = self._reward_alignment_alpha(learning_iteration)
         (
             reward,
             next_reach,
@@ -952,6 +949,12 @@ class TomatoPickEnv(DirectRLEnv):
             timed_out=self._timed_out,
             stem_detached=self._stem_detached,
             alignment_alpha=alignment_alpha,
+            break_grasped_alignment_scale=(
+                self._break_grasped_reward_scale(alignment_alpha)
+            ),
+            time_cost_alignment_scale=(
+                self._time_cost_alignment_scale(alignment_alpha)
+            ),
         )
         self._best_reach_score.copy_(next_reach)
         self._best_grasp_score.copy_(next_grasp)
@@ -971,6 +974,29 @@ class TomatoPickEnv(DirectRLEnv):
         if self.cfg.strict_runtime_checks and not bool(torch.isfinite(reward).all()):
             raise RuntimeError("reward contains NaN or Inf")
         return reward
+
+    def _reward_alignment_alpha(self, learning_iteration: float) -> float:
+        """Return the task objective blend without changing base behavior."""
+
+        return alignment_alpha_for_iteration(learning_iteration)
+
+    def _break_grasped_reward_scale(self, alignment_alpha: float) -> float:
+        """Fade inherited coarse break credit at the aligned endpoint."""
+
+        return 1.0 - float(alignment_alpha)
+
+    def _time_cost_alignment_scale(self, alignment_alpha: float) -> float:
+        """Preserve the inherited objective's dense time-cost blend."""
+
+        return float(alignment_alpha)
+
+    def _opposed_reward_score(self) -> torch.Tensor:
+        """Return the task-specific bounded thumb-opposition shaping score."""
+
+        return opposed_contact_score(
+            self._last_physical_force_n,
+            full_contact_force_n=self.cfg.grasp_full_contact_force_n,
+        )
 
     def _stem_progress_reward_score(self, opposed: torch.Tensor) -> torch.Tensor:
         """Return the task-specific bounded stem progress score.
