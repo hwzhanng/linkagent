@@ -1,0 +1,35 @@
+{
+  "models_file": "_model.yaml",
+  "perception_file": "_perception.yaml",
+  "agent": {
+    "model": "offline_hardware_read_only_denied",
+    "max_iterations": 5,
+    "max_tool_calls": 3,
+    "max_tool_calls_per_turn": 1
+  },
+  "env": {
+    "type": "mock",
+    "observations": [
+      {
+        "sequence": 0,
+        "timestamp_s": 0.0,
+        "metadata": {"validation": "hardware-admission-closed"}
+      }
+    ]
+  },
+  "task": {
+    "type": "hardware_read_only_validation",
+    "hardware_access_enabled": false,
+    "required_tools": [
+      "get_live_arm_state",
+      "compute_live_shadow_ik",
+      "get_live_camera_preview"
+    ],
+    "deployment_path": "config/robot_bimanual_offline.yaml",
+    "viewer_status_url": "http://127.0.0.1:8080/api/status",
+    "viewer_url": "http://127.0.0.1:8080/",
+    "rgb_stream_url": "http://127.0.0.1:8080/stream/rgb.mjpg",
+    "depth_stream_url": "http://127.0.0.1:8080/stream/depth.mjpg"
+  },
+  "runtime": {"max_steps": 1}
+}

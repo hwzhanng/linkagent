@@ -52,8 +52,14 @@ def build_task(
 from task.locate_target import LocateTargetTask  # noqa: E402
 from task.agri_pick import AgriPickTask  # noqa: E402
 from task.harvest_cycle import HarvestCycleTask  # noqa: E402
+from task.api_validation import (  # noqa: E402
+    HardwareCapabilityValidationTask,
+    HardwareReadOnlyValidationTask,
+)
 
 
 register_task("locate_target", LocateTargetTask)
 register_task("agri_pick", AgriPickTask)
 register_task("harvest_cycle", HarvestCycleTask)
+register_task("hardware_capability_validation", HardwareCapabilityValidationTask)
+register_task("hardware_read_only_validation", HardwareReadOnlyValidationTask)

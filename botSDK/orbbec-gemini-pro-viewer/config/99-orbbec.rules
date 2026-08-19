@@ -1,0 +1,3 @@
+# Read-only access for the Orbbec Gemini Pro USB RGB/depth pair.
+# This rule grants camera-node access only; it does not authorize robot/CAN control.
+SUBSYSTEM=="usb", ATTR{idVendor}=="2bc5", MODE="0660", GROUP="video", TAG+="uaccess"

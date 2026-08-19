@@ -22,6 +22,16 @@ cd /home/cle/linkbot/orbbec-gemini-pro-viewer
 
 首次在另一台机器上运行时，`start.sh` 会调用 `scripts/install.sh`：创建 Python 3.11 虚拟环境、安装网页依赖，并从官方 `v1.3.4` 标签编译 Orbbec Python SDK。系统 Python 不会被修改。
 
+如需为本地 `video` 组开放相机 USB 节点，可审阅并安装仓库提供的最小 udev 规则：
+
+```bash
+sudo install -m 0644 config/99-orbbec.rules /etc/udev/rules.d/99-orbbec.rules
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+
+该规则只匹配 Orbbec USB 厂商 ID，不授予机器人或 CAN 控制权限。
+
 ## 工作方式
 
 - 深度线程通过项目内编译的 Orbbec SDK v1 读取传感器。

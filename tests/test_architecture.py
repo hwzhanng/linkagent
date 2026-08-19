@@ -160,7 +160,14 @@ class ArchitectureBoundaryTests(unittest.TestCase):
         self.assertEqual({"mock"}, set(PERCEPTION_REGISTRY))
         self.assertEqual({"mock"}, set(MANIPULATION_REGISTRY))
         self.assertEqual(
-            {"locate_target", "agri_pick", "harvest_cycle"}, set(TASK_REGISTRY)
+            {
+                "locate_target",
+                "agri_pick",
+                "harvest_cycle",
+                "hardware_capability_validation",
+                "hardware_read_only_validation",
+            },
+            set(TASK_REGISTRY),
         )
         self.assertEqual(
             {"mock", "fake_gateway", "linkbot_g20_shadow"},

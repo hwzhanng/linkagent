@@ -1,0 +1,33 @@
+{
+  "models_file": "_model.yaml",
+  "perception_file": "_perception.yaml",
+  "agent": {
+    "model": "offline_hardware_capability_validation",
+    "max_iterations": 5,
+    "max_tool_calls": 3,
+    "max_tool_calls_per_turn": 1
+  },
+  "env": {
+    "type": "mock",
+    "observations": [
+      {
+        "sequence": 0,
+        "timestamp_s": 0.0,
+        "metadata": {
+          "validation": "offline-only",
+          "hardware_accessed": false
+        }
+      }
+    ]
+  },
+  "task": {
+    "type": "hardware_capability_validation",
+    "stage": "p0",
+    "required_tools": [
+      "get_validation_capabilities",
+      "probe_inverse_kinematics",
+      "probe_camera_preview"
+    ]
+  },
+  "runtime": {"max_steps": 1}
+}

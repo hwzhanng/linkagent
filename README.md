@@ -21,8 +21,8 @@ LinkAgent 不是一群 Agent 相互讨论，而是一个 `TopAgent` 在明确边
 下方展示的番茄采摘，就是这套架构中的一个可运行任务。
 
 当前仓库收敛为两条清晰主线：一套单 Agent 闭环框架，以及三项可复现的 PPO 实验。
-真实相机、感知模型和真机动作尚未接入；默认 Agent 示例仍使用确定性 mock，PPO 结果均来自
-Isaac 仿真。训练 checkpoint、resolved config、固定评测和续训入口随对应实验发布。
+生产采摘链路中的真实感知和真机动作尚未接入；默认 Agent 示例仍使用确定性 mock，PPO
+结果均来自 Isaac 仿真。训练 checkpoint、resolved config、固定评测和续训入口随对应实验发布。
 
 <details>
 <summary><strong>展开查看 Agent 能力与集成边界</strong></summary>
@@ -35,6 +35,10 @@ Verifier 负责确认果实脱离、稳定持有且没有滑落。`HarvestCycleT
 视觉 Worker 与 Agent 核心进程隔离；三维几何始终由本地 aligned depth 和相机内参计算，
 VLM 不直接提供机器人位姿或动作。完整 PhysX 验收边界见
 [`ISAAC_SIM_ACCEPTANCE.md`](./docs/harvest_cycle/ISAAC_SIM_ACCEPTANCE.md)。
+
+独立的能力验证 Task 额外提供离线 IK/相机 Replay，以及真机遥测、Shadow IK 和本地
+Orbbec 状态三个只读工具。真机适配器默认关闭，必须同时由配置和环境变量显式放行；工具
+不暴露使能、目标写入、轨迹或手部控制。
 
 </details>
 
