@@ -82,6 +82,8 @@ def main(
         env_cfg.seed = args_cli.seed
         env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
         env_cfg.log_dir = str(checkpoint.parent)
+        if hasattr(env_cfg, "detailed_step_diagnostics"):
+            env_cfg.detailed_step_diagnostics = True
 
         configure_seed(args_cli.seed, True)
         gym_env = gym.make(args_cli.task, cfg=env_cfg)
@@ -109,6 +111,7 @@ def main(
         logged_retained_count = 0.0
         logged_hold_sum = 0.0
         logged_reward_term_sums: dict[str, float] = {}
+        logged_physics_v2_sums: dict[str, float] = {}
         raw_action_abs_sum = 0.0
         action_abs_sum = 0.0
         action_sq_sum = 0.0
@@ -148,6 +151,7 @@ def main(
         maximum_stem_damage = 0.0
         maximum_stem_load_ratio = 0.0
         physics_v1_break_audit_sums: dict[str, float] = {}
+        physics_v2_strategy_audit_sums: dict[str, float] = {}
         started = time.perf_counter()
 
         for _ in range(args_cli.steps):
@@ -231,12 +235,23 @@ def main(
                             logged_reward_term_sums.get(name, 0.0)
                             + float(value) * reset_count
                         )
+                    elif key.startswith("PhysicsV2/"):
+                        name = key.removeprefix("PhysicsV2/")
+                        logged_physics_v2_sums[name] = (
+                            logged_physics_v2_sums.get(name, 0.0)
+                            + float(value) * reset_count
+                        )
 
             step = extras.get("step", {})
             for key, value in step.items():
                 if key.startswith("physics_v1_break_"):
                     physics_v1_break_audit_sums[key] = (
                         physics_v1_break_audit_sums.get(key, 0.0) + float(value)
+                    )
+                elif key.startswith("physics_v2_"):
+                    physics_v2_strategy_audit_sums[key] = (
+                        physics_v2_strategy_audit_sums.get(key, 0.0)
+                        + float(value)
                     )
             success_events += int(step.get("success_count", 0))
             drop_events += int(step.get("drop_count", 0))
@@ -296,6 +311,16 @@ def main(
                 for name, value in sorted(logged_reward_term_sums.items())
             },
         }
+        if logged_physics_v2_sums:
+            result["physics_v2_episode_strategy_metrics"] = {
+                name: value / logged_reset_count
+                for name, value in sorted(logged_physics_v2_sums.items())
+            }
+        if physics_v2_strategy_audit_sums:
+            result["physics_v2_step_strategy_audit"] = {
+                key.removeprefix("physics_v2_"): value
+                for key, value in sorted(physics_v2_strategy_audit_sums.items())
+            }
         if has_stem_damage_diagnostics:
             mean_damage = stem_damage_sum / stem_sample_count
             mean_load = stem_load_sum / stem_sample_count

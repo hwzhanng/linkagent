@@ -20,9 +20,19 @@ SOURCE_USD = (
 OUTPUT_USD = SOURCE_USD.with_name(
     "linkbot_bimanual_sdk_training_mass1kg_physics_v1.usda"
 )
+SOURCE_BASE_USD = SOURCE_USD.parent / "payloads/base.usda"
+SOURCE_INSTANCES_USD = SOURCE_USD.parent / "payloads/instances.usda"
+PHYSICS_V1_BASE_USD = SOURCE_USD.parent / "payloads/base_physics_v1.usda"
+PHYSICS_V1_INSTANCES_USD = (
+    SOURCE_USD.parent / "payloads/instances_physics_v1.usda"
+)
 EXPECTED_MATRIX_SHA256 = (
     "16653f7ed1d19e6b6bf0a5e25b74ad57c584c74eb548e8af18f3b2a473cd5755"
 )
+SELF_COLLISION_REPRESENTATION = (
+    "distal_envelope_instanced_prototypes_v5_source_convex_decomposition"
+)
+ACTIVE_COLLIDER_APPROXIMATION = "convexDecomposition"
 PROFILE_PATH = PROJECT_ROOT / "simulation/config/tomato_pick_physics_v1.yaml"
 RIGHT_HAND_MIMICS = {
     "right_hand_thumb_joint4": ("right_hand_thumb_joint3", 1.11),
@@ -41,6 +51,13 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _canonicalize_text_layer(path: Path) -> None:
+    """Keep generated USDA stable for hashing and clean diffs."""
+
+    payload = path.read_bytes()
+    path.write_bytes(payload.rstrip(b"\n") + b"\n")
+
+
 def build(source: Path, output: Path) -> dict[str, object]:
     # This builder intentionally uses only core USD schemas.  PhysxSchema is
     # registered by Kit at runtime and is not available in the lightweight
@@ -51,11 +68,37 @@ def build(source: Path, output: Path) -> dict[str, object]:
         raise ValueError("Physics-v1 asset must not overwrite the source USD")
     if not source.is_file():
         raise FileNotFoundError(source)
+    if source.parent.resolve() != output.parent.resolve():
+        raise ValueError(
+            "Physics-v1 source and output must share an asset directory so "
+            "their relative payload references remain reproducible"
+        )
     profile = json.loads(PROFILE_PATH.read_text(encoding="utf-8"))
     hand = profile["hand"]
     contact = profile["contact"]
     output.parent.mkdir(parents=True, exist_ok=True)
+    payload_dir = output.parent / "payloads"
+    source_base = payload_dir / SOURCE_BASE_USD.name
+    source_instances = payload_dir / SOURCE_INSTANCES_USD.name
+    physics_base = payload_dir / PHYSICS_V1_BASE_USD.name
+    physics_instances = payload_dir / PHYSICS_V1_INSTANCES_USD.name
+    if not source_base.is_file() or not source_instances.is_file():
+        raise FileNotFoundError("source robot payload layers are incomplete")
+    shutil.copy2(source_instances, physics_instances)
+    physics_base.write_text(
+        source_base.read_text(encoding="utf-8").replace(
+            "@./instances.usda@", "@./instances_physics_v1.usda@"
+        ),
+        encoding="utf-8",
+    )
+    _canonicalize_text_layer(physics_base)
     shutil.copy2(source, output)
+    output.write_text(
+        output.read_text(encoding="utf-8").replace(
+            "@./payloads/base.usda@", "@./payloads/base_physics_v1.usda@"
+        ),
+        encoding="utf-8",
+    )
     stage = Usd.Stage.Open(str(output))
     if stage is None:
         raise RuntimeError(f"could not open copied Physics-v1 USD: {output}")
@@ -210,7 +253,10 @@ def build(source: Path, output: Path) -> dict[str, object]:
     # PhysX supports only one collision group per articulation, so collision
     # groups cannot express the selective active-hand policy.  Instead, the
     # coarse arm, parked left hand, and overlapping hand mounting carriers are
-    # made query-only by disabling contact solving on those rigid bodies.  The
+    # removed from collision broad phase as well as contact solving.  Keeping
+    # their collision meshes enabled with solveContact=false still makes PhysX
+    # generate the root-wide articulation self-collision candidate set.  The
+    # visual/inertial articulation is unchanged.  The
     # 12 palm/distal-pad proxy bodies collide with the fruit and one another,
     # preventing visible finger/thumb penetration without making imported
     # proximal convex hulls fight the solver during every closure.
@@ -242,7 +288,64 @@ def build(source: Path, output: Path) -> dict[str, object]:
             f"expected 7 active-hand filtered pairs, got {stored_active_hand_pairs}"
         )
 
+    def owned_collision_shapes(body_prim):
+        """Return collision shapes whose nearest rigid ancestor is body_prim."""
+
+        owned = []
+        for candidate in Usd.PrimRange(body_prim, Usd.TraverseInstanceProxies()):
+            if candidate == body_prim or not candidate.HasAPI(
+                UsdPhysics.CollisionAPI
+            ):
+                continue
+            ancestor = candidate.GetParent()
+            belongs_to_child_body = False
+            while ancestor and ancestor != body_prim:
+                if ancestor.HasAPI(UsdPhysics.RigidBodyAPI):
+                    belongs_to_child_body = True
+                    break
+                ancestor = ancestor.GetParent()
+            if not belongs_to_child_body:
+                owned.append(candidate)
+        return owned
+
+    def collision_prototype_path(shape) -> Sdf.Path:
+        instance_root = shape.GetParent()
+        if not instance_root.IsInstance():
+            raise RuntimeError(
+                f"collision shape is not backed by an instance: {shape.GetPath()}"
+            )
+        matching_specs = [
+            spec
+            for spec in instance_root.GetPrimStack()
+            if Path(spec.layer.realPath or spec.layer.identifier).resolve()
+            == physics_instances.resolve()
+        ]
+        if len(matching_specs) != 1:
+            raise RuntimeError(
+                f"could not resolve Physics-v1 collision prototype for {shape.GetPath()}"
+            )
+        return matching_specs[0].path
+
+    active_prototype_paths: set[Sdf.Path] = set()
+    active_collision_shape_count = 0
+    for body_path in sorted(external_contact_paths):
+        prim = stage.GetPrimAtPath(body_path)
+        shapes = owned_collision_shapes(prim)
+        if len(shapes) != 1:
+            raise RuntimeError(
+                f"expected one owned collision shape for {body_path}, got {len(shapes)}"
+            )
+        active_prototype_paths.add(collision_prototype_path(shapes[0]))
+        active_collision_shape_count += 1
+    if active_collision_shape_count != 12:
+        raise RuntimeError(
+            "expected 12 active collision shapes, got "
+            f"{active_collision_shape_count}"
+        )
+
     outside_solve_contact_disabled = 0
+    outside_collision_shapes_disabled = 0
+    outside_prototype_paths: set[Sdf.Path] = set()
     for body_path in rigid_body_paths:
         if body_path in external_contact_paths:
             continue
@@ -252,12 +355,80 @@ def build(source: Path, output: Path) -> dict[str, object]:
         prim.CreateAttribute(
             "physxRigidBody:solveContact", Sdf.ValueTypeNames.Bool
         ).Set(False)
+        shapes = owned_collision_shapes(prim)
+        if len(shapes) != 1:
+            raise RuntimeError(
+                f"expected one owned collision shape for {body_path}, got {len(shapes)}"
+            )
+        outside_prototype_paths.add(collision_prototype_path(shapes[0]))
+        outside_collision_shapes_disabled += 1
         outside_solve_contact_disabled += 1
     if outside_solve_contact_disabled != 59:
         raise RuntimeError(
             "expected contact solving disabled on 59 out-of-scope bodies, got "
             f"{outside_solve_contact_disabled}"
         )
+    if outside_collision_shapes_disabled != 59:
+        raise RuntimeError(
+            "expected collision disabled on 59 out-of-scope shapes, got "
+            f"{outside_collision_shapes_disabled}"
+        )
+    if len(active_prototype_paths) != 8 or len(outside_prototype_paths) != 41:
+        raise RuntimeError(
+            "unexpected collision prototype counts: "
+            f"active={len(active_prototype_paths)}, "
+            f"outside={len(outside_prototype_paths)}"
+        )
+    if active_prototype_paths & outside_prototype_paths:
+        raise RuntimeError("active and disabled collision prototypes overlap")
+
+    # Author collision policy once on shared Physics-v1 prototypes.  Robot
+    # links and all visual geometry remain instanceable in every environment.
+    # This avoids materializing 71 mesh hierarchies per clone while still
+    # leaving exactly twelve active palm/distal collision bodies.
+    stage.GetRootLayer().Save()
+    prototype_stage = Usd.Stage.Open(str(physics_instances))
+    if prototype_stage is None:
+        raise RuntimeError(f"could not open Physics-v1 instances: {physics_instances}")
+
+    def prototype_collision_shape(prototype_path: Sdf.Path):
+        prototype = prototype_stage.GetPrimAtPath(prototype_path)
+        shapes = [
+            candidate
+            for candidate in Usd.PrimRange(prototype)
+            if candidate.HasAPI(UsdPhysics.CollisionAPI)
+        ]
+        if len(shapes) != 1:
+            raise RuntimeError(
+                f"expected one collider in prototype {prototype_path}, got {len(shapes)}"
+            )
+        return shapes[0]
+
+    for prototype_path in sorted(active_prototype_paths, key=str):
+        shape = prototype_collision_shape(prototype_path)
+        mesh_collision = UsdPhysics.MeshCollisionAPI(shape)
+        if not mesh_collision:
+            raise RuntimeError(f"active collision proxy is not a mesh: {shape.GetPath()}")
+        source_approximation = mesh_collision.GetApproximationAttr().Get()
+        if source_approximation != ACTIVE_COLLIDER_APPROXIMATION:
+            raise RuntimeError(
+                "source active collision approximation changed: "
+                f"expected={ACTIVE_COLLIDER_APPROXIMATION}, "
+                f"actual={source_approximation}, path={shape.GetPath()}"
+            )
+        # Preserve the source collision geometry for the twelve task-active
+        # palm/distal bodies.  Physics-v1 v4 forced one convex hull per mesh;
+        # that changed the fingertip/palm envelope enough to make the strict
+        # tail learnability gate less repeatable.  The performance win from
+        # removing the other 59 collision shapes remains isolated here.
+        mesh_collision.CreateApproximationAttr(ACTIVE_COLLIDER_APPROXIMATION)
+    for prototype_path in sorted(outside_prototype_paths, key=str):
+        shape = prototype_collision_shape(prototype_path)
+        UsdPhysics.CollisionAPI(shape).CreateCollisionEnabledAttr(False)
+    prototype_stage.GetRootLayer().Save()
+    _canonicalize_text_layer(physics_instances)
+    stage.Reload()
+    root = stage.GetDefaultPrim()
 
     # The five right-hand passive constraints are identical for every clone.
     # Baking them into the referenced robot asset avoids authoring and storing
@@ -370,12 +541,21 @@ def build(source: Path, output: Path) -> dict[str, object]:
         "physicsV1EnabledPairsPerRobot": enabled_count,
         "physicsV1AdjacentPairsPerRobot": adjacent_count,
         "physicsV1SelfCollisionRepresentation": (
-            "distal_envelope_filtered_pairs_outside_solve_contact_disabled_v2"
+            SELF_COLLISION_REPRESENTATION
         ),
         "physicsV1StoredActiveHandFilteredPairCount": stored_active_hand_pairs,
         "physicsV1OutsideSolveContactDisabledBodyCount": (
             outside_solve_contact_disabled
         ),
+        "physicsV1OutsideCollisionDisabledShapeCount": (
+            outside_collision_shapes_disabled
+        ),
+        "physicsV1ActiveColliderApproximation": ACTIVE_COLLIDER_APPROXIMATION,
+        "physicsV1ActiveColliderShapeCount": active_collision_shape_count,
+        "physicsV1ActiveCollisionPrototypeCount": len(active_prototype_paths),
+        "physicsV1DisabledCollisionPrototypeCount": len(outside_prototype_paths),
+        "physicsV1BaseLayerSha256": _sha256(physics_base),
+        "physicsV1InstancesLayerSha256": _sha256(physics_instances),
         # Contact reporters remain a runtime sensor concern.
         "physicsV1ExpectedHandContactBodyCount": len(hand_reporter_paths),
         "physicsV1PassiveMimicPolicy": "right_hand_native_physx_baked",
@@ -389,9 +569,10 @@ def build(source: Path, output: Path) -> dict[str, object]:
     for key, value in metadata.items():
         root.SetCustomDataByKey(key, value)
     stage.GetRootLayer().Save()
+    _canonicalize_text_layer(output)
 
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "source_usd": str(source.resolve()),
         "source_usd_sha256": metadata["physicsV1SourceUsdSha256"],
         "output_usd": str(output.resolve()),
@@ -404,6 +585,15 @@ def build(source: Path, output: Path) -> dict[str, object]:
         "outside_solve_contact_disabled_body_count": (
             outside_solve_contact_disabled
         ),
+        "outside_collision_disabled_shape_count": outside_collision_shapes_disabled,
+        "active_collider_approximation": ACTIVE_COLLIDER_APPROXIMATION,
+        "active_collider_shape_count": active_collision_shape_count,
+        "active_collision_prototype_count": len(active_prototype_paths),
+        "disabled_collision_prototype_count": len(outside_prototype_paths),
+        "physics_v1_base_usd": str(physics_base.resolve()),
+        "physics_v1_base_usd_sha256": _sha256(physics_base),
+        "physics_v1_instances_usd": str(physics_instances.resolve()),
+        "physics_v1_instances_usd_sha256": _sha256(physics_instances),
         "expected_hand_contact_body_count": len(hand_reporter_paths),
         "passive_mimic_count": len(mimic_records),
         "passive_mimic_sha256": mimic_sha256,

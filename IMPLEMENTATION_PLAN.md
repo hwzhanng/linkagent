@@ -355,7 +355,7 @@ Responses 工具往返采用 `function_call`、`call_id`、`previous_response_id
 - 正式训练前不连接 SDK、ROS、CAN 或真机；仿真只使用已固定和验证的 USD/URDF；
 - G20 真机触觉是五指 `12×6` 原始矩阵。牛顿值和果梗断裂阈值仍需在真机发布前标定；
 - 官方旧 Fruit-Grasp baseline 不复用。此前 LinkAgent 多阶段 PPO 代码、审计器和试验脚本已
-  移入 `archive/tomato_ppo_legacy_20260806/`，不再属于活动训练路径。
+  从当前工作树删除；如需审计，只从 Git 历史追溯，不再属于活动训练路径。
 
 ### 11.2 唯一冻结的最小 PPO V3
 
@@ -420,7 +420,7 @@ C2-3 不需要真实 SDK。只有进入 C4-H 的 ROS/CAN endpoint、真实状态
 - 最小物理环境：`simulation/tomato_pick/isaac/env.py`；
 - 标准 PPO 配置：`simulation/tomato_pick/isaac/agents/rsl_rl_ppo_cfg.py`；
 - 可审阅训练配置：`simulation/config/ppo_v1.yaml`；
-- 历史复杂实现：`archive/tomato_ppo_legacy_20260806/`。
+- 历史复杂实现已从当前工作树删除，仅保留在 Git 历史中。
 
 当前状态是“正式 PPO 长训前已就绪”，不是“已经训练完成”。唯一下一步是在用户明确启动后
 执行 C2-3 正式 run；本阶段不再增加 PPO 版本、审计脚本或规则补丁。

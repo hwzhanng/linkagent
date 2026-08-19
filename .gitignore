@@ -6,7 +6,7 @@ __pycache__/
 # Local environments and secrets
 .venv/
 venv/
-env/
+/env/
 .env
 .env.*
 !.env.example
@@ -32,8 +32,15 @@ htmlcov/
 logs/
 *.log
 /artifacts/simulation/
+/artifacts/vision_spool/**/.writer.lock
 /simulation/.runtime/
 /wandb/
+
+# Local archives and editor backup files
+/archive/
+*.bak
+*.old
+*~
 
 # Editor and operating-system files
 .idea/

@@ -1,0 +1,261 @@
+{
+  "action_mode": "random",
+  "action_scale": 0.45,
+  "checks": {
+    "action_shape": true,
+    "active_hand_velocity_within_envelope": true,
+    "actor_shape": true,
+    "adjacent_hand_collision_filter_is_exact": true,
+    "articulation_self_collision_is_enabled": true,
+    "contact_telemetry_capacity_is_explicit": true,
+    "correlated_fruit_material_bank_is_bounded": true,
+    "critic_shape": true,
+    "effective_hand_velocity_respects_asset_and_linkage": true,
+    "finger_material_reaches_collision_shapes": true,
+    "finite_reset": true,
+    "finite_rollout": true,
+    "formal_training_is_ready_but_not_started": true,
+    "hand_target_rate_limited": true,
+    "independent_actuator_groups": true,
+    "native_compliant_mimics_present": true,
+    "one_substep_cannot_break_stem": true,
+    "passive_followers_have_no_position_drive": true,
+    "passive_linkage_stays_bounded": true,
+    "reset_workspace_clearance_is_valid": true,
+    "reset_workspace_fruit_tilt_is_bounded": true,
+    "reset_workspace_has_no_initial_contact": true,
+    "reset_workspace_is_continuous_and_bounded": true,
+    "reset_workspace_preserves_closure_margin": true,
+    "sustained_multiaxial_load_can_break_stem": true,
+    "termination_masks_disjoint": true
+  },
+  "contact_detail_disabled_for_ablation": false,
+  "contact_material_bins": {
+    "maximum": 5,
+    "minimum": 5,
+    "unique": 1
+  },
+  "contact_radius_m": {
+    "maximum": null,
+    "minimum": null
+  },
+  "done_reason_counts": {
+    "drop": 0,
+    "excess_force": 0,
+    "out_of_bounds": 0,
+    "success": 0,
+    "timeout": 0
+  },
+  "final_hand_target_error_rad": {
+    "right_hand_index_joint0": 0.007323741912841797,
+    "right_hand_index_joint1": 0.0666506290435791,
+    "right_hand_index_joint2": 0.05013477802276611,
+    "right_hand_little_joint0": 0.0038590840995311737,
+    "right_hand_little_joint1": 0.058024585247039795,
+    "right_hand_little_joint2": 0.03398674726486206,
+    "right_hand_middle_joint0": 0.010038436390459538,
+    "right_hand_middle_joint1": 0.0653793215751648,
+    "right_hand_middle_joint2": 0.048310786485672,
+    "right_hand_ring_joint0": 0.005820452235639095,
+    "right_hand_ring_joint1": 0.06512847542762756,
+    "right_hand_ring_joint2": 0.04384195804595947,
+    "right_hand_thumb_joint0": 0.0010726600885391235,
+    "right_hand_thumb_joint1": 0.006121635437011719,
+    "right_hand_thumb_joint2": 0.020444214344024658,
+    "right_hand_thumb_joint3": 0.04715830087661743
+  },
+  "final_linkage_residual_by_joint_rad": {
+    "right_hand_index_joint3": 0.0036337971687316895,
+    "right_hand_little_joint3": 0.011746108531951904,
+    "right_hand_middle_joint3": 0.004218965768814087,
+    "right_hand_ring_joint3": 0.005469858646392822,
+    "right_hand_thumb_joint4": 0.0010269880294799805
+  },
+  "first_counterfactual_damage": 0.058021362870931625,
+  "first_counterfactual_load_ratio": 1.0000001192092896,
+  "fruit_mass_kg": {
+    "maximum": 0.15927904844284058,
+    "minimum": 0.15927904844284058
+  },
+  "fruit_material_binding": {
+    "bound_fruit_count": 1,
+    "inherited_collider_count": 1,
+    "material_count": 1
+  },
+  "hand_material_binding": {
+    "asset_baked": true,
+    "bound_body_count": 54,
+    "inherited_collider_count": 216,
+    "material_path": "/World/envs/env_0/Robot/PhysicsMaterials/PhysicsV1FingerPad",
+    "runtime_authored_binding_count": 0
+  },
+  "hand_self_collision_filter": {
+    "active_collider_approximation": "convexDecomposition",
+    "active_collider_shape_count": 12,
+    "active_hand_side": "right",
+    "adjacent_joint_pair_count": 54,
+    "allowed_nonadjacent_hand_pair_count": 59,
+    "arm_self_collision_deferred_to_simplified_collider_asset": true,
+    "asset_baked": true,
+    "baked_pair_count": 2426,
+    "contact_reporter_body_count": 28,
+    "cross_digit_collision": "distal_envelope_only",
+    "distal_palm_collision": true,
+    "enabled": true,
+    "expected_active_hand_contact_body_count": 28,
+    "expected_hand_contact_body_count": 56,
+    "external_contact_body_count": 12,
+    "nonadjacent_hand_pairs_enabled": true,
+    "outside_collision_disabled_shape_count": 59,
+    "outside_solve_contact_disabled_body_count": 59,
+    "pair_matrix_sha256": "16653f7ed1d19e6b6bf0a5e25b74ad57c584c74eb548e8af18f3b2a473cd5755",
+    "pairs_per_robot": 2426,
+    "policy": "right_distal_envelope_and_palm_only",
+    "runtime_authored_pair_count": 0,
+    "same_digit_nonadjacent_collision": false,
+    "self_collision_envelope_body_count": 12,
+    "stored_active_hand_pair_count": 7,
+    "unique_relative_pair_count": 2426,
+    "verified_robot_instance_count": 1
+  },
+  "hand_self_contact_pairs": [],
+  "implementation_status": "physics_v1_provisional_physics_qualified_formal_training_ready_not_started",
+  "initial_hand_fruit_clearance_m": {
+    "maximum": 0.059834398329257965,
+    "minimum": 0.059834398329257965
+  },
+  "linkage_driver_velocity_caps_rad_s": {
+    "right_hand_index_joint2": 2.2857604026794434,
+    "right_hand_little_joint2": 2.3014254570007324,
+    "right_hand_middle_joint2": 2.2212820053100586,
+    "right_hand_ring_joint2": 2.3900585174560547,
+    "right_hand_thumb_joint3": 1.5340360403060913
+  },
+  "linkage_peak_detail_by_joint": {
+    "right_hand_index_joint3": {
+      "driver_position_rad": 0.5694487690925598,
+      "driver_velocity_rad_s": 6.354600191116333e-05,
+      "env_id": 0,
+      "follower_position_rad": 0.5500398874282837,
+      "follower_velocity_rad_s": 0.011295147240161896,
+      "residual_rad": 0.014758050441741943,
+      "step": 6
+    },
+    "right_hand_little_joint3": {
+      "driver_position_rad": 0.4471474289894104,
+      "driver_velocity_rad_s": -0.1576738953590393,
+      "env_id": 0,
+      "follower_position_rad": 0.43821415305137634,
+      "follower_velocity_rad_s": 0.030489802360534668,
+      "residual_rad": 0.01789557933807373,
+      "step": 56
+    },
+    "right_hand_middle_joint3": {
+      "driver_position_rad": 0.5202520489692688,
+      "driver_velocity_rad_s": -0.16740606725215912,
+      "env_id": 0,
+      "follower_position_rad": 0.5043318867683411,
+      "follower_velocity_rad_s": 0.017972588539123535,
+      "residual_rad": 0.015294969081878662,
+      "step": 56
+    },
+    "right_hand_ring_joint3": {
+      "driver_position_rad": 0.47626808285713196,
+      "driver_velocity_rad_s": -0.16186589002609253,
+      "env_id": 0,
+      "follower_position_rad": 0.4654337763786316,
+      "follower_velocity_rad_s": 0.024482011795043945,
+      "residual_rad": 0.017741769552230835,
+      "step": 56
+    },
+    "right_hand_thumb_joint4": {
+      "driver_position_rad": 0.387126088142395,
+      "driver_velocity_rad_s": 0.0017143746372312307,
+      "env_id": 0,
+      "follower_position_rad": 0.4189941883087158,
+      "follower_velocity_rad_s": 3.9767934367773705e-07,
+      "residual_rad": -0.010715782642364502,
+      "step": 57
+    }
+  },
+  "linkage_residual_by_joint_rad": {
+    "right_hand_index_joint3": 0.014758050441741943,
+    "right_hand_little_joint3": 0.01789557933807373,
+    "right_hand_middle_joint3": 0.015294969081878662,
+    "right_hand_ring_joint3": 0.017741769552230835,
+    "right_hand_thumb_joint4": 0.010715782642364502
+  },
+  "maximum_active_hand_velocity_rad_s": 1.937008023262024,
+  "maximum_contact_force_n": 0.0,
+  "maximum_hand_target_error_rad": 0.14807957410812378,
+  "maximum_hand_target_step_rad": 0.15761500597000122,
+  "maximum_invalid_contact_force_n": 0.0,
+  "maximum_joint_velocity_rad_s": 2.272927761077881,
+  "maximum_linkage_residual_rad": 0.01789557933807373,
+  "maximum_pre_reset_fingertip_force_n": 0.0,
+  "mimics_disabled_for_ablation": false,
+  "num_envs": 1,
+  "passed": true,
+  "per_joint_active_velocity_rad_s": {
+    "right_hand_index_joint0": 0.1698181927204132,
+    "right_hand_index_joint1": 1.937008023262024,
+    "right_hand_index_joint2": 1.4893871545791626,
+    "right_hand_little_joint0": 0.19997668266296387,
+    "right_hand_little_joint1": 1.7584428787231445,
+    "right_hand_little_joint2": 1.297275185585022,
+    "right_hand_middle_joint0": 0.15229102969169617,
+    "right_hand_middle_joint1": 1.899240493774414,
+    "right_hand_middle_joint2": 1.4855133295059204,
+    "right_hand_ring_joint0": 0.18480879068374634,
+    "right_hand_ring_joint1": 1.812074899673462,
+    "right_hand_ring_joint2": 1.3689345121383667,
+    "right_hand_thumb_joint0": 0.22609031200408936,
+    "right_hand_thumb_joint1": 0.0893760398030281,
+    "right_hand_thumb_joint2": 0.565743088722229,
+    "right_hand_thumb_joint3": 0.9124927520751953
+  },
+  "per_joint_effective_velocity_limit_rad_s": {
+    "right_hand_index_joint0": 0.20000000298023224,
+    "right_hand_index_joint1": 3.1522998809814453,
+    "right_hand_index_joint2": 2.2857604026794434,
+    "right_hand_little_joint0": 0.20000000298023224,
+    "right_hand_little_joint1": 3.0012998580932617,
+    "right_hand_little_joint2": 2.3014254570007324,
+    "right_hand_middle_joint0": 0.20000000298023224,
+    "right_hand_middle_joint1": 3.115799903869629,
+    "right_hand_middle_joint2": 2.2212820053100586,
+    "right_hand_ring_joint0": 0.20000000298023224,
+    "right_hand_ring_joint1": 3.080599784851074,
+    "right_hand_ring_joint2": 2.3900585174560547,
+    "right_hand_thumb_joint0": 0.5,
+    "right_hand_thumb_joint1": 0.4000000059604645,
+    "right_hand_thumb_joint2": 1.0684999227523804,
+    "right_hand_thumb_joint3": 1.5340360403060913
+  },
+  "reset_workspace": {
+    "maximum_clearance_m": 0.059834398329257965,
+    "maximum_closure_translation_norm_m": 0.047025587409734726,
+    "maximum_fruit_tilt_deg": 12.872036933898926,
+    "maximum_initial_contact_force_n": 0.0,
+    "maximum_normalized_joint_radius": 0.8698175549507141,
+    "minimum_clearance_m": 0.059834398329257965,
+    "minimum_closure_translation_headroom_m": [
+      0.15739834308624268,
+      0.06565634906291962,
+      0.13618826866149902
+    ]
+  },
+  "runtime_robot_overlap_pairs": [],
+  "schema_version": 1,
+  "self_collision_disabled_for_ablation": false,
+  "stem_tensile_limit_n": {
+    "maximum": 6.394155025482178,
+    "minimum": 6.394155025482178
+  },
+  "steps": 64,
+  "task_id": "LinkAgent-TomatoPick-Physics-v1",
+  "terminated_count": 0,
+  "tomato_collision_disabled_for_ablation": false,
+  "training_started": false,
+  "truncated_count": 0
+}

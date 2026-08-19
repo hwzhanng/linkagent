@@ -1,0 +1,478 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-17T05:23:45.721099+00:00",
+  "qualification": "physics_v2_public_prior_cpu_q1_q6",
+  "profile_id": "tomato_pick_physics_v2_public_prior_v1",
+  "task_id": "LinkAgent-TomatoPick-Physics-v2-PublicPrior-v1",
+  "seed": 2026,
+  "passed": true,
+  "candidate_id": "physics_v2_retention_objective_v1",
+  "input_sha256": {
+    "script/physics_v2_audit_inputs.py": "3848dc0993f42f54179db919110d4bb4915293b37356fb1ffcdbdf5190bc9efa",
+    "simulation/config/tomato_pick_physics_v2_public_prior_v1.json": "49ace3296a9664f736591a082fe40162f4f08c85bd8b6ca194b90feb185f871f",
+    "simulation/tomato_pick/physics_v2.py": "e3424108e437d8fd65e7288ea31a33d02a296d8f9a98a5f80426887fcca85c69",
+    "simulation/tomato_pick/isaac/env.py": "dfd6b51ceaaa603f583588241630571e888976c8ea40d7273615ac22005a9655",
+    "simulation/tomato_pick/isaac/physics_v2/env_cfg.py": "f0536146158ec1ff0247f33f61c8ed9947c90bf9790f6fbd041070f2a32fc819",
+    "simulation/tomato_pick/isaac/physics_v2/env.py": "49d1d0207be1e7a20731c733e12c7677abf8a1d4a5cb4e00c152ba337b779363",
+    "simulation/tomato_pick/isaac/physics_v2/agents/rsl_rl_ppo_cfg.py": "154016859a527b14594494c7873c8671b9aa77780ad76ee5a5a700b26d2a462e",
+    "simulation/tomato_pick/reward.py": "a14861aac283e157ae022bcb1f663ec1aafd649968354ece89ee59bc18a36e78",
+    "script/qualify_tomato_physics_v2_public_priors.py": "45bad1841bc4d81351ecbc3582620762b8595cd051e9ab38cf86b44f36e3b5cb"
+  },
+  "training_authorized": false,
+  "training_authorization_note": "CPU Q1-Q6 pass only; an Isaac one-environment and vectorized smoke gate must pass before from-scratch PPO can be started. Physics-v1 checkpoint resume is forbidden.",
+  "gates": {
+    "Q1_morphology": {
+      "passed": true,
+      "checks": {
+        "minimum_100k_samples": true,
+        "all_values_finite": true,
+        "all_dimensions_positive": true,
+        "density_gate_enforced": true,
+        "aspect_gate_enforced": true,
+        "mass_gate_enforced": true,
+        "source_means_inside_support": true,
+        "shared_size_latent_produces_positive_size_mass_correlation": true,
+        "rejection_rate_is_bounded": true
+      },
+      "sample_count": 100000,
+      "rejection_count": 56159,
+      "rejection_fraction": 0.3596270467920517,
+      "diameters_m": {
+        "mean": [
+          0.07184586673974991,
+          0.06902579218149185,
+          0.059905074536800385
+        ],
+        "minimum": [
+          0.05032739043235779,
+          0.04838506132364273,
+          0.037956081330776215
+        ],
+        "maximum": [
+          0.09437373280525208,
+          0.09007582813501358,
+          0.09662356972694397
+        ]
+      },
+      "mass_kg": {
+        "mean": 0.16093768179416656,
+        "sd": 0.03518602252006531,
+        "minimum": 0.05210097134113312,
+        "maximum": 0.2849031984806061
+      },
+      "density_kg_m3": {
+        "mean": 1028.81201171875,
+        "sd": 103.7884750366211,
+        "minimum": 800.006103515625,
+        "maximum": 1199.996826171875
+      },
+      "polar_aspect_ratio": {
+        "mean": 0.8547833561897278,
+        "sd": 0.09782129526138306,
+        "minimum": 0.650080680847168,
+        "maximum": 1.1998764276504517
+      },
+      "source_overlap": {
+        "sibede_semi_ripe": {
+          "sample_count": 18324,
+          "source_mean_inside_generated_support": true,
+          "size_mass_correlation": 0.8811196088790894,
+          "generated_diameter_m": {
+            "mean": [
+              0.06648960709571838,
+              0.06429970264434814,
+              0.06257087737321854
+            ],
+            "minimum": [
+              0.05439501628279686,
+              0.05438372492790222,
+              0.049177978187799454
+            ],
+            "maximum": [
+              0.07712563127279282,
+              0.07366122305393219,
+              0.07463745772838593
+            ]
+          },
+          "generated_mass_kg": {
+            "mean": 0.15030506253242493,
+            "sd": 0.022343512624502182,
+            "minimum": 0.08439000695943832,
+            "maximum": 0.21722006797790527
+          }
+        },
+        "sibede_early_firm": {
+          "sample_count": 58193,
+          "source_mean_inside_generated_support": true,
+          "size_mass_correlation": 0.9075435996055603,
+          "generated_diameter_m": {
+            "mean": [
+              0.07336991280317307,
+              0.07053063064813614,
+              0.057352252304553986
+            ],
+            "minimum": [
+              0.05032739043235779,
+              0.04838506132364273,
+              0.048661552369594574
+            ],
+            "maximum": [
+              0.09437373280525208,
+              0.09007582813501358,
+              0.06541632860898972
+            ]
+          },
+          "generated_mass_kg": {
+            "mean": 0.16345737874507904,
+            "sd": 0.0376281812787056,
+            "minimum": 0.06255066394805908,
+            "maximum": 0.2849031984806061
+          }
+        },
+        "sibede_mid_late_firm": {
+          "sample_count": 23483,
+          "source_mean_inside_generated_support": true,
+          "size_mass_correlation": 0.9005056023597717,
+          "generated_diameter_m": {
+            "mean": [
+              0.07224870473146439,
+              0.0689845085144043,
+              0.06415104120969772
+            ],
+            "minimum": [
+              0.054890166968107224,
+              0.05392467975616455,
+              0.037956081330776215
+            ],
+            "maximum": [
+              0.08995909988880157,
+              0.08290351927280426,
+              0.09662356972694397
+            ]
+          },
+          "generated_mass_kg": {
+            "mean": 0.16299031674861908,
+            "sd": 0.035578422248363495,
+            "minimum": 0.05210097134113312,
+            "maximum": 0.2731797397136688
+          }
+        }
+      }
+    },
+    "Q2_pure_axial": {
+      "passed": true,
+      "checks": {
+        "diameter_5.52mm_mean_within_2pct": true,
+        "diameter_5.52mm_sd_within_8pct": true,
+        "diameter_6.27mm_mean_within_2pct": true,
+        "diameter_6.27mm_sd_within_8pct": true,
+        "diameter_7.75mm_mean_within_2pct": true,
+        "diameter_7.75mm_sd_within_8pct": true
+      },
+      "nodes": [
+        {
+          "diameter_m": 0.00552,
+          "target_mean_n": 40.262,
+          "target_sd_n": 12.437,
+          "sampled": {
+            "mean": 40.16424560546875,
+            "sd": 11.851073265075684,
+            "minimum": 9.177619934082031,
+            "maximum": 71.35319519042969
+          },
+          "mean_relative_error": 0.0024279567465910895,
+          "sd_relative_error": 0.04711158116300682
+        },
+        {
+          "diameter_m": 0.00627,
+          "target_mean_n": 44.781,
+          "target_sd_n": 15.156,
+          "sampled": {
+            "mean": 44.80881881713867,
+            "sd": 14.459240913391113,
+            "minimum": 6.914531707763672,
+            "maximum": 82.63554382324219
+          },
+          "mean_relative_error": 0.0006212192032038827,
+          "sd_relative_error": 0.04597249185859641
+        },
+        {
+          "diameter_m": 0.00775,
+          "target_mean_n": 72.003,
+          "target_sd_n": 23.401,
+          "sampled": {
+            "mean": 72.02063751220703,
+            "sd": 22.468027114868164,
+            "minimum": 13.531906127929688,
+            "maximum": 130.49078369140625
+          },
+          "mean_relative_error": 0.0002449552408515081,
+          "sd_relative_error": 0.03986893231621878
+        }
+      ]
+    },
+    "Q3_bending": {
+      "passed": true,
+      "checks": {
+        "group_5_to_6mm_mean_within_2pct": true,
+        "group_5_to_6mm_sd_within_8pct": true,
+        "group_6_to_7mm_mean_within_2pct": true,
+        "group_6_to_7mm_sd_within_8pct": true,
+        "group_7_to_8mm_mean_within_2pct": true,
+        "group_7_to_8mm_sd_within_8pct": true
+      },
+      "groups": [
+        {
+          "diameter_m": 0.0055,
+          "target_mean_nm": 0.067152,
+          "target_sd_nm": 0.019167,
+          "sampled": {
+            "mean": 0.06714370846748352,
+            "sd": 0.018225394189357758,
+            "minimum": 0.019259925931692123,
+            "maximum": 0.11505553126335144
+          },
+          "mean_relative_error": 0.0001234740963259895,
+          "sd_relative_error": 0.049126405313415895
+        },
+        {
+          "diameter_m": 0.0065,
+          "target_mean_nm": 0.112134,
+          "target_sd_nm": 0.014073,
+          "sampled": {
+            "mean": 0.11209461092948914,
+            "sd": 0.013456596992909908,
+            "minimum": 0.07695378363132477,
+            "maximum": 0.14730730652809143
+          },
+          "mean_relative_error": 0.0003512678626541622,
+          "sd_relative_error": 0.043800398428912965
+        },
+        {
+          "diameter_m": 0.0075,
+          "target_mean_nm": 0.124821,
+          "target_sd_nm": 0.029559,
+          "sampled": {
+            "mean": 0.12468453496694565,
+            "sd": 0.028065074235200882,
+            "minimum": 0.051135145127773285,
+            "maximum": 0.19871769845485687
+          },
+          "mean_relative_error": 0.0010932858497716986,
+          "sd_relative_error": 0.05054047040830598
+        }
+      ]
+    },
+    "Q4_torsion": {
+      "passed": true,
+      "checks": {
+        "torsion_samples_finite": true,
+        "core_torque_lower_bound_enforced": true,
+        "core_torque_upper_bound_enforced": true,
+        "core_torque_inside_public_ood_envelope": true,
+        "nominal_full_utilization_detach_angle_in_public_envelope": true,
+        "qualification_rate_matches_public_range": true
+      },
+      "sampled_torsion_limit_nm": {
+        "mean": 0.16522455215454102,
+        "sd": 0.051359161734580994,
+        "minimum": 0.05064776539802551,
+        "maximum": 0.2994837164878845
+      },
+      "nominal_full_utilization_detach_angle_deg": 507.5455419910326,
+      "public_angle_envelope_deg": [
+        30.0,
+        550.0
+      ],
+      "angular_rate_envelope_rad_s": [
+        0.5,
+        1.5
+      ]
+    },
+    "Q5_twist_then_pull": {
+      "passed": true,
+      "checks": {
+        "integrity_matches_cross_study_ratio_within_0_1pct": true,
+        "integrity_is_invariant_to_360_rollout_steps": true,
+        "residual_pull_matches_11_66N_within_0_1N": true,
+        "residual_pull_below_public_observed_maximum": true,
+        "360deg_twist_leaves_attachment_for_pull_test": true,
+        "torsion_is_yield_limited_not_double_counted_as_duration_damage": true
+      },
+      "reference_diameter_m": 0.00627,
+      "intact_pull_mean_n": 44.781,
+      "integrity_after_360deg": 0.26037833094596863,
+      "integrity_after_360deg_in_360_steps": 0.26038050651550293,
+      "residual_pull_n": 11.66000203809142,
+      "public_target_mean_n": 11.66,
+      "public_observed_maximum_n": 15.29
+    },
+    "Q6_strategy_sanity": {
+      "passed": true,
+      "checks": {
+        "intact_pure_pull_requires_tens_of_newtons": true,
+        "staged_twist_reduces_axial_demand_by_at_least_60pct": true,
+        "staged_detachment_is_not_free": true,
+        "bending_fixture_is_not_relabelled_as_axial": true,
+        "moderate_pull_does_not_instantly_break_intact_az": true,
+        "pure_axial_overload_breaks": true,
+        "pure_shear_overload_breaks": true,
+        "pure_bending_overload_breaks": true,
+        "half_axial_half_torsion_is_subcritical": true,
+        "360deg_twist_reduces_integrity_but_keeps_attachment": true,
+        "staged_moderate_pull_breaks_in_finite_time": true,
+        "continued_twist_breaks_by_public_550deg_bound": true,
+        "all_six_load_strategies_reported": true
+      },
+      "strategies": {
+        "pure_pull": {
+          "peak_axial_force_n": 44.781,
+          "moderate_11_66N_instant_break": false,
+          "overload_1_30x_instant_break": true
+        },
+        "pure_bend": {
+          "published_center_force_n": 37.378,
+          "peak_moment_nm": 0.112134,
+          "overload_1_30x_instant_break": true
+        },
+        "pure_twist": {
+          "representative_torque_nm": 0.14709975,
+          "nominal_detach_angle_deg": 507.5455419910326,
+          "integrity_after_360deg": 0.26038050651550293,
+          "broken_at_360deg": false,
+          "broken_by_550deg": true
+        },
+        "simultaneous_twist_pull": {
+          "illustrative_equal_ratio_axial_force_n": 8.244865068635143,
+          "qualification_role": "interaction sanity check, not a direct prior",
+          "half_axial_half_torsion_instant_break": false
+        },
+        "staged_twist_then_pull": {
+          "residual_axial_force_n": 11.660099462270736,
+          "break_step_at_120hz": 67,
+          "break_time_s": 0.5583333333333333
+        },
+        "pure_shear": {
+          "capacity_n": 33.24093246459961,
+          "overload_1_30x_instant_break": true
+        }
+      }
+    }
+  },
+  "world_orientation_distribution_audit": {
+    "passed": true,
+    "checks": {
+      "categorical_probability_within_1pct": true,
+      "continuous_tilt_inside_engineering_support": true,
+      "azimuth_jitter_inside_category_bounds": true,
+      "continuous_tilt_has_nonzero_spread": true
+    },
+    "sample_count": 100000,
+    "categories": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "target_probability": [
+      0.11900000274181366,
+      0.11100000143051147,
+      0.06300000101327896,
+      0.7059999704360962
+    ],
+    "sampled_probability": [
+      0.12024000287055969,
+      0.11033999919891357,
+      0.062130000442266464,
+      0.70728999376297
+    ],
+    "maximum_absolute_error": 0.0012900233268737793,
+    "polar_tilt_deg": {
+      "mean": 7.656778335571289,
+      "sd": 3.070542335510254,
+      "minimum": 0.03253580257296562,
+      "maximum": 14.9483060836792
+    },
+    "within_category_azimuth_jitter_deg": {
+      "mean": -0.006326206028461456,
+      "sd": 17.183109283447266,
+      "minimum": -44.99615478515625,
+      "maximum": 44.99738311767578
+    },
+    "actor_observation_exposes_world_category": false
+  },
+  "engineering_gap_prior_audit": {
+    "passed": true,
+    "checks": {
+      "az_shear_ratio_inside_explicit_support": true,
+      "az_shear_mean_near_derived_0_7423_mode": true,
+      "fatigue_onset_inside_explicit_support": true,
+      "fatigue_exponent_inside_explicit_support": true,
+      "fatigue_time_inside_explicit_support": true,
+      "pair_friction_inside_explicit_support": true,
+      "contact_stiffness_inside_explicit_support": true,
+      "contact_damping_inside_explicit_support": true,
+      "quantized_pair_friction_is_representable_with_baked_pad": true,
+      "actuator_delay_is_zero_to_two_policy_steps": true,
+      "checked_in_hand_alias_is_explicitly_l20": true,
+      "hardware_surrogates_remain_unqualified": true
+    },
+    "sample_count": 50000,
+    "shear_ratio": {
+      "mean": 0.7472407817840576,
+      "sd": 0.06083760783076286,
+      "minimum": 0.601858913898468,
+      "maximum": 0.8994584083557129
+    },
+    "fatigue_onset_ratio": {
+      "mean": 0.5997290015220642,
+      "sd": 0.06114867329597473,
+      "minimum": 0.4507451057434082,
+      "maximum": 0.7497802972793579
+    },
+    "fatigue_exponent": {
+      "mean": 2.1660385131835938,
+      "sd": 0.3103599548339844,
+      "minimum": 1.5025017261505127,
+      "maximum": 2.996325731277466
+    },
+    "fatigue_time_constant_s": {
+      "mean": 0.648517370223999,
+      "sd": 0.20679935812950134,
+      "minimum": 0.20295652747154236,
+      "maximum": 1.1993472576141357
+    },
+    "effective_pair_static_friction": {
+      "mean": 0.48328328132629395,
+      "sd": 0.08236443251371384,
+      "minimum": 0.30036377906799316,
+      "maximum": 0.6984871029853821
+    },
+    "effective_contact_stiffness_n_m": {
+      "mean": 6798.1953125,
+      "sd": 1905.9935302734375,
+      "minimum": 3044.67529296875,
+      "maximum": 11958.8583984375
+    },
+    "effective_contact_damping_n_s_m": {
+      "mean": 32.26607894897461,
+      "sd": 10.378952026367188,
+      "minimum": 10.280976295471191,
+      "maximum": 59.782318115234375
+    },
+    "action_delay_steps_uniform_inclusive": [
+      0,
+      2
+    ],
+    "classification": "simulation-ready priors; hardware calibration still required"
+  },
+  "hardware_transfer_ready": false,
+  "hardware_transfer_blockers": [
+    "A7 controller response and command latency fit",
+    "deployed L20/G20 alias resolution plus command/joint response and effort fit",
+    "deployed fingertip-pad x target-tomato dry/wet friction",
+    "deployed fingertip-pad x target-tomato indentation stiffness and damping",
+    "target-cultivar abscission validation",
+    "camera and perception error model"
+  ]
+}

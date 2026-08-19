@@ -19,6 +19,12 @@ from .contracts import (
     TomatoPickObservation,
 )
 from .features import ObservationBuilder, ObservationSnapshot, TactileFeatureExtractor
+from .enveloping_verifier import (
+    EnvelopingTraceFrame,
+    EnvelopingVerification,
+    EnvelopingVerifierConfig,
+    verify_enveloping_trace,
+)
 from .hand_synergy import (
     HAND_JOINT_LIMITS,
     HAND_LOWER_RAD,
@@ -44,14 +50,35 @@ from .policy import (
     load_skill_profile,
     validate_skill_manifest,
 )
+from .ready import evaluate_ppo_ready
 from .runner import PickVerifier, TomatoPickSkillContext, TomatoPickSkillRunner, VerifierSession
 from .supervisor import SupervisedAction, TomatoPickActionSupervisor
+from .target_state import TargetStatePort, WorldThenHandTargetStatePort
+from .tactile_episode import (
+    TACTILE_EPISODE_SCHEMA,
+    TactileEpisodeMetadata,
+    TactileEpisodeSample,
+    read_tactile_episode_jsonl,
+    write_tactile_episode_jsonl,
+)
+from .tactile_matrix import (
+    TACTILE_MATRIX_FEATURE_DIM,
+    TACTILE_MATRIX_FEATURE_NAMES,
+    TactileMatrixBaseline,
+    TactileMatrixFeatureConfig,
+    TactileMatrixFeatureExtractor,
+    TactileMatrixFeatureFrame,
+    fit_tactile_matrix_baseline,
+)
 
 __all__ = [
     "ACTION_DIM",
     "ACTION_LAYOUT_ID",
     "ARM_JOINT_ORDER",
     "CRITIC_STATE_DIM",
+    "EnvelopingTraceFrame",
+    "EnvelopingVerification",
+    "EnvelopingVerifierConfig",
     "FINGER_ORDER",
     "G20_ACTIVE_RAW_INDICES",
     "G20_JOINT_ORDER",
@@ -82,16 +109,32 @@ __all__ = [
     "PolicyManifest",
     "SKILL_REGISTRY",
     "SupervisedAction",
+    "TACTILE_EPISODE_SCHEMA",
+    "TACTILE_MATRIX_FEATURE_DIM",
+    "TACTILE_MATRIX_FEATURE_NAMES",
     "TactileFeatureExtractor",
+    "TactileEpisodeMetadata",
+    "TactileEpisodeSample",
+    "TactileMatrixBaseline",
+    "TactileMatrixFeatureConfig",
+    "TactileMatrixFeatureExtractor",
+    "TactileMatrixFeatureFrame",
     "TomatoPickAction",
     "TomatoPickActionSupervisor",
+    "TargetStatePort",
     "TomatoPickObservation",
     "TomatoPickPolicy",
     "TomatoPickSkillContext",
     "TomatoPickSkillRunner",
     "VerifierSession",
+    "WorldThenHandTargetStatePort",
     "build_policy",
+    "evaluate_ppo_ready",
+    "fit_tactile_matrix_baseline",
     "g20_synergy_to_joint_targets",
     "load_skill_profile",
+    "read_tactile_episode_jsonl",
     "validate_skill_manifest",
+    "verify_enveloping_trace",
+    "write_tactile_episode_jsonl",
 ]

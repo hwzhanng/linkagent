@@ -22,24 +22,31 @@ Generated from Composed Stage of root layer /tmp/linkbot_isaac_180_final2.BabK02
 
 def Xform "linkbot_bimanual_sdk" (
     customData = {
+        string physicsV1ActiveColliderApproximation = "convexDecomposition"
+        int physicsV1ActiveColliderShapeCount = 12
+        int physicsV1ActiveCollisionPrototypeCount = 8
         int physicsV1AdjacentPairsPerRobot = 54
+        string physicsV1BaseLayerSha256 = "40d7104a26e1912cb8fb9c4b609418697c6ec23ada1c200eca16e6aa752aec79"
+        int physicsV1DisabledCollisionPrototypeCount = 41
         int physicsV1EnabledPairsPerRobot = 59
         int physicsV1ExpectedHandContactBodyCount = 56
         int physicsV1FilteredPairsPerRobot = 2426
         int physicsV1HandMaterialBodyCount = 54
         string physicsV1HandMaterialPath = "/linkbot_bimanual_sdk/PhysicsMaterials/PhysicsV1FingerPad"
         string physicsV1HandMaterialPolicy = "both_hands_parent_binding_baked"
+        string physicsV1InstancesLayerSha256 = "b26b416592a1f6c4116f377e674cfed4d8693fd2ae437ec10775a9a6f2557315"
+        int physicsV1OutsideCollisionDisabledShapeCount = 59
         int physicsV1OutsideSolveContactDisabledBodyCount = 59
         int physicsV1PassiveMimicCount = 5
         string physicsV1PassiveMimicPolicy = "right_hand_native_physx_baked"
         string physicsV1PassiveMimicSha256 = "8f225bf5c8f0244891cc497c8128abc8b8817fda7bd0fe860b08bf6cbf3b87e3"
         string physicsV1SelfCollisionMatrixSha256 = "16653f7ed1d19e6b6bf0a5e25b74ad57c584c74eb548e8af18f3b2a473cd5755"
         string physicsV1SelfCollisionPolicy = "right_distal_envelope_and_palm_only"
-        string physicsV1SelfCollisionRepresentation = "distal_envelope_filtered_pairs_outside_solve_contact_disabled_v2"
+        string physicsV1SelfCollisionRepresentation = "distal_envelope_instanced_prototypes_v5_source_convex_decomposition"
         string physicsV1SourceUsdSha256 = "e4b190443b3b9aedf68826ce16e007737ecd4ee487321ded2c265c2e5a88a097"
         int physicsV1StoredActiveHandFilteredPairCount = 7
     }
-    prepend references = @./payloads/base.usda@
+    prepend references = @./payloads/base_physics_v1.usda@
     variants = {
         string Physics = "physx"
     }

@@ -30,6 +30,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--grasp-sweep", action="store_true")
     parser.add_argument("--collision-stress", action="store_true")
     parser.add_argument("--disable-contact-detail", action="store_true")
+    parser.add_argument("--output", type=Path)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args(argv)
     if args.num_envs < 1 or args.steps < 4:
@@ -101,6 +102,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
 
         cfg = cfg_module.TomatoPickPhysicsV1EnvCfg()
+        cfg.detailed_step_diagnostics = True
         cfg.scene.num_envs = args.num_envs
         cfg.sim.device = args.device
         cfg.seed = args.seed
@@ -377,6 +379,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             ),
             "contact_telemetry_capacity_is_explicit": all(
                 sensor.max_contact_data_count_per_prim == 64
+                and sensor.track_contact_points
+                and not sensor.track_friction_forces
+                and not sensor.track_pose
                 for sensor in cfg.fingertip_contacts.values()
             ),
             "finite_rollout": True,
@@ -640,12 +645,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
 
         # Exercise the runtime load-duration path without training or a
-        # scripted policy.  A held counterfactual displacement creates a
-        # combined load.  The first 120 Hz substep must survive; sustained load
-        # must eventually detach.
+        # scripted policy.  Solve a static displacement that produces a unit
+        # tensile load ratio after gravity compensation.  The old 1-metre
+        # displacement saturated the 120 N safety clamp and could legitimately
+        # integrate more than one unit of damage in one substep; it did not
+        # test the intended duration prior.  At unit load the first 120 Hz
+        # substep must survive and the held load must eventually detach.
         env_id = torch.tensor([0], device=env.device)
         pose = env._tomato.data.root_pose_w.torch[env_id].clone()
-        pose[:, :3] += env._grasp_basis_w[env_id, :, 2]
+        pull_axis = env._grasp_basis_w[env_id, :, 2]
+        omega_squared = float(cfg.stem_linear_natural_frequency_rad_s) ** 2
+        unit_tension_displacement = (
+            env._stem_tensile_limit_n[env_id].unsqueeze(1)
+            / (env._fruit_mass_kg[env_id].unsqueeze(1) * omega_squared)
+        ) * pull_axis - env._gravity_w.unsqueeze(0) / omega_squared
+        pose[:, :3] += unit_tension_displacement
         env._tomato.write_root_pose_to_sim_index(root_pose=pose, env_ids=env_id)
         env._tomato.write_root_velocity_to_sim_index(
             root_velocity=torch.zeros((1, 6), device=env.device), env_ids=env_id
@@ -657,6 +671,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         env._stem_detached[env_id] = False
         env._stem_damage[env_id] = 0.0
         env._apply_attachment_wrench()
+        first_load_ratio = float(env._stem_combined_load_ratio[env_id].item())
         checks["one_substep_cannot_break_stem"] = not bool(
             env._stem_detached[env_id].item()
         )
@@ -728,6 +743,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "maximum": float(env._stem_tensile_limit_n.max()),
             },
             "first_counterfactual_damage": first_damage,
+            "first_counterfactual_load_ratio": first_load_ratio,
             "maximum_contact_force_n": max_contact_force_n,
             "maximum_pre_reset_fingertip_force_n": (
                 maximum_pre_reset_fingertip_force_n
@@ -842,6 +858,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             },
             "training_started": False,
         }
+        if args.output is not None:
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(
+                json.dumps(report, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
         print("TOMATO_PHYSICS_V1_GATE=" + json.dumps(report, sort_keys=True), flush=True)
         return 0 if report["passed"] else 2
     except BaseException as exc:

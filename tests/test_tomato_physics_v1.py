@@ -94,12 +94,25 @@ def test_physics_v1_derived_robot_asset_is_frozen_and_independent() -> None:
     assert hashlib.sha256(derived.read_bytes()).hexdigest() == asset[
         "derived_usd_sha256"
     ]
+    physics_base = root / asset["physics_v1_base_usd"]
+    physics_instances = root / asset["physics_v1_instances_usd"]
+    assert hashlib.sha256(physics_base.read_bytes()).hexdigest() == asset[
+        "physics_v1_base_usd_sha256"
+    ]
+    assert hashlib.sha256(physics_instances.read_bytes()).hexdigest() == asset[
+        "physics_v1_instances_usd_sha256"
+    ]
     assert asset["collision_matrix_baked"] is True
     assert asset["self_collision_representation"] == (
-        "distal_envelope_filtered_pairs_outside_solve_contact_disabled_v2"
+        "distal_envelope_instanced_prototypes_v5_source_convex_decomposition"
     )
     assert asset["stored_active_hand_filtered_pair_count"] == 7
     assert asset["outside_solve_contact_disabled_body_count"] == 59
+    assert asset["outside_collision_disabled_shape_count"] == 59
+    assert asset["active_collider_approximation"] == "convexDecomposition"
+    assert asset["active_collider_shape_count"] == 12
+    assert asset["active_collision_prototype_count"] == 8
+    assert asset["disabled_collision_prototype_count"] == 41
     assert asset["runtime_authored_collision_pairs"] == 0
     assert asset["passive_mimics_baked"] is True
     assert asset["runtime_authored_passive_mimics"] == 0
@@ -108,6 +121,11 @@ def test_physics_v1_derived_robot_asset_is_frozen_and_independent() -> None:
     assert asset["hand_material_baked"] is True
     assert asset["runtime_authored_hand_material_bindings"] == 0
     assert asset["hand_material_body_count"] == 54
+
+
+def test_physics_v1_contact_sensor_capacity_covers_source_collision_geometry() -> None:
+    profile = load_physics_v1_profile()
+    assert profile["contact"]["contact_sensor_max_data_count_per_prim"] == 64
 
 
 def test_correlated_fruit_profiles_are_bounded_and_mass_follows_geometry() -> None:
@@ -169,17 +187,8 @@ def test_weak_median_strong_abscission_profiles_break_by_duration_not_spike() ->
     attached = torch.ones(3, dtype=torch.bool)
     damage = torch.zeros(3)
     dt = 1.0 / 120.0
-    damage, broken = update_stem_damage(
-        damage,
-        torch.ones(3),
-        dt_s=dt,
-        critical_duration_s=critical,
-        onset_ratio=profile["stem_prior"]["damage_onset_ratio"],
-        recovery_time_s=profile["stem_prior"]["damage_recovery_time_s"],
-        attached=attached,
-    )
-    assert not bool(broken.any())
-    for _ in range(16):
+    break_step = torch.full((3,), -1, dtype=torch.long)
+    for step in range(1, 20):
         damage, broken = update_stem_damage(
             damage,
             torch.ones(3),
@@ -189,7 +198,12 @@ def test_weak_median_strong_abscission_profiles_break_by_duration_not_spike() ->
             recovery_time_s=profile["stem_prior"]["damage_recovery_time_s"],
             attached=attached,
         )
-    assert bool(broken.all())
+        newly_broken = broken & (break_step < 0)
+        break_step[newly_broken] = step
+        if step == 1:
+            assert not bool(broken.any())
+    assert bool((break_step >= 9).all())
+    assert bool((break_step <= 18).all())
 
 
 def test_stem_load_ratio_combines_tension_shear_and_bending() -> None:

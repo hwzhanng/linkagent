@@ -20,6 +20,18 @@ from module.robotics import (
     TACTILE_PORT_REGISTRY,
 )
 from module.skills.tomato_pick import SKILL_REGISTRY
+from module.skills import ATOMIC_SKILL_REGISTRY
+from module.skills.harvest_cycle import (
+    CLEARANCE_SCENE_REGISTRY,
+    DROPPED_PAYLOAD_OBSERVATION_REGISTRY,
+    PLACEMENT_VERIFIER_REGISTRY,
+    TARGET_OBSERVATION_REGISTRY,
+)
+from module.skills.system_self_check import (
+    CAMERA_HEALTH_REGISTRY,
+    EMERGENCY_STOP_HEALTH_REGISTRY,
+    VISION_WORKER_HEALTH_REGISTRY,
+)
 from task import TASK_REGISTRY
 from task.agri_pick.factory import (
     PERCEPTION_REGISTRY as TOMATO_PERCEPTION_REGISTRY,
@@ -147,9 +159,23 @@ class ArchitectureBoundaryTests(unittest.TestCase):
         self.assertEqual({"mock"}, set(ENV_REGISTRY))
         self.assertEqual({"mock"}, set(PERCEPTION_REGISTRY))
         self.assertEqual({"mock"}, set(MANIPULATION_REGISTRY))
-        self.assertEqual({"locate_target", "agri_pick"}, set(TASK_REGISTRY))
         self.assertEqual(
-            {"mock", "fake_gateway", "linkbot_g20_shadow"},
+            {
+                "locate_target",
+                "agri_pick",
+                "harvest_cycle",
+                "hardware_capability_validation",
+                "hardware_read_only_validation",
+            },
+            set(TASK_REGISTRY),
+        )
+        self.assertEqual(
+            {
+                "mock",
+                "fake_gateway",
+                "linkbot_g20_shadow",
+                "linkbot_g20_hardware",
+            },
             set(ROBOTICS_REGISTRY),
         )
         self.assertEqual({"mock"}, set(ARM_PORT_REGISTRY))
@@ -159,8 +185,42 @@ class ArchitectureBoundaryTests(unittest.TestCase):
             {"mock", "profile", "torch_export", "torchscript"},
             set(SKILL_REGISTRY),
         )
-        self.assertEqual({"mock"}, set(TOMATO_PERCEPTION_REGISTRY))
-        self.assertEqual({"mock"}, set(PLANNER_REGISTRY))
+        self.assertEqual(
+            {
+                "system_self_check",
+                "active_view_reposition",
+                "select_harvest_target",
+                "move_to_pick_ready",
+                "localize_dropped_payload",
+                "pregrasp_clearance_check",
+                "reset_for_next_target",
+                "target_reobserve",
+                "transport_payload",
+                "safe_retract",
+                "payload_retreat",
+                "payload_place",
+            },
+            set(ATOMIC_SKILL_REGISTRY),
+        )
+        self.assertEqual({"mock", "orbbec_viewer"}, set(CAMERA_HEALTH_REGISTRY))
+        self.assertEqual({"mock"}, set(EMERGENCY_STOP_HEALTH_REGISTRY))
+        self.assertEqual(
+            {"mock", "loopback"}, set(VISION_WORKER_HEALTH_REGISTRY)
+        )
+        self.assertEqual(
+            {"mock", "tomato_vision_replay", "tomato_vision_worker"},
+            set(TARGET_OBSERVATION_REGISTRY),
+        )
+        self.assertEqual({"mock"}, set(PLACEMENT_VERIFIER_REGISTRY))
+        self.assertEqual(
+            {"mock", "observation_pointcloud"}, set(CLEARANCE_SCENE_REGISTRY)
+        )
+        self.assertEqual({"mock"}, set(DROPPED_PAYLOAD_OBSERVATION_REGISTRY))
+        self.assertEqual(
+            {"mock", "tomato_vision_replay", "tomato_vision_worker"},
+            set(TOMATO_PERCEPTION_REGISTRY),
+        )
+        self.assertEqual({"mock", "training_distribution"}, set(PLANNER_REGISTRY))
         self.assertEqual({"mock"}, set(SAFETY_REGISTRY))
         self.assertEqual({"mock", "independent"}, set(VERIFIER_REGISTRY))
 

@@ -40,6 +40,7 @@ from .contracts import PolicyManifest, TomatoPickAction
 from .features import ObservationBuilder, ObservationSnapshot, TactileFeatureExtractor
 from .policy import TomatoPickPolicy
 from .supervisor import TomatoPickActionSupervisor
+from .target_state import TargetStatePort
 
 
 @dataclass(frozen=True, slots=True)
@@ -85,6 +86,7 @@ class TomatoPickSkillContext:
     leases: ControlLeaseManager
     verifier: PickVerifier
     clock: Clock
+    target_state: TargetStatePort | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.target, TomatoTarget):
@@ -109,6 +111,10 @@ class TomatoPickSkillContext:
             raise TypeError("verifier must implement PickVerifier")
         if not isinstance(self.clock, Clock):
             raise TypeError("clock must implement Clock")
+        if self.target_state is not None and not isinstance(
+            self.target_state, TargetStatePort
+        ):
+            raise TypeError("target_state must implement TargetStatePort or be None")
 
 
 @dataclass(slots=True)
@@ -273,9 +279,21 @@ class TomatoPickSkillRunner:
                 arm = context.arm.get_state(request.arm_side)
                 hand = context.hand.get_state(request.arm_side)
                 tactile = context.tactile.get_frame(request.arm_side)
+                now_ns = context.clock.monotonic_ns()
+                current_target = (
+                    context.target
+                    if context.target_state is None
+                    else context.target_state.latest(
+                        initial_target=context.target,
+                        plan=context.plan,
+                        phase=phase,
+                        arm=arm,
+                        now_ns=now_ns,
+                    )
+                )
                 snapshot = self.observation_builder.build(
-                    now_ns=context.clock.monotonic_ns(),
-                    target=context.target,
+                    now_ns=now_ns,
+                    target=current_target,
                     plan=context.plan,
                     episode_progress=min(
                         1.0,

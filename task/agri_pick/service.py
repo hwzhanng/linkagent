@@ -10,6 +10,7 @@ from module.skills.tomato_pick import (
     PickVerifier,
     TomatoPickSkillContext,
     TomatoPickSkillRunner,
+    WorldThenHandTargetStatePort,
 )
 from proto import (
     ArmSide,
@@ -88,6 +89,19 @@ class TomatoPickService:
     @property
     def completed(self) -> bool:
         return self.state is AgriPickState.COMPLETE and self._verified_execution_id is not None
+
+    def reset_transaction(self) -> None:
+        """Clear one completed pick transaction while preserving owned resources."""
+
+        self._require_open()
+        self.targets.clear()
+        self.last_detection = None
+        self.plans.clear()
+        self.assessments.clear()
+        self.executions.clear()
+        self._execution_by_plan.clear()
+        self._verified_execution_id = None
+        self.state = AgriPickState.OBSERVE
 
     def detect_tomatoes(self, observation: Observation) -> dict[str, Any]:
         self._require_open()
@@ -183,6 +197,41 @@ class TomatoPickService:
             "skill_envelope_assessment_id": assessment.assessment_id,
         }
 
+    def move_to_pick_ready(self, grasp_plan_id: str) -> dict[str, Any]:
+        """Move and prove the resulting palm/fruit state is in PPO training support."""
+
+        plan = self._plan(grasp_plan_id)
+        if plan.planner_version != "ppo_training_distribution_ready_v1":
+            raise TomatoPickServiceError(
+                "move_to_pick_ready requires a training-distribution grasp plan"
+            )
+        summary = self.move_to_pregrasp(grasp_plan_id)
+        from module.skills.tomato_pick import evaluate_ppo_ready
+
+        target = self.targets[plan.target_id]
+        actual = self.robotics.arm.get_state(plan.arm_side).ee_pose
+        evidence = evaluate_ppo_ready(target=target, plan=plan, actual_palm_pose=actual)
+        now_ns = self.robotics.clock.monotonic_ns()
+        target_age_s = max(0.0, (now_ns - target.sample_monotonic_ns) / 1.0e9)
+        checks = dict(evidence["checks"])  # type: ignore[arg-type]
+        checks["target_fresh_for_ppo"] = (
+            target_age_s <= self.runner.manifest.max_state_age_s[0]
+        )
+        evidence["checks"] = checks
+        evidence["target_age_s"] = target_age_s
+        evidence["admitted"] = all(checks.values())
+        if not evidence["admitted"]:
+            self.state = AgriPickState.ABORTED
+            failed = ", ".join(name for name, passed in checks.items() if not passed)
+            raise TomatoPickServiceError(
+                f"PPO ready-position admission failed: {failed or 'unknown'}"
+            )
+        return {
+            **summary,
+            "handoff": "ppo_ready",
+            "ppo_ready_evidence": evidence,
+        }
+
     def execute_tomato_pick(self, grasp_plan_id: str) -> dict[str, Any]:
         self._require_open()
         plan = self._plan(grasp_plan_id)
@@ -192,7 +241,9 @@ class TomatoPickService:
         try:
             assessment = self.assessments[plan.grasp_plan_id]
         except KeyError as exc:
-            raise TomatoPickServiceError("call move_to_pregrasp before executing the skill") from exc
+            raise TomatoPickServiceError(
+                "call move_to_pick_ready or move_to_pregrasp before executing the skill"
+            ) from exc
         if self.state is not AgriPickState.PICK:
             raise TomatoPickServiceError(
                 f"pick cannot start from workflow state {self.state.value!r}"
@@ -218,6 +269,11 @@ class TomatoPickService:
             leases=self.robotics.leases,
             verifier=self.verifier,
             clock=self.robotics.clock,
+            target_state=(
+                WorldThenHandTargetStatePort()
+                if plan.planner_version == "ppo_training_distribution_ready_v1"
+                else None
+            ),
         )
         result = self.runner.run(request, context)
         self.executions[execution_id] = result

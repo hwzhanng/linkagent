@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "status": "resumed_full_state_from_safe_pause",
+  "resumed_at_local": "2026-08-10T21:20:38+08:00",
+  "paused_at_local": "2026-08-10T10:30:27+08:00",
+  "workspace": "/home/descfly/linkagent-physics-perf",
+  "task_id": "LinkAgent-TomatoPick-Physics-v1",
+  "hardware_boundary": "no SDK, CAN, or real-hardware connection",
+  "resume_checkpoint": {
+    "path": "logs/rsl_rl/tomato_pick_physics_v1/2026-08-10_03-22-34_tomato_pick_physics_v1_from_scratch_8192/model_1200.pt",
+    "sha256": "d757dcb6bd6e0b7328ebef53dd049620d5457c8b54857a95ad6083c41a2bd83c",
+    "checkpoint_iteration": 1200,
+    "contains": [
+      "actor_state_dict",
+      "critic_state_dict",
+      "actor_observation_normalizer",
+      "critic_observation_normalizer",
+      "policy_log_std",
+      "optimizer_state_dict"
+    ]
+  },
+  "pause_semantics": {
+    "last_logged_completed_iteration": 1208,
+    "discarded_uncheckpointed_iteration_start": 1201,
+    "discarded_uncheckpointed_iteration_end": 1208,
+    "authoritative_resume_iteration": 1200,
+    "reason": "Resume only from an atomic checkpoint containing the complete PPO and normalization state."
+  },
+  "continuation": {
+    "target_absolute_iteration": 1800,
+    "additional_iterations": 600,
+    "reward_iteration_offset": 1200,
+    "restore_full_runner_state": true,
+    "reuse_same_wandb_run": false,
+    "wandb_parent_run_id": "hs0bad5e",
+    "wandb_run_id": "u5dgy4u1",
+    "wandb_url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/u5dgy4u1",
+    "wandb_lineage_reason": "The parent run rejected the changed resume train_cfg as immutable. A linked continuation run preserves truthful configuration without changing PPO state.",
+    "environment": {
+      "LINKAGENT_ISAACLAB_ROOT": "/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1",
+      "OMNI_KIT_ACCEPT_EULA": "YES",
+      "PYTHONPATH": "/home/descfly/linkagent-physics-perf",
+      "TOMATO_REWARD_ITERATION_OFFSET": "1200",
+      "WANDB_INIT_TIMEOUT": "300",
+      "WANDB_NOTES": "Full-state continuation from parent run hs0bad5e at model_1200.pt; reward iteration offset 1200; 600 additional updates to absolute iteration 1800.",
+      "WANDB_TAGS": "perf-v7,resume1200,parent-hs0bad5e"
+    },
+    "command": [
+      "/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python",
+      "/home/descfly/isaaclab/IsaacLab-3.0.0-beta2.patch1/scripts/reinforcement_learning/train.py",
+      "--rl_library",
+      "rsl_rl",
+      "--external_callback",
+      "simulation.tomato_pick.isaac.physics_v1.register_task",
+      "--task",
+      "LinkAgent-TomatoPick-Physics-v1",
+      "--num_envs",
+      "8192",
+      "--seed",
+      "42",
+      "--max_iterations",
+      "600",
+      "--logger",
+      "wandb",
+      "--experiment_name",
+      "tomato_pick_physics_v1",
+      "--run_name",
+      "tomato_pick_physics_v1_resume1200_to1800_8192",
+      "--resume",
+      "--load_run",
+      "^2026-08-10_03-22-34_tomato_pick_physics_v1_from_scratch_8192$",
+      "--checkpoint",
+      "^model_1200\\.pt$",
+      "--viz",
+      "none"
+    ]
+  },
+  "pre_resume_checks": [
+    "verify checkpoint SHA-256 and checkpoint iteration",
+    "verify formal manifest input hashes are unchanged",
+    "verify no concurrent Isaac task or large CUDA process",
+    "verify sufficient system memory",
+    "resume the same W&B run and confirm history step advances beyond 1200"
+  ]
+}

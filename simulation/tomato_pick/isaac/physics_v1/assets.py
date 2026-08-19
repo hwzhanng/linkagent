@@ -36,6 +36,7 @@ def verify_baked_hand_self_collision_filters(env, env_ids, *, asset_name: str) -
         raise RuntimeError(
             f"expected {env.scene.num_envs} Physics-v1 robots, found {len(robot_paths)}"
         )
+    robot_asset_profile = load_physics_v1_profile()["robot_asset"]
     expected = {
         "physicsV1SelfCollisionPolicy": "right_distal_envelope_and_palm_only",
         "physicsV1SelfCollisionMatrixSha256": (
@@ -46,10 +47,21 @@ def verify_baked_hand_self_collision_filters(env, env_ids, *, asset_name: str) -
         "physicsV1AdjacentPairsPerRobot": 54,
         "physicsV1ExpectedHandContactBodyCount": 56,
         "physicsV1SelfCollisionRepresentation": (
-            "distal_envelope_filtered_pairs_outside_solve_contact_disabled_v2"
+            "distal_envelope_instanced_prototypes_v5_source_convex_decomposition"
         ),
         "physicsV1StoredActiveHandFilteredPairCount": 7,
         "physicsV1OutsideSolveContactDisabledBodyCount": 59,
+        "physicsV1OutsideCollisionDisabledShapeCount": 59,
+        "physicsV1ActiveColliderApproximation": "convexDecomposition",
+        "physicsV1ActiveColliderShapeCount": 12,
+        "physicsV1ActiveCollisionPrototypeCount": 8,
+        "physicsV1DisabledCollisionPrototypeCount": 41,
+        "physicsV1BaseLayerSha256": robot_asset_profile[
+            "physics_v1_base_usd_sha256"
+        ],
+        "physicsV1InstancesLayerSha256": robot_asset_profile[
+            "physics_v1_instances_usd_sha256"
+        ],
     }
 
     first_root = stage.GetPrimAtPath(robot_paths[0])
@@ -69,6 +81,8 @@ def verify_baked_hand_self_collision_filters(env, env_ids, *, asset_name: str) -
     stored_active_hand_pairs = 0
     exposed_right_hand_bodies = 0
     outside_solve_contact_disabled = 0
+    outside_collision_shapes_disabled = 0
+    active_collider_shapes = 0
     actual_contact_reporter_count = 0
     for prim in Usd.PrimRange(first_root):
         if not prim.HasAPI(UsdPhysics.RigidBodyAPI):
@@ -96,6 +110,39 @@ def verify_baked_hand_self_collision_filters(env, env_ids, *, asset_name: str) -
                 )
         elif solve_contact is False:
             outside_solve_contact_disabled += 1
+        owned_collision_shapes = []
+        for candidate in Usd.PrimRange(prim, Usd.TraverseInstanceProxies()):
+            if candidate == prim or not candidate.HasAPI(UsdPhysics.CollisionAPI):
+                continue
+            ancestor = candidate.GetParent()
+            belongs_to_child_body = False
+            while ancestor and ancestor != prim:
+                if ancestor.HasAPI(UsdPhysics.RigidBodyAPI):
+                    belongs_to_child_body = True
+                    break
+                ancestor = ancestor.GetParent()
+            if not belongs_to_child_body:
+                owned_collision_shapes.append(candidate)
+        if len(owned_collision_shapes) != 1:
+            raise RuntimeError(
+                f"expected one owned collider for {prim.GetPath()}, "
+                f"got {len(owned_collision_shapes)}"
+            )
+        collision_enabled = UsdPhysics.CollisionAPI(
+            owned_collision_shapes[0]
+        ).GetCollisionEnabledAttr().Get()
+        if exposed_right_hand:
+            if collision_enabled is False:
+                raise RuntimeError(
+                    f"exposed hand collision disabled: {owned_collision_shapes[0].GetPath()}"
+                )
+            approximation = UsdPhysics.MeshCollisionAPI(
+                owned_collision_shapes[0]
+            ).GetApproximationAttr().Get()
+            if approximation == expected["physicsV1ActiveColliderApproximation"]:
+                active_collider_shapes += 1
+        elif collision_enabled is False:
+            outside_collision_shapes_disabled += 1
         if prim.HasAPI(PhysxSchema.PhysxContactReportAPI):
             actual_contact_reporter_count += 1
     if rigid_body_count != 71:
@@ -121,6 +168,19 @@ def verify_baked_hand_self_collision_filters(env, env_ids, *, asset_name: str) -
             "Physics-v1 out-of-scope solveContact boundary changed: "
             f"expected=59, actual={outside_solve_contact_disabled}"
         )
+    if outside_collision_shapes_disabled != expected[
+        "physicsV1OutsideCollisionDisabledShapeCount"
+    ]:
+        raise RuntimeError(
+            "Physics-v1 out-of-scope collision-shape boundary changed: "
+            f"expected=59, actual={outside_collision_shapes_disabled}"
+        )
+    if active_collider_shapes != expected["physicsV1ActiveColliderShapeCount"]:
+        raise RuntimeError(
+            "Physics-v1 active collision approximation changed: "
+            "expected=12 convexDecomposition, "
+            f"actual={active_collider_shapes}"
+        )
     # The derived topology contains 56 bodies across both hands.  Physics-v1
     # sensors intentionally activate only the 28 bodies of the task-active
     # right hand; the parked left hand does not need contact telemetry.
@@ -145,6 +205,11 @@ def verify_baked_hand_self_collision_filters(env, env_ids, *, asset_name: str) -
         "outside_solve_contact_disabled_body_count": (
             outside_solve_contact_disabled
         ),
+        "outside_collision_disabled_shape_count": outside_collision_shapes_disabled,
+        "active_collider_approximation": expected[
+            "physicsV1ActiveColliderApproximation"
+        ],
+        "active_collider_shape_count": active_collider_shapes,
         "verified_robot_instance_count": len(robot_paths),
         "adjacent_joint_pair_count": expected["physicsV1AdjacentPairsPerRobot"],
         "allowed_nonadjacent_hand_pair_count": expected[

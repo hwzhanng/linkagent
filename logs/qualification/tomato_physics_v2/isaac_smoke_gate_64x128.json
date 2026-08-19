@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-17T05:25:24.165355+00:00",
+  "qualification": "physics_v2_public_prior_isaac_smoke",
+  "task_id": "LinkAgent-TomatoPick-Physics-v2-PublicPrior-v1",
+  "num_envs": 64,
+  "steps": 128,
+  "seed": 42,
+  "passed": true,
+  "candidate_id": "physics_v2_retention_objective_v1",
+  "input_sha256": {
+    "script/physics_v2_audit_inputs.py": "3848dc0993f42f54179db919110d4bb4915293b37356fb1ffcdbdf5190bc9efa",
+    "simulation/config/tomato_pick_physics_v2_public_prior_v1.json": "49ace3296a9664f736591a082fe40162f4f08c85bd8b6ca194b90feb185f871f",
+    "simulation/tomato_pick/physics_v2.py": "e3424108e437d8fd65e7288ea31a33d02a296d8f9a98a5f80426887fcca85c69",
+    "simulation/tomato_pick/isaac/env.py": "dfd6b51ceaaa603f583588241630571e888976c8ea40d7273615ac22005a9655",
+    "simulation/tomato_pick/isaac/physics_v2/env_cfg.py": "f0536146158ec1ff0247f33f61c8ed9947c90bf9790f6fbd041070f2a32fc819",
+    "simulation/tomato_pick/isaac/physics_v2/env.py": "49d1d0207be1e7a20731c733e12c7677abf8a1d4a5cb4e00c152ba337b779363",
+    "simulation/tomato_pick/isaac/physics_v2/agents/rsl_rl_ppo_cfg.py": "154016859a527b14594494c7873c8671b9aa77780ad76ee5a5a700b26d2a462e",
+    "simulation/tomato_pick/reward.py": "a14861aac283e157ae022bcb1f663ec1aafd649968354ece89ee59bc18a36e78",
+    "script/check_tomato_physics_v2.py": "e759c1acbf6b65be9ea44fd5e99461e20138deb2cbe03b57ee44e79c1a1d7954"
+  },
+  "checks": {
+    "task_identity_is_physics_v2": true,
+    "finite_reset_and_rollout_observations": true,
+    "finite_rollout_rewards": true,
+    "termination_masks_disjoint": true,
+    "morphology_density_gate_enforced": true,
+    "public_axial_strength_replaces_4_to_8N": true,
+    "torsion_limit_is_finite_positive": true,
+    "integrity_remains_finite_bounded": true,
+    "all_runtime_physics_tensors_are_finite": true,
+    "runtime_stays_inside_explicit_force_torque_clamps": true,
+    "world_orientation_category_assigned_per_env": true,
+    "continuous_tilt_inside_15deg_engineering_support": true,
+    "episode_fixed_fatigue_parameters_are_bounded": true,
+    "engineering_pair_friction_material_bank_is_bounded": true,
+    "effective_contact_surrogate_is_bounded": true,
+    "a7_l20_action_delay_surrogate_is_zero_to_two_steps": true,
+    "action_history_covers_maximum_sampled_delay": true,
+    "vector_gate_exercises_multiple_material_profiles": true,
+    "load_bearing_opposition_target_matches_runtime_physics": true,
+    "v2_actor_has_deployable_motion_tracking_and_command_history": true,
+    "mode_aware_capacity_curriculum_is_training_only": true,
+    "secure_retain_predicate_is_not_weakened": true,
+    "paper_strategy_audit_is_diagnostic_and_nontrivial": true,
+    "engineering_prior_is_hash_pinned": true,
+    "v1_profile_not_mutated_at_runtime": true
+  },
+  "profile_summary": {
+    "fruit_mass_kg": {
+      "mean": 0.16037249565124512,
+      "minimum": 0.09763218462467194,
+      "maximum": 0.22837460041046143
+    },
+    "density_kg_m3": {
+      "mean": 1049.7581787109375,
+      "minimum": 809.7703857421875,
+      "maximum": 1198.0677490234375
+    },
+    "axial_limit_n": {
+      "mean": 50.93967056274414,
+      "minimum": 11.60215950012207,
+      "maximum": 117.05876159667969
+    },
+    "bending_limit_nm": {
+      "mean": 0.10644403100013733,
+      "minimum": 0.021327439695596695,
+      "maximum": 0.18025562167167664
+    },
+    "torsion_limit_nm": {
+      "mean": 0.16736266016960144,
+      "minimum": 0.061549630016088486,
+      "maximum": 0.2827443480491638
+    },
+    "orientation_counts_front_back_left_right": [
+      10,
+      6,
+      6,
+      42
+    ],
+    "orientation_polar_tilt_deg": {
+      "mean": 7.88917350769043,
+      "minimum": 0.738345205783844,
+      "maximum": 14.310484886169434
+    },
+    "fatigue_time_constant_s": {
+      "mean": 0.655383288860321,
+      "minimum": 0.23757018148899078,
+      "maximum": 1.117090106010437
+    },
+    "effective_pair_static_friction": {
+      "mean": 0.47968751192092896,
+      "minimum": 0.3500000238418579,
+      "maximum": 0.6499999761581421
+    },
+    "load_bearing_opposition_target_n": {
+      "mean": 2.1076626777648926,
+      "minimum": 1.0751183032989502,
+      "maximum": 3.531217336654663
+    },
+    "action_delay_steps_uniform_inclusive": [
+      0,
+      2
+    ],
+    "sampled_action_delay_steps": [
+      0,
+      1,
+      2
+    ],
+    "unique_contact_material_bins": 14,
+    "runtime_envelope": {
+      "maximum_stem_force_n": 2.966691493988037,
+      "maximum_stem_torque_nm": 0.008696407079696655,
+      "maximum_joint_velocity_rad_s": 2.112306594848633,
+      "minimum_integrity": 0.9945311546325684,
+      "maximum_cumulative_twist_rad": 0.7906596064567566,
+      "maximum_effective_twist_rad": 0.02561575546860695
+    }
+  },
+  "training_started": false,
+  "hardware_connected": false
+}

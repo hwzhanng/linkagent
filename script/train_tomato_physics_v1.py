@@ -56,29 +56,48 @@ def build_plan(*, num_envs: int, iterations: int, seed: int) -> dict:
     asset = profile["robot_asset"]
     source_usd = PROJECT_ROOT / asset["source_usd"]
     derived_usd = PROJECT_ROOT / asset["derived_usd"]
+    base_usd = PROJECT_ROOT / asset["physics_v1_base_usd"]
+    instances_usd = PROJECT_ROOT / asset["physics_v1_instances_usd"]
     if _sha256(source_usd) != asset["source_usd_sha256"]:
         raise RuntimeError("Physics-v1 source robot USD hash changed")
     if _sha256(derived_usd) != asset["derived_usd_sha256"]:
         raise RuntimeError("Physics-v1 derived robot USD hash changed")
+    if _sha256(base_usd) != asset["physics_v1_base_usd_sha256"]:
+        raise RuntimeError("Physics-v1 base payload USD hash changed")
+    if _sha256(instances_usd) != asset["physics_v1_instances_usd_sha256"]:
+        raise RuntimeError("Physics-v1 instances payload USD hash changed")
     if asset["collision_matrix_baked"] is not True:
         raise RuntimeError("Physics-v1 collision matrix is not baked")
     if asset["runtime_authored_collision_pairs"] != 0:
         raise RuntimeError("Physics-v1 still authors collision pairs at runtime")
+    simulation = profile["simulation"]
+    if not (
+        simulation["physics_rate_hz"] == 120
+        and simulation["control_decimation"] == 6
+        and simulation["solver_position_iteration_count"] == 8
+        and simulation["solver_velocity_iteration_count"] == 4
+    ):
+        raise RuntimeError("Physics-v1 formal simulation cadence or solver changed")
 
     feasibility_path = QUALIFICATION_ROOT / "abscission_envelope_feasibility.json"
-    isolated_path = QUALIFICATION_ROOT / "isolated_physics_gate_abscission_v1.json"
-    preflight_path = (
-        QUALIFICATION_ROOT / "ppo_256x4_secure_kinematic_credit_gate.json"
+    isolated_path = QUALIFICATION_ROOT / "isolated_physics_gate_perf_v7_duration.json"
+    hand_gate_path = (
+        QUALIFICATION_ROOT / "hand_collision_grasp_sweep_perf_v7_duration_gate.json"
     )
+    performance_path = (
+        QUALIFICATION_ROOT / "performance/performance_gate_v7_duration.json"
+    )
+    formal_readiness_path = QUALIFICATION_ROOT / "formal_readiness_perf_v7_gate.json"
+    preflight_path = QUALIFICATION_ROOT / "ppo_256x4_perf_v7_duration_gate.json"
     reward_math_path = QUALIFICATION_ROOT / "reward_math_audit.json"
     comparison_path = QUALIFICATION_ROOT / "clean_v5_training_reward_comparison.json"
     guidance_path = QUALIFICATION_ROOT / "historical_checkpoint_guidance/summary.json"
-    first_success_path = (
-        QUALIFICATION_ROOT
-        / "first_success_8192x50_secure_kinematic_credit_gate.json"
-    )
+    first_success_path = QUALIFICATION_ROOT / "first_success_8192x50_perf_v7_duration_gate.json"
     feasibility = _read_passed(feasibility_path)
     isolated = _read_passed(isolated_path)
+    hand_gate = _read_passed(hand_gate_path)
+    performance = _read_passed(performance_path)
+    formal_readiness = _read_passed(formal_readiness_path)
     preflight = _read_passed(preflight_path)
     reward_math = _read_passed(reward_math_path)
     comparison = _read_passed(comparison_path)
@@ -88,6 +107,47 @@ def build_plan(*, num_envs: int, iterations: int, seed: int) -> dict:
         raise RuntimeError("abscission feasibility gate lost its provisional qualification")
     if isolated.get("qualification") != "literature_prior_provisional":
         raise RuntimeError("isolated gate lost its provisional qualification")
+    if hand_gate.get("num_envs") != 64 or hand_gate.get("steps") != 256:
+        raise RuntimeError("hand/contact gate is not the fixed 64x256 gate")
+    required_hand_checks = {
+        "finite_rollout",
+        "passive_linkage_stays_bounded",
+        "contact_telemetry_capacity_is_explicit",
+        "termination_masks_disjoint",
+    }
+    hand_checks = hand_gate.get("checks", {})
+    if any(hand_checks.get(name) is not True for name in required_hand_checks):
+        raise RuntimeError("hand/contact gate lost a required Physics-v1 invariant")
+    required_performance_checks = {
+        "physics_rate_120hz",
+        "control_decimation_6",
+        "matched_inputs_8192",
+        "finite_8192",
+        "8192_rollout_within_budget",
+        "8192_speedup_meets_target",
+    }
+    performance_checks = performance.get("checks", {})
+    if any(
+        performance_checks.get(name) is not True
+        for name in required_performance_checks
+    ):
+        raise RuntimeError("formal-scale performance gate lost a required invariant")
+    required_readiness_checks = {
+        "formal_training_is_ready_but_not_started",
+        "finite_reset",
+        "finite_rollout",
+        "native_compliant_mimics_present",
+        "passive_linkage_stays_bounded",
+        "one_substep_cannot_break_stem",
+        "sustained_multiaxial_load_can_break_stem",
+        "termination_masks_disjoint",
+    }
+    readiness_checks = formal_readiness.get("checks", {})
+    if any(
+        readiness_checks.get(name) is not True
+        for name in required_readiness_checks
+    ):
+        raise RuntimeError("formal-readiness audit lost a required invariant")
     if preflight.get("num_envs") != 256 or len(preflight.get("iterations", [])) != 4:
         raise RuntimeError("PPO preflight is not the fixed 256x4 gate")
     preflight_credit = preflight.get("credit_gate", {})
@@ -135,10 +195,21 @@ def build_plan(*, num_envs: int, iterations: int, seed: int) -> dict:
         / "simulation/tomato_pick/isaac/physics_v1/agents/rsl_rl_ppo_cfg.py",
         PROJECT_ROOT / "script/audit_tomato_checkpoint_guidance.py",
         PROJECT_ROOT / "script/audit_tomato_physics_v1_clean_v5_contract.py",
+        PROJECT_ROOT / "script/benchmark_tomato_physics_v1.py",
+        PROJECT_ROOT / "script/build_tomato_physics_v1_robot_asset.py",
+        PROJECT_ROOT / "script/check_tomato_physics_v1.py",
+        PROJECT_ROOT / "script/check_tomato_physics_v1_isolated.py",
+        PROJECT_ROOT / "script/check_tomato_physics_v1_performance.py",
         PROJECT_ROOT / "script/gate_tomato_physics_v1_first_success.py",
+        PROJECT_ROOT / "script/train_tomato_physics_v1.py",
         derived_usd,
+        base_usd,
+        instances_usd,
         feasibility_path,
         isolated_path,
+        hand_gate_path,
+        performance_path,
+        formal_readiness_path,
         preflight_path,
         reward_math_path,
         comparison_path,
@@ -198,6 +269,13 @@ def build_plan(*, num_envs: int, iterations: int, seed: int) -> dict:
         "qualification_reports": {
             "abscission_feasibility": str(feasibility_path.relative_to(PROJECT_ROOT)),
             "isolated_physics": str(isolated_path.relative_to(PROJECT_ROOT)),
+            "hand_collision_contact_64x256": str(
+                hand_gate_path.relative_to(PROJECT_ROOT)
+            ),
+            "fair_performance": str(performance_path.relative_to(PROJECT_ROOT)),
+            "formal_readiness": str(
+                formal_readiness_path.relative_to(PROJECT_ROOT)
+            ),
             "ppo_256x4": str(preflight_path.relative_to(PROJECT_ROOT)),
             "reward_math": str(reward_math_path.relative_to(PROJECT_ROOT)),
             "clean_v5_contract": str(comparison_path.relative_to(PROJECT_ROOT)),

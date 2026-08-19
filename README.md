@@ -4,41 +4,155 @@ RealAgent 是一个可运行的单 `TopAgent` 系统：外层 Runtime 管理观�
 周期，内层 Agent 管理有界的模型/工具往返。默认配置完全离线；第二阶段已经加入
 `doubao-seed-2.0-pro` 的 Ark OpenAI Responses 与 Anthropic Messages 兼容协议适配。
 
-真实相机、感知模型和真机动作仍未接入；默认 Agent 示例继续使用 mock。第三阶段 C1
-已加入可运行的离线番茄采摘闭环，C2 已实现 Sim 6 中的番茄椭球、可断果梗和
-DirectRLEnv，并完成 Clean-v5 正式 PPO 训练。当前推荐的 `model_1350.pt` 在三个固定
-种子、26,077 个 episode 上取得 **96.18%** 汇总成功率，最差种子仍为 96.06%；模型、
-训练配置、续训 checkpoint、固定评测证据和可直接加载的推理导出均随仓库发布。C4-O
-已加入不连接设备的 LinkBot/G20 适配边界。
+## 一眼看懂 Agent 架构
 
-番茄采摘第三阶段已经完成 C0 接口冻结和 C1 离线实现：设备按双臂、每臂 7 关节及
-左右 G20 建模；Skill 使用 114 维部署观测和 7 维“末端残差 + 手部协同量”动作；
-`AgriPickTask` 只暴露 5 个任务级工具，并由独立 Verifier 确认果实脱离、稳定持有且
-没有滑落。默认 C1 policy、感知、规划、安全、设备和验证器仍是确定性 mock；它与已
-训练的 C2 Isaac PPO skill 保持隔离。SDK 中旧 Fruit-Grasp baseline 已清理，审计结论
-只保留在文档中。
+<p align="center">
+  <img src="./docs/assets/agent_closed_loop_architecture_cn.png" alt="LinkAgent 单智能体闭环架构：环境观测、TopAgent 决策、Task 工具选择、Atomic Skills 安全执行与 Verifier 验收" width="100%">
+</p>
 
-当前正式 minimal-v3 策略使用 66D actor observation、83D privileged critic state 和
-11D action。训练前的旧布局不进入当前 checkpoint 兼容边界。
+LinkAgent 不是一群 Agent 相互讨论，而是一个 `TopAgent` 在明确边界内完成闭环：看见环境、
+理解任务、选择工具、调用安全技能，并由独立验证器判断“成功、失败，还是继续观察”。
 
-## PPO Clean-v5 model 1350
+| 看见 | 决策 | 选择能力 | 安全执行 | 验收结果 |
+|---|---|---|---|---|
+| RGB-D、机器人状态和任务上下文 | `TopAgent` 决定下一步 | `Task` 只开放当前需要的工具 | `Atomic Skills` 连接感知、规划、安全与设备 | `Verifier` 用事实关闭闭环 |
 
-可恢复训练的 checkpoint、精确 resolved config、TensorBoard history、确定性推理导出、
-推理 canary 和固定三种子评估结果均随仓库发布。模型 SHA-256 为
-`c4ca9ac27aaa20806b630496362bcb9154d1e8076605f9d7026b58f719d124d0`。
+这样设计的重点不是“让模型自由发挥”，而是让每一步都有权限边界、执行记录和可验证结果。
+下方展示的番茄采摘，就是这套架构中的一个可运行任务。
 
-安装环境、复现 96.18% 结果以及从 iteration 1350 继续训练的完整命令见
+当前仓库收敛为两条清晰主线：一套单 Agent 闭环框架，以及三项可复现的 PPO 实验。
+生产采摘链路中的真实感知和真机动作尚未接入；默认 Agent 示例仍使用确定性 mock，PPO
+结果均来自 Isaac 仿真。训练 checkpoint、resolved config、固定评测和续训入口随对应实验发布。
+
+<details>
+<summary><strong>展开查看 Agent 能力与集成边界</strong></summary>
+
+`AgriPickTask` 只开放 5 个任务级工具，设备按双臂、每臂 7 关节及左右 G20 建模；独立
+Verifier 负责确认果实脱离、稳定持有且没有滑落。`HarvestCycleTask` 在 PPO pick 前后串联
+系统自检、RGB-D 感知、目标筛选、遮挡重观察、净空检查、带载运输、容器放置、掉果恢复和
+闭环验收。所有新增能力使用统一 `AtomicSkill` 合约和有界结构化轨迹。
+
+视觉 Worker 与 Agent 核心进程隔离；三维几何始终由本地 aligned depth 和相机内参计算，
+VLM 不直接提供机器人位姿或动作。完整 PhysX 验收边界见
+[`ISAAC_SIM_ACCEPTANCE.md`](./docs/harvest_cycle/ISAAC_SIM_ACCEPTANCE.md)。
+
+独立的能力验证 Task 额外提供离线 IK/相机 Replay，以及真机遥测、Shadow IK 和本地
+Orbbec 状态三个只读工具。真机适配器默认关闭，必须同时由配置和环境变量显式放行；工具
+不暴露使能、目标写入、轨迹或手部控制。
+
+</details>
+
+## 从原始触觉到可复现抓取评估
+
+G20 每根手指提供一张 `12×6` 触觉矩阵。LinkAgent 现在保留完整的五指原始空间信息，
+同时把采样过程记录成可回放 episode，再由独立 Verifier 判断抓取是否真正形成掌心支撑、
+五指包络和断梗后稳定保持。整条链路是现有 Agent 的证据旁路，不会绕过 Task/Skill
+边界直接控制硬件。
+
+```mermaid
+flowchart LR
+    SDK["G20 SDK<br/>5 指 × 12 × 6 原始矩阵"] --> FRAME["TactileFrame<br/>时间戳、有效位、原始阵列"]
+    FRAME --> RAW["50D 空间触觉特征<br/>每指 10 个可解释量"]
+    FRAME --> EP["Episode JSONL<br/>关节、触觉、物体位姿、阶段"]
+    RAW --> EP
+    EP --> REPLAY["离线回放 / 仿真证据"]
+    REPLAY --> VERIFY["Enveloping Verifier<br/>掌心优先、五指包络、保持、掉落"]
+    VERIFY --> RESULT["通过或明确失败原因"]
+    FRAME --> PPO["现有 Physics-v1<br/>5D 压力 → 冻结 66D Actor"]
+    RAW -.->|未来策略输入，需重新训练| NEXT["下一版触觉策略"]
+```
+
+| 新增能力 | 直接产物 | 现在解决什么问题 |
+|---|---|---|
+| [原始矩阵特征](./module/skills/tomato_pick/tactile_matrix.py) | 五指共 50D：总载荷、峰值、接触面积、压力中心、分布宽度、载荷变化率、有效/掉线标记 | 区分“没有接触”和“传感器无效”，保留接触在指腹上的位置与形状 |
+| [触觉 Episode](./module/skills/tomato_pick/tactile_episode.py) | 可流式保存、可确定性回放的 JSONL | 把 16D 手部关节、`5×12×6` 原始矩阵、采样年龄、物体位姿和动作阶段对齐到同一时间线 |
+| [包络抓取 Verifier](./module/skills/tomato_pick/enveloping_verifier.py) | `pass` 或掌心支撑缺失、包络不足、拇指对向不足、远端关节空闲、掉落等明确原因 | 用独立证据评价抓取，不把 PPO reward 或单帧接触当作任务成功 |
+
+这里的触觉矩阵仍是 SDK 原始量纲，不宣称等价于牛顿；真实力阈值需要后续标定数据。
+新增 50D 特征也没有替换已发布模型的输入：Physics-v1/Clean-v5 继续使用冻结的
+`g20_pressure_5d_v1` 与 66D Actor，保证现有 checkpoint 契约不漂移。Verifier 当前用于
+CPU、仿真和记录回放，它的通过结果不等于真机运动授权。
+
+## 三项 PPO 实验成果
+
+| 实验 | 发布 checkpoint | 固定评测成功率 | 定位 |
+|---|---:|---:|---|
+| 1. Minimal-v3 / GraspCredit | `model_1450.pt` | **62.57%**；seed 2026 为 **63.65%** | 首个完整可复现基线 |
+| 2. Clean-v5 | `model_1350.pt` | **96.18%** | 当前成功率最高、推荐使用 |
+| 3. Physics-v1 perf-v7 | `model_5150.pt` | **85.97%** | 更完整物理约束与可视化 Demo |
+
+三项实验都按“一个实验、一个最终选定 checkpoint”介绍。训练过程中的恢复点只保留在所属
+实验的谱系中，不作为独立成果。Minimal-v3 的配置、评测与续训命令见
+[`PPO_MODEL1450_REPRODUCTION.md`](./docs/tomato_pick/PPO_MODEL1450_REPRODUCTION.md)；Clean-v5 见
 [`PPO_CLEAN_V5_MODEL1350_REPRODUCTION.md`](./docs/tomato_pick/PPO_CLEAN_V5_MODEL1350_REPRODUCTION.md)。
-旧版 62.57% minimal-v3 基线继续保留在
-[`PPO_MODEL1450_REPRODUCTION.md`](./docs/tomato_pick/PPO_MODEL1450_REPRODUCTION.md)，但不再是
-推荐模型。
 
-## Physics-v1 source baseline（不含 checkpoint）
+### Physics-v1：从 PPO 训练到可复现 Demo
 
-Physics-v1 将用户标定的新版连续 5D 手部流形、派生碰撞 USD、相关物理/随机化配置、
-奖励信用门控和训练前门禁证据作为独立源码基线发布。本次源码交接不包含任何新的
-Physics-v1 checkpoint、W&B 运行文件或 TensorBoard 事件。完整复现和队友修改边界见
-[`PHYSICS_V1_SOURCE_REPRODUCTION.md`](./docs/tomato_pick/PHYSICS_V1_SOURCE_REPRODUCTION.md)。
+<p align="center">
+  <a href="./docs/tomato_pick/assets/physics_v1/physics_v1_demo.mp4">
+    <img src="./docs/tomato_pick/assets/physics_v1/physics_v1_demo_cover.png" alt="Physics-v1 多环境番茄采摘 Demo" width="100%">
+  </a>
+</p>
+
+<p align="center"><strong>▶ 点击画面播放 36.6 秒 Demo</strong></p>
+
+| 固定三种子成功率 | 完成 episode | 最差种子成功率 | 最终 checkpoint |
+|---:|---:|---:|---:|
+| **85.97%** | **20,102** | **85.62%** | **iter 5150** |
+
+Physics-v1 展示了 A7 双臂与多指手在大量并行仿真环境中，从不同初始位置接近番茄、形成
+抓持、完成脱离并稳定保持的完整动作。最终 `model_5150.pt` 在固定种子 17、42、2026
+上完成 17,282 次成功，drop rate 为 6.78%。原定 90% 目标没有达到；模型是在用户审阅
+曲线后停止并选出的最佳已测试 checkpoint，而不是把训练过程指标包装成最终成绩。
+
+### 真实可达空间采样
+
+<p align="center">
+  <img src="./docs/tomato_pick/assets/physics_v1/physics_v1_reset_workspace_seed42_2048_demo_v3_2048.png" alt="Physics-v1 可达重置空间点云" width="100%">
+</p>
+
+蓝点是 2,048 个实际 USD 前向运动学得到的手掌位置，橙色叉号是对应番茄位置；全部样本
+通过闭合位姿 IK 可达性检查，初始最大接触力为 0 N。图不是手绘示意，配套 CSV 和 JSON
+也随仓库提供，可重新检查每个采样点。
+
+[查看完整图文成果页](./docs/tomato_pick/PHYSICS_V1_SHOWCASE.md) ·
+[查看最终训练与复现说明](./docs/tomato_pick/PHYSICS_V1_PERF_V7_FINAL_5150.md)
+
+## Physics-v2 Research Preview（不计入三项 PPO 成果）
+
+Physics-v2 当前没有可发布的成功 checkpoint，也不计入上面的三项实验结果。下一轮首成功
+门禁候选已冻结为
+`physics_v2_retention_objective_v1`。当前随仓证据中，CPU public-prior Q1--Q6
+资格检查通过，64 环境 x 128 步的 managed-Isaac 无训练 smoke 为 25/25 通过；
+上一版 repair 46 的 `8192 x 32 x 50`、seed 42 门禁完整运行但仍为零成功和零尾段
+保持，因此不能作为成功模型或可续训发布 checkpoint。
+
+repair 47 只把 Physics-v2 的稠密防停滞代价保持在原有 `-0.01` 端点，其余物理、
+PPO、观测、断裂、保持和最终成功判据不变。这个新版候选尚未运行正式规模的首成功门禁，
+正式长训也未获授权或启动；真实硬件仍未连接。代码、冻结配置、输入哈希、历史失败报告、
+门禁策略和逐项修复依据见
+[`PHYSICS_V2_EXTERNAL_AUDIT.md`](./docs/tomato_pick/PHYSICS_V2_EXTERNAL_AUDIT.md)、
+[`PHYSICS_V2_PUBLIC_PRIOR_IMPLEMENTATION.md`](./docs/tomato_pick/PHYSICS_V2_PUBLIC_PRIOR_IMPLEMENTATION.md)
+和
+[`TRAINING_REPAIR_AUDIT_2026-08-14.md`](./research/physics_v2_public_priors/TRAINING_REPAIR_AUDIT_2026-08-14.md)。
+
+<details>
+<summary><strong>展开查看 Physics-v2 预检命令</strong></summary>
+
+在不启动 Isaac 或 PPO 的情况下核对下一次精确训练命令：
+
+```bash
+export LINKAGENT_ISAACLAB_ROOT=/absolute/path/to/IsaacLab-3.0.0-beta2.patch1
+PYTHONPATH="$PWD" \
+  "$LINKAGENT_ISAACLAB_ROOT/env_isaaclab/bin/python" \
+  script/gate_tomato_physics_v2_first_success.py --preflight-only
+```
+
+预检必须输出 `training_started=false`、上述候选 ID，以及固定的
+`8192 x 32 x 50`、seed 42 from-scratch 命令。只有该门禁产生当前哈希匹配的通过报告后，
+曲线控制器才允许开始正式长训。
+
+</details>
 
 ## 快速开始
 
@@ -66,6 +180,65 @@ python -m compileall module proto task script tests
 ```bash
 python -m script.run --config config/agri_pick_mock.yaml
 ```
+
+运行包含重观察、带载回撤、放置和独立验收的离线采摘周期：
+
+```bash
+python -m script.run --config config/harvest_cycle_mock.yaml
+```
+
+运行必须经历“遮挡→换视角→重新识别”的闭环：
+
+```bash
+python -m script.run --config config/harvest_cycle_active_view_mock.yaml
+```
+
+验证隔离视觉 Worker 的真实跨进程闭环（分别在两个终端运行）：
+
+```bash
+python -m script.tomato_vision_worker --config config/tomato_vision_worker_replay.yaml
+python -m script.run --config config/harvest_cycle_worker_replay.yaml
+```
+
+使用 Ark 真实多模态框选完成合成 RGB-D 跨进程采摘闭环：
+
+```bash
+set -a; . ./.env.local; set +a
+python -m script.tomato_vision_worker --config config/tomato_vision_worker_ark_box.yaml
+# 另一个终端，同样载入 ARK_API_KEY：
+python -m script.run --config config/harvest_cycle_worker_ark.yaml
+```
+
+`ark_vlm_box` 是 YOLO 权重到位前的临时后端：Ark 返回 0–1000 归一化 box、中心点、果梗点和
+语义分数；Worker 本地映射像素、结合 aligned depth 构造保守支持区域、拟合三维椭球并追踪
+目标。合成输入可由 `python -m script.generate_tomato_vision_sim_capture` 重建。
+
+准备位移动前会调用 `pregrasp_clearance_check`。它从配置端口取得 world-frame 场景点，剔除
+选中果实椭球内点，对“当前末端→预抓取→接触→果心”三段路径做扫掠净空检查；检查本身不
+发送动作，阻挡、场景过期或覆盖不足时不会启动准备位移动或 PPO。默认配置用确定性场景，
+`observation_pointcloud` 端口为后续深度相机保留同一合同。
+
+采摘验证后不再从果树回撤点直接移动到容器。`transport_payload` 先垂直抬升，再低速移动到
+由容器位姿和固定高度偏移生成的前置位；起点、抬升终点和运输终点都读取手部与五指触觉。
+掉果或保持不足会锁住放置，`place_tomato` 只允许从该次运输绑定的前置位短距离下探并松手。
+
+一次放置验收完成后，可显式调用 `reset_for_next_target`：它确认手为空，将机械臂移回配置观测位，
+清除本周期的目标、计划和 PPO execution 绑定，同时保留周期验证历史。下一次检测必须来自新的
+observation sequence；离线测试已连续完成两个独立采摘周期。
+
+RGB-D 采集数据面现已支持原子 spool、`latest.json` 严格新帧、录制导入和 recorded-shadow
+审计。硬件未接入时可先校验 profile；有 raw RGB-D 录制后再执行导入和审计：
+
+```bash
+python -m script.audit_tomato_vision_spool \
+  --profile config/tomato_vision_spool_recorded_shadow.yaml \
+  --output artifacts/vision_spool/recorded-shadow-audit.json
+```
+
+profile 默认要求 100 帧，所以空目录或不完整录制会失败，这是预期的准入行为。Orbbec
+厂商 adapter、真实标定、YOLO 权重和 VLM endpoint 尚未随仓提供，不会自动降级成 viewer
+预览或旧视觉 metadata。详细接缝和录制导入命令见
+[`docs/harvest_cycle/VISION_WORKER.md`](./docs/harvest_cycle/VISION_WORKER.md)。
 
 运行无物理契约门禁（不会启动 Isaac 或 PPO）：
 
@@ -132,6 +305,15 @@ Anthropic 或 LangChain SDK 类型。
 C1 已完成完全离线的 `AgriPickTask + TomatoPickSkillRunner` 闭环；C2 已运行契约 smoke、
 Isaac 物理门禁、PPO 数值探针和正式训练，并把 Agent、契约测试、Isaac/PPO 三套环境
 隔离。下一阶段是 C3 真实感知、触觉标定和 sim-to-real 验收。
+
+采摘周期的能力边界、证据链、真实硬件接入门禁和后续原子能力优先级见
+[`docs/harvest_cycle/ATOMIC_SKILLS_ROADMAP.md`](./docs/harvest_cycle/ATOMIC_SKILLS_ROADMAP.md)。
+视觉选择、三维点云、PPO 9 维输入、准备位训练分布和真实相机接入门禁见
+[`docs/harvest_cycle/VISION_TO_PPO_PIPELINE.md`](./docs/harvest_cycle/VISION_TO_PPO_PIPELINE.md)。
+隔离 Worker、raw RGB-D sidecar、真实 YOLO/VLM 配置和失败边界见
+[`docs/harvest_cycle/VISION_WORKER.md`](./docs/harvest_cycle/VISION_WORKER.md)。
+Orbbec Gemini Pro 的当前只读接入方式、自检项目和离线限制见
+[`docs/harvest_cycle/SYSTEM_SELF_CHECK.md`](./docs/harvest_cycle/SYSTEM_SELF_CHECK.md)。
 
 C4-O 已完成 SDK-neutral gateway 契约、LinkBot/G20 DTO 转换、双臂双手生命周期、控制
 租约、只读门禁、命令幂等、全系统急停以及四设备部署模板。它没有导入供应商 SDK，

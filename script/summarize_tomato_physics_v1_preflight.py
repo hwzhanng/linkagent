@@ -11,6 +11,7 @@ import re
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROFILE_PATH = PROJECT_ROOT / "simulation/config/tomato_pick_physics_v1.yaml"
 DEFAULT_LOG = Path("/tmp/tomato_physics_v1_ppo_preflight.log")
 DEFAULT_OUTPUT = (
     PROJECT_ROOT / "logs/qualification/tomato_physics_v1/ppo_256x4_gate.json"
@@ -79,17 +80,48 @@ def main() -> int:
     final_checkpoint = run / "model_3.pt"
     if not final_checkpoint.is_file() or final_checkpoint.stat().st_size < 1_000_000:
         raise RuntimeError("final preflight checkpoint is missing or truncated")
+    profile = json.loads(PROFILE_PATH.read_text(encoding="utf-8"))
+    secure_success = profile["secure_success"]
+    tracked_inputs = [
+        PROFILE_PATH,
+        PROJECT_ROOT / "simulation/tomato_pick/isaac/physics_v1/env_cfg.py",
+        PROJECT_ROOT / "simulation/tomato_pick/isaac/physics_v1/env.py",
+        PROJECT_ROOT / "simulation/tomato_pick/isaac/physics_v1/assets.py",
+        PROJECT_ROOT / "simulation/tomato_pick/physics_v1.py",
+        PROJECT_ROOT / "tests/test_tomato_physics_v1.py",
+    ]
     result = {
         "schema_version": 1,
         "task_id": "LinkAgent-TomatoPick-Physics-v1",
         "qualification": "numerical_preflight_not_formal_training",
         "num_envs": 256,
+        "seed": 42,
         "iterations": iterations,
         "total_transitions": 256 * 32 * 4,
         "run_directory": str(run.resolve()),
         "final_checkpoint": str(final_checkpoint.resolve()),
         "final_checkpoint_sha256": _sha256(final_checkpoint),
         "log": str(args.log.resolve()),
+        "credit_gate": {
+            "break_substep_secure_support_required": True,
+            "break_substep_kinematic_retained_required": True,
+            "maximum_center_distance_m": secure_success["maximum_center_distance_m"],
+            "maximum_relative_speed_m_s": secure_success["maximum_relative_speed_m_s"],
+        },
+        "physics_representation": {
+            "self_collision_representation": profile["robot_asset"][
+                "self_collision_representation"
+            ],
+            "solver_position_iteration_count": profile["simulation"][
+                "solver_position_iteration_count"
+            ],
+            "solver_velocity_iteration_count": profile["simulation"][
+                "solver_velocity_iteration_count"
+            ],
+        },
+        "input_sha256": {
+            str(path.relative_to(PROJECT_ROOT)): _sha256(path) for path in tracked_inputs
+        },
         "checks": {
             "completed_four_updates": True,
             "losses_and_std_are_finite": True,

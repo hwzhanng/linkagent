@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "task_id": "LinkAgent-TomatoPick-Physics-v1",
+  "release_status": "user_authorized_stop_at_best_tested_full_state_checkpoint",
+  "source_parent_commit": "d2cfb0cdb9910ee7ee96c3360d827c49ddd3d6d9",
+  "integrated_main_parent": "2ba3b8a",
+  "documentation": "docs/tomato_pick/PHYSICS_V1_PERF_V7_FINAL_5150.md",
+  "hardware_boundary": "no SDK, CAN, or real hardware connection",
+  "training_contract": {
+    "num_envs": 8192,
+    "rollout_steps": 32,
+    "seed": 42,
+    "learning_rate": 0.0003,
+    "learning_rate_schedule": "fixed",
+    "physics_reward_mdp_ppo_thresholds_changed_during_continuation": false,
+    "accepted_iteration_labels": [0, 5150],
+    "accepted_training_rows": 5151,
+    "discarded_uncheckpointed_labels": [[3251, 3263], [5151, 5153]]
+  },
+  "selected_checkpoint": {
+    "native_path": "logs/rsl_rl/tomato_pick_physics_v1/2026-08-12_09-39-56_tomato_pick_physics_v1_resume5000_to5400_8192/model_5150.pt",
+    "report_copy": "logs/qualification/tomato_physics_v1/convergence_report/best_model_5150.pt",
+    "iteration_field": 5150,
+    "bytes": 4912949,
+    "sha256": "655806f86a1bcf9e1472c064a5580523f6d8344d94a04c39f07112dcdcceacb0",
+    "full_state": {
+      "actor": true,
+      "critic": true,
+      "actor_observation_normalizer": true,
+      "critic_observation_normalizer": true,
+      "policy_log_std": true,
+      "adam_optimizer": true,
+      "adam_state_entries": 17
+    }
+  },
+  "fixed_evaluation": {
+    "protocol": {
+      "deterministic_policy": true,
+      "serial_only": true,
+      "seeds": [17, 42, 2026],
+      "num_envs_per_seed": 1024,
+      "steps_per_seed": 400
+    },
+    "completed_episodes": 20102,
+    "success_count": 17282,
+    "success_rate": 0.8597154511988857,
+    "success_ci_95": [0.8548459217126132, 0.8644475249018946],
+    "drop_count": 1363,
+    "drop_rate": 0.06780419858720525,
+    "worst_seed_success": 0.8562180066245106,
+    "seed_spread": 0.009300770279155657,
+    "original_target": 0.9,
+    "original_target_reached": false,
+    "aggregate": "logs/qualification/tomato_physics_v1/convergence_eval_5150_pause/aggregate.json"
+  },
+  "selection": {
+    "record": "logs/qualification/tomato_physics_v1/convergence_report/best_checkpoint_selection.json",
+    "rule": "success first; within 0.1 percentage point prefer lower drop, then higher worst-seed success, then later iteration",
+    "runner_up_iteration": 5000,
+    "runner_up_checkpoint": "model_4995.pt",
+    "runner_up_success_rate": 0.8596035748165161,
+    "runner_up_drop_rate": 0.07014828498676919
+  },
+  "curve_at_stop": {
+    "previous_100_mean_success": 0.7612760000000001,
+    "latest_100_mean_success": 0.774907,
+    "gain": 0.013630999999999949,
+    "formal_plateau_reached": false,
+    "stop_was_user_authorized": true
+  },
+  "resolved_run": {
+    "directory": "logs/rsl_rl/tomato_pick_physics_v1/2026-08-12_09-39-56_tomato_pick_physics_v1_resume5000_to5400_8192",
+    "agent_yaml_sha256": "e2810e176e9e8e3fb1562fd8a422f50a1dfd4b8c7121b2de129a73a275bf9898",
+    "env_yaml_sha256": "9fa1ae6cb661208260011b4fdc2d96055bfb0340309d6da98dc0cc4688b292e5",
+    "tensorboard_event_sha256": "15000b2d0214a41cf3e4bbaf6f108bd0f5fc074904491b045a61d55497325195",
+    "isaaclab_diff_sha256": "886a48340910a0a123e88d91d664ae71c2e9f87ab0e954cd1ecf225a549222e8",
+    "isaaclab_commit": "ffff603eafc6b74264a5261cc0183d6a65390d78"
+  },
+  "report": {
+    "html": "logs/qualification/tomato_physics_v1/convergence_report/physics_v1_convergence_report.html",
+    "html_sha256": "adc1408cda520512de663d2c2cfa72b7126bae896f37ceec56d5c1fd88c05e2e",
+    "artifact": "logs/qualification/tomato_physics_v1/convergence_report/artifact.json",
+    "artifact_sha256": "ecc76d9565ccbcb1df495f0a034ae6e45bd248eb46a0c931fe7fc17fc8ead076",
+    "combined_training_csv_sha256": "409b12576a23270737a009112f952b31153fe62aa6dc65ce67fe44d07f43d0bd",
+    "checkpoint_evaluations_csv_sha256": "ce988c7fbb3817aac652f2baf866d11040e87581c12ea637407d72d726a7984e",
+    "checkpoint_per_seed_csv_sha256": "27403baeccd9e2ed56e258fc60e38584034296c7375e711a075b29811c7ad740",
+    "fixed_evaluation_candidates": 9,
+    "portable_verification": "structural_only_no_chromium_available"
+  },
+  "wandb_lineage": [
+    {"range": "0-1200", "run_id": "hs0bad5e", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/hs0bad5e"},
+    {"range": "1200-1800", "run_id": "u5dgy4u1", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/u5dgy4u1"},
+    {"range": "1800-2200", "run_id": "e9wszrmu", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/e9wszrmu"},
+    {"range": "2200-2600", "run_id": "s0hjif5g", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/s0hjif5g"},
+    {"range": "2600-3000", "run_id": "grhe7qkz", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/grhe7qkz"},
+    {"range": "3000-3250", "run_id": "bo3xjhiy", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/bo3xjhiy"},
+    {"range": "3250-3400", "run_id": "k4twbypd", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/k4twbypd"},
+    {"range": "3400-3800", "run_id": "ijfzmal7", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/ijfzmal7"},
+    {"range": "3800-4200", "run_id": "qk2u8c52", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/qk2u8c52"},
+    {"range": "4200-4600", "run_id": "8vgxdtza", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/8vgxdtza"},
+    {"range": "4600-5000", "run_id": "ep6hnmsc", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/ep6hnmsc"},
+    {"range": "5000-5150", "run_id": "1c93cmsp", "url": "https://wandb.ai/hwzclementine-china-agricultural-university/PPO/runs/1c93cmsp"}
+  ],
+  "resume_contract": {
+    "resume_only_after_new_user_authorization": true,
+    "tomato_reward_iteration_offset": 5150,
+    "load_run_regex": "^2026-08-12_09-39-56_tomato_pick_physics_v1_resume5000_to5400_8192$",
+    "checkpoint_regex": "^model_5150\\.pt$",
+    "restore_actor_critic_normalizers_policy_std_and_adam": true
+  }
+}

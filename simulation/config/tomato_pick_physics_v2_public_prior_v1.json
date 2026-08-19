@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "profile_id": "tomato_pick_physics_v2_public_prior_v1",
+  "task_id": "LinkAgent-TomatoPick-Physics-v2-PublicPrior-v1",
+  "status": "qualified_ready_for_external_audit_training_not_started",
+  "public_prior": {
+    "path": "research/physics_v2_public_priors/physics_v2_public_priors.json",
+    "sha256": "3d22c0d387c5c968cbd547ebd21b288af76031be99345b426f1db63dbd99d941",
+    "profile_id": "tomato_pick_physics_v2_public_priors_v1",
+    "evidence_role_policy": [
+      "DIRECT_PRIOR",
+      "DERIVED_PRIOR",
+      "ENGINEERING_HYPERPARAMETER",
+      "HARDWARE_CALIBRATION_REQUIRED"
+    ]
+  },
+  "engineering_prior": {
+    "path": "research/physics_v2_public_priors/ENGINEERING_PRIOR_SUPPLEMENT.json",
+    "sha256": "9f6a20e42ce6069dd6c4810892cde2e5e03b6ca0df72b61b5b3757e5ad8b02db",
+    "profile_id": "tomato_pick_physics_v2_engineering_prior_v1",
+    "policy": "bounded simulation and ablation priors only; target hardware measurements override them"
+  },
+  "frozen_parent": {
+    "physics_v1_profile": "simulation/config/tomato_pick_physics_v1.yaml",
+    "physics_v1_profile_sha256": "cfeedb9b52661ca1a5864b23c78cd440a4fb4a45dc10a38c1d95523848266d18",
+    "reuse": [
+      "robot USD and collision matrix",
+      "robot USD, collision matrix and qualified provisional actuator skeleton",
+      "66D actor observation and 83D critic state layouts",
+      "11D Cartesian plus five-dimensional hand action layout",
+      "secure retention success predicate",
+      "Clean-v5 PPO hyperparameters"
+    ],
+    "do_not_reuse": [
+      "Physics-v1 checkpoints or optimizer state",
+      "4-8 N effective detachment-force prior",
+      "Physics-v1 tension/shear/bending failure semantics",
+      "independent fruit geometry or mass sampling"
+    ]
+  },
+  "morphology": {
+    "core_profile_ids": [
+      "sibede_semi_ripe",
+      "sibede_early_firm",
+      "sibede_mid_late_firm"
+    ],
+    "core_profile_weights": [0.15, 0.55, 0.30],
+    "shared_size_latent_correlation": 0.85,
+    "truncated_standard_normal_bounds": [-2.0, 2.0],
+    "polar_aspect_ratio_gate": [0.65, 1.20],
+    "mass_gate_kg": [0.05, 0.40],
+    "density_gate_kg_m3": [800.0, 1200.0],
+    "maximum_sampling_attempts": 128,
+    "large_fruit_ood_training_weight": 0.0
+  },
+  "abscission": {
+    "diameter_sampler_m": [0.005, 0.008],
+    "axial_sampler": "piecewise_linear_mean_sd_positive_truncated_normal",
+    "bending_sampler": "diameter_group_mean_sd_positive_truncated_normal",
+    "shear_ratio_triangular": [0.60, 0.7423, 0.90],
+    "torsion_limit_triangular_nm": [0.05, 0.14709975, 0.30],
+    "torsion_ood_envelope_nm": [0.02, 0.40],
+    "twist_integrity_k_per_rad": 0.214162,
+    "twist_integrity_q": 1.0,
+    "subcritical_damage_onset_ratio": 0.60,
+    "subcritical_damage_exponent": 2.0,
+    "subcritical_time_constant_s": 0.55,
+    "subcritical_parameter_sampling": "episode_fixed_triangular_from_engineering_prior",
+    "subcritical_recovery": "none_within_episode",
+    "instantaneous_failure_ratio": 1.25,
+    "torsion_detach_integrity_threshold": 0.15,
+    "duration_damage_modes": "tension_shear_bending_only_to_avoid_double_counting_twist_integrity",
+    "capacity_floor_fraction": 0.001
+  },
+  "task_distribution": {
+    "world_orientation_categories": ["front", "back", "left", "right"],
+    "world_orientation_probabilities": [0.119, 0.111, 0.063, 0.706],
+    "continuous_orientation_sampling": "category_conditioned_azimuth_jitter_and_polar_tilt_from_engineering_prior",
+    "mapping": "world_generator_only_local_policy_remains_grasp_frame_invariant"
+  },
+  "policy_interface": {
+    "baseline_hand_manifold_dim": 5,
+    "action_space_change_in_this_profile": false,
+    "future_ablation": "5D versus 8D only after per-dimension saturation audit"
+  },
+  "paper_strategy_audit": {
+    "diagnostic_only_not_rewarded": true,
+    "effective_twist_minimum_rad": 6.283185307179586,
+    "bending_utilization_minimum": 0.50,
+    "final_axial_pull_n": [1.0, 15.29],
+    "requires_break_substep_secure_support": true,
+    "requires_break_substep_kinematic_retention": true,
+    "requires_final_secure_retention_success": true
+  },
+  "contact": {
+    "policy": "episode_fixed_engineering_pair_friction_and_compliance_bank",
+    "effective_pair_static_friction_triangular": [0.30, 0.45, 0.70],
+    "effective_dynamic_to_static_ratio": 0.85,
+    "effective_stiffness_triangular_n_m": [3000.0, 5385.0, 12000.0],
+    "effective_damping_bounds_n_s_m": [10.0, 60.0],
+    "public_rubber_friction_is_support_anchor_not_pair_calibration": true,
+    "hardware_transfer_ready": false
+  },
+  "actuator_surrogate": {
+    "action_delay_steps_uniform_inclusive": [0, 2],
+    "policy_period_s": 0.05,
+    "a7_and_l20_values": "engineering_prior.a7_l20_effective_actuator",
+    "hardware_identified": false
+  },
+  "qualification": {
+    "script": "script/qualify_tomato_physics_v2_public_priors.py",
+    "minimum_morphology_samples": 100000,
+    "required_gates": ["Q1", "Q2", "Q3", "Q4", "Q5", "Q6"],
+    "output": "logs/qualification/tomato_physics_v2/public_prior_cpu_gate.json",
+    "isaac_smoke_output": "logs/qualification/tomato_physics_v2/isaac_smoke_gate_64x128.json",
+    "passed": true
+  },
+  "training_curriculum": {
+    "classification": "training-only mechanics curriculum with public-capacity and strict-retention-margin reward normalization; not a crop prior or acceptance relaxation",
+    "enabled_by_environment_variable": "TOMATO_V2_DISCOVERY_CAPACITY_CURRICULUM=1",
+    "initial_tensile_shear_capacity_scale": 1.0,
+    "initial_bending_torsion_capacity_scale": 0.10,
+    "hold_initial_scale_iterations": 0,
+    "full_public_prior_iteration": 40,
+    "bending_torsion_assistance_requires_secure_support": true,
+    "bending_torsion_assistance_requires_kinematic_retention": true,
+    "stem_load_progress_uses_public_capacity": true,
+    "stem_load_progress_requires_kinematic_retention": true,
+    "stem_load_progress_uses_retention_margin": true,
+    "retention_margin_score": "geometric mean of normalized center-distance and relative-speed margins; exactly zero at either unchanged strict retention boundary",
+    "capacity_scale_curve": "smoothstep from the first update",
+    "applies_to": {"tensile_shear": "100% throughout", "bending_torsion": "10% at update 0 then smoothstep to 100% at update 40, but only when the current 120 Hz state satisfies both strict thumb-plus-other-finger secure support and the unchanged retained distance/speed predicates; every other state remains 100%"},
+    "basis": "repairs 21-23 used one low scale for all fracture modes and learned a pure-pull shortcut. Repairs 24-40 narrowed the mechanics curriculum, aligned load progress, and repaired deployable observability. Repair 39's current controller tracking error materially improved public-tail speed and distance, so it is retained. Repair 40's additional previous tracking error was rejected because it regressed joint-ready outcomes. Repair 41 then isolated temporary assistance to torsion, but through update 17 its torsion-curriculum-assisted fracture rate and grasped-break reward remained exactly zero. Repair 42 restored bending-plus-torsion assistance and tested cumulative axial wrist rotation; its public tail regressed speed and produced no retention, so that observation is removed. Repair 43 corrects a separate 120 Hz to 20 Hz temporal-credit defect without changing this mechanics schedule. Tensile/shear stay public throughout, and the update-40 public tail, reward weights, PPO, and acceptance predicates remain unchanged.",
+    "reward_policy": "reward weights and topology are unchanged; instantaneous stem-load progress is normalized to fixed public capacities and, during assisted training, credited only in a current strict-support and kinematically retained state, then modulated inside that strict envelope by the centered-and-slow retention margin",
+    "first_success_tail_requires_full_public_prior": true,
+    "evaluation_capacity_scale": 1.0
+  },
+  "training_observation": {
+    "classification": "isolated Physics-v2 actor observability repair; no privileged simulator state and no change to the frozen Clean-v5/V1 interface",
+    "base_actor_dimension": 66,
+    "physics_v2_actor_dimension": 103,
+    "base_critic_dimension": 83,
+    "physics_v2_critic_dimension": 120,
+    "added_actor_blocks": ["previous normalized perceived fruit-center position relative to the palm (3D)", "current and previous normalized perceived fruit-center position relative to the fingertip centroid in the palm frame (6D)", "current normalized controller command-to-actual end-effector tracking error in local one-action-step units (6D)", "two most recently issued bounded policy commands, newest first (22D)"],
+    "current_actor_block": "current normalized perceived fruit-center position relative to the palm (3D, inherited first block)",
+    "inherited_action_block": "previous command actually applied by the delayed actuator surrogate (11D)",
+    "issued_command_history_steps": 2,
+    "maximum_sampled_action_delay_steps": 2,
+    "reset_semantics": "both previous perceived relative-position samples equal their current samples and both issued-command history slots are zero on the first observation after reset",
+    "controller_tracking_error_exposed_to_actor": true,
+    "controller_tracking_error_history_steps": 1,
+    "privileged_velocity_exposed_to_actor": false,
+    "privileged_action_delay_exposed_to_actor": false,
+    "privileged_stem_wrench_exposed_to_actor": false,
+    "privileged_detachment_exposed_to_actor": false,
+    "basis": "repair33 added current/previous perceived fruit position relative to the palm, repair34 exposed the finite actuator queue, and repair37 added fingertip-centroid-relative motion. Repair38's episode clock was rejected. Repair39 appended current command-to-actual end-effector position and rotation error and improved the exact-public tail over repair37. Repair40's previous tracking-error sample produced no retained outcome and regressed joint-ready, so it remains removed. Repair42's cumulative axial wrist rotation also produced no retained outcome and regressed exact-public mean break speed to 0.8421 m/s, so it is removed. Repair43 returns to the evidenced repair39 observation contract; exact fruit orientation/velocity, stem wrench, damage, detachment, sampled delay, and acceptance thresholds remain hidden."
+  },
+  "training_shaping": {
+    "classification": "training-only physics-normalized dense shaping; no mechanics, termination, retention, success, or acceptance relaxation",
+    "load_bearing_opposition": {
+      "enabled": true,
+      "equation": "per_side_target=max(inherited_full_contact_force, safety_factor*mass*gravity/(2*effective_pair_static_friction))",
+      "safety_factor": 1.25,
+      "gravity_m_s2": 9.81,
+      "minimum_target_source": "inherited grasp_full_contact_force_n",
+      "score_topology": "equal blend of inherited 0.60N contact-opposition score and physical-load opposition score, bounded_0_to_1, inherited_best_ever_progress",
+      "reward_weight": "unchanged inherited OPPOSED_PROGRESS_WEIGHT",
+      "basis": "repair-19 learned frequent secure contact and occasional joint-ready fracture, but the inherited opposed score saturated at 0.60 N per side while V2 requires approximately 0.60-5.87 N per side for static load support; a direct replacement was rejected after five repair-20 updates because it reduced early break opposition score from about 0.04 to 0.0006, so preserve half of the inherited contact-discovery landscape and use the remaining half for actual per-environment load-bearing progress"
+    }
+  },
+  "training_policy": {
+    "classification": "Physics-v2-only temporal-memory repair; PPO optimizer, losses, rewards, physics, thresholds, action space, and observation values are unchanged",
+    "actor_model": "single-layer GRU followed by the inherited 512-256-128 ELU MLP head",
+    "actor_recurrent_type": "gru",
+    "actor_recurrent_hidden_dimension": 128,
+    "actor_recurrent_layers": 1,
+    "actor_observation_dimension": 103,
+    "critic_model": "inherited feed-forward 512-256-128 ELU MLP",
+    "critic_observation_dimension": 120,
+    "truncated_backpropagation_steps": 32,
+    "basis": "repair43 restored exact 120 Hz fracture credit and produced nonzero retention-progress reward while terminal-only retained logging remained zero. The deployable actor has no detachment flag and must change behavior across a partially observable fracture-to-retention sequence; recurrent state is the smallest direct correction and avoids accumulating more redundant manual history observations."
+  },
+  "training_objective": {
+    "classification": "Physics-v2-only component schedule correction: terminal failures, stable detach, success and the strict fracture bridge stay aligned while the dense per-step cost stays at its bounded discovery endpoint",
+    "discovery_endpoint_through_iteration": 10,
+    "fully_outcome_aligned_iteration": 40,
+    "interpolation": "smoothstep",
+    "strict_joint_ready_break_credit_scale": 1.0,
+    "strict_joint_ready_break_credit_weight": "unchanged BREAK_GRASPED_WEIGHT",
+    "time_cost_alignment_scale": 0.0,
+    "time_cost_weight": "unchanged DISCOVERY_TIME_COST_WEIGHT",
+    "failure_and_stable_detach_alignment_uses_schedule": true,
+    "unchanged_reward_term_set": true,
+    "unchanged_individual_reward_weights": true,
+    "clean_v5_and_physics_v1_behavior_unchanged": true,
+    "basis": "Repair46 completed healthily but failed: its fully public tail had zero retained or successful outcomes, only one joint-ready-positive update, mean reward -27.728 and mean value loss 26.485. Preserving the strict one-shot break bridge was necessary but insufficient because repair45 also strengthened the dense time cost from -0.01 to -0.10 per nonterminal step; at the tail this contributed about -14.7 per episode and value loss remained over five times repair44's 4.666. Terminal failure alignment is independently supported by the drop reduction from repair44's 1.519% to repair45/46's 0.532%/0.507%. Repair47 therefore keeps those terminal penalties, stable-detach/success alignment and the strict fracture bridge unchanged, while retaining only the original bounded -0.01 anti-stall time cost. No reward term, endpoint weight, physics, PPO setting, predicate or acceptance threshold changes."
+  },
+  "training": {
+    "from_scratch_required": true,
+    "physics_v1_checkpoint_resume_allowed": false,
+    "same_profile_full_state_resume_allowed": true,
+    "same_profile_resume_requirement": "Actor_Critic_both_normalizers_policy_std_and_optimizer",
+    "default_num_envs": 8192,
+    "default_seed": 42,
+    "curve_controller": "script/run_tomato_physics_v2_curve_controller.sh",
+    "first_success_gate": {
+      "script": "script/gate_tomato_physics_v2_first_success.py",
+      "candidate_id": "physics_v2_retention_objective_v1",
+      "num_envs": 8192,
+      "updates": 50,
+      "seed": 42,
+      "output": "logs/qualification/tomato_physics_v2/first_success_8192x50_gate.json",
+      "required_before_curve_controller": true
+    },
+    "segment_updates": 400,
+    "fixed_total_iterations": null,
+    "convergence_policy": "two consecutive deterministic multi-seed evaluations >= 90%, <= 1 percentage point apart, plus two consecutive 100-vs-100 training-curve plateaus",
+    "start_requires_cpu_q1_q6_pass": true,
+    "start_requires_isaac_smoke_gate": true
+  },
+  "hardware_transfer": {
+    "ready": false,
+    "blockers": [
+      "A7 controller response and command latency fit",
+      "deployed L20/G20 alias resolution plus command/joint response and effort fit",
+      "deployed fingertip-pad x target-tomato dry/wet friction",
+      "deployed fingertip-pad x target-tomato indentation stiffness and damping",
+      "target-cultivar abscission validation",
+      "camera and perception error model"
+    ]
+  }
+}
