@@ -4,6 +4,22 @@ RealAgent 是一个可运行的单 `TopAgent` 系统：外层 Runtime 管理观�
 周期，内层 Agent 管理有界的模型/工具往返。默认配置完全离线；第二阶段已经加入
 `doubao-seed-2.0-pro` 的 Ark OpenAI Responses 与 Anthropic Messages 兼容协议适配。
 
+## 一眼看懂 Agent 架构
+
+<p align="center">
+  <img src="./docs/assets/agent_closed_loop_architecture_cn.png" alt="LinkAgent 单智能体闭环架构：环境观测、TopAgent 决策、Task 工具选择、Atomic Skills 安全执行与 Verifier 验收" width="100%">
+</p>
+
+LinkAgent 不是一群 Agent 相互讨论，而是一个 `TopAgent` 在明确边界内完成闭环：看见环境、
+理解任务、选择工具、调用安全技能，并由独立验证器判断“成功、失败，还是继续观察”。
+
+| 看见 | 决策 | 选择能力 | 安全执行 | 验收结果 |
+|---|---|---|---|---|
+| RGB-D、机器人状态和任务上下文 | `TopAgent` 决定下一步 | `Task` 只开放当前需要的工具 | `Atomic Skills` 连接感知、规划、安全与设备 | `Verifier` 用事实关闭闭环 |
+
+这样设计的重点不是“让模型自由发挥”，而是让每一步都有权限边界、执行记录和可验证结果。
+下方展示的番茄采摘，就是这套架构中的一个可运行任务。
+
 真实相机、感知模型和真机动作仍未接入；默认 Agent 示例继续使用 mock。第三阶段 C1
 已加入可运行的离线番茄采摘闭环，C2 已实现 Sim 6 中的番茄椭球、可断果梗和
 DirectRLEnv，并完成 Clean-v5 正式 PPO 训练。当前推荐的 `model_1350.pt` 在三个固定
@@ -48,20 +64,38 @@ Isaac 验收相机固定安装在双臂中间顶部并斜向前下看；主动�
 [`PPO_MODEL1450_REPRODUCTION.md`](./docs/tomato_pick/PPO_MODEL1450_REPRODUCTION.md)，但不再是
 推荐模型。
 
-## Physics-v1 perf-v7 未完成训练 checkpoint 1200
+## Physics-v1：从 PPO 训练到可复现 Demo
 
-Physics-v1 perf-v7 已将新版连续 5D 手部流形、版本化碰撞 USD、120 Hz 物理配置和训练
-门禁用于正式训练。计划共 1,800 次 PPO update；训练日志到达 iteration 1208 后中断，
-最后完整、可恢复的 checkpoint 是 `model_1200.pt`。它随 resolved config、TensorBoard
-history、冻结输入哈希和暂停清单一起发布，供从 iteration 1200 精确续训。
+<p align="center">
+  <a href="./docs/tomato_pick/assets/physics_v1/physics_v1_demo.mp4">
+    <img src="./docs/tomato_pick/assets/physics_v1/physics_v1_demo_cover.png" alt="Physics-v1 多环境番茄采摘 Demo" width="100%">
+  </a>
+</p>
 
-这不是最终模型，也没有固定多种子评测，不能替代已发布的 Clean-v5 model 1350。
-checkpoint SHA-256 为
-`d757dcb6bd6e0b7328ebef53dd049620d5457c8b54857a95ad6083c41a2bd83c`；核验、续训命令和
-完成后的模型选择门禁见
-[`PHYSICS_V1_INCOMPLETE_RUN_1200.md`](./docs/tomato_pick/PHYSICS_V1_INCOMPLETE_RUN_1200.md)。
-此前的源码基线说明保留在
-[`PHYSICS_V1_SOURCE_REPRODUCTION.md`](./docs/tomato_pick/PHYSICS_V1_SOURCE_REPRODUCTION.md)。
+<p align="center"><strong>▶ 点击画面播放 36.6 秒 Demo</strong></p>
+
+| 固定三种子成功率 | 完成 episode | 最差种子成功率 | 最终 checkpoint |
+|---:|---:|---:|---:|
+| **85.97%** | **20,102** | **85.62%** | **iter 5150** |
+
+Physics-v1 展示了 A7 双臂与多指手在大量并行仿真环境中，从不同初始位置接近番茄、形成
+抓持、完成脱离并稳定保持的完整动作。最终 `model_5150.pt` 在固定种子 17、42、2026
+上完成 17,282 次成功，drop rate 为 6.78%。原定 90% 目标没有达到；模型是在用户审阅
+曲线后停止并选出的最佳已测试 checkpoint，而不是把训练过程指标包装成最终成绩。
+
+### 真实可达空间采样
+
+<p align="center">
+  <img src="./docs/tomato_pick/assets/physics_v1/physics_v1_reset_workspace_seed42_2048_demo_v3_2048.png" alt="Physics-v1 可达重置空间点云" width="100%">
+</p>
+
+蓝点是 2,048 个实际 USD 前向运动学得到的手掌位置，橙色叉号是对应番茄位置；全部样本
+通过闭合位姿 IK 可达性检查，初始最大接触力为 0 N。图不是手绘示意，配套 CSV 和 JSON
+也随仓库提供，可重新检查每个采样点。
+
+[查看完整图文成果页](./docs/tomato_pick/PHYSICS_V1_SHOWCASE.md) ·
+[查看最终训练与复现说明](./docs/tomato_pick/PHYSICS_V1_PERF_V7_FINAL_5150.md) ·
+[查看历史 iter 1200 恢复节点](./docs/tomato_pick/PHYSICS_V1_INCOMPLETE_RUN_1200.md)
 
 ## Physics-v2 PublicPrior 下一轮可复现候选
 
