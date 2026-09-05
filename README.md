@@ -118,6 +118,21 @@ Physics-v1 展示了 A7 双臂与多指手在大量并行仿真环境中，从�
 [查看完整图文成果页](./docs/tomato_pick/PHYSICS_V1_SHOWCASE.md) ·
 [查看最终训练与复现说明](./docs/tomato_pick/PHYSICS_V1_PERF_V7_FINAL_5150.md)
 
+## Small-fruit Pinch-v1（左手三指仿真捏取）
+
+这是独立于大果掌托包络实验的左手小果捏取项目。策略使用 14D 手部动作空间，拇指、
+食指和中指形成三指真实接触，并在连续保持阶段继续利用远端指尖自由度进行低力微调。
+它只在 Isaac Lab 3.0 / PhysX 仿真中验收，未连接或授权真实硬件。
+
+| 评测域 | 三种子平均严格成功率 | 最差种子 | 选定权重 |
+|---:|---:|---:|---|
+| 64–70 mm 等效果径 | **99.61%** | **99.41%** | [`model_150.pt`](./logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/model_150.pt) |
+
+评测同时检查三指接触、压力带、连续持稳、扰动恢复、掉落、过载和自碰撞；完整门禁与
+逐种子证据见 [`FINAL_QUALIFICATION_20260905.md`](./docs/tomato_pick/small_fruit_pinch_v1/FINAL_QUALIFICATION_20260905.md)。
+仅左手的 GUI 预演入口、动作合同和运行限制见
+[`GITHUB_RELEASE_20260906.md`](./docs/tomato_pick/small_fruit_pinch_v1/GITHUB_RELEASE_20260906.md)。
+
 ## Physics-v2 Research Preview（不计入三项 PPO 成果）
 
 Physics-v2 当前没有可发布的成功 checkpoint，也不计入上面的三项实验结果。下一轮首成功

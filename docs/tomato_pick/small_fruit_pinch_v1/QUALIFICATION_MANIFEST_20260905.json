@@ -1,0 +1,107 @@
+{
+  "schema": "small_fruit_pinch_v1.qualification.v1",
+  "created_at": "2026-09-05T17:45:00+08:00",
+  "scope": "B0 64-70 mm equivalent diameter, left-hand three-finger pinch, Isaac Lab 3.0 PhysX",
+  "hardware_enabled": false,
+  "selected_checkpoint": {
+    "path": "/home/miobarnacle/linkbot/linkagent/logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/model_150.pt",
+    "sha256": "e39cd14d18912da68638b21b2c16a9d48c3867b833d4af0296a9e03fd5ce0c8d"
+  },
+  "historical_checkpoint_read_only": {
+    "path": "/home/miobarnacle/linkbot/ppo_tomato_grasp_stage01_work/archives/pinch_small_fruit_band4_20260815/artifacts/stage4_main_band4_train_256x120/best.pt",
+    "sha256": "f2703db72d18fe9c0e55271625748be18c8a9be0a08af4739c291a03bbcb702f"
+  },
+  "training": {
+    "smoke": "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_smoke_20260905",
+    "formal_initial": "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_256x200_20260905",
+    "formal_resumed": "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905",
+    "seed": 20260907,
+    "num_envs": 256,
+    "updates": 200,
+    "actor_init_only": true,
+    "critic_optimizer_and_std_reset": true,
+    "device": "cuda:0",
+    "init_std": 0.05,
+    "learning_rate": 0.00015,
+    "entropy_coef": 0.001,
+    "joint_smoothness_weight": 0.01
+  },
+  "contract": {
+    "fruit_axis_min_mm": 32.0,
+    "fruit_axis_max_mm": 35.0,
+    "guided_residual": true,
+    "geometry_prior": true,
+    "geometry_prior_scale": 0.15,
+    "force_servo": true,
+    "force_servo_seek_gain": 0.04,
+    "force_servo_target_gain": 0.0,
+    "force_servo_retract_gain": 0.35,
+    "force_servo_alpha": 0.30,
+    "force_servo_max_offset": 0.25,
+    "force_servo_warning_fraction": 0.78,
+    "direct_force_projection": true,
+    "direct_force_warning_fraction": 0.50,
+    "direct_force_high_gain_by_digit": [0.80, 0.40, 1.00],
+    "direct_force_low_gain": 0.06,
+    "direct_force_alpha": 0.10,
+    "direct_force_max_open": 0.50,
+    "direct_force_root_fraction": 0.45,
+    "force_gate_start_fraction": 0.60,
+    "precontact_residual_fraction": 0.0,
+    "residual_scale": 0.04,
+    "distal_residual_scale": 0.06,
+    "residual_require_all_contact": true,
+    "residual_trust_region": true,
+    "residual_trust_warning_fraction": 0.55,
+    "residual_trust_in_band_scale": 0.05,
+    "hold_speed": 0.08,
+    "hold_acceleration": 0.70,
+    "natural_frequency_hz": 3.0,
+    "working_offset_mm": [20.0, 30.0, 24.0],
+    "fruit_contact_offset_m": 0.001,
+    "fruit_rest_offset_m": 0.0001,
+    "max_depenetration_velocity_m_s": 0.3,
+    "hold_joint_target_anchor_fraction": 0.40,
+    "manual_decimation_control": true,
+    "position_target_interpolation": 6
+  },
+  "evaluation": {
+    "num_envs": 128,
+    "episodes_requested_per_seed": 512,
+    "seeds": [20260902, 20261530, 20261411],
+    "strict_success_rate": [0.9980, 0.9941, 0.9961],
+    "drop_rate": [0.0, 0.0, 0.0],
+    "overload_rate": [0.0, 0.0039, 0.0039],
+    "self_collision_rate": [0.0, 0.0, 0.0],
+    "hold_action_delta_p95": [0.000902, 0.000898, 0.000899],
+    "hold_joint_velocity_p95": [0.179846, 0.178496, 0.176391],
+    "hold_joint_acceleration_p95": [1.823307, 1.842477, 1.838386],
+    "hold_joint_jerk_p95": [65.669678, 66.511581, 66.473778],
+    "hold_direction_reversal_rate": [0.944087, 0.982927, 0.979754],
+    "hold_high_frequency_target_energy": [0.043407, 0.044093, 0.045854],
+    "evidence_files": [
+      "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/evaluation/model150_seed20260902.txt",
+      "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/evaluation/model150_seed20261530.txt",
+      "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/evaluation/model150_seed20261411.txt",
+      "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/evaluation/model150_seed20260902_per_joint.txt"
+    ]
+  },
+  "distal_freeze_ablation": {
+    "actual_episodes": [530, 521, 532],
+    "strict_success_rate": [0.0, 0.0, 0.0],
+    "overload_rate": [0.0660, 0.0729, 0.0771],
+    "evidence_files": [
+      "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/evaluation/model150_freeze_distal_seed20260902.txt",
+      "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/evaluation/model150_freeze_distal_seed20261530.txt",
+      "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/evaluation/model150_freeze_distal_seed20261411.txt"
+    ]
+  },
+  "source_sha256": {
+    "research/small_fruit_pinch_v1/source/native_env.py": "2a1731ae3d31e6de68c6cd34abfef03aa43cedeeee5bf34583a412f151a027a8",
+    "research/small_fruit_pinch_v1/source/native_train.py": "24171ae4decd20454f63e6c230f18c52e64ebbea604041c19a989c5781f47d38",
+    "research/small_fruit_pinch_v1/source/native_evaluate.py": "ab45eaa4a3f6be4c82bc3e3f9d24e016de3f5abc3217ea4a90fc065a2f955c58",
+    "research/small_fruit_pinch_v1/source/guided_residual_env.py": "d20117361d269c8ae3b72e293a6cd250ece17c96dfc95735f6615d856825e7dc"
+  },
+  "status": "qualified_for_B0_simulation_only",
+  "not_claimed": ["B3_52_80_mm", "stem_detachment", "sim2real", "real_hardware_control"]
+}

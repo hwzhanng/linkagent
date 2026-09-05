@@ -1,0 +1,161 @@
+{
+  "schema": "small_fruit_pinch_v1.size_expansion_plan.v1",
+  "created_at": "2026-09-05T00:00:00+08:00",
+  "status": "planned_e0_not_started",
+  "hardware_enabled": false,
+  "scope": {
+    "task": "fixed-left-wrist three-finger pinch",
+    "policy": "single 14D actor",
+    "stem_enabled": false,
+    "size_only": true,
+    "diameter_definition": "2*cbrt(a*b*c)",
+    "diameter_unit": "mm",
+    "interval_convention": "left_closed_right_open_except_final_upper_endpoint"
+  },
+  "baseline": {
+    "name": "model150_B0",
+    "path": "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/model_150.pt",
+    "sha256": "e39cd14d18912da68638b21b2c16a9d48c3867b833d4af0296a9e03fd5ce0c8d",
+    "qualified_diameter_mm": [64.0, 70.0],
+    "strict_success_rate": 0.9961,
+    "regression_seeds": [20260902, 20261411, 20261530]
+  },
+  "bins": [
+    {"id": "D52_54", "diameter_mm": [52.0, 54.0], "diagnostic_axis_mm": [26.0, 27.0]},
+    {"id": "D54_56", "diameter_mm": [54.0, 56.0], "diagnostic_axis_mm": [27.0, 28.0]},
+    {"id": "D56_58", "diameter_mm": [56.0, 58.0], "diagnostic_axis_mm": [28.0, 29.0]},
+    {"id": "D58_60", "diameter_mm": [58.0, 60.0], "diagnostic_axis_mm": [29.0, 30.0]},
+    {"id": "D60_62", "diameter_mm": [60.0, 62.0], "diagnostic_axis_mm": [30.0, 31.0]},
+    {"id": "D62_64", "diameter_mm": [62.0, 64.0], "diagnostic_axis_mm": [31.0, 32.0]},
+    {"id": "D64_66", "diameter_mm": [64.0, 66.0], "diagnostic_axis_mm": [32.0, 33.0]},
+    {"id": "D66_68", "diameter_mm": [66.0, 68.0], "diagnostic_axis_mm": [33.0, 34.0]},
+    {"id": "D68_70", "diameter_mm": [68.0, 70.0], "diagnostic_axis_mm": [34.0, 35.0]},
+    {"id": "D70_72", "diameter_mm": [70.0, 72.0], "diagnostic_axis_mm": [35.0, 36.0]},
+    {"id": "D72_74", "diameter_mm": [72.0, 74.0], "diagnostic_axis_mm": [36.0, 37.0]},
+    {"id": "D74_76", "diameter_mm": [74.0, 76.0], "diagnostic_axis_mm": [37.0, 38.0]},
+    {"id": "D76_78", "diameter_mm": [76.0, 78.0], "diagnostic_axis_mm": [38.0, 39.0]},
+    {"id": "D78_80", "diameter_mm": [78.0, 80.0], "diagnostic_axis_mm": [39.0, 40.0], "includes_upper_endpoint": true}
+  ],
+  "stages": [
+    {"id": "E0", "kind": "tooling_and_zero_shot", "new_bin": null, "accumulated_diameter_mm": [64.0, 70.0], "milestone": "reachability_map"},
+    {"id": "E1", "kind": "micro", "new_bin": "D62_64", "accumulated_diameter_mm": [62.0, 70.0], "milestone": null},
+    {"id": "E2", "kind": "micro", "new_bin": "D70_72", "accumulated_diameter_mm": [62.0, 72.0], "milestone": "M1"},
+    {"id": "E3", "kind": "micro", "new_bin": "D60_62", "accumulated_diameter_mm": [60.0, 72.0], "milestone": null},
+    {"id": "E4", "kind": "micro", "new_bin": "D72_74", "accumulated_diameter_mm": [60.0, 74.0], "milestone": "M2"},
+    {"id": "E5", "kind": "micro", "new_bin": "D58_60", "accumulated_diameter_mm": [58.0, 74.0], "milestone": null},
+    {"id": "E6", "kind": "micro", "new_bin": "D74_76", "accumulated_diameter_mm": [58.0, 76.0], "milestone": "M3"},
+    {"id": "E7", "kind": "micro", "new_bin": "D56_58", "accumulated_diameter_mm": [56.0, 76.0], "milestone": null},
+    {"id": "E8", "kind": "micro", "new_bin": "D76_78", "accumulated_diameter_mm": [56.0, 78.0], "milestone": "M4"},
+    {"id": "E9", "kind": "micro", "new_bin": "D54_56", "accumulated_diameter_mm": [54.0, 78.0], "milestone": null},
+    {"id": "E10", "kind": "micro", "new_bin": "D78_80", "accumulated_diameter_mm": [54.0, 80.0], "milestone": "M5"},
+    {"id": "E11", "kind": "micro", "new_bin": "D52_54", "accumulated_diameter_mm": [52.0, 80.0], "milestone": "M6_final_domain"}
+  ],
+  "training_distribution": {
+    "new_frontier": 0.40,
+    "adjacent_passed_bin": 0.20,
+    "B0_anchor": 0.25,
+    "other_passed_bins": 0.15,
+    "minimum_old_domain_fraction": 0.60
+  },
+  "training_budget": {
+    "smoke_envs": 64,
+    "smoke_updates": 5,
+    "formal_envs_default": 256,
+    "checkpoint_interval_updates": 25,
+    "maximum_updates_per_stage": 150,
+    "minimum_geometry_cohorts_at_256_envs": 5,
+    "minimum_geometry_cohorts_at_512_envs": 3,
+    "learning_rate_start": 0.00005,
+    "learning_rate_maximum": 0.000075,
+    "entropy_coef_start": 0.0005,
+    "desired_kl": 0.01,
+    "kl_stop_threshold": 0.015
+  },
+  "sample_contract": {
+    "independent_unit": "first_episode_of_unique_scene_seed_and_env_id",
+    "reachability_unique_geometries_per_new_bin": 256,
+    "micro_gate_seeds": 2,
+    "micro_gate_unique_first_episodes_per_seed_bin": 128,
+    "milestone_seeds": 3,
+    "milestone_unique_first_episodes_per_seed_bin": 256,
+    "final_seeds": 5,
+    "final_unique_first_episodes_per_seed_bin": 96,
+    "final_bins": 14,
+    "final_total_unique_first_episodes": 6720
+  },
+  "reachability_gate": {
+    "three_required_digit_contact_min": 0.90,
+    "overload_max": 0.01,
+    "palm_contact_max": 0.05,
+    "palm_assisted_success": 0,
+    "self_collision": 0,
+    "safety_projection": 0,
+    "first_contact_lateral_ejection_velocity_p95_m_s_max": 0.08
+  },
+  "micro_gate": {
+    "new_bin_strict_success_min": 0.80,
+    "new_bin_acquisition_min": 0.92,
+    "retained_4s_given_acquired_min": 0.88,
+    "new_bin_drop_max": 0.05,
+    "new_bin_overload_max": 0.02,
+    "B0_success_min": 0.95,
+    "B0_delta_from_previous_promoted_pp_min": -3.0,
+    "consecutive_passing_checkpoints": 2
+  },
+  "milestone_gate": {
+    "accumulated_strict_success_min": 0.87,
+    "each_bin_strict_success_min": 0.82,
+    "worst_seed_bin_success_min": 0.77,
+    "B0_success_min": 0.946,
+    "each_bin_acquisition_min": 0.95,
+    "each_bin_retained_4s_given_acquired_min": 0.90,
+    "each_bin_drop_max": 0.04,
+    "each_bin_overload_max": 0.015,
+    "wilson95_accumulated_success_lower_min": 0.85,
+    "wilson95_each_bin_success_lower_min": 0.78,
+    "palm_assisted_success": 0,
+    "self_collision": 0,
+    "safety_projection": 0
+  },
+  "hold_smoothness_gate": {
+    "action_delta_p95_max": 0.04,
+    "joint_velocity_p95_rad_s_max": 0.20,
+    "joint_acceleration_p95_rad_s2_max": 3.0,
+    "joint_jerk_p95_rad_s3_max": 80.0,
+    "direction_reversal_per_s_joint_max": 2.0,
+    "target_energy_above_3hz_max": 0.15,
+    "contact_recovery_s_max": 0.75,
+    "force_band_recovery_s_max": 1.0,
+    "disturbance_recovery_success_min": 0.85
+  },
+  "final_release_gate": {
+    "strict_success_min": 0.85,
+    "worst_seed_success_min": 0.80,
+    "worst_2mm_bin_success_min": 0.78,
+    "B0_success_minimum": 0.92,
+    "B0_success_target": 0.946,
+    "drop_max": 0.04,
+    "overload_max": 0.015,
+    "hold_4s_success_min": 0.85,
+    "hold_6s_success_min": 0.78,
+    "retained_4s_given_acquired_min": 0.90,
+    "disturbance_recovery_success_min": 0.85,
+    "wilson95_overall_success_lower_min": 0.83,
+    "wilson95_each_bin_success_lower_min": 0.75,
+    "palm_assisted_success": 0,
+    "self_collision": 0,
+    "safety_projection": 0
+  },
+  "seed_policy": {
+    "development_seed_count": 2,
+    "milestone_seed_count": 3,
+    "final_seed_count": 5,
+    "requirements": [
+      "all sets are mutually disjoint",
+      "all sets are disjoint from training seeds",
+      "final seeds and scenario lists are frozen before E1",
+      "regression seeds are not eligible as final blind seeds"
+    ]
+  },
+  "next_action": "implement_and_qualify_E0_stratified_sampler_and_per_bin_first_episode_evaluator"
+}
