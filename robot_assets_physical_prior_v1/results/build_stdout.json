@@ -1,0 +1,2686 @@
+{
+  "schema_version": 1,
+  "profile_id": "linkbot_physical_prior_v1",
+  "qualification": "public_spec_constrained_engineering_prior_not_calibrated",
+  "urdf": "botSDK/urdf/02_project_derived/ros2_packages/linkbot_bimanual_sdk_description/urdf/linkbot_bimanual_sdk_physical_prior_v1.urdf",
+  "usd": "botSDK/urdf/02_project_derived/isaac_assets/linkbot_bimanual_sdk_training_mass1kg/linkbot_bimanual_sdk_physical_prior_v1.usda",
+  "hand_mass_kg": 1.2,
+  "hand_mass_distribution": "preserve existing 55% palm,13% thumb,8% per finger; scale all hand masses and inertia tensors by 1.2, preserve CAD CoM and radii of gyration for structural links; redistribute 12g marker prior to adjacent distal links, leave 1mg box-shaped coordinate markers",
+  "mount_adapter_mass_kg": 0.03,
+  "contact": {
+    "static_friction": 0.55,
+    "dynamic_friction": 0.45,
+    "combine_mode": "average",
+    "stiffness_n_m": 5000,
+    "damping_n_s_m": 25,
+    "status": "retain inherited provisional contact model; unmeasured pad/cultivar; geometry/contact regression required"
+  },
+  "uncertainty_sweep": {
+    "hand_mass_scale": [
+      0.85,
+      1,
+      1.15
+    ],
+    "actuator_effort_scale": [
+      0.6,
+      1,
+      1.4
+    ],
+    "drive_stiffness_scale": [
+      0.7,
+      1,
+      1.3
+    ],
+    "drive_damping_scale": [
+      0.7,
+      1,
+      1.3
+    ],
+    "armature_scale": [
+      0.5,
+      1,
+      2
+    ],
+    "urdf_friction_scale": [
+      0.5,
+      1,
+      2
+    ],
+    "contact_static_friction": [
+      0.3,
+      0.55,
+      0.8
+    ],
+    "semantics": "engineering stress scenarios, not confidence intervals; do not apply independent mass/inertia scalings"
+  },
+  "joints": {
+    "L1_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 80.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.25,
+      "urdf_coulomb_nm": 0.4,
+      "stiffness_nm_rad": 600,
+      "drive_damping_nm_s_rad": 40,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -2.91,
+      "upper_rad": 2.91
+    },
+    "L2_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 80.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.25,
+      "urdf_coulomb_nm": 0.4,
+      "stiffness_nm_rad": 600,
+      "drive_damping_nm_s_rad": 40,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -0.07,
+      "upper_rad": 3.2
+    },
+    "L3_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 36.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.12,
+      "urdf_coulomb_nm": 0.18,
+      "stiffness_nm_rad": 300,
+      "drive_damping_nm_s_rad": 20,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -2.69,
+      "upper_rad": 2.69
+    },
+    "L4_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 36.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.12,
+      "urdf_coulomb_nm": 0.18,
+      "stiffness_nm_rad": 300,
+      "drive_damping_nm_s_rad": 20,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -2.05,
+      "upper_rad": 2.05
+    },
+    "L5_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 36.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.12,
+      "urdf_coulomb_nm": 0.18,
+      "stiffness_nm_rad": 150,
+      "drive_damping_nm_s_rad": 10,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -2.69,
+      "upper_rad": 2.69
+    },
+    "L6_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 18.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.06,
+      "urdf_coulomb_nm": 0.09,
+      "stiffness_nm_rad": 80,
+      "drive_damping_nm_s_rad": 6,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -1.59,
+      "upper_rad": 1.59
+    },
+    "L7_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 18.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.06,
+      "urdf_coulomb_nm": 0.09,
+      "stiffness_nm_rad": 60,
+      "drive_damping_nm_s_rad": 5,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -1.59,
+      "upper_rad": 1.59
+    },
+    "R1_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 80.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.25,
+      "urdf_coulomb_nm": 0.4,
+      "stiffness_nm_rad": 600,
+      "drive_damping_nm_s_rad": 40,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -2.91,
+      "upper_rad": 2.91
+    },
+    "R2_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 80.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.25,
+      "urdf_coulomb_nm": 0.4,
+      "stiffness_nm_rad": 600,
+      "drive_damping_nm_s_rad": 40,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -3.2,
+      "upper_rad": 0.07
+    },
+    "R3_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 36.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.12,
+      "urdf_coulomb_nm": 0.18,
+      "stiffness_nm_rad": 300,
+      "drive_damping_nm_s_rad": 20,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -2.69,
+      "upper_rad": 2.69
+    },
+    "R4_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 36.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.12,
+      "urdf_coulomb_nm": 0.18,
+      "stiffness_nm_rad": 300,
+      "drive_damping_nm_s_rad": 20,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -2.05,
+      "upper_rad": 2.05
+    },
+    "R5_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 36.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.12,
+      "urdf_coulomb_nm": 0.18,
+      "stiffness_nm_rad": 150,
+      "drive_damping_nm_s_rad": 10,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -2.69,
+      "upper_rad": 2.69
+    },
+    "R6_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 18.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.06,
+      "urdf_coulomb_nm": 0.09,
+      "stiffness_nm_rad": 80,
+      "drive_damping_nm_s_rad": 6,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -1.59,
+      "upper_rad": 1.59
+    },
+    "R7_Joint": {
+      "role": "arm",
+      "effort_limit_nm": 18.0,
+      "velocity_limit_rad_s": 1.5,
+      "urdf_viscous_nm_s_rad": 0.06,
+      "urdf_coulomb_nm": 0.09,
+      "stiffness_nm_rad": 60,
+      "drive_damping_nm_s_rad": 5,
+      "armature_kg_m2": 0.01,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "arm torque ceilings retained from delivered SDK; other actuator values are explicit conservative engineering priors",
+      "lower_rad": -1.59,
+      "upper_rad": 1.59
+    },
+    "right_hand_thumb_joint0": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.25,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -0.49,
+      "upper_rad": 1.05
+    },
+    "right_hand_thumb_joint1": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.25,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -1.45,
+      "upper_rad": 0.0
+    },
+    "right_hand_thumb_joint2": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.4,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 0.84
+    },
+    "right_hand_thumb_joint3": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.3,
+      "velocity_limit_rad_s": 0.8558558558558558,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.207207207207207
+    },
+    "right_hand_thumb_joint4": {
+      "role": "passive",
+      "effort_limit_nm": 0.0,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.001,
+      "urdf_coulomb_nm": 0.0005,
+      "stiffness_nm_rad": 0.0,
+      "drive_damping_nm_s_rad": 0.0,
+      "armature_kg_m2": 0.0,
+      "physx_joint_friction_coefficient": 0.002,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "mimic": {
+        "joint": "right_hand_thumb_joint3",
+        "multiplier": 1.11,
+        "offset": 0.0
+      },
+      "lower_rad": 0.0,
+      "upper_rad": 1.34
+    },
+    "right_hand_index_joint0": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.15,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 4.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -0.26,
+      "upper_rad": 0.26
+    },
+    "right_hand_index_joint1": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.6,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.66
+    },
+    "right_hand_index_joint2": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.35,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.36
+    },
+    "right_hand_index_joint3": {
+      "role": "passive",
+      "effort_limit_nm": 0.0,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.001,
+      "urdf_coulomb_nm": 0.0005,
+      "stiffness_nm_rad": 0.0,
+      "drive_damping_nm_s_rad": 0.0,
+      "armature_kg_m2": 0.0,
+      "physx_joint_friction_coefficient": 0.002,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "mimic": {
+        "joint": "right_hand_index_joint2",
+        "multiplier": 0.94,
+        "offset": 0.0
+      },
+      "lower_rad": 0.0,
+      "upper_rad": 1.48
+    },
+    "right_hand_middle_joint0": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.15,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 4.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -0.26,
+      "upper_rad": 0.26
+    },
+    "right_hand_middle_joint1": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.6,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.66
+    },
+    "right_hand_middle_joint2": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.35,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.36
+    },
+    "right_hand_middle_joint3": {
+      "role": "passive",
+      "effort_limit_nm": 0.0,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.001,
+      "urdf_coulomb_nm": 0.0005,
+      "stiffness_nm_rad": 0.0,
+      "drive_damping_nm_s_rad": 0.0,
+      "armature_kg_m2": 0.0,
+      "physx_joint_friction_coefficient": 0.002,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "mimic": {
+        "joint": "right_hand_middle_joint2",
+        "multiplier": 0.94,
+        "offset": 0.0
+      },
+      "lower_rad": 0.0,
+      "upper_rad": 1.48
+    },
+    "right_hand_ring_joint0": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.15,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 4.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -0.26,
+      "upper_rad": 0.26
+    },
+    "right_hand_ring_joint1": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.6,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.66
+    },
+    "right_hand_ring_joint2": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.35,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.36
+    },
+    "right_hand_ring_joint3": {
+      "role": "passive",
+      "effort_limit_nm": 0.0,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.001,
+      "urdf_coulomb_nm": 0.0005,
+      "stiffness_nm_rad": 0.0,
+      "drive_damping_nm_s_rad": 0.0,
+      "armature_kg_m2": 0.0,
+      "physx_joint_friction_coefficient": 0.002,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "mimic": {
+        "joint": "right_hand_ring_joint2",
+        "multiplier": 0.94,
+        "offset": 0.0
+      },
+      "lower_rad": 0.0,
+      "upper_rad": 1.48
+    },
+    "right_hand_little_joint0": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.15,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 4.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -0.26,
+      "upper_rad": 0.26
+    },
+    "right_hand_little_joint1": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.6,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.66
+    },
+    "right_hand_little_joint2": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.35,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.36
+    },
+    "right_hand_little_joint3": {
+      "role": "passive",
+      "effort_limit_nm": 0.0,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.001,
+      "urdf_coulomb_nm": 0.0005,
+      "stiffness_nm_rad": 0.0,
+      "drive_damping_nm_s_rad": 0.0,
+      "armature_kg_m2": 0.0,
+      "physx_joint_friction_coefficient": 0.002,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "mimic": {
+        "joint": "right_hand_little_joint2",
+        "multiplier": 0.94,
+        "offset": 0.0
+      },
+      "lower_rad": 0.0,
+      "upper_rad": 1.48
+    },
+    "left_hand_thumb_joint0": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.25,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -1.05,
+      "upper_rad": 0.49
+    },
+    "left_hand_thumb_joint1": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.25,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.45
+    },
+    "left_hand_thumb_joint2": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.4,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 0.84
+    },
+    "left_hand_thumb_joint3": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.3,
+      "velocity_limit_rad_s": 0.8558558558558558,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.207207207207207
+    },
+    "left_hand_thumb_joint4": {
+      "role": "passive",
+      "effort_limit_nm": 0.0,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.001,
+      "urdf_coulomb_nm": 0.0005,
+      "stiffness_nm_rad": 0.0,
+      "drive_damping_nm_s_rad": 0.0,
+      "armature_kg_m2": 0.0,
+      "physx_joint_friction_coefficient": 0.002,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "mimic": {
+        "joint": "left_hand_thumb_joint3",
+        "multiplier": 1.11,
+        "offset": 0.0
+      },
+      "lower_rad": 0.0,
+      "upper_rad": 1.34
+    },
+    "left_hand_index_joint0": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.15,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 4.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -0.26,
+      "upper_rad": 0.26
+    },
+    "left_hand_index_joint1": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.6,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.66
+    },
+    "left_hand_index_joint2": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.35,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.36
+    },
+    "left_hand_index_joint3": {
+      "role": "passive",
+      "effort_limit_nm": 0.0,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.001,
+      "urdf_coulomb_nm": 0.0005,
+      "stiffness_nm_rad": 0.0,
+      "drive_damping_nm_s_rad": 0.0,
+      "armature_kg_m2": 0.0,
+      "physx_joint_friction_coefficient": 0.002,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "mimic": {
+        "joint": "left_hand_index_joint2",
+        "multiplier": 0.94,
+        "offset": 0.0
+      },
+      "lower_rad": 0.0,
+      "upper_rad": 1.48
+    },
+    "left_hand_middle_joint0": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.15,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 4.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -0.26,
+      "upper_rad": 0.26
+    },
+    "left_hand_middle_joint1": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.6,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.66
+    },
+    "left_hand_middle_joint2": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.35,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.36
+    },
+    "left_hand_middle_joint3": {
+      "role": "passive",
+      "effort_limit_nm": 0.0,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.001,
+      "urdf_coulomb_nm": 0.0005,
+      "stiffness_nm_rad": 0.0,
+      "drive_damping_nm_s_rad": 0.0,
+      "armature_kg_m2": 0.0,
+      "physx_joint_friction_coefficient": 0.002,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "mimic": {
+        "joint": "left_hand_middle_joint2",
+        "multiplier": 0.94,
+        "offset": 0.0
+      },
+      "lower_rad": 0.0,
+      "upper_rad": 1.48
+    },
+    "left_hand_ring_joint0": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.15,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 4.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -0.26,
+      "upper_rad": 0.26
+    },
+    "left_hand_ring_joint1": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.6,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.66
+    },
+    "left_hand_ring_joint2": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.35,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.36
+    },
+    "left_hand_ring_joint3": {
+      "role": "passive",
+      "effort_limit_nm": 0.0,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.001,
+      "urdf_coulomb_nm": 0.0005,
+      "stiffness_nm_rad": 0.0,
+      "drive_damping_nm_s_rad": 0.0,
+      "armature_kg_m2": 0.0,
+      "physx_joint_friction_coefficient": 0.002,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "mimic": {
+        "joint": "left_hand_ring_joint2",
+        "multiplier": 0.94,
+        "offset": 0.0
+      },
+      "lower_rad": 0.0,
+      "upper_rad": 1.48
+    },
+    "left_hand_little_joint0": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.15,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 4.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": -0.26,
+      "upper_rad": 0.26
+    },
+    "left_hand_little_joint1": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.6,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.66
+    },
+    "left_hand_little_joint2": {
+      "role": "hand_active",
+      "effort_limit_nm": 0.35,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.005,
+      "urdf_coulomb_nm": 0.003,
+      "stiffness_nm_rad": 6.0,
+      "drive_damping_nm_s_rad": 0.12,
+      "armature_kg_m2": 0.0002,
+      "physx_joint_friction_coefficient": 0.02,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "lower_rad": 0.0,
+      "upper_rad": 1.36
+    },
+    "left_hand_little_joint3": {
+      "role": "passive",
+      "effort_limit_nm": 0.0,
+      "velocity_limit_rad_s": 1.0,
+      "urdf_viscous_nm_s_rad": 0.001,
+      "urdf_coulomb_nm": 0.0005,
+      "stiffness_nm_rad": 0.0,
+      "drive_damping_nm_s_rad": 0.0,
+      "armature_kg_m2": 0.0,
+      "physx_joint_friction_coefficient": 0.002,
+      "source": "engineering prior; limits are operating ceilings, not rated hardware maxima",
+      "mimic": {
+        "joint": "left_hand_little_joint2",
+        "multiplier": 0.94,
+        "offset": 0.0
+      },
+      "lower_rad": 0.0,
+      "upper_rad": 1.48
+    }
+  },
+  "sources": [
+    {
+      "url": "https://a.storyblok.com/f/298593/x/50a0fc9e84/linker-hand-l20-v10-20260324.pdf",
+      "revision": "V1.2 2026-03-24",
+      "use": "1.2kg complete hand; 16 active+5 passive; published speeds exceed chosen operating caps; 18N thumb/20N finger maxima are not joint torque constants"
+    },
+    {
+      "url": "https://www.linkerbot.cn/details/LinkerHandL20/",
+      "use": "1.2kg cross-check; thumb15N differs from manual18N; use lower15N only as contextual force ceiling, not certified limiter"
+    },
+    {
+      "url": "https://github.com/hwzhanng/linkagent/tree/ac71d6bb3a65ca6f0add5599f766caf856716bb3",
+      "use": "delivered SDK kinematics, arm inertia and 80/36/18Nm torque ceilings; legacy hand geometry/coordinate mapping retained"
+    }
+  ],
+  "full_isaac_contact_regression": false,
+  "hardware_transfer_qualified": false,
+  "bodies": {
+    "base_link": {
+      "mass_kg": 10.8067081992573,
+      "com_m": [
+        5.75109188383945e-05,
+        1.44120839455095e-05,
+        -0.489174317245241
+      ],
+      "tensor_kg_m2": [
+        [
+          0.192527915393298,
+          -1.67956043663548e-08,
+          -3.68569447484118e-08
+        ],
+        [
+          -1.67956043663548e-08,
+          0.191539752328327,
+          6.60319145138974e-08
+        ],
+        [
+          -3.68569447484118e-08,
+          6.60319145138974e-08,
+          0.103049415034787
+        ]
+      ]
+    },
+    "L1_Link": {
+      "mass_kg": 1.3997199601261,
+      "com_m": [
+        0.00235600060651345,
+        0.0538143182293528,
+        0.00010452198160641
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00114445383866051,
+          -2.33503672142218e-06,
+          -9.94413789148138e-09
+        ],
+        [
+          -2.33503672142218e-06,
+          0.000654874787984474,
+          1.05907637546798e-06
+        ],
+        [
+          -9.94413789148138e-09,
+          1.05907637546798e-06,
+          0.000691494366096022
+        ]
+      ]
+    },
+    "L2_Link": {
+      "mass_kg": 1.14210487960353,
+      "com_m": [
+        0.001618419731441,
+        8.17586538826021e-06,
+        -0.0795739675465699
+      ],
+      "tensor_kg_m2": [
+        [
+          0.000999259952314694,
+          4.38390447469883e-06,
+          -1.34113970553355e-06
+        ],
+        [
+          4.38390447469883e-06,
+          0.000929597687983869,
+          2.7922699166407e-07
+        ],
+        [
+          -1.34113970553355e-06,
+          2.7922699166407e-07,
+          0.000490873838603504
+        ]
+      ]
+    },
+    "L3_Link": {
+      "mass_kg": 1.2798435287888,
+      "com_m": [
+        0.000181280975708543,
+        0.0012493056236523,
+        -0.128548942292033
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00158095142201815,
+          7.74063763820645e-07,
+          -8.68119829913453e-07
+        ],
+        [
+          7.74063763820645e-07,
+          0.00163152743924312,
+          -2.41539579836192e-06
+        ],
+        [
+          -8.68119829913453e-07,
+          -2.41539579836192e-06,
+          0.000344148864762278
+        ]
+      ]
+    },
+    "L4_Link": {
+      "mass_kg": 0.935504485205333,
+      "com_m": [
+        -3.38229166406629e-06,
+        0.00077842370454409,
+        -0.08460011635447
+      ],
+      "tensor_kg_m2": [
+        [
+          0.000508246005403967,
+          -4.123494432482e-06,
+          -1.601236457745e-07
+        ],
+        [
+          -4.123494432482e-06,
+          0.000524130562919452,
+          -3.45757221458974e-07
+        ],
+        [
+          -1.601236457745e-07,
+          -3.45757221458974e-07,
+          0.000333983371716017
+        ]
+      ]
+    },
+    "L5_Link": {
+      "mass_kg": 0.298012293033296,
+      "com_m": [
+        -7.8967109106414e-05,
+        0.00127705818106172,
+        -0.0361222642165061
+      ],
+      "tensor_kg_m2": [
+        [
+          0.000356324975203863,
+          8.49346343481351e-07,
+          -1.06208641170066e-06
+        ],
+        [
+          8.49346343481351e-07,
+          0.000385006059216245,
+          2.16302454958746e-06
+        ],
+        [
+          -1.06208641170066e-06,
+          2.16302454958746e-06,
+          0.000101746640600842
+        ]
+      ]
+    },
+    "L6_Link": {
+      "mass_kg": 0.344326210144814,
+      "com_m": [
+        0.00423270788750624,
+        -0.00438646585481159,
+        -0.0324823655341541
+      ],
+      "tensor_kg_m2": [
+        [
+          0.000194396852170226,
+          1.34053122918212e-06,
+          9.47054882668167e-06
+        ],
+        [
+          1.34053122918212e-06,
+          0.000233882186601331,
+          2.86885239016126e-07
+        ],
+        [
+          9.47054882668167e-06,
+          2.86885239016126e-07,
+          0.000101458599044909
+        ]
+      ]
+    },
+    "L7_Link": {
+      "mass_kg": 0.143310943627726,
+      "com_m": [
+        -0.00330667550396703,
+        2.7195733834362e-07,
+        -0.0202430179985484
+      ],
+      "tensor_kg_m2": [
+        [
+          6.98168229201036e-05,
+          2.70503363331007e-07,
+          -3.17975733412514e-08
+        ],
+        [
+          2.70503363331007e-07,
+          5.48675476764208e-05,
+          1.01362000675163e-12
+        ],
+        [
+          -3.17975733412514e-08,
+          1.01362000675163e-12,
+          4.4020607930097e-05
+        ]
+      ]
+    },
+    "L8_Link": {
+      "mass_kg": 0.03,
+      "com_m": [
+        1.08546552465473e-10,
+        -1.13853898531247e-09,
+        0.000500000000024592
+      ],
+      "tensor_kg_m2": [
+        [
+          4.211875e-06,
+          4.12444590244e-19,
+          -3.87314980256e-12
+        ],
+        [
+          4.12444590244e-19,
+          4.211875e-06,
+          -4.47982094751e-13
+        ],
+        [
+          -3.87314980256e-12,
+          -4.47982094751e-13,
+          8.41875e-06
+        ]
+      ]
+    },
+    "R1_Link": {
+      "mass_kg": 1.39972022686362,
+      "com_m": [
+        -0.00238919607727967,
+        -0.0538157456440336,
+        0.00010452196048521
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00114445390268402,
+          -2.33503672059843e-06,
+          9.94413679130844e-09
+        ],
+        [
+          -2.33503672059843e-06,
+          0.000654874566780468,
+          -1.0590763545097e-06
+        ],
+        [
+          9.94413679130844e-09,
+          -1.0590763545097e-06,
+          0.000691494652521253
+        ]
+      ]
+    },
+    "R2_Link": {
+      "mass_kg": 1.14210467744301,
+      "com_m": [
+        -0.00161840435618426,
+        -8.19852199768212e-06,
+        -0.0795740266968583
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00099926032712546,
+          4.38390428673455e-06,
+          1.34112399215467e-06
+        ],
+        [
+          4.38390428673455e-06,
+          0.000929597930299551,
+          -2.7915125849712e-07
+        ],
+        [
+          1.34112399215467e-06,
+          -2.7915125849712e-07,
+          0.000490873969400915
+        ]
+      ]
+    },
+    "R3_Link": {
+      "mass_kg": 1.27984352653686,
+      "com_m": [
+        -0.000181281046893987,
+        -0.00124930020984915,
+        -0.128548942421424
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00158095142360156,
+          7.74064683830126e-07,
+          8.68119825601561e-07
+        ],
+        [
+          7.74064683830126e-07,
+          0.00163152744277086,
+          2.41539423740222e-06
+        ],
+        [
+          8.68119825601561e-07,
+          2.41539423740222e-06,
+          0.000344148863355523
+        ]
+      ]
+    },
+    "R4_Link": {
+      "mass_kg": 0.935504488206621,
+      "com_m": [
+        4.42383386005531e-06,
+        -0.000778418113624724,
+        -0.0846001182728231
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00050824600575807,
+          -4.12349458829714e-06,
+          1.60122816329668e-07
+        ],
+        [
+          -4.12349458829714e-06,
+          0.000524130564978714,
+          3.4575721962879e-07
+        ],
+        [
+          1.60122816329668e-07,
+          3.4575721962879e-07,
+          0.000333983373234424
+        ]
+      ]
+    },
+    "R5_Link": {
+      "mass_kg": 0.298013716041534,
+      "com_m": [
+        7.89161129038714e-05,
+        -0.00127720103461224,
+        -0.0361226257678754
+      ],
+      "tensor_kg_m2": [
+        [
+          0.000356325710016729,
+          8.49345579615723e-07,
+          1.06208408022809e-06
+        ],
+        [
+          8.49345579615723e-07,
+          0.000385006832605378,
+          -2.16308499009301e-06
+        ],
+        [
+          1.06208408022809e-06,
+          -2.16308499009301e-06,
+          0.000101746689163179
+        ]
+      ]
+    },
+    "R6_Link": {
+      "mass_kg": 0.344326135276304,
+      "com_m": [
+        -0.00423362800835291,
+        0.00438647668797748,
+        -0.0324823687491156
+      ],
+      "tensor_kg_m2": [
+        [
+          0.000194396918256628,
+          1.34060453386023e-06,
+          -9.47065531650411e-06
+        ],
+        [
+          1.34060453386023e-06,
+          0.000233882313857475,
+          -2.86903332334497e-07
+        ],
+        [
+          -9.47065531650411e-06,
+          -2.86903332334497e-07,
+          0.00010145861997438
+        ]
+      ]
+    },
+    "R7_Link": {
+      "mass_kg": 0.143310943627727,
+      "com_m": [
+        0.00330667550394679,
+        -1.18809317478652e-06,
+        -0.0202430179967651
+      ],
+      "tensor_kg_m2": [
+        [
+          6.98168229201036e-05,
+          2.70503363330993e-07,
+          3.17975733407385e-08
+        ],
+        [
+          2.70503363330993e-07,
+          5.48675476764227e-05,
+          -1.01361997649667e-12
+        ],
+        [
+          3.17975733407385e-08,
+          -1.01361997649667e-12,
+          4.4020607930099e-05
+        ]
+      ]
+    },
+    "R8_Link": {
+      "mass_kg": 0.03,
+      "com_m": [
+        -1.03808180585258e-10,
+        5.33808552916071e-11,
+        0.000499999999999834
+      ],
+      "tensor_kg_m2": [
+        [
+          4.211875e-06,
+          4.12444160417e-19,
+          3.87314985227e-12
+        ],
+        [
+          4.12444160417e-19,
+          4.211875e-06,
+          4.47982095234e-13
+        ],
+        [
+          3.87314985227e-12,
+          4.47982095234e-13,
+          8.41875e-06
+        ]
+      ]
+    },
+    "right_hand_base_link": {
+      "mass_kg": 0.66,
+      "com_m": [
+        -0.0127852022516513,
+        -0.00212998519270446,
+        0.0863282588039704
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00185112372488,
+          -7.81329390624e-06,
+          0.000168764138432
+        ],
+        [
+          -7.81329390624e-06,
+          0.00135401962766,
+          -4.6534724956e-06
+        ],
+        [
+          0.000168764138432,
+          -4.6534724956e-06,
+          0.000709867145412
+        ]
+      ]
+    },
+    "right_hand_thumb_link0": {
+      "mass_kg": 0.0336,
+      "com_m": [
+        0.0161038298946624,
+        0.00352514373565277,
+        -0.00248013283577719
+      ],
+      "tensor_kg_m2": [
+        [
+          1.20003532764e-05,
+          2.98572839534e-07,
+          -3.5436429989e-07
+        ],
+        [
+          2.98572839534e-07,
+          7.32393306601e-06,
+          1.05427038943e-06
+        ],
+        [
+          -3.5436429989e-07,
+          1.05427038943e-06,
+          5.77318289304e-06
+        ]
+      ]
+    },
+    "right_hand_thumb_link1": {
+      "mass_kg": 0.024,
+      "com_m": [
+        0.000856701469321857,
+        0.00946477311999894,
+        0.0114156470010393
+      ],
+      "tensor_kg_m2": [
+        [
+          3.79595522881e-06,
+          -4.02791720357e-07,
+          -2.51284278918e-07
+        ],
+        [
+          -4.02791720357e-07,
+          1.88392451077e-06,
+          -5.95417622576e-07
+        ],
+        [
+          -2.51284278918e-07,
+          -5.95417622576e-07,
+          2.80301758859e-06
+        ]
+      ]
+    },
+    "right_hand_thumb_link2": {
+      "mass_kg": 0.0408,
+      "com_m": [
+        -0.0106878010457298,
+        0.0269837379180417,
+        0.000327955695968538
+      ],
+      "tensor_kg_m2": [
+        [
+          1.6518678402e-05,
+          3.68958523664e-09,
+          5.01705027808e-08
+        ],
+        [
+          3.68958523664e-09,
+          4.25124390535e-06,
+          1.07826059282e-06
+        ],
+        [
+          5.01705027808e-08,
+          1.07826059282e-06,
+          1.38327283254e-05
+        ]
+      ]
+    },
+    "right_hand_thumb_link3": {
+      "mass_kg": 0.024,
+      "com_m": [
+        -0.00967480044776162,
+        0.0128718586711236,
+        -0.000963407059747318
+      ],
+      "tensor_kg_m2": [
+        [
+          2.88795386758e-06,
+          -2.43293894836e-08,
+          -6.23836978021e-09
+        ],
+        [
+          -2.43293894836e-08,
+          1.16017780806e-06,
+          -3.98301621152e-07
+        ],
+        [
+          -6.23836978021e-09,
+          -3.98301621152e-07,
+          2.13131723893e-06
+        ]
+      ]
+    },
+    "right_hand_thumb_link4": {
+      "mass_kg": 0.033599,
+      "com_m": [
+        -0.00797759287268471,
+        0.0120956330468776,
+        -0.000394493754244635
+      ],
+      "tensor_kg_m2": [
+        [
+          2.07109729312e-06,
+          4.55761238359e-09,
+          -1.43816492376e-09
+        ],
+        [
+          4.55761238359e-09,
+          1.47603327109e-06,
+          5.52269719644e-07
+        ],
+        [
+          -1.43816492376e-09,
+          5.52269719644e-07,
+          2.13499291921e-06
+        ]
+      ]
+    },
+    "right_hand_thumb_link5": {
+      "mass_kg": 1e-06,
+      "com_m": [
+        -0.0009999717481150583,
+        7.560651283711195e-06,
+        8.897040970623493e-08
+      ],
+      "tensor_kg_m2": [
+        [
+          1.6902947304218e-13,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.1930036347455e-13,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.220012659027e-13
+        ]
+      ]
+    },
+    "right_hand_index_link0": {
+      "mass_kg": 0.0144,
+      "com_m": [
+        0.01119545448323,
+        -2.49545246543137e-06,
+        0.00228191059901953
+      ],
+      "tensor_kg_m2": [
+        [
+          5.87208785932e-07,
+          1.01455795503e-10,
+          -7.92466065724e-08
+        ],
+        [
+          1.01455795503e-10,
+          4.13999184083e-07,
+          -2.54798171833e-10
+        ],
+        [
+          -7.92466065724e-08,
+          -2.54798171833e-10,
+          6.75608914799e-07
+        ]
+      ]
+    },
+    "right_hand_index_link1": {
+      "mass_kg": 0.0288,
+      "com_m": [
+        -0.00105239665196925,
+        0.00471408033085759,
+        0.0231603281397831
+      ],
+      "tensor_kg_m2": [
+        [
+          4.46629381676e-06,
+          -5.58022263862e-11,
+          1.16127934481e-07
+        ],
+        [
+          -5.58022263862e-11,
+          4.5313577458e-06,
+          -1.01925735818e-09
+        ],
+        [
+          1.16127934481e-07,
+          -1.01925735818e-09,
+          8.73360080614e-07
+        ]
+      ]
+    },
+    "right_hand_index_link2": {
+      "mass_kg": 0.0216,
+      "com_m": [
+        -0.000202761525458138,
+        0.0037452006452898,
+        0.0168359467232476
+      ],
+      "tensor_kg_m2": [
+        [
+          2.13163649981e-06,
+          6.17626488996e-11,
+          1.2402766046e-07
+        ],
+        [
+          6.17626488996e-11,
+          1.64459563274e-06,
+          -9.83771501102e-11
+        ],
+        [
+          1.2402766046e-07,
+          -9.83771501102e-11,
+          8.8540257047e-07
+        ]
+      ]
+    },
+    "right_hand_index_link3": {
+      "mass_kg": 0.031199,
+      "com_m": [
+        -0.00922986560355689,
+        0.00504641978922789,
+        0.01038005922224
+      ],
+      "tensor_kg_m2": [
+        [
+          1.94895756947e-06,
+          1.9443041597e-10,
+          7.1675733675e-07
+        ],
+        [
+          1.9443041597e-10,
+          2.1224956908e-06,
+          -5.39452487389e-10
+        ],
+        [
+          7.1675733675e-07,
+          -5.39452487389e-10,
+          1.22330918028e-06
+        ]
+      ]
+    },
+    "right_hand_index_link4": {
+      "mass_kg": 1e-06,
+      "com_m": [
+        3.6033452488482e-07,
+        -0.0010000000611065755,
+        -6.463087629526854e-07
+      ],
+      "tensor_kg_m2": [
+        [
+          4.1642991191872e-13,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.6624068434329e-13,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.1647748427567e-13
+        ]
+      ]
+    },
+    "right_hand_middle_link0": {
+      "mass_kg": 0.0144,
+      "com_m": [
+        0.0111954544832301,
+        -4.39666709647207e-07,
+        0.00228191192115146
+      ],
+      "tensor_kg_m2": [
+        [
+          5.87208785932e-07,
+          3.00620876371e-11,
+          -7.92466658149e-08
+        ],
+        [
+          3.00620876371e-11,
+          4.13998937316e-07,
+          -1.91123308432e-11
+        ],
+        [
+          -7.92466658149e-08,
+          -1.91123308432e-11,
+          6.75609161567e-07
+        ]
+      ]
+    },
+    "right_hand_middle_link1": {
+      "mass_kg": 0.0288,
+      "com_m": [
+        -0.00105236331065115,
+        0.00471408033272567,
+        0.0231603296543958
+      ],
+      "tensor_kg_m2": [
+        [
+          4.46629415047e-06,
+          -5.58036886748e-11,
+          1.16122759718e-07
+        ],
+        [
+          -5.58036886748e-11,
+          4.53135769165e-06,
+          -1.01925757268e-09
+        ],
+        [
+          1.16122759718e-07,
+          -1.01925757268e-09,
+          8.73359692757e-07
+        ]
+      ]
+    },
+    "right_hand_middle_link2": {
+      "mass_kg": 0.0216,
+      "com_m": [
+        -0.000202737288641956,
+        0.00374520064615379,
+        0.0168359470149295
+      ],
+      "tensor_kg_m2": [
+        [
+          2.1316368614e-06,
+          6.17625141025e-11,
+          1.24025867465e-07
+        ],
+        [
+          6.17625141025e-11,
+          1.6445956372e-06,
+          -9.83772720336e-11
+        ],
+        [
+          1.24025867465e-07,
+          -9.83772720336e-11,
+          8.85402213322e-07
+        ]
+      ]
+    },
+    "right_hand_middle_link3": {
+      "mass_kg": 0.031199,
+      "com_m": [
+        -0.00922986560355694,
+        0.00504641978922791,
+        0.0103800592222401
+      ],
+      "tensor_kg_m2": [
+        [
+          1.94895756947e-06,
+          1.94430415975e-10,
+          7.1675733675e-07
+        ],
+        [
+          1.94430415975e-10,
+          2.1224956908e-06,
+          -5.39452487399e-10
+        ],
+        [
+          7.1675733675e-07,
+          -5.39452487399e-10,
+          1.22330918028e-06
+        ]
+      ]
+    },
+    "right_hand_middle_link4": {
+      "mass_kg": 1e-06,
+      "com_m": [
+        3.603636287152767e-07,
+        -0.0010000000583964067,
+        -6.467744242399931e-07
+      ],
+      "tensor_kg_m2": [
+        [
+          4.1643024332077e-13,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.6624086840837e-13,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.1647765099316e-13
+        ]
+      ]
+    },
+    "right_hand_ring_link0": {
+      "mass_kg": 0.0144,
+      "com_m": [
+        0.0111954544832297,
+        -4.39666710074058e-07,
+        0.00228191192115088
+      ],
+      "tensor_kg_m2": [
+        [
+          5.87208785932e-07,
+          3.00620876611e-11,
+          -7.92466658149e-08
+        ],
+        [
+          3.00620876611e-11,
+          4.13998937316e-07,
+          -1.91123308038e-11
+        ],
+        [
+          -7.92466658149e-08,
+          -1.91123308038e-11,
+          6.75609161567e-07
+        ]
+      ]
+    },
+    "right_hand_ring_link1": {
+      "mass_kg": 0.0288,
+      "com_m": [
+        -0.0010523966519671,
+        0.00471408033085737,
+        0.0231603281397865
+      ],
+      "tensor_kg_m2": [
+        [
+          4.46629381673e-06,
+          -5.5802234218e-11,
+          1.1612793035e-07
+        ],
+        [
+          -5.5802234218e-11,
+          4.53135775e-06,
+          -1.01925735788e-09
+        ],
+        [
+          1.1612793035e-07,
+          -1.01925735788e-09,
+          8.7336008485e-07
+        ]
+      ]
+    },
+    "right_hand_ring_link2": {
+      "mass_kg": 0.0216,
+      "com_m": [
+        -0.000202761525458488,
+        0.00374520064529259,
+        0.0168359467232387
+      ],
+      "tensor_kg_m2": [
+        [
+          2.13163650904e-06,
+          6.17626498428e-11,
+          1.24027661089e-07
+        ],
+        [
+          6.17626498428e-11,
+          1.64459564196e-06,
+          -9.83771435622e-11
+        ],
+        [
+          1.24027661089e-07,
+          -9.83771435622e-11,
+          8.85402570456e-07
+        ]
+      ]
+    },
+    "right_hand_ring_link3": {
+      "mass_kg": 0.031199,
+      "com_m": [
+        -0.00922985066054392,
+        0.00504641978927279,
+        0.0103800725094067
+      ],
+      "tensor_kg_m2": [
+        [
+          1.94895963314e-06,
+          1.9442964249e-10,
+          7.16756292114e-07
+        ],
+        [
+          1.9442964249e-10,
+          2.1224956908e-06,
+          -5.39452771192e-10
+        ],
+        [
+          7.16756292114e-07,
+          -5.39452771192e-10,
+          1.22330711661e-06
+        ]
+      ]
+    },
+    "right_hand_ring_link4": {
+      "mass_kg": 1e-06,
+      "com_m": [
+        3.6033452488482e-07,
+        -0.001000000061106585,
+        -6.463087629526854e-07
+      ],
+      "tensor_kg_m2": [
+        [
+          4.1642991191871e-13,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.6624068434329e-13,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.1647748427567e-13
+        ]
+      ]
+    },
+    "right_hand_little_link0": {
+      "mass_kg": 0.0144,
+      "com_m": [
+        0.01119545448323,
+        -2.49545246554239e-06,
+        0.00228191059901939
+      ],
+      "tensor_kg_m2": [
+        [
+          5.87208785932e-07,
+          1.01455795507e-10,
+          -7.92466065724e-08
+        ],
+        [
+          1.01455795507e-10,
+          4.13999184083e-07,
+          -2.54798171844e-10
+        ],
+        [
+          -7.92466065724e-08,
+          -2.54798171844e-10,
+          6.75608914799e-07
+        ]
+      ]
+    },
+    "right_hand_little_link1": {
+      "mass_kg": 0.0288,
+      "com_m": [
+        -0.00105236331065163,
+        0.00471408033272601,
+        0.0231603296543959
+      ],
+      "tensor_kg_m2": [
+        [
+          4.46629415024e-06,
+          -5.58036888779e-11,
+          1.16122765748e-07
+        ],
+        [
+          -5.58036888779e-11,
+          4.53135772873e-06,
+          -1.01925757245e-09
+        ],
+        [
+          1.16122765748e-07,
+          -1.01925757245e-09,
+          8.73359730071e-07
+        ]
+      ]
+    },
+    "right_hand_little_link2": {
+      "mass_kg": 0.0216,
+      "com_m": [
+        -0.000202761525458565,
+        0.0037452006452903,
+        0.0168359467232404
+      ],
+      "tensor_kg_m2": [
+        [
+          2.13163648685e-06,
+          6.17626493886e-11,
+          1.24027662344e-07
+        ],
+        [
+          6.17626493886e-11,
+          1.64459561958e-06,
+          -9.83771335678e-11
+        ],
+        [
+          1.24027662344e-07,
+          -9.83771335678e-11,
+          8.85402570259e-07
+        ]
+      ]
+    },
+    "right_hand_little_link3": {
+      "mass_kg": 0.031199,
+      "com_m": [
+        -0.00922985066054395,
+        0.00504641978927281,
+        0.0103800725094066
+      ],
+      "tensor_kg_m2": [
+        [
+          1.94895963314e-06,
+          1.94429642488e-10,
+          7.16756292114e-07
+        ],
+        [
+          1.94429642488e-10,
+          2.1224956908e-06,
+          -5.39452771187e-10
+        ],
+        [
+          7.16756292114e-07,
+          -5.39452771187e-10,
+          1.22330711662e-06
+        ]
+      ]
+    },
+    "right_hand_little_link4": {
+      "mass_kg": 1e-06,
+      "com_m": [
+        3.603636287152767e-07,
+        -0.0010000000583963997,
+        -6.467744242399931e-07
+      ],
+      "tensor_kg_m2": [
+        [
+          4.1643024332077e-13,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.6624086840837e-13,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.1647765099317e-13
+        ]
+      ]
+    },
+    "left_hand_base_link": {
+      "mass_kg": 0.66,
+      "com_m": [
+        -0.0127930441628704,
+        0.0021602273711325,
+        0.0863273002317186
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00185086412316,
+          7.61579610943e-06,
+          0.000168704762777
+        ],
+        [
+          7.61579610943e-06,
+          0.00135326610346,
+          4.84070419434e-06
+        ],
+        [
+          0.000168704762777,
+          4.84070419434e-06,
+          0.000710340298984
+        ]
+      ]
+    },
+    "left_hand_thumb_link0": {
+      "mass_kg": 0.0336,
+      "com_m": [
+        0.0155790258185461,
+        -0.0035327846142178,
+        -0.00267486257157412
+      ],
+      "tensor_kg_m2": [
+        [
+          1.27426415664e-05,
+          -3.62622605723e-07,
+          -3.82274886542e-07
+        ],
+        [
+          -3.62622605723e-07,
+          7.84388743957e-06,
+          -1.13717531297e-06
+        ],
+        [
+          -3.82274886542e-07,
+          -1.13717531297e-06,
+          5.99734905379e-06
+        ]
+      ]
+    },
+    "left_hand_thumb_link1": {
+      "mass_kg": 0.024,
+      "com_m": [
+        0.000857564128510006,
+        -0.00946442687786838,
+        0.0108456836981784
+      ],
+      "tensor_kg_m2": [
+        [
+          3.7953883976e-06,
+          4.0270871497e-07,
+          -2.5117526107e-07
+        ],
+        [
+          4.0270871497e-07,
+          1.88367369938e-06,
+          5.95333872584e-07
+        ],
+        [
+          -2.5117526107e-07,
+          5.95333872584e-07,
+          2.80259980352e-06
+        ]
+      ]
+    },
+    "left_hand_thumb_link2": {
+      "mass_kg": 0.0408,
+      "com_m": [
+        0.0106870418318758,
+        0.0269834538803911,
+        0.00033048215606199
+      ],
+      "tensor_kg_m2": [
+        [
+          1.65220588355e-05,
+          -3.7360273733e-09,
+          -4.9744521597e-08
+        ],
+        [
+          -3.7360273733e-09,
+          4.2510089761e-06,
+          1.07845599428e-06
+        ],
+        [
+          -4.9744521597e-08,
+          1.07845599428e-06,
+          1.38363173134e-05
+        ]
+      ]
+    },
+    "left_hand_thumb_link3": {
+      "mass_kg": 0.024,
+      "com_m": [
+        0.00967485658407713,
+        0.0128741665018989,
+        -0.000932984044305266
+      ],
+      "tensor_kg_m2": [
+        [
+          2.88796813406e-06,
+          2.43172439837e-08,
+          6.29645723087e-09
+        ],
+        [
+          2.43172439837e-08,
+          1.16207221946e-06,
+          -4.00591192637e-07
+        ],
+        [
+          6.29645723087e-09,
+          -4.00591192637e-07,
+          2.12943549535e-06
+        ]
+      ]
+    },
+    "left_hand_thumb_link4": {
+      "mass_kg": 0.033599,
+      "com_m": [
+        0.00797760775773447,
+        0.0120213324367316,
+        0.00139546271700011
+      ],
+      "tensor_kg_m2": [
+        [
+          2.07110213107e-06,
+          -4.71071909212e-09,
+          7.51671683789e-10
+        ],
+        [
+          -4.71071909212e-09,
+          1.32912521682e-06,
+          4.31987691535e-07
+        ],
+        [
+          7.51671683789e-10,
+          4.31987691535e-07,
+          2.28190717982e-06
+        ]
+      ]
+    },
+    "left_hand_thumb_link5": {
+      "mass_kg": 1e-06,
+      "com_m": [
+        0.000999983533233717,
+        5.741167115047574e-06,
+        -6.145564839243889e-07
+      ],
+      "tensor_kg_m2": [
+        [
+          1.6829478493219e-13,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.1846912288129e-13,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.2055756245954e-13
+        ]
+      ]
+    },
+    "left_hand_index_link0": {
+      "mass_kg": 0.0144,
+      "com_m": [
+        0.0111955668518647,
+        4.36805173843757e-07,
+        0.00228165749649656
+      ],
+      "tensor_kg_m2": [
+        [
+          5.87203702379e-07,
+          6.61238070904e-11,
+          -7.92534862514e-08
+        ],
+        [
+          6.61238070904e-11,
+          4.14039443983e-07,
+          -1.49237511546e-11
+        ],
+        [
+          -7.92534862514e-08,
+          -1.49237511546e-11,
+          6.75660629609e-07
+        ]
+      ]
+    },
+    "left_hand_index_link1": {
+      "mass_kg": 0.0288,
+      "com_m": [
+        -0.00105237534023375,
+        0.00473636467392175,
+        0.0231603662859881
+      ],
+      "tensor_kg_m2": [
+        [
+          4.46628643136e-06,
+          4.39226369755e-11,
+          1.16118373711e-07
+        ],
+        [
+          4.39226369755e-11,
+          4.53134397842e-06,
+          9.8307646894e-10
+        ],
+        [
+          1.16118373711e-07,
+          9.8307646894e-10,
+          8.73355229063e-07
+        ]
+      ]
+    },
+    "left_hand_index_link2": {
+      "mass_kg": 0.0216,
+      "com_m": [
+        -0.000202635841371351,
+        0.0037545878248961,
+        0.0168357728740804
+      ],
+      "tensor_kg_m2": [
+        [
+          2.13166596332e-06,
+          -3.87763791103e-11,
+          1.24031742251e-07
+        ],
+        [
+          -3.87763791103e-11,
+          1.64460526436e-06,
+          6.65190542549e-11
+        ],
+        [
+          1.24031742251e-07,
+          6.65190542549e-11,
+          8.85407369844e-07
+        ]
+      ]
+    },
+    "left_hand_index_link3": {
+      "mass_kg": 0.031199,
+      "com_m": [
+        -0.00922997284932537,
+        0.00500357237540312,
+        0.0103801305387597
+      ],
+      "tensor_kg_m2": [
+        [
+          1.94897865003e-06,
+          -1.90246334476e-10,
+          7.16777409477e-07
+        ],
+        [
+          -1.90246334476e-10,
+          2.12249506498e-06,
+          5.4462017825e-10
+        ],
+        [
+          7.16777409477e-07,
+          5.4462017825e-10,
+          1.22329792603e-06
+        ]
+      ]
+    },
+    "left_hand_index_link4": {
+      "mass_kg": 1e-06,
+      "com_m": [
+        3.6039273254573345e-07,
+        0.001000000044800553,
+        -6.467744242399931e-07
+      ],
+      "tensor_kg_m2": [
+        [
+          4.1643025238467e-13,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.6624085871811e-13,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.1647765036681e-13
+        ]
+      ]
+    },
+    "left_hand_middle_link0": {
+      "mass_kg": 0.0144,
+      "com_m": [
+        0.0111955668518647,
+        4.36805173850696e-07,
+        0.0022816574964965
+      ],
+      "tensor_kg_m2": [
+        [
+          5.87203702379e-07,
+          6.61238070913e-11,
+          -7.92534862514e-08
+        ],
+        [
+          6.61238070913e-11,
+          4.14039443983e-07,
+          -1.49237511551e-11
+        ],
+        [
+          -7.92534862514e-08,
+          -1.49237511551e-11,
+          6.75660629609e-07
+        ]
+      ]
+    },
+    "left_hand_middle_link1": {
+      "mass_kg": 0.0288,
+      "com_m": [
+        -0.00105237534023371,
+        0.00473636467392218,
+        0.0231603662859878
+      ],
+      "tensor_kg_m2": [
+        [
+          4.46628643127e-06,
+          4.39226432221e-11,
+          1.16118371485e-07
+        ],
+        [
+          4.39226432221e-11,
+          4.53134393898e-06,
+          9.8307646895e-10
+        ],
+        [
+          1.16118371485e-07,
+          9.8307646895e-10,
+          8.73355189712e-07
+        ]
+      ]
+    },
+    "left_hand_middle_link2": {
+      "mass_kg": 0.0216,
+      "com_m": [
+        -0.000202635841371486,
+        0.00375458782489305,
+        0.0168357728740898
+      ],
+      "tensor_kg_m2": [
+        [
+          2.13166596655e-06,
+          -3.87763825252e-11,
+          1.24031743343e-07
+        ],
+        [
+          -3.87763825252e-11,
+          1.64460526762e-06,
+          6.65190424933e-11
+        ],
+        [
+          1.24031743343e-07,
+          6.65190424933e-11,
+          8.85407369863e-07
+        ]
+      ]
+    },
+    "left_hand_middle_link3": {
+      "mass_kg": 0.031199,
+      "com_m": [
+        -0.00922997282245438,
+        0.00500357245527429,
+        0.010380130248028
+      ],
+      "tensor_kg_m2": [
+        [
+          1.94897867482e-06,
+          -1.90241844377e-10,
+          7.16777420541e-07
+        ],
+        [
+          -1.90241844377e-10,
+          2.12249510075e-06,
+          5.446148127e-10
+        ],
+        [
+          7.16777420541e-07,
+          5.446148127e-10,
+          1.2232979381e-06
+        ]
+      ]
+    },
+    "left_hand_middle_link4": {
+      "mass_kg": 1e-06,
+      "com_m": [
+        3.6039273254573345e-07,
+        0.001000000044800553,
+        -6.467744242399931e-07
+      ],
+      "tensor_kg_m2": [
+        [
+          4.1643025238467e-13,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.6624085871811e-13,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.1647765036681e-13
+        ]
+      ]
+    },
+    "left_hand_ring_link0": {
+      "mass_kg": 0.0144,
+      "com_m": [
+        0.0111955668518646,
+        4.36805173745745e-07,
+        0.00228165749649642
+      ],
+      "tensor_kg_m2": [
+        [
+          5.87203702379e-07,
+          6.6123807094e-11,
+          -7.92534862514e-08
+        ],
+        [
+          6.6123807094e-11,
+          4.14039443983e-07,
+          -1.49237511482e-11
+        ],
+        [
+          -7.92534862514e-08,
+          -1.49237511482e-11,
+          6.75660629609e-07
+        ]
+      ]
+    },
+    "left_hand_ring_link1": {
+      "mass_kg": 0.0288,
+      "com_m": [
+        -0.00105237534023149,
+        0.00473636467616235,
+        0.0231603662859896
+      ],
+      "tensor_kg_m2": [
+        [
+          4.4662864304e-06,
+          4.39226430226e-11,
+          1.16118371915e-07
+        ],
+        [
+          4.39226430226e-11,
+          4.53134393305e-06,
+          9.83076468412e-10
+        ],
+        [
+          1.16118371915e-07,
+          9.83076468412e-10,
+          8.7335518464e-07
+        ]
+      ]
+    },
+    "left_hand_ring_link2": {
+      "mass_kg": 0.0216,
+      "com_m": [
+        -0.000202635841371684,
+        0.00375458782489404,
+        0.0168357728740914
+      ],
+      "tensor_kg_m2": [
+        [
+          2.1316659736e-06,
+          -3.87763798392e-11,
+          1.24031742527e-07
+        ],
+        [
+          -3.87763798392e-11,
+          1.64460527473e-06,
+          6.65190408098e-11
+        ],
+        [
+          1.24031742527e-07,
+          6.65190408098e-11,
+          8.85407369928e-07
+        ]
+      ]
+    },
+    "left_hand_ring_link3": {
+      "mass_kg": 0.031199,
+      "com_m": [
+        -0.00922997285560196,
+        0.00500357234655459,
+        0.0103801306224766
+      ],
+      "tensor_kg_m2": [
+        [
+          1.94897864079e-06,
+          -1.90247114018e-10,
+          7.167774052e-07
+        ],
+        [
+          -1.90247114018e-10,
+          2.12249505202e-06,
+          5.44620762707e-10
+        ],
+        [
+          7.167774052e-07,
+          5.44620762707e-10,
+          1.22329792121e-06
+        ]
+      ]
+    },
+    "left_hand_ring_link4": {
+      "mass_kg": 1e-06,
+      "com_m": [
+        3.6039273254573345e-07,
+        0.001000000044800553,
+        -6.467744242399931e-07
+      ],
+      "tensor_kg_m2": [
+        [
+          4.1643025238467e-13,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.6624085871811e-13,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.1647765036681e-13
+        ]
+      ]
+    },
+    "left_hand_little_link0": {
+      "mass_kg": 0.0144,
+      "com_m": [
+        0.0111955668518647,
+        4.36805173847227e-07,
+        0.00228165749649656
+      ],
+      "tensor_kg_m2": [
+        [
+          5.87203702379e-07,
+          6.61238070914e-11,
+          -7.92534862514e-08
+        ],
+        [
+          6.61238070914e-11,
+          4.14039443983e-07,
+          -1.49237511544e-11
+        ],
+        [
+          -7.92534862514e-08,
+          -1.49237511544e-11,
+          6.75660629609e-07
+        ]
+      ]
+    },
+    "left_hand_little_link1": {
+      "mass_kg": 0.0288,
+      "com_m": [
+        -0.00105237534023381,
+        0.00473636467392194,
+        0.0231603662859876
+      ],
+      "tensor_kg_m2": [
+        [
+          4.4662864309e-06,
+          4.39226396551e-11,
+          1.16118372816e-07
+        ],
+        [
+          4.39226396551e-11,
+          4.53134394233e-06,
+          9.83076469069e-10
+        ],
+        [
+          1.16118372816e-07,
+          9.83076469069e-10,
+          8.73355193438e-07
+        ]
+      ]
+    },
+    "left_hand_little_link2": {
+      "mass_kg": 0.0216,
+      "com_m": [
+        -0.00020263584137074,
+        0.00375458782489637,
+        0.0168357728740876
+      ],
+      "tensor_kg_m2": [
+        [
+          2.13166595977e-06,
+          -3.87763788888e-11,
+          1.24031742341e-07
+        ],
+        [
+          -3.87763788888e-11,
+          1.64460526076e-06,
+          6.65190432109e-11
+        ],
+        [
+          1.24031742341e-07,
+          6.65190432109e-11,
+          8.85407369789e-07
+        ]
+      ]
+    },
+    "left_hand_little_link3": {
+      "mass_kg": 0.031199,
+      "com_m": [
+        -0.00922997282245441,
+        0.00500357245527423,
+        0.0103801302480281
+      ],
+      "tensor_kg_m2": [
+        [
+          1.9489786748e-06,
+          -1.90241844366e-10,
+          7.16777420541e-07
+        ],
+        [
+          -1.90241844366e-10,
+          2.12249510075e-06,
+          5.44614812695e-10
+        ],
+        [
+          7.16777420541e-07,
+          5.44614812695e-10,
+          1.2232979381e-06
+        ]
+      ]
+    },
+    "left_hand_little_link4": {
+      "mass_kg": 1e-06,
+      "com_m": [
+        3.6039273254573345e-07,
+        0.001000000044800553,
+        -6.467744242399931e-07
+      ],
+      "tensor_kg_m2": [
+        [
+          4.1643025238467e-13,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.6624085871811e-13,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.1647765036681e-13
+        ]
+      ]
+    }
+  }
+}

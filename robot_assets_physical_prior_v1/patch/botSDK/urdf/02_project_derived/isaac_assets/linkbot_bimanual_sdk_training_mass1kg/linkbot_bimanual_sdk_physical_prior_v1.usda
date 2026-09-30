@@ -1,0 +1,1361 @@
+#usda 1.0
+(
+    customLayerData = {
+        bool calibrated = 0
+        string physicalPriorId = "linkbot_physical_prior_v1"
+        string scope = "URDF dynamic priors with inherited single-right-hand contact topology; not hardware certified"
+    }
+    defaultPrim = "linkbot_bimanual_sdk"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    subLayers = [
+        @linkbot_bimanual_sdk_training_mass1kg_physics_v1.usda@
+    ]
+    upAxis = "Z"
+)
+
+over "linkbot_bimanual_sdk"
+{
+    over "Geometry"
+    {
+        over "base_link"
+        {
+            point3f physics:centerOfMass = (0.00005751092, 0.000014412084, -0.4891743)
+            float3 physics:diagonalInertia = (0.10304941, 0.19153975, 0.19252792)
+            float physics:mass = 10.806708
+            quatf physics:principalAxes = (0.000006273106, -0.70710665, 0.000005745462, 0.70710695)
+
+            over "L1_Link"
+            {
+                point3f physics:centerOfMass = (0.0023560007, 0.053814318, 0.00010452198)
+                float3 physics:diagonalInertia = (0.00065483304, 0.00069152494, 0.001144465)
+                float physics:mass = 1.39972
+                quatf physics:principalAxes = (-0.50599915, -0.49150953, 0.5083324, 0.49394473)
+
+                over "L2_Link"
+                {
+                    point3f physics:centerOfMass = (0.0016184198, 0.000008175865, -0.07957397)
+                    float3 physics:diagonalInertia = (0.0004908701, 0.0009293232, 0.0009995382)
+                    float physics:mass = 1.1421049
+                    quatf physics:principalAxes = (0.70768684, 0.022387763, -0.705833, 0.021860788)
+
+                    over "L3_Link"
+                    {
+                        point3f physics:centerOfMass = (0.00018128098, 0.0012493057, -0.12854894)
+                        float3 physics:diagonalInertia = (0.00034414371, 0.0015809401, 0.0016315439)
+                        float physics:mass = 1.2798436
+                        quatf physics:principalAxes = (0.5031761, -0.49645084, 0.5044598, 0.49585345)
+
+                        over "L4_Link"
+                        {
+                            point3f physics:centerOfMass = (-0.0000033822917, 0.0007784237, -0.08460011)
+                            float3 physics:diagonalInertia = (0.00033398258, 0.0005072397, 0.00052513764)
+                            float physics:mass = 0.9355045
+                            quatf physics:principalAxes = (0.4374319, 0.5559987, -0.43598878, 0.55626667)
+
+                            over "L5_Link"
+                            {
+                                point3f physics:centerOfMass = (-0.00007896711, 0.0012770582, -0.036122262)
+                                float3 physics:diagonalInertia = (0.000101725636, 0.0003563048, 0.00038504723)
+                                float physics:mass = 0.2980123
+                                quatf physics:principalAxes = (0.5080776, -0.48965153, 0.506439, 0.49559864)
+
+                                over "L6_Link"
+                                {
+                                    point3f physics:centerOfMass = (0.004232708, -0.004386466, -0.032482367)
+                                    float3 physics:diagonalInertia = (0.00010050318, 0.00019530398, 0.00023393048)
+                                    float physics:mass = 0.3443262
+                                    quatf physics:principalAxes = (-0.466109, 0.48225793, 0.51487267, 0.53392494)
+
+                                    over "L7_Link"
+                                    {
+                                        point3f physics:centerOfMass = (-0.0033066755, 2.7195733e-7, -0.020243019)
+                                        float3 physics:diagonalInertia = (0.00004402057, 0.000054862656, 0.000069821755)
+                                        float physics:mass = 0.14331095
+                                        quatf physics:principalAxes = (0.7075135, 0.006409398, -0.7066419, 0.0063797063)
+
+                                        over "L8_Link"
+                                        {
+                                            point3f physics:centerOfMass = (1.08546554e-10, -1.138539e-9, 0.0005)
+                                            float3 physics:diagonalInertia = (0.000004211875, 0.000004211875, 0.00000841875)
+                                            float physics:mass = 0.03
+                                            quatf physics:principalAxes = (1, 5.3273766e-8, -4.6059256e-7, -3.588666e-8)
+
+                                            over "left_hand_base_link"
+                                            {
+                                                point3f physics:centerOfMass = (-0.012793045, 0.0021602274, 0.0863273)
+                                                float3 physics:diagonalInertia = (0.0006858886, 0.0013531569, 0.0018754251)
+                                                float physics:mass = 0.66
+                                                quatf physics:principalAxes = (0.0041447496, 0.75605786, 0.0072536683, -0.6544515)
+
+                                                over "left_hand_thumb_link0"
+                                                {
+                                                    point3f physics:centerOfMass = (0.015579026, -0.0035327845, -0.0026748625)
+                                                    float3 physics:diagonalInertia = (0.000005421501, 0.0000083794275, 0.000012782949)
+                                                    float physics:mass = 0.0336
+                                                    quatf physics:principalAxes = (-0.1394295, -0.66811585, 0.17547233, 0.7094999)
+
+                                                    over "left_hand_thumb_link1"
+                                                    {
+                                                        point3f physics:centerOfMass = (0.00085756416, -0.009464427, 0.0108456835)
+                                                        float3 physics:diagonalInertia = (0.0000014941653, 0.0000030924678, 0.000003895029)
+                                                        float physics:mass = 0.024
+                                                        quatf physics:principalAxes = (0.6704657, 0.3886364, -0.5277551, -0.34772414)
+
+                                                        over "left_hand_thumb_link2"
+                                                        {
+                                                            point3f physics:centerOfMass = (0.010687042, 0.026983453, 0.00033048214)
+                                                            float3 physics:diagonalInertia = (0.0000041311687, 0.000013955189, 0.000016523027)
+                                                            float physics:mass = 0.0408
+                                                            quatf physics:principalAxes = (0.53147995, 0.46647716, -0.5222466, -0.47664097)
+
+                                                            over "left_hand_thumb_link3"
+                                                            {
+                                                                point3f physics:centerOfMass = (0.009674856, 0.0128741665, -0.00093298405)
+                                                                float3 physics:diagonalInertia = (0.0000010173898, 0.0000022737747, 0.0000028883114)
+                                                                float physics:mass = 0.024
+                                                                quatf physics:principalAxes = (0.4103235, 0.58165246, -0.40270454, -0.5754512)
+
+                                                                over "left_hand_thumb_link4"
+                                                                {
+                                                                    point3f physics:centerOfMass = (0.007977608, 0.012021332, 0.0013954627)
+                                                                    float3 physics:diagonalInertia = (0.0000011624046, 0.0000020711234, 0.0000024486064)
+                                                                    float physics:mass = 0.033599
+                                                                    quatf physics:principalAxes = (-0.6935356, 0.12822346, 0.13071983, 0.6967635)
+
+                                                                    over "left_hand_thumb_link5"
+                                                                    {
+                                                                        point3f physics:centerOfMass = (0.0009999835, 0.000005741167, -6.145565e-7)
+                                                                        float3 physics:diagonalInertia = (1.6829478e-13, 4.1846913e-13, 4.2055755e-13)
+                                                                        float physics:mass = 0.000001
+                                                                        quatf physics:principalAxes = (1, 0, 0, 0)
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "left_hand_index_link0"
+                                                {
+                                                    point3f physics:centerOfMass = (0.0111955665, 4.3680518e-7, 0.0022816574)
+                                                    float3 physics:diagonalInertia = (4.1403942e-7, 5.406728e-7, 7.221916e-7)
+                                                    float physics:mass = 0.0144
+                                                    quatf physics:principalAxes = (0.6821936, -0.18548702, -0.18551719, 0.682488)
+
+                                                    over "left_hand_index_link1"
+                                                    {
+                                                        point3f physics:centerOfMass = (-0.0010523753, 0.004736365, 0.023160366)
+                                                        float3 physics:diagonalInertia = (8.696061e-7, 0.000004470035, 0.0000045313445)
+                                                        float physics:mass = 0.0288
+                                                        quatf physics:principalAxes = (-0.49163148, 0.49210206, 0.5076236, 0.508382)
+
+                                                        over "left_hand_index_link2"
+                                                        {
+                                                            point3f physics:centerOfMass = (-0.00020263584, 0.0037545878, 0.016835773)
+                                                            float3 physics:diagonalInertia = (8.7318324e-7, 0.0000016446053, 0.00000214389)
+                                                            float physics:mass = 0.0216
+                                                            quatf physics:principalAxes = (-0.671535, -0.000012055542, 0.7409728, 0.000054262156)
+
+                                                            over "left_hand_index_link3"
+                                                            {
+                                                                point3f physics:centerOfMass = (-0.009229973, 0.0050035724, 0.01038013)
+                                                                float3 physics:diagonalInertia = (7.827558e-7, 0.0000021224953, 0.0000023895207)
+                                                                float physics:mass = 0.031199
+                                                                quatf physics:principalAxes = (0.8728177, -0.0000985207, 0.4880463, 0.00029608086)
+
+                                                                over "left_hand_index_link4"
+                                                                {
+                                                                    point3f physics:centerOfMass = (3.6039273e-7, 0.001, -6.467744e-7)
+                                                                    float3 physics:diagonalInertia = (1.6624085e-13, 4.1643026e-13, 4.1647764e-13)
+                                                                    float physics:mass = 0.000001
+                                                                    quatf physics:principalAxes = (-0.70710677, 0, 0, 0.70710677)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "left_hand_middle_link0"
+                                                {
+                                                    point3f physics:centerOfMass = (0.0111955665, 4.3680518e-7, 0.0022816574)
+                                                    float3 physics:diagonalInertia = (4.1403942e-7, 5.406728e-7, 7.221916e-7)
+                                                    float physics:mass = 0.0144
+                                                    quatf physics:principalAxes = (0.6821936, -0.18548702, -0.18551719, 0.682488)
+
+                                                    over "left_hand_middle_link1"
+                                                    {
+                                                        point3f physics:centerOfMass = (-0.0010523753, 0.004736365, 0.023160366)
+                                                        float3 physics:diagonalInertia = (8.696061e-7, 0.000004470035, 0.000004531344)
+                                                        float physics:mass = 0.0288
+                                                        quatf physics:principalAxes = (-0.49163148, 0.49210206, 0.5076236, 0.508382)
+
+                                                        over "left_hand_middle_link2"
+                                                        {
+                                                            point3f physics:centerOfMass = (-0.00020263584, 0.0037545878, 0.016835773)
+                                                            float3 physics:diagonalInertia = (8.7318324e-7, 0.0000016446053, 0.00000214389)
+                                                            float physics:mass = 0.0216
+                                                            quatf physics:principalAxes = (-0.671535, -0.000012055533, 0.7409728, 0.000054262156)
+
+                                                            over "left_hand_middle_link3"
+                                                            {
+                                                                point3f physics:centerOfMass = (-0.009229973, 0.0050035724, 0.01038013)
+                                                                float3 physics:diagonalInertia = (7.827558e-7, 0.0000021224953, 0.0000023895207)
+                                                                float physics:mass = 0.031199
+                                                                quatf physics:principalAxes = (0.8728177, -0.000098523626, 0.4880463, 0.00029607955)
+
+                                                                over "left_hand_middle_link4"
+                                                                {
+                                                                    point3f physics:centerOfMass = (3.6039273e-7, 0.001, -6.467744e-7)
+                                                                    float3 physics:diagonalInertia = (1.6624085e-13, 4.1643026e-13, 4.1647764e-13)
+                                                                    float physics:mass = 0.000001
+                                                                    quatf physics:principalAxes = (-0.70710677, 0, 0, 0.70710677)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "left_hand_ring_link0"
+                                                {
+                                                    point3f physics:centerOfMass = (0.0111955665, 4.3680518e-7, 0.0022816574)
+                                                    float3 physics:diagonalInertia = (4.1403942e-7, 5.406728e-7, 7.221916e-7)
+                                                    float physics:mass = 0.0144
+                                                    quatf physics:principalAxes = (0.6821936, -0.18548702, -0.18551719, 0.682488)
+
+                                                    over "left_hand_ring_link1"
+                                                    {
+                                                        point3f physics:centerOfMass = (-0.0010523753, 0.004736365, 0.023160366)
+                                                        float3 physics:diagonalInertia = (8.69606e-7, 0.000004470035, 0.000004531344)
+                                                        float physics:mass = 0.0288
+                                                        quatf physics:principalAxes = (-0.49163148, 0.49210206, 0.5076236, 0.508382)
+
+                                                        over "left_hand_ring_link2"
+                                                        {
+                                                            point3f physics:centerOfMass = (-0.00020263584, 0.0037545878, 0.016835773)
+                                                            float3 physics:diagonalInertia = (8.7318324e-7, 0.0000016446053, 0.00000214389)
+                                                            float physics:mass = 0.0216
+                                                            quatf physics:principalAxes = (-0.671535, -0.000012055534, 0.7409728, 0.000054262153)
+
+                                                            over "left_hand_ring_link3"
+                                                            {
+                                                                point3f physics:centerOfMass = (-0.009229973, 0.0050035724, 0.01038013)
+                                                                float3 physics:diagonalInertia = (7.827558e-7, 0.0000021224953, 0.0000023895207)
+                                                                float physics:mass = 0.031199
+                                                                quatf physics:principalAxes = (0.8728177, -0.00009851995, 0.4880463, 0.00029608083)
+
+                                                                over "left_hand_ring_link4"
+                                                                {
+                                                                    point3f physics:centerOfMass = (3.6039273e-7, 0.001, -6.467744e-7)
+                                                                    float3 physics:diagonalInertia = (1.6624085e-13, 4.1643026e-13, 4.1647764e-13)
+                                                                    float physics:mass = 0.000001
+                                                                    quatf physics:principalAxes = (-0.70710677, 0, 0, 0.70710677)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "left_hand_little_link0"
+                                                {
+                                                    point3f physics:centerOfMass = (0.0111955665, 4.3680518e-7, 0.0022816574)
+                                                    float3 physics:diagonalInertia = (4.1403942e-7, 5.406728e-7, 7.221916e-7)
+                                                    float physics:mass = 0.0144
+                                                    quatf physics:principalAxes = (0.6821936, -0.18548702, -0.18551719, 0.682488)
+
+                                                    over "left_hand_little_link1"
+                                                    {
+                                                        point3f physics:centerOfMass = (-0.0010523753, 0.004736365, 0.023160366)
+                                                        float3 physics:diagonalInertia = (8.696061e-7, 0.000004470035, 0.000004531344)
+                                                        float physics:mass = 0.0288
+                                                        quatf physics:principalAxes = (-0.49163148, 0.49210206, 0.5076236, 0.508382)
+
+                                                        over "left_hand_little_link2"
+                                                        {
+                                                            point3f physics:centerOfMass = (-0.00020263584, 0.0037545878, 0.016835773)
+                                                            float3 physics:diagonalInertia = (8.7318324e-7, 0.0000016446053, 0.00000214389)
+                                                            float physics:mass = 0.0216
+                                                            quatf physics:principalAxes = (-0.671535, -0.000012055536, 0.7409728, 0.000054262153)
+
+                                                            over "left_hand_little_link3"
+                                                            {
+                                                                point3f physics:centerOfMass = (-0.009229973, 0.0050035724, 0.01038013)
+                                                                float3 physics:diagonalInertia = (7.827558e-7, 0.0000021224953, 0.0000023895207)
+                                                                float physics:mass = 0.031199
+                                                                quatf physics:principalAxes = (0.8728177, -0.000098523626, 0.4880463, 0.00029607955)
+
+                                                                over "left_hand_little_link4"
+                                                                {
+                                                                    point3f physics:centerOfMass = (3.6039273e-7, 0.001, -6.467744e-7)
+                                                                    float3 physics:diagonalInertia = (1.6624085e-13, 4.1643026e-13, 4.1647764e-13)
+                                                                    float physics:mass = 0.000001
+                                                                    quatf physics:principalAxes = (-0.70710677, 0, 0, 0.70710677)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            over "R1_Link"
+            {
+                point3f physics:centerOfMass = (-0.002389196, -0.053815745, 0.00010452196)
+                float3 physics:diagonalInertia = (0.00065483287, 0.00069152523, 0.0011444651)
+                float physics:mass = 1.3997202
+                quatf physics:principalAxes = (-0.49150965, -0.5059991, 0.49394482, 0.5083323)
+
+                over "R2_Link"
+                {
+                    point3f physics:centerOfMass = (-0.0016184044, -0.000008198522, -0.079574026)
+                    float3 physics:diagonalInertia = (0.0004908702, 0.00092932343, 0.0009995386)
+                    float physics:mass = 1.1421046
+                    quatf physics:principalAxes = (-0.705833, -0.021860808, 0.70768684, -0.022387661)
+
+                    over "R3_Link"
+                    {
+                        point3f physics:centerOfMass = (-0.00018128105, -0.0012493002, -0.12854894)
+                        float3 physics:diagonalInertia = (0.00034414371, 0.0015809401, 0.0016315439)
+                        float physics:mass = 1.2798436
+                        quatf physics:principalAxes = (-0.5031761, -0.49645084, 0.5044598, -0.49585345)
+
+                        over "R4_Link"
+                        {
+                            point3f physics:centerOfMass = (0.000004423834, -0.0007784181, -0.08460012)
+                            float3 physics:diagonalInertia = (0.00033398258, 0.0005072397, 0.00052513764)
+                            float physics:mass = 0.9355045
+                            quatf physics:principalAxes = (0.43598878, 0.55626667, -0.43743193, 0.5559987)
+
+                            over "R5_Link"
+                            {
+                                point3f physics:centerOfMass = (0.00007891611, -0.001277201, -0.036122628)
+                                float3 physics:diagonalInertia = (0.00010172569, 0.00035630557, 0.00038504798)
+                                float physics:mass = 0.29801372
+                                quatf physics:principalAxes = (0.5080777, 0.4896515, -0.5064389, 0.4955987)
+
+                                over "R6_Link"
+                                {
+                                    point3f physics:centerOfMass = (-0.004233628, 0.0043864767, -0.032482367)
+                                    float3 physics:diagonalInertia = (0.00010050318, 0.00019530405, 0.00023393061)
+                                    float physics:mass = 0.34432614
+                                    quatf physics:principalAxes = (-0.5148724, 0.53392565, 0.4661083, 0.48225808)
+
+                                    over "R7_Link"
+                                    {
+                                        point3f physics:centerOfMass = (0.0033066755, -0.0000011880932, -0.020243019)
+                                        float3 physics:diagonalInertia = (0.00004402057, 0.000054862656, 0.000069821755)
+                                        float physics:mass = 0.14331095
+                                        quatf physics:principalAxes = (-0.7066419, -0.0063797063, 0.7075135, -0.006409398)
+
+                                        over "R8_Link"
+                                        {
+                                            point3f physics:centerOfMass = (-1.0380818e-10, 5.3380855e-11, 0.0005)
+                                            float3 physics:diagonalInertia = (0.000004211875, 0.000004211875, 0.00000841875)
+                                            float physics:mass = 0.03
+                                            quatf physics:principalAxes = (5.3244033e-8, 1, 2.5842054e-8, -4.6033574e-7)
+
+                                            over "right_hand_base_link"
+                                            {
+                                                point3f physics:centerOfMass = (-0.012785202, -0.0021299853, 0.08632826)
+                                                float3 physics:diagonalInertia = (0.00068541593, 0.0013539025, 0.001875692)
+                                                float physics:mass = 0.66
+                                                quatf physics:principalAxes = (-0.65446585, 0.0072397795, 0.7560442, 0.0043799225)
+
+                                                over "right_hand_thumb_link0"
+                                                {
+                                                    point3f physics:centerOfMass = (0.01610383, 0.0035251437, -0.0024801327)
+                                                    float3 physics:diagonalInertia = (0.0000052098885, 0.000007854574, 0.000012033008)
+                                                    float physics:mass = 0.0336
+                                                    quatf physics:principalAxes = (0.7078115, 0.1793255, -0.66636115, -0.15102348)
+
+                                                    over "right_hand_thumb_link1"
+                                                    {
+                                                        point3f physics:centerOfMass = (0.00085670146, 0.009464773, 0.011415647)
+                                                        float3 physics:diagonalInertia = (0.0000014943481, 0.0000030929125, 0.000003895637)
+                                                        float physics:mass = 0.024
+                                                        quatf physics:principalAxes = (0.38861746, 0.67048335, 0.34773844, 0.52773714)
+
+                                                        over "right_hand_thumb_link2"
+                                                        {
+                                                            point3f physics:centerOfMass = (-0.010687801, 0.026983738, 0.0003279557)
+                                                            float3 physics:diagonalInertia = (0.0000041313997, 0.000013951588, 0.000016519663)
+                                                            float physics:mass = 0.0408
+                                                            quatf physics:principalAxes = (-0.5222118, -0.47667512, 0.531525, 0.4664299)
+
+                                                            over "right_hand_thumb_link3"
+                                                            {
+                                                                point3f physics:centerOfMass = (-0.009674801, 0.012871859, -0.00096340704)
+                                                                float3 physics:diagonalInertia = (0.0000010173828, 0.000002273769, 0.0000028882969)
+                                                                float physics:mass = 0.024
+                                                                quatf physics:principalAxes = (-0.40338445, -0.5749754, 0.41100994, 0.58116704)
+
+                                                                over "right_hand_thumb_link4"
+                                                                {
+                                                                    point3f physics:centerOfMass = (-0.007977593, 0.012095633, -0.00039449375)
+                                                                    float3 physics:diagonalInertia = (0.0000011624037, 0.0000020711186, 0.0000024486012)
+                                                                    float physics:mass = 0.033599
+                                                                    quatf physics:principalAxes = (0.6851789, -0.18193783, -0.17919827, -0.6821411)
+
+                                                                    over "right_hand_thumb_link5"
+                                                                    {
+                                                                        point3f physics:centerOfMass = (-0.0009999718, 0.0000075606513, 8.897041e-8)
+                                                                        float3 physics:diagonalInertia = (1.6902948e-13, 4.1930036e-13, 4.2200127e-13)
+                                                                        float physics:mass = 0.000001
+                                                                        quatf physics:principalAxes = (1, 0, 0, 0)
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "right_hand_index_link0"
+                                                {
+                                                    point3f physics:centerOfMass = (0.011195455, -0.0000024954525, 0.0022819105)
+                                                    float3 physics:diagonalInertia = (4.1399892e-7, 5.406693e-7, 7.221487e-7)
+                                                    float physics:mass = 0.0144
+                                                    quatf physics:principalAxes = (0.6823601, -0.1852117, -0.18587282, 0.6822995)
+
+                                                    over "right_hand_index_link1"
+                                                    {
+                                                        point3f physics:centerOfMass = (-0.0010523966, 0.00471408, 0.023160327)
+                                                        float3 physics:diagonalInertia = (8.696103e-7, 0.000004470043, 0.000004531358)
+                                                        float physics:mass = 0.0288
+                                                        quatf physics:principalAxes = (-0.49215117, 0.491581, 0.508439, 0.5075678)
+
+                                                        over "right_hand_index_link2"
+                                                        {
+                                                            point3f physics:centerOfMass = (-0.00020276153, 0.0037452006, 0.016835947)
+                                                            float3 physics:diagonalInertia = (8.73179e-7, 0.0000016445956, 0.00000214386)
+                                                            float physics:mass = 0.0216
+                                                            quatf physics:principalAxes = (0.00008370078, 0.7409724, -0.000015081273, -0.6715355)
+
+                                                            over "right_hand_index_link3"
+                                                            {
+                                                                point3f physics:centerOfMass = (-0.009229866, 0.00504642, 0.0103800595)
+                                                                float3 physics:diagonalInertia = (7.827761e-7, 0.000002122496, 0.0000023894904)
+                                                                float physics:mass = 0.031199
+                                                                quatf physics:principalAxes = (0.00028964644, 0.48804486, -0.00008869949, 0.8728185)
+
+                                                                over "right_hand_index_link4"
+                                                                {
+                                                                    point3f physics:centerOfMass = (3.6033452e-7, -0.001, -6.4630876e-7)
+                                                                    float3 physics:diagonalInertia = (1.6624068e-13, 4.164299e-13, 4.1647748e-13)
+                                                                    float physics:mass = 0.000001
+                                                                    quatf physics:principalAxes = (-0.70710677, 0, 0, 0.70710677)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "right_hand_middle_link0"
+                                                {
+                                                    point3f physics:centerOfMass = (0.011195455, -4.396667e-7, 0.002281912)
+                                                    float3 physics:diagonalInertia = (4.1399892e-7, 5.406693e-7, 7.221487e-7)
+                                                    float physics:mass = 0.0144
+                                                    quatf physics:principalAxes = (0.6822766, -0.18551905, -0.18556546, 0.6823832)
+
+                                                    over "right_hand_middle_link1"
+                                                    {
+                                                        point3f physics:centerOfMass = (-0.0010523633, 0.00471408, 0.02316033)
+                                                        float3 physics:diagonalInertia = (8.696103e-7, 0.000004470043, 0.000004531358)
+                                                        float physics:mass = 0.0288
+                                                        quatf physics:principalAxes = (-0.49215156, 0.49158135, 0.50843865, 0.50756747)
+
+                                                        over "right_hand_middle_link2"
+                                                        {
+                                                            point3f physics:centerOfMass = (-0.00020273728, 0.0037452006, 0.016835947)
+                                                            float3 physics:diagonalInertia = (8.73179e-7, 0.0000016445956, 0.00000214386)
+                                                            float physics:mass = 0.0216
+                                                            quatf physics:principalAxes = (0.00008370081, 0.74097186, -0.000015081227, -0.671536)
+
+                                                            over "right_hand_middle_link3"
+                                                            {
+                                                                point3f physics:centerOfMass = (-0.009229866, 0.00504642, 0.0103800595)
+                                                                float3 physics:diagonalInertia = (7.827761e-7, 0.000002122496, 0.0000023894904)
+                                                                float physics:mass = 0.031199
+                                                                quatf physics:principalAxes = (0.00028964644, 0.48804486, -0.00008869949, 0.8728185)
+
+                                                                over "right_hand_middle_link4"
+                                                                {
+                                                                    point3f physics:centerOfMass = (3.6036363e-7, -0.001, -6.467744e-7)
+                                                                    float3 physics:diagonalInertia = (1.6624087e-13, 4.1643024e-13, 4.1647764e-13)
+                                                                    float physics:mass = 0.000001
+                                                                    quatf physics:principalAxes = (-0.70710677, 0, 0, 0.70710677)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "right_hand_ring_link0"
+                                                {
+                                                    point3f physics:centerOfMass = (0.011195455, -4.396667e-7, 0.002281912)
+                                                    float3 physics:diagonalInertia = (4.1399892e-7, 5.406693e-7, 7.221487e-7)
+                                                    float physics:mass = 0.0144
+                                                    quatf physics:principalAxes = (0.6822766, -0.18551905, -0.18556546, 0.6823832)
+
+                                                    over "right_hand_ring_link1"
+                                                    {
+                                                        point3f physics:centerOfMass = (-0.0010523966, 0.00471408, 0.023160327)
+                                                        float3 physics:diagonalInertia = (8.6961035e-7, 0.000004470043, 0.000004531358)
+                                                        float physics:mass = 0.0288
+                                                        quatf physics:principalAxes = (-0.49215117, 0.491581, 0.508439, 0.5075678)
+
+                                                        over "right_hand_ring_link2"
+                                                        {
+                                                            point3f physics:centerOfMass = (-0.00020276153, 0.0037452006, 0.016835947)
+                                                            float3 physics:diagonalInertia = (8.73179e-7, 0.0000016445956, 0.00000214386)
+                                                            float physics:mass = 0.0216
+                                                            quatf physics:principalAxes = (0.00008370078, 0.7409724, -0.000015081268, -0.6715355)
+
+                                                            over "right_hand_ring_link3"
+                                                            {
+                                                                point3f physics:centerOfMass = (-0.009229851, 0.00504642, 0.0103800725)
+                                                                float3 physics:diagonalInertia = (7.827761e-7, 0.000002122496, 0.0000023894904)
+                                                                float physics:mass = 0.031199
+                                                                quatf physics:principalAxes = (0.0002896465, 0.48804548, -0.00008869928, 0.8728182)
+
+                                                                over "right_hand_ring_link4"
+                                                                {
+                                                                    point3f physics:centerOfMass = (3.6033452e-7, -0.001, -6.4630876e-7)
+                                                                    float3 physics:diagonalInertia = (1.6624068e-13, 4.164299e-13, 4.1647748e-13)
+                                                                    float physics:mass = 0.000001
+                                                                    quatf physics:principalAxes = (-0.70710677, 0, 0, 0.70710677)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                over "right_hand_little_link0"
+                                                {
+                                                    point3f physics:centerOfMass = (0.011195455, -0.0000024954525, 0.0022819105)
+                                                    float3 physics:diagonalInertia = (4.1399892e-7, 5.406693e-7, 7.221487e-7)
+                                                    float physics:mass = 0.0144
+                                                    quatf physics:principalAxes = (0.6823601, -0.1852117, -0.18587282, 0.6822995)
+
+                                                    over "right_hand_little_link1"
+                                                    {
+                                                        point3f physics:centerOfMass = (-0.0010523633, 0.00471408, 0.02316033)
+                                                        float3 physics:diagonalInertia = (8.696103e-7, 0.000004470043, 0.000004531358)
+                                                        float physics:mass = 0.0288
+                                                        quatf physics:principalAxes = (-0.49215156, 0.49158135, 0.50843865, 0.50756747)
+
+                                                        over "right_hand_little_link2"
+                                                        {
+                                                            point3f physics:centerOfMass = (-0.00020276153, 0.0037452006, 0.016835947)
+                                                            float3 physics:diagonalInertia = (8.73179e-7, 0.0000016445956, 0.00000214386)
+                                                            float physics:mass = 0.0216
+                                                            quatf physics:principalAxes = (0.000083700776, 0.7409724, -0.000015081265, -0.6715355)
+
+                                                            over "right_hand_little_link3"
+                                                            {
+                                                                point3f physics:centerOfMass = (-0.009229851, 0.00504642, 0.0103800725)
+                                                                float3 physics:diagonalInertia = (7.827761e-7, 0.000002122496, 0.0000023894904)
+                                                                float physics:mass = 0.031199
+                                                                quatf physics:principalAxes = (0.0002896465, 0.48804548, -0.00008869928, 0.8728182)
+
+                                                                over "right_hand_little_link4"
+                                                                {
+                                                                    point3f physics:centerOfMass = (3.6036363e-7, -0.001, -6.467744e-7)
+                                                                    float3 physics:diagonalInertia = (1.6624087e-13, 4.1643024e-13, 4.1647764e-13)
+                                                                    float physics:mass = 0.000001
+                                                                    quatf physics:principalAxes = (-0.70710677, 0, 0, 0.70710677)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    over "Physics"
+    {
+        over "L1_Joint"
+        {
+            float drive:angular:physics:damping = 0.6981317
+            float drive:angular:physics:maxForce = 80
+            float drive:angular:physics:stiffness = 10.471975
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -166.73071
+            float physics:upperLimit = 166.73071
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "L2_Joint"
+        {
+            float drive:angular:physics:damping = 0.6981317
+            float drive:angular:physics:maxForce = 80
+            float drive:angular:physics:stiffness = 10.471975
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -4.0107045
+            float physics:upperLimit = 183.3465
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "L3_Joint"
+        {
+            float drive:angular:physics:damping = 0.34906584
+            float drive:angular:physics:maxForce = 36
+            float drive:angular:physics:stiffness = 5.2359877
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -154.12564
+            float physics:upperLimit = 154.12564
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "L4_Joint"
+        {
+            float drive:angular:physics:damping = 0.34906584
+            float drive:angular:physics:maxForce = 36
+            float drive:angular:physics:stiffness = 5.2359877
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -117.456345
+            float physics:upperLimit = 117.456345
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "L5_Joint"
+        {
+            float drive:angular:physics:damping = 0.17453292
+            float drive:angular:physics:maxForce = 36
+            float drive:angular:physics:stiffness = 2.6179938
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -154.12564
+            float physics:upperLimit = 154.12564
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "L6_Joint"
+        {
+            float drive:angular:physics:damping = 0.10471976
+            float drive:angular:physics:maxForce = 18
+            float drive:angular:physics:stiffness = 1.3962634
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -91.10029
+            float physics:upperLimit = 91.10029
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "L7_Joint"
+        {
+            float drive:angular:physics:damping = 0.08726646
+            float drive:angular:physics:maxForce = 18
+            float drive:angular:physics:stiffness = 1.0471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -91.10029
+            float physics:upperLimit = 91.10029
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "R1_Joint"
+        {
+            float drive:angular:physics:damping = 0.6981317
+            float drive:angular:physics:maxForce = 80
+            float drive:angular:physics:stiffness = 10.471975
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -166.73071
+            float physics:upperLimit = 166.73071
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "R2_Joint"
+        {
+            float drive:angular:physics:damping = 0.6981317
+            float drive:angular:physics:maxForce = 80
+            float drive:angular:physics:stiffness = 10.471975
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -183.3465
+            float physics:upperLimit = 4.0107045
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "R3_Joint"
+        {
+            float drive:angular:physics:damping = 0.34906584
+            float drive:angular:physics:maxForce = 36
+            float drive:angular:physics:stiffness = 5.2359877
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -154.12564
+            float physics:upperLimit = 154.12564
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "R4_Joint"
+        {
+            float drive:angular:physics:damping = 0.34906584
+            float drive:angular:physics:maxForce = 36
+            float drive:angular:physics:stiffness = 5.2359877
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -117.456345
+            float physics:upperLimit = 117.456345
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "R5_Joint"
+        {
+            float drive:angular:physics:damping = 0.17453292
+            float drive:angular:physics:maxForce = 36
+            float drive:angular:physics:stiffness = 2.6179938
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -154.12564
+            float physics:upperLimit = 154.12564
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "R6_Joint"
+        {
+            float drive:angular:physics:damping = 0.10471976
+            float drive:angular:physics:maxForce = 18
+            float drive:angular:physics:stiffness = 1.3962634
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -91.10029
+            float physics:upperLimit = 91.10029
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "R7_Joint"
+        {
+            float drive:angular:physics:damping = 0.08726646
+            float drive:angular:physics:maxForce = 18
+            float drive:angular:physics:stiffness = 1.0471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -91.10029
+            float physics:upperLimit = 91.10029
+            float physxJoint:armature = 0.01
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 85.94367
+        }
+
+        over "right_hand_thumb_joint0"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.25
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -28.074932
+            float physics:upperLimit = 60.16057
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_thumb_joint1"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.25
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -83.07888
+            float physics:upperLimit = 0
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_thumb_joint2"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.4
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 48.128456
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_thumb_joint3"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.3
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 69.16788
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 49.03693
+        }
+
+        over "right_hand_thumb_joint4"
+        {
+            float drive:angular:physics:damping = 0
+            float drive:angular:physics:maxForce = 0
+            float drive:angular:physics:stiffness = 0
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 76.776344
+            float physxJoint:armature = 0
+            float physxJoint:jointFriction = 0.002
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_index_joint0"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.15
+            float drive:angular:physics:stiffness = 0.06981317
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -14.896903
+            float physics:upperLimit = 14.896903
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_index_joint1"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.6
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 95.11099
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_index_joint2"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.35
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 77.92226
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_index_joint3"
+        {
+            float drive:angular:physics:damping = 0
+            float drive:angular:physics:maxForce = 0
+            float drive:angular:physics:stiffness = 0
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 84.79775
+            float physxJoint:armature = 0
+            float physxJoint:jointFriction = 0.002
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_middle_joint0"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.15
+            float drive:angular:physics:stiffness = 0.06981317
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -14.896903
+            float physics:upperLimit = 14.896903
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_middle_joint1"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.6
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 95.11099
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_middle_joint2"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.35
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 77.92226
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_middle_joint3"
+        {
+            float drive:angular:physics:damping = 0
+            float drive:angular:physics:maxForce = 0
+            float drive:angular:physics:stiffness = 0
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 84.79775
+            float physxJoint:armature = 0
+            float physxJoint:jointFriction = 0.002
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_ring_joint0"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.15
+            float drive:angular:physics:stiffness = 0.06981317
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -14.896903
+            float physics:upperLimit = 14.896903
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_ring_joint1"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.6
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 95.11099
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_ring_joint2"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.35
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 77.92226
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_ring_joint3"
+        {
+            float drive:angular:physics:damping = 0
+            float drive:angular:physics:maxForce = 0
+            float drive:angular:physics:stiffness = 0
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 84.79775
+            float physxJoint:armature = 0
+            float physxJoint:jointFriction = 0.002
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_little_joint0"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.15
+            float drive:angular:physics:stiffness = 0.06981317
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -14.896903
+            float physics:upperLimit = 14.896903
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_little_joint1"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.6
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 95.11099
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_little_joint2"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.35
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 77.92226
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "right_hand_little_joint3"
+        {
+            float drive:angular:physics:damping = 0
+            float drive:angular:physics:maxForce = 0
+            float drive:angular:physics:stiffness = 0
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 84.79775
+            float physxJoint:armature = 0
+            float physxJoint:jointFriction = 0.002
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_thumb_joint0"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.25
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -60.16057
+            float physics:upperLimit = 28.074932
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_thumb_joint1"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.25
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 83.07888
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_thumb_joint2"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.4
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 48.128456
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_thumb_joint3"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.3
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 69.16788
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 49.03693
+        }
+
+        over "left_hand_thumb_joint4" (
+            prepend apiSchemas = ["PhysxMimicJointAPI:rotX"]
+        )
+        {
+            float drive:angular:physics:damping = 0
+            float drive:angular:physics:maxForce = 0
+            float drive:angular:physics:stiffness = 0
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 76.776344
+            float physxJoint:armature = 0
+            float physxJoint:jointFriction = 0.002
+            float physxJoint:maxJointVelocity = 57.29578
+            float physxMimicJoint:rotX:dampingRatio = 1.2
+            float physxMimicJoint:rotX:gearing = -1.11
+            float physxMimicJoint:rotX:naturalFrequency = 150
+            float physxMimicJoint:rotX:offset = -0
+            rel physxMimicJoint:rotX:referenceJoint = </linkbot_bimanual_sdk/Physics/left_hand_thumb_joint3>
+            token physxMimicJoint:rotX:referenceJointAxis = "rotX"
+        }
+
+        over "left_hand_index_joint0"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.15
+            float drive:angular:physics:stiffness = 0.06981317
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -14.896903
+            float physics:upperLimit = 14.896903
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_index_joint1"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.6
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 95.11099
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_index_joint2"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.35
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 77.92226
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_index_joint3" (
+            prepend apiSchemas = ["PhysxMimicJointAPI:rotY"]
+        )
+        {
+            float drive:angular:physics:damping = 0
+            float drive:angular:physics:maxForce = 0
+            float drive:angular:physics:stiffness = 0
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 84.79775
+            float physxJoint:armature = 0
+            float physxJoint:jointFriction = 0.002
+            float physxJoint:maxJointVelocity = 57.29578
+            float physxMimicJoint:rotY:dampingRatio = 1.2
+            float physxMimicJoint:rotY:gearing = -0.94
+            float physxMimicJoint:rotY:naturalFrequency = 150
+            float physxMimicJoint:rotY:offset = -0
+            rel physxMimicJoint:rotY:referenceJoint = </linkbot_bimanual_sdk/Physics/left_hand_index_joint2>
+            token physxMimicJoint:rotY:referenceJointAxis = "rotY"
+        }
+
+        over "left_hand_middle_joint0"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.15
+            float drive:angular:physics:stiffness = 0.06981317
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -14.896903
+            float physics:upperLimit = 14.896903
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_middle_joint1"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.6
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 95.11099
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_middle_joint2"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.35
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 77.92226
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_middle_joint3" (
+            prepend apiSchemas = ["PhysxMimicJointAPI:rotY"]
+        )
+        {
+            float drive:angular:physics:damping = 0
+            float drive:angular:physics:maxForce = 0
+            float drive:angular:physics:stiffness = 0
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 84.79775
+            float physxJoint:armature = 0
+            float physxJoint:jointFriction = 0.002
+            float physxJoint:maxJointVelocity = 57.29578
+            float physxMimicJoint:rotY:dampingRatio = 1.2
+            float physxMimicJoint:rotY:gearing = -0.94
+            float physxMimicJoint:rotY:naturalFrequency = 150
+            float physxMimicJoint:rotY:offset = -0
+            rel physxMimicJoint:rotY:referenceJoint = </linkbot_bimanual_sdk/Physics/left_hand_middle_joint2>
+            token physxMimicJoint:rotY:referenceJointAxis = "rotY"
+        }
+
+        over "left_hand_ring_joint0"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.15
+            float drive:angular:physics:stiffness = 0.06981317
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -14.896903
+            float physics:upperLimit = 14.896903
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_ring_joint1"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.6
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 95.11099
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_ring_joint2"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.35
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 77.92226
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_ring_joint3" (
+            prepend apiSchemas = ["PhysxMimicJointAPI:rotY"]
+        )
+        {
+            float drive:angular:physics:damping = 0
+            float drive:angular:physics:maxForce = 0
+            float drive:angular:physics:stiffness = 0
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 84.79775
+            float physxJoint:armature = 0
+            float physxJoint:jointFriction = 0.002
+            float physxJoint:maxJointVelocity = 57.29578
+            float physxMimicJoint:rotY:dampingRatio = 1.2
+            float physxMimicJoint:rotY:gearing = -0.94
+            float physxMimicJoint:rotY:naturalFrequency = 150
+            float physxMimicJoint:rotY:offset = -0
+            rel physxMimicJoint:rotY:referenceJoint = </linkbot_bimanual_sdk/Physics/left_hand_ring_joint2>
+            token physxMimicJoint:rotY:referenceJointAxis = "rotY"
+        }
+
+        over "left_hand_little_joint0"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.15
+            float drive:angular:physics:stiffness = 0.06981317
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = -14.896903
+            float physics:upperLimit = 14.896903
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_little_joint1"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.6
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 95.11099
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_little_joint2"
+        {
+            float drive:angular:physics:damping = 0.002094395
+            float drive:angular:physics:maxForce = 0.35
+            float drive:angular:physics:stiffness = 0.10471976
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 77.92226
+            float physxJoint:armature = 0.0002
+            float physxJoint:jointFriction = 0.02
+            float physxJoint:maxJointVelocity = 57.29578
+        }
+
+        over "left_hand_little_joint3" (
+            prepend apiSchemas = ["PhysxMimicJointAPI:rotY"]
+        )
+        {
+            float drive:angular:physics:damping = 0
+            float drive:angular:physics:maxForce = 0
+            float drive:angular:physics:stiffness = 0
+            uniform token drive:angular:physics:type = "force"
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 84.79775
+            float physxJoint:armature = 0
+            float physxJoint:jointFriction = 0.002
+            float physxJoint:maxJointVelocity = 57.29578
+            float physxMimicJoint:rotY:dampingRatio = 1.2
+            float physxMimicJoint:rotY:gearing = -0.94
+            float physxMimicJoint:rotY:naturalFrequency = 150
+            float physxMimicJoint:rotY:offset = -0
+            rel physxMimicJoint:rotY:referenceJoint = </linkbot_bimanual_sdk/Physics/left_hand_little_joint2>
+            token physxMimicJoint:rotY:referenceJointAxis = "rotY"
+        }
+    }
+}
+
