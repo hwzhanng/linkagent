@@ -61,6 +61,9 @@ def main() -> None:
             f"tip_bodies={len(impl._fingertip_contact_body_ids)}",
             flush=True,
         )
+        print("hand_joint_names", list(impl._hand_joint_names), flush=True)
+        print("hand_joint_ids", list(impl._hand_joint_ids), flush=True)
+        print("tip_contact_names", [impl._robot.body_names[i] for i in impl._fingertip_contact_body_ids], flush=True)
     finally:
         env.close()
 

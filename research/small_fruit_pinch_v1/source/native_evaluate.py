@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import time
 from pathlib import Path
 
@@ -20,14 +21,58 @@ def _p95(samples: list[torch.Tensor]) -> float:
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--checkpoint", type=Path, required=True)
+parser.add_argument("--run-manifest", type=Path, default=None)
+parser.add_argument("--support-mode", choices=("audit_release", "natural_detachment"), default="audit_release")
+parser.add_argument("--diagnostic-only", action="store_true")
+parser.add_argument("--pregrasp-distance-mm", type=float, default=None,
+                    help="诊断回放覆盖掌前预置距离；0 表示果心直接置于闭合中心")
 parser.add_argument("--num-envs", type=int, default=64)
 parser.add_argument("--episodes", type=int, default=512)
 parser.add_argument("--seed", type=int, default=20260902)
 parser.add_argument("--fruit-axis-min-mm", type=float, default=None)
 parser.add_argument("--fruit-axis-max-mm", type=float, default=None)
+parser.add_argument(
+    "--diameter-bins-mm",
+    default=None,
+    help="按等效直径分桶，格式如 62:64,64:66；与 fruit-axis-* 互斥。",
+)
+parser.add_argument(
+    "--diameter-bin-weights",
+    default=None,
+    help="分桶环境配额权重；省略时等权。",
+)
+parser.add_argument(
+    "--geometry-cohort-id",
+    default="default",
+    help="与 seed 共同确定 prestartup 独立几何 cohort 的稳定标识。",
+)
+parser.add_argument(
+    "--first-episode-evidence-json",
+    type=Path,
+    default=None,
+    help="保存每个环境首个完整回合及逐桶汇总；用于独立几何证据。",
+)
 parser.add_argument("--offset-x-mm", type=float, default=None)
 parser.add_argument("--offset-y-mm", type=float, default=None)
 parser.add_argument("--offset-z-mm", type=float, default=None)
+parser.add_argument(
+    "--center-local-mm",
+    nargs=3,
+    type=float,
+    default=None,
+    metavar=("X", "Y", "Z"),
+    help="覆盖左手抓取基坐标中的固定果心（mm）；必须与训练时的几何候选一致。",
+)
+parser.add_argument(
+    "--palm-fruit-collision-filter",
+    action="store_true",
+    help="诊断模式：仅过滤 base_link↔Tomato 碰撞并忽略其粗糙 AABB；不用于最终发布。",
+)
+parser.add_argument(
+    "--geometric-contact-proxy", action="store_true",
+    help="仅离线实验：启用指尖距离接触代理；评估日志仍区分原始 PhysX 力。",
+)
+parser.add_argument("--geometric-contact-proxy-band-mm", type=float, default=None)
 parser.add_argument(
     "--guided-residual",
     action="store_true",
@@ -50,6 +95,11 @@ parser.add_argument(
     "--geometry-prior-values",
     default=None,
     help="覆盖训练时的 14D 几何先验向量；格式为 14 个逗号分隔值。",
+)
+parser.add_argument(
+    "--guide-action-values",
+    default=None,
+    help="guided-residual 训练时使用的 14D 工作区弱先验；格式为 14 个逗号分隔值。",
 )
 parser.add_argument(
     "--geometry-prior-after-contact",
@@ -291,7 +341,7 @@ parser.add_argument(
 parser.add_argument(
     "--hand-only-view",
     action="store_true",
-    help="仅显示左手和果实；完整臂手资产仍保留用于物理计算，但机械臂/右手仅在视图中隐藏。",
+    help="为独立左手 USD 启用 GUI 并把相机聚焦到左手和果实；场景中本来就不存在机械臂或右手。",
 )
 parser.add_argument(
     "--visualization-delay-ms",
@@ -301,6 +351,8 @@ parser.add_argument(
 )
 AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
+if (args.geometric_contact_proxy or args.palm_fruit_collision_filter) and not args.diagnostic_only:
+    parser.error("正式评估禁止几何接触代理和掌部碰撞过滤；诊断需显式 --diagnostic-only")
 app = AppLauncher(args).app
 
 import importlib.metadata as metadata
@@ -316,44 +368,21 @@ from research.small_fruit_pinch_v1.source.native_env import (
     NativeSmallFruitPinchCfg,
     NativeSmallFruitPinchEnv,
 )
+from research.small_fruit_pinch_v1.source.size_evidence import (
+    TERMINATION_LABELS,
+    sha256_file,
+    sha256_json,
+    summarize_first_episode_rows,
+)
 
 
 def _configure_left_hand_only_view(env) -> None:
-    """在不改变 PhysX 的前提下隐藏非左手几何并聚焦左手--果实。"""
+    """聚焦独立左手与果实；不改变 PhysX 或 USD 可见性。"""
 
-    # Visibility 是 USD 的显示属性，不会禁用刚体、碰撞形状、传感器或
-    # 关节驱动；因此这里不会改变已验收权重的动力学合同。
-    from pxr import UsdGeom
-    import omni.usd
-
-    stage = omni.usd.get_context().get_stage()
-    hidden_count = 0
-    for env_id in range(int(env.num_envs)):
-        robot_root = f"/World/envs/env_{env_id}/Robot/Geometry/base_link"
-        root_prim = stage.GetPrimAtPath(robot_root)
-        if not root_prim.IsValid():
-            continue
-        for prim in stage.Traverse():
-            path = str(prim.GetPath())
-            if not path.startswith(robot_root + "/"):
-                continue
-            parts = path.split("/")
-            # 右臂从 R1_Link 开始包含右手，整条分支在视图中隐藏。
-            if any(part == "R1_Link" for part in parts):
-                if prim.IsA(UsdGeom.Imageable):
-                    UsdGeom.Imageable(prim).GetVisibilityAttr().Set(UsdGeom.Tokens.invisible)
-                    hidden_count += 1
-                continue
-            # 左手挂在 L8_Link 下；只隐藏左臂和中央基座的实际渲染网格，
-            # 保留 left_hand_base_link 及其所有子树可见。
-            if "left_hand_base_link" in parts:
-                continue
-            if prim.IsA(UsdGeom.Mesh):
-                UsdGeom.Imageable(prim).GetVisibilityAttr().Set(UsdGeom.Tokens.invisible)
-                hidden_count += 1
-
-    # 父环境的构造函数先用默认右手帧设置过一次相机；此处在子类完成左手
-    # 映射后重新聚焦，避免画面落到隐藏的右侧或世界级远景。
+    # NativeSmallFruitPinchEnv 已在启动时对唯一左手 articulation 做严格
+    # allowlist 校验。这里不再沿用旧双臂资产的“隐藏网格”方案：隐藏不是
+    # 删除，容易让人误把参与物理的臂/右手当成不存在。当前场景本来就只
+    # 有独立左手，因此可视化入口只负责相机，不触碰任何 prim 的可见性。
     try:
         ee = env._robot.data.body_pos_w.torch[0, env._ee_body_id]
         fruit = env._tomato.data.root_pos_w.torch[0]
@@ -365,7 +394,10 @@ def _configure_left_hand_only_view(env) -> None:
         )
     except Exception as exc:  # pragma: no cover - only protects optional GUI setup
         print(f"[visualization] 左手相机聚焦失败，保留默认相机: {exc}", flush=True)
-    print(f"[visualization] hand-only view enabled; hidden imageables={hidden_count}", flush=True)
+    print(
+        "[visualization] isolated-left-hand view enabled; hidden imageables=0",
+        flush=True,
+    )
 
 
 def main() -> None:
@@ -380,6 +412,14 @@ def main() -> None:
     cfg.scene.num_envs = args.num_envs
     cfg.sim.device = args.device
     cfg.seed = args.seed
+    cfg.verification_release_support = args.support_mode == "audit_release"
+    if args.pregrasp_distance_mm is not None:
+        if args.pregrasp_distance_mm < 0.0:
+            raise ValueError("pregrasp-distance-mm 不能为负数")
+        distance = args.pregrasp_distance_mm / 1000.0
+        cfg.pregrasp_distance_range_m = (distance, distance)
+        cfg.pregrasp_lateral_offset_range_m = (0.0, 0.001)
+        cfg.pregrasp_axial_noise_m = 0.0
     if args.explicit_hand_pd:
         # 只替换手部两组执行器，手臂仍保留隐式重力补偿驱动。显式 PD
         # 将位置/速度误差在每个物理子步转换为有界力矩，便于保持段
@@ -458,6 +498,15 @@ def main() -> None:
             cfg.robot.actuators[actuator_name].velocity_limit_sim = args.hand_velocity_limit
     if (args.fruit_axis_min_mm is None) != (args.fruit_axis_max_mm is None):
         raise ValueError("fruit-axis-min-mm 与 fruit-axis-max-mm 必须同时提供")
+    if args.diameter_bins_mm is not None and args.fruit_axis_min_mm is not None:
+        raise ValueError("diameter-bins-mm 与 fruit-axis-min/max-mm 互斥")
+    if args.diameter_bin_weights is not None and args.diameter_bins_mm is None:
+        raise ValueError("diameter-bin-weights 必须与 diameter-bins-mm 一起提供")
+    if args.first_episode_evidence_json is not None:
+        if args.diameter_bins_mm is None:
+            raise ValueError("first-episode-evidence-json 必须与 diameter-bins-mm 一起提供")
+        if not args.guided_residual:
+            raise ValueError("首回合终止快照目前要求 guided-residual 评估合同")
     if args.fruit_axis_min_mm is not None:
         if not (0.0 < args.fruit_axis_min_mm <= args.fruit_axis_max_mm):
             raise ValueError("果径半轴范围必须为正且 min <= max")
@@ -469,11 +518,43 @@ def main() -> None:
             "y": (axis_min_m, axis_max_m),
             "z": (axis_min_m, axis_max_m),
         }
+    parsed_bins_mm = None
+    if args.diameter_bins_mm is not None:
+        from simulation.tomato_pick.isaac.geometry_sampling import (
+            parse_bin_weights,
+            parse_diameter_bins_mm,
+        )
+
+        parsed_bins_mm = parse_diameter_bins_mm(args.diameter_bins_mm)
+        weights = parse_bin_weights(args.diameter_bin_weights, len(parsed_bins_mm))
+        cfg.events.fruit_geometry.params.update(
+            {
+                "diameter_bins_m": tuple(
+                    (low / 1000.0, high / 1000.0)
+                    for low, high in parsed_bins_mm
+                ),
+                "diameter_bin_weights": weights,
+                "geometry_seed": int(args.seed),
+                "geometry_cohort_id": str(args.geometry_cohort_id),
+            }
+        )
     offset_args = (args.offset_x_mm, args.offset_y_mm, args.offset_z_mm)
     if any(value is not None for value in offset_args):
         if not all(value is not None for value in offset_args):
             raise ValueError("offset-x/y/z-mm 必须同时提供")
         cfg.pinch_working_offset_m = tuple(value / 1000.0 for value in offset_args)
+    if args.center_local_mm is not None:
+        cfg.closed_grasp_fruit_center_m = tuple(
+            value / 1000.0 for value in args.center_local_mm
+        )
+    cfg.palm_fruit_collision_filter_enabled = bool(
+        args.palm_fruit_collision_filter
+    )
+    cfg.geometric_contact_proxy_enabled = bool(args.geometric_contact_proxy)
+    if args.geometric_contact_proxy_band_mm is not None:
+        if args.geometric_contact_proxy_band_mm <= 0.0:
+            raise ValueError("geometric-contact-proxy-band-mm 必须为正数")
+        cfg.geometric_contact_proxy_band_m = args.geometric_contact_proxy_band_mm / 1000.0
     agent_cfg = SmallFruitPinchPPORunnerCfg()
     agent_cfg.logger = "tensorboard"
     agent_cfg.device = args.device
@@ -492,6 +573,14 @@ def main() -> None:
         )
 
         env_cls = GuidedResidualSmallFruitPinchEnv
+        if args.guide_action_values is not None:
+            try:
+                values = tuple(float(value.strip()) for value in args.guide_action_values.split(","))
+            except ValueError as exc:
+                raise ValueError("guide-action-values 必须是 14 个浮点数") from exc
+            if len(values) != 14 or any(abs(value) > 1.0 for value in values):
+                raise ValueError("guide-action-values 必须包含 14 个 [-1, 1] 值")
+            env_cls.guide_action_values = values
         env_cls.geometry_prior_enabled = args.geometry_prior
         env_cls.geometry_prior_size_adaptive = args.geometry_prior_size_adaptive
         if args.geometry_prior_max_scale is not None:
@@ -868,18 +957,43 @@ def main() -> None:
             env_cls.distal_residual_scale = args.distal_residual_scale
         if args.precontact_residual_fraction is not None:
             env_cls.precontact_residual_fraction = args.precontact_residual_fraction
-    # hand-only 是可视化选项：render_mode 让原生环境建立 GUI 相机，真正的
-    # 左手聚焦和非左手隐藏在环境完成左手命名空间映射后执行。
+    # hand-only 只开启 GUI 和左手聚焦；物理场景本身已经是独立左手 USD，
+    # 不依赖“隐藏机械臂/右手”制造视觉上的单手假象。
     env = env_cls(cfg=cfg, render_mode="human" if args.hand_only_view else None)
+    if args.first_episode_evidence_json is not None and not hasattr(
+        env, "_last_terminal_reason"
+    ):
+        raise RuntimeError("所选环境没有终止快照，不能生成首回合独立几何证据")
     if args.hand_only_view:
         _configure_left_hand_only_view(env)
     wrapped = RslRlVecEnvWrapper(env, clip_actions=agent_cfg.clip_actions)
     try:
+        from research.small_fruit_pinch_v1.source.native_run_manifest import freeze_native_run
+
+        manifest_path, manifest_sha256 = freeze_native_run(env, agent_cfg, args)
         runner = OnPolicyRunner(wrapped, agent_cfg.to_dict(), log_dir=None, device=agent_cfg.device)
         runner.load(str(args.checkpoint), map_location=args.device)
         policy = runner.get_inference_policy(device=args.device)
         obs = wrapped.get_observations()
-        events = {"episodes": 0, "success": 0, "drop": 0, "overload": 0, "self_collision": 0}
+        events = {
+            "episodes": 0,
+            "success": 0,
+            "drop": 0,
+            "overload": 0,
+            "self_collision": 0,
+            "forbidden_first_contact": 0,
+            "contact_acquired": 0,
+            "support_retained": 0,
+            "harvest_success": 0,
+            "support_removed": 0,
+            "disturbance_applied": 0,
+        }
+        episode_records = []
+        evidence_enabled = args.first_episode_evidence_json is not None
+        first_episode_pending = torch.ones(
+            env.num_envs, dtype=torch.bool, device=env.device
+        )
+        first_episode_rows: list[dict[str, object]] = []
         palm_sum = 0.0
         steps = 0
         # P3 平滑性证据：收集执行动作和实际关节状态，而不是只读取
@@ -971,7 +1085,9 @@ def main() -> None:
                 hold_episode_step[done_ids] = 0
                 episode_peak_force[done_ids] = 0.0
 
-        while events["episodes"] < args.episodes:
+        while events["episodes"] < args.episodes or (
+            evidence_enabled and bool(first_episode_pending.any())
+        ):
             with torch.inference_mode():
                 action = policy(obs)
             obs, _, dones, extras = wrapped.step(action)
@@ -980,7 +1096,12 @@ def main() -> None:
             events["drop"] += int(step.get("drop_count", 0))
             events["overload"] += int(step.get("overload_count", 0))
             events["self_collision"] += int(step.get("self_collision_count", 0))
+            events["forbidden_first_contact"] += int(
+                step.get("forbidden_first_contact_count", 0)
+            )
             events["episodes"] += int(dones.sum().item())
+            for name in ("contact_acquired", "support_retained", "harvest_success", "support_removed", "disturbance_applied"):
+                events[name] += int(step.get(f"{name}_count", 0))
             palm_sum += float(env._last_palm_force_n.mean().item())
             steps += 1
             temporal = getattr(env, "_filter", None)
@@ -991,6 +1112,63 @@ def main() -> None:
             current_joint_target = env._joint_targets[:, hand_ids]
             current_target_velocity = (current_joint_target - previous_joint_target) / step_dt_s
             done_mask = dones.to(dtype=torch.bool)
+            for env_id in torch.nonzero(done_mask, as_tuple=False).flatten().tolist():
+                episode_records.append({
+                    "env_id": env_id,
+                    "scenario_id": env._geometry_scenario_ids[env_id],
+                    **{name: bool(value[env_id].item()) for name, value in env._audit_terminal.items()},
+                    "support_hold_steps": int(env._audit_terminal_support_steps[env_id].item()),
+                    "disturbance_impulse_ns": env._audit_terminal_impulse_ns[env_id].tolist(),
+                })
+            if evidence_enabled:
+                first_done = done_mask & first_episode_pending
+                first_done_ids = torch.nonzero(first_done, as_tuple=False).flatten()
+                for env_id in first_done_ids.tolist():
+                    reason_code = int(env._last_terminal_reason[env_id].item())
+                    if reason_code not in TERMINATION_LABELS:
+                        raise RuntimeError(f"未知终止原因编码: {reason_code}")
+                    axes_m = env._last_terminal_axes_m[env_id]
+                    forces_n = env._last_terminal_force_n[env_id]
+                    first_episode_rows.append(
+                        {
+                            "scenario_id": env._geometry_scenario_ids[env_id],
+                            "seed": int(args.seed),
+                            "cohort_id": env._geometry_cohort_id,
+                            "env_id": env_id,
+                            "bin_index": int(
+                                env._fruit_diameter_bin_index[env_id].item()
+                            ),
+                            "equivalent_diameter_mm": float(
+                                env._fruit_equivalent_diameter_m[env_id].item()
+                                * 1000.0
+                            ),
+                            "axes_mm": [
+                                float(value * 1000.0) for value in axes_m.tolist()
+                            ],
+                            "density_kg_m3": float(
+                                env._fruit_density_kg_m3[env_id].item()
+                            ),
+                            "mass_kg": float(env._fruit_mass_kg[env_id].item()),
+                            "termination_reason_code": reason_code,
+                            "termination_reason": TERMINATION_LABELS[reason_code],
+                            "hold_age_steps": int(
+                                env._last_terminal_hold_age[env_id].item()
+                            ),
+                            "contact_ratio": float(
+                                env._last_terminal_contact_ratio[env_id].item()
+                            ),
+                            "force_band_ratio": float(
+                                env._last_terminal_band_ratio[env_id].item()
+                            ),
+                            "terminal_force_n": [float(value) for value in forces_n.tolist()],
+                            "verification": {
+                                name: bool(value[env_id].item()) for name, value in env._audit_terminal.items()
+                            },
+                            "support_hold_steps": int(env._audit_terminal_support_steps[env_id].item()),
+                            "disturbance_impulse_ns": env._audit_terminal_impulse_ns[env_id].tolist(),
+                        }
+                    )
+                first_episode_pending[first_done_ids] = False
             valid_mask = ~done_mask
             current_joint_acceleration = (current_joint_velocity - previous_joint_velocity) / step_dt_s
             current_joint_jerk = (current_joint_acceleration - previous_joint_acceleration) / step_dt_s
@@ -1076,6 +1254,15 @@ def main() -> None:
                 # 接近、接触和保持，而不会改变仿真的物理时间步。
                 time.sleep(args.visualization_delay_ms / 1000.0)
         total = max(events["episodes"], 1)
+        with manifest_path.with_name("evaluation.json").open("x", encoding="utf-8") as stream:
+            json.dump({
+                "run_manifest_sha256": manifest_sha256,
+                "support_mode": args.support_mode,
+                "diagnostic_only": args.diagnostic_only,
+                "strict_success_meaning": "support_retention",
+                "events": events,
+                "episodes": episode_records,
+            }, stream, ensure_ascii=False, indent=2, allow_nan=False)
         duration_s = max(valid_joint_steps * step_dt_s, step_dt_s)
         reversal_rate = reversal_count / max(duration_s * len(hand_ids), 1.0)
         hold_duration_s = max(hold_valid_joint_steps * step_dt_s, step_dt_s)
@@ -1087,6 +1274,76 @@ def main() -> None:
         mean_hold_high_frequency_energy = hold_high_frequency_energy_sum / max(
             hold_high_frequency_energy_count, 1
         )
+        if evidence_enabled:
+            if len(first_episode_rows) != env.num_envs or bool(first_episode_pending.any()):
+                raise RuntimeError(
+                    "首回合证据不完整: "
+                    f"expected={env.num_envs} actual={len(first_episode_rows)}"
+                )
+            scenario_ids = [str(row["scenario_id"]) for row in first_episode_rows]
+            if len(set(scenario_ids)) != env.num_envs:
+                raise RuntimeError("首回合证据中的 scenario_id 不唯一")
+            requested_bins = tuple(parsed_bins_mm or ())
+            summaries = summarize_first_episode_rows(
+                first_episode_rows, requested_bins
+            )
+            expected_quotas = getattr(
+                env, "_prestartup_fruit_diameter_bin_quotas", torch.empty(0)
+            ).detach().cpu().tolist()
+            actual_quotas = [
+                int(summary["first_episode_count"]) for summary in summaries
+            ]
+            if expected_quotas and actual_quotas != expected_quotas:
+                raise RuntimeError(
+                    "首回合分桶数量与 prestartup 配额不一致: "
+                    f"expected={expected_quotas} actual={actual_quotas}"
+                )
+
+            def _package_version(name: str) -> str | None:
+                try:
+                    return metadata.version(name)
+                except metadata.PackageNotFoundError:
+                    return None
+
+            artifact = {
+                "schema": "small_fruit_pinch_v1.first_episode_size_evidence.v1",
+                "run_manifest_sha256": manifest_sha256,
+                "checkpoint": {
+                    "path": str(args.checkpoint.resolve()),
+                    "sha256": sha256_file(args.checkpoint),
+                },
+                "geometry": {
+                    "seed": int(args.seed),
+                    "cohort_id": str(args.geometry_cohort_id),
+                    "diameter_bins_mm": [list(pair) for pair in requested_bins],
+                    "requested_weights": list(weights),
+                    "expected_quotas": expected_quotas,
+                    "scenario_list_sha256": sha256_json(scenario_ids),
+                },
+                "runtime": {
+                    "torch": torch.__version__,
+                    "cuda": torch.version.cuda,
+                    "isaaclab": _package_version("isaaclab"),
+                    "isaacsim": _package_version("isaacsim"),
+                },
+                "aggregate_all_episodes": dict(events),
+                "per_bin_first_episode": summaries,
+                "first_episode_rows": sorted(
+                    first_episode_rows, key=lambda row: int(row["env_id"])
+                ),
+            }
+            args.first_episode_evidence_json.parent.mkdir(parents=True, exist_ok=True)
+            args.first_episode_evidence_json.write_text(
+                json.dumps(artifact, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            print(
+                "first_episode_evidence "
+                f"path={args.first_episode_evidence_json} "
+                f"rows={len(first_episode_rows)} "
+                f"scenario_list_sha256={artifact['geometry']['scenario_list_sha256']}",
+                flush=True,
+            )
         per_joint_suffix = ""
         if args.per_joint_metrics and hold_joint_velocity_by_joint:
             velocity_by_joint = torch.cat(hold_joint_velocity_by_joint, dim=0)
@@ -1108,9 +1365,13 @@ def main() -> None:
             "native_evaluate "
             f"checkpoint={args.checkpoint} episodes={events['episodes']} "
             f"strict_success_rate={events['success'] / total:.4f} "
+            f"contact_acquisition_rate={events['contact_acquired'] / total:.4f} "
+            f"support_retention_rate={events['support_retained'] / total:.4f} "
+            f"harvest_success_rate={events['harvest_success'] / total:.4f} "
             f"drop_rate={events['drop'] / total:.4f} "
             f"overload_rate={events['overload'] / total:.4f} "
             f"self_collision_rate={events['self_collision'] / total:.4f} "
+            f"forbidden_first_contact_rate={events['forbidden_first_contact'] / total:.4f} "
             f"mean_palm_force_n={palm_sum / max(steps, 1):.6f} "
             f"mean_peak_force_n={mean_peak_force:.6f} "
             f"max_peak_force_n={peak_force_max:.6f} "

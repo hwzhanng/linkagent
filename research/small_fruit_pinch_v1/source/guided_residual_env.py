@@ -42,12 +42,35 @@ P1_GUIDE_ACTION = (
     0.0,
 )
 
+# 由孤立左手 FK/PhysX 扫描得到的 B0 工作区弱先验。它只定义一个可行的
+# 初始闭合方向；PPO residual、触觉门控和后续扰动仍然可以改变目标，因而
+# 不能把它当作成功终姿或回放脚本。保留 P1 常量用于历史回归和消融。
+WORKSPACE_GUIDE_ACTION = (
+    0.8239,
+    -0.8590,
+    0.0811,
+    0.6406,
+    0.4097,
+    0.2718,
+    -0.7128,
+    0.5314,
+    -0.9198,
+    0.1658,
+    -0.7514,
+    -0.8352,
+    -0.5911,
+    0.7236,
+)
+
 
 class GuidedResidualSmallFruitPinchEnv(NativeSmallFruitPinchEnv):
     """在可学习残差外叠加三指压力闭环先验。"""
 
     # 残差缩放在动作域内，避免重新引入旧实验的 0.20 高斯噪声破坏接触。
     residual_scale = 0.0
+    # 可选的 B0 几何弱先验。默认仍为历史 P1，避免无提示地改变旧分支；
+    # 本轮 64--70 mm 物理正确性训练显式切换为 WORKSPACE_GUIDE_ACTION。
+    guide_action_values = P1_GUIDE_ACTION
     # 新增的食指/中指远端残差使用独立权限。默认 None 表示沿用
     # residual_scale；结构化候选可让根部保持低幅、指尖在接触后承担更
     # 多的几何补偿，但仍经过同一接触/压力门控，避免退化成固定远端姿态。
@@ -531,7 +554,10 @@ class GuidedResidualSmallFruitPinchEnv(NativeSmallFruitPinchEnv):
             count = self.num_envs
         else:
             count = len(env_ids)
-        guide = self._guide_action.new_tensor(P1_GUIDE_ACTION).expand(count, -1).clone()
+        values = tuple(float(value) for value in self.guide_action_values)
+        if len(values) != 14 or any(abs(value) > 1.0 for value in values):
+            raise ValueError("guide_action_values 必须包含 14 个 [-1, 1] 值")
+        guide = self._guide_action.new_tensor(values).expand(count, -1).clone()
         if self.geometry_prior_enabled and not self.geometry_prior_after_contact:
             prior = self._guide_action.new_tensor(self.geometry_prior_residual)
             if self.geometry_prior_size_adaptive:

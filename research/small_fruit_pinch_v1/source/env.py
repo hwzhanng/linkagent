@@ -197,7 +197,7 @@ class SmallFruitPinchEnv(_LegacyEnv):
         jerk = filter_stats.get("jerk", torch.zeros_like(self.actions)).mean(dim=-1)
         tri = status["tim_contact"].float()
         hold_progress = (status["hold_age"].float() / float(self._verifier.cfg.hold_steps)).clamp(0.0, 1.0)
-        new_success = status["success"] & ~self.success
+        new_success = status["success_event"]
         reward = (
             1.2 * reach_progress
             + 0.25 * tri
@@ -211,7 +211,7 @@ class SmallFruitPinchEnv(_LegacyEnv):
             - 2.0 * status["hard_overload"].float()
             - 1.0 * self._pinch_self_collision.float()
         )
-        self.success |= status["success"]
+        self.success |= status["final_success"]
         self._apply_standard_disturbance(status["disturbance_due"])
         log = self.extras.setdefault("log", {})
         log.update({

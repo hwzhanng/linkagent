@@ -70,6 +70,7 @@ from .assets import (
     extract_collision_aabbs_by_body,
     validate_linkbot_mass_properties,
     validate_newton_mimic_constraints_disabled,
+    validate_single_left_hand_topology,
 )
 from .env_cfg import (
     RIGHT_FINGERTIP_CONTACT_BODY_NAMES,
@@ -118,28 +119,47 @@ class TomatoPickEnv(DirectRLEnv):
             )
         if cfg.reward_rollout_steps < 1 or cfg.reward_curriculum_iteration_offset < 0:
             raise ValueError("reward curriculum counters must be non-negative")
+        # The isolated-left-hand branch deliberately shares the task logic but
+        # not the bimanual asset.  Keep this flag local to the environment so
+        # the historical bimanual task remains unchanged when it is false.
+        self._hand_only_scene = bool(getattr(cfg, "hand_only_scene", False))
         super().__init__(cfg, render_mode, **kwargs)
         if not hasattr(self, "_prestartup_fruit_axes_m"):
             raise RuntimeError("fruit geometry prestartup event did not run")
 
-        self._arm_joint_ids, _ = self._robot.find_joints(
-            r"^R[1-7]_Joint$", preserve_order=True
-        )
-        self._left_arm_joint_ids, _ = self._robot.find_joints(
-            r"^L[1-7]_Joint$", preserve_order=True
-        )
+        if self._hand_only_scene:
+            self._arm_joint_ids = []
+            self._left_arm_joint_ids = []
+        else:
+            self._arm_joint_ids, _ = self._robot.find_joints(
+                r"^R[1-7]_Joint$", preserve_order=True
+            )
+            self._left_arm_joint_ids, _ = self._robot.find_joints(
+                r"^L[1-7]_Joint$", preserve_order=True
+            )
         self._hand_joint_ids, self._hand_joint_names = self._robot.find_joints(
             list(RIGHT_HAND_CONTROL_JOINT_NAMES), preserve_order=True
         )
         self._mimic_follower_ids, _ = self._robot.find_joints(
             list(MIMIC_FOLLOWER_JOINT_NAMES), preserve_order=True
         )
-        if len(self._arm_joint_ids) != 7 or len(self._hand_joint_ids) != 16:
-            raise RuntimeError("expected one 7DoF arm and sixteen active G20 joints")
-        if len(self._mimic_follower_ids) != 10:
-            raise RuntimeError("expected five mimic followers on each G20 hand")
+        if self._hand_only_scene:
+            if len(self._hand_joint_ids) != 16:
+                raise RuntimeError("single-left-hand asset must expose sixteen active G20 joints")
+            if len(self._mimic_follower_ids) != 5:
+                raise RuntimeError("single-left-hand asset must expose five software-mimic followers")
+        else:
+            if len(self._arm_joint_ids) != 7 or len(self._hand_joint_ids) != 16:
+                raise RuntimeError("expected one 7DoF arm and sixteen active G20 joints")
+            if len(self._mimic_follower_ids) != 10:
+                raise RuntimeError("expected five mimic followers on each G20 hand")
         self._actuated_joint_ids = list(range(self._robot.num_joints))
-        self._ee_body_id = self._robot.find_bodies("right_hand_base_link")[0][0]
+        ee_body_name = getattr(
+            cfg,
+            "ee_body_name",
+            RIGHT_HAND_BODY_NAMES[0] if self._hand_only_scene else "right_hand_base_link",
+        )
+        self._ee_body_id = self._robot.find_bodies(ee_body_name)[0][0]
         self._ee_jacobian_id = (
             self._ee_body_id - 1 if self._robot.is_fixed_base else self._ee_body_id
         )
@@ -289,11 +309,19 @@ class TomatoPickEnv(DirectRLEnv):
 
     def _setup_scene(self) -> None:
         self._robot = Articulation(self.cfg.robot)
-        validate_newton_mimic_constraints_disabled("/World/envs/env_0/Robot")
-        validate_linkbot_mass_properties(
-            "/World/envs/env_0/Robot",
-            minimum_principal_inertia_kg_m2=2.5e-7,
-        )
+        if self._hand_only_scene:
+            validate_single_left_hand_topology(
+                "/World/envs/env_0/Robot",
+                body_names=RIGHT_HAND_BODY_NAMES,
+                joint_names=tuple(RIGHT_HAND_CONTROL_JOINT_NAMES)
+                + tuple(MIMIC_FOLLOWER_JOINT_NAMES),
+            )
+        else:
+            validate_newton_mimic_constraints_disabled("/World/envs/env_0/Robot")
+            validate_linkbot_mass_properties(
+                "/World/envs/env_0/Robot",
+                minimum_principal_inertia_kg_m2=2.5e-7,
+            )
         self._tomato = RigidObject(self.cfg.tomato)
         activate_nested_contact_reporters("/World/envs/env_0/Robot", RIGHT_HAND_BODY_NAMES)
         self._contact_sensors: dict[str, ContactSensor] = {}
@@ -306,8 +334,9 @@ class TomatoPickEnv(DirectRLEnv):
             self._contact_sensors[name] = ContactSensor(sensor_cfg)
         self.scene.articulations["robot"] = self._robot
         self.scene.rigid_objects["tomato"] = self._tomato
+        sensor_prefix = "left" if self._hand_only_scene else "right"
         for name, sensor in self._contact_sensors.items():
-            self.scene.sensors[f"right_{name}_contact"] = sensor
+            self.scene.sensors[f"{sensor_prefix}_{name}_contact"] = sensor
         for name, sensor_cfg in getattr(self.cfg, "auxiliary_contacts", {}).items():
             sensor_cfg.filter_prim_paths_expr = [
                 value.format(ENV_REGEX_NS=self.scene.env_regex_ns)
@@ -315,7 +344,7 @@ class TomatoPickEnv(DirectRLEnv):
             ]
             sensor = ContactSensor(sensor_cfg)
             self._aux_contact_sensors[name] = sensor
-            self.scene.sensors[f"right_{name}_contact"] = sensor
+            self.scene.sensors[f"{sensor_prefix}_{name}_contact"] = sensor
         self.cfg.stem.spawn.func(
             self.cfg.stem.prim_path,
             self.cfg.stem.spawn,
@@ -404,19 +433,21 @@ class TomatoPickEnv(DirectRLEnv):
         self._set_hand_targets_from_synergy(self._actions[:, 6:11])
 
     def _apply_action(self) -> None:
-        self._update_arm_target()
+        if not self._hand_only_scene:
+            self._update_arm_target()
         self._robot.set_joint_position_target_index(
             target=self._joint_targets[:, self._actuated_joint_ids],
             joint_ids=self._actuated_joint_ids,
         )
         arm_ids = self._arm_joint_ids + self._left_arm_joint_ids
-        gravity_columns = [index + self._robot.num_base_dofs for index in arm_ids]
-        gravity_effort = self._robot.data.gravity_compensation_forces.torch[
-            :, gravity_columns
-        ]
-        self._robot.set_joint_effort_target_index(
-            target=gravity_effort, joint_ids=arm_ids
-        )
+        if arm_ids:
+            gravity_columns = [index + self._robot.num_base_dofs for index in arm_ids]
+            gravity_effort = self._robot.data.gravity_compensation_forces.torch[
+                :, gravity_columns
+            ]
+            self._robot.set_joint_effort_target_index(
+                target=gravity_effort, joint_ids=arm_ids
+            )
         self._apply_attachment_wrench()
 
     def _update_arm_target(self) -> None:
@@ -545,10 +576,13 @@ class TomatoPickEnv(DirectRLEnv):
     def _update_mimic_targets(self, env_ids: torch.Tensor) -> None:
         limits = self._robot.data.joint_pos_limits.torch[env_ids]
         for follower_name in MIMIC_FOLLOWER_JOINT_NAMES:
-            side = "right_hand_" if follower_name.startswith("right_hand_") else "left_hand_"
-            right_name = follower_name.replace("left_hand_", "right_hand_", 1)
-            driver_right, multiplier, offset = RIGHT_HAND_MIMIC_RAD[right_name]
-            driver_name = driver_right.replace("right_hand_", side, 1)
+            if self._hand_only_scene:
+                driver_name, multiplier, offset = RIGHT_HAND_MIMIC_RAD[follower_name]
+            else:
+                side = "right_hand_" if follower_name.startswith("right_hand_") else "left_hand_"
+                right_name = follower_name.replace("left_hand_", "right_hand_", 1)
+                driver_right, multiplier, offset = RIGHT_HAND_MIMIC_RAD[right_name]
+                driver_name = driver_right.replace("right_hand_", side, 1)
             follower_id = self._robot.joint_names.index(follower_name)
             driver_id = self._robot.joint_names.index(driver_name)
             target = self._joint_targets[env_ids, driver_id] * multiplier + offset
@@ -700,13 +734,13 @@ class TomatoPickEnv(DirectRLEnv):
         center_score = torch.exp(-center_error / 0.055)
         return (0.65 * closest_three + 0.35 * center_score).clamp(0.0, 1.0)
 
-    def _hand_collision_clearance_for(
+    def _hand_collision_clearance_matrix_for(
         self,
         fruit_pos: torch.Tensor,
         fruit_axes_m: torch.Tensor,
         env_ids: torch.Tensor,
     ) -> torch.Tensor:
-        """Conservative fruit clearance from every right-hand collider.
+        """Return conservative fruit clearance for every hand collider.
 
         The ellipsoid is enclosed by its maximum-radius sphere and each mesh
         collider by an AABB in its owning rigid-body frame.  Positive values
@@ -729,8 +763,153 @@ class TomatoPickEnv(DirectRLEnv):
             - self._hand_collision_aabb_half_extents
         ).clamp_min(0.0)
         distance_to_aabb = torch.linalg.vector_norm(outside, dim=2)
+        if bool(getattr(self.cfg, "palm_fruit_collision_filter_enabled", False)):
+            # The isolated-left-hand diagnostic branch explicitly authors a
+            # FilteredPairsAPI pair for base_link↔Tomato.  Keep reset geometry
+            # consistent with that pair instead of moving an intended opposing
+            # fruit centre away because the imported palm AABB is conservative.
+            names = tuple(
+                self._robot.body_names[index] for index in self._hand_collision_body_ids
+            )
+            excluded = torch.tensor(
+                [name == "base_link" for name in names],
+                dtype=torch.bool,
+                device=distance_to_aabb.device,
+            )
+            distance_to_aabb = torch.where(
+                excluded.unsqueeze(0),
+                torch.full_like(distance_to_aabb, float("inf")),
+                distance_to_aabb,
+            )
         fruit_radius = fruit_axes_m.amax(dim=1, keepdim=True)
-        return (distance_to_aabb - fruit_radius).amin(dim=1)
+        return distance_to_aabb - fruit_radius
+
+    def _hand_collision_closest_points_for(
+        self,
+        fruit_pos: torch.Tensor,
+        env_ids: torch.Tensor,
+    ) -> torch.Tensor:
+        """Return the closest point of every body-local collider AABB.
+
+        This is a diagnostic geometry primitive.  It lets reachability scans
+        reason about the actual distal collider surface instead of treating a
+        rigid-body origin as a fingertip contact point.
+        """
+
+        body_pos = self._robot.data.body_pos_w.torch[env_ids][
+            :, self._hand_collision_body_ids
+        ]
+        body_quat = self._robot.data.body_quat_w.torch[env_ids][
+            :, self._hand_collision_body_ids
+        ]
+        relative = fruit_pos.unsqueeze(1) - body_pos
+        local = quat_apply_inverse(
+            body_quat.reshape(-1, 4), relative.reshape(-1, 3)
+        ).reshape(len(env_ids), len(self._hand_collision_body_ids), 3)
+        centered = local - self._hand_collision_aabb_centers
+        closest_local = self._hand_collision_aabb_centers + torch.maximum(
+            -self._hand_collision_aabb_half_extents,
+            torch.minimum(self._hand_collision_aabb_half_extents, centered),
+        )
+        return body_pos + quat_apply(
+            body_quat.reshape(-1, 4), closest_local.reshape(-1, 3)
+        ).reshape(len(env_ids), len(self._hand_collision_body_ids), 3)
+
+    def _hand_obb_pair_clearance_for(
+        self,
+        body_names_a: tuple[str, ...],
+        body_names_b: tuple[str, ...],
+        env_ids: torch.Tensor,
+    ) -> torch.Tensor:
+        """Return the minimum SAT separation between two body groups.
+
+        Collision meshes are conservatively represented by the body-local
+        AABBs already extracted during scene setup.  After transforming them
+        with each body's pose they are OBBs.  Positive output means every
+        cross-group pair has a separating gap; negative output means at least
+        one OBB pair overlaps.  This is a safety diagnostic, not a replacement
+        for PhysX contact response.
+        """
+
+        collision_names = tuple(
+            self._robot.body_names[index] for index in self._hand_collision_body_ids
+        )
+        indices_a = [collision_names.index(name) for name in body_names_a]
+        indices_b = [collision_names.index(name) for name in body_names_b]
+        body_pos = self._robot.data.body_pos_w.torch[env_ids][
+            :, self._hand_collision_body_ids
+        ]
+        body_quat = self._robot.data.body_quat_w.torch[env_ids][
+            :, self._hand_collision_body_ids
+        ]
+        local_centers = self._hand_collision_aabb_centers
+        half_extents = self._hand_collision_aabb_half_extents
+        basis = torch.eye(3, device=body_pos.device, dtype=body_pos.dtype)
+        pair_separations: list[torch.Tensor] = []
+
+        for index_a in indices_a:
+            quat_a = body_quat[:, index_a]
+            axes_a = quat_apply(
+                quat_a[:, None, :].expand(-1, 3, -1).reshape(-1, 4),
+                basis[None, :, :].expand(len(env_ids), -1, -1).reshape(-1, 3),
+            ).reshape(len(env_ids), 3, 3)
+            center_a = body_pos[:, index_a] + quat_apply(
+                quat_a, local_centers[index_a].expand(len(env_ids), -1)
+            )
+            extent_a = half_extents[index_a]
+            for index_b in indices_b:
+                quat_b = body_quat[:, index_b]
+                axes_b = quat_apply(
+                    quat_b[:, None, :].expand(-1, 3, -1).reshape(-1, 4),
+                    basis[None, :, :].expand(len(env_ids), -1, -1).reshape(-1, 3),
+                ).reshape(len(env_ids), 3, 3)
+                center_b = body_pos[:, index_b] + quat_apply(
+                    quat_b, local_centers[index_b].expand(len(env_ids), -1)
+                )
+                extent_b = half_extents[index_b]
+                offset = center_b - center_a
+                candidate_axes = [axes_a[:, axis] for axis in range(3)]
+                candidate_axes.extend(axes_b[:, axis] for axis in range(3))
+                candidate_axes.extend(
+                    torch.linalg.cross(axes_a[:, axis_a], axes_b[:, axis_b])
+                    for axis_a in range(3)
+                    for axis_b in range(3)
+                )
+                separations: list[torch.Tensor] = []
+                for axis in candidate_axes:
+                    norm = torch.linalg.vector_norm(axis, dim=1)
+                    valid = norm > 1.0e-6
+                    unit = axis / norm.clamp_min(1.0e-6).unsqueeze(1)
+                    projected_offset = torch.abs((offset * unit).sum(dim=1))
+                    radius_a = (
+                        torch.abs(torch.einsum("nij,nj->ni", axes_a, unit))
+                        * extent_a
+                    ).sum(dim=1)
+                    radius_b = (
+                        torch.abs(torch.einsum("nij,nj->ni", axes_b, unit))
+                        * extent_b
+                    ).sum(dim=1)
+                    separation = projected_offset - radius_a - radius_b
+                    separations.append(
+                        torch.where(valid, separation, torch.full_like(separation, -float("inf")))
+                    )
+                # SAT: one separating axis is enough; the largest signed gap
+                # is therefore the conservative clearance for this OBB pair.
+                pair_separations.append(torch.stack(separations, dim=1).amax(dim=1))
+
+        return torch.stack(pair_separations, dim=1).amin(dim=1)
+
+    def _hand_collision_clearance_for(
+        self,
+        fruit_pos: torch.Tensor,
+        fruit_axes_m: torch.Tensor,
+        env_ids: torch.Tensor,
+    ) -> torch.Tensor:
+        """Return the minimum conservative fruit-to-hand clearance."""
+
+        return self._hand_collision_clearance_matrix_for(
+            fruit_pos, fruit_axes_m, env_ids
+        ).amin(dim=1)
 
     def _get_observations(self) -> dict[str, torch.Tensor]:
         fruit_pose = self._tomato.data.root_pose_w.torch
@@ -1118,24 +1297,40 @@ class TomatoPickEnv(DirectRLEnv):
         count = len(env_ids)
 
         joint_pos = self._nominal_joint_targets[env_ids].clone()
-        noise_rad = math.radians(self.cfg.pregrasp_arm_joint_noise_deg)
-        right_noise = torch.empty((count, 7), device=self.device).uniform_(
-            -noise_rad, noise_rad
-        )
-        right_limits = self._robot.data.joint_pos_limits.torch[
-            env_ids[:, None], self._arm_joint_ids
-        ]
-        joint_pos[:, self._arm_joint_ids] = torch.maximum(
-            right_limits[..., 0],
-            torch.minimum(
-                right_limits[..., 1],
-                joint_pos[:, self._arm_joint_ids] + right_noise,
-            ),
-        )
-        pregrasp = torch.tensor(
-            g20_synergy_to_joint_targets(PREGRASP_SYNERGY), device=self.device
-        )
-        joint_pos[:, self._hand_joint_ids] = pregrasp
+        if not self._hand_only_scene:
+            noise_rad = math.radians(self.cfg.pregrasp_arm_joint_noise_deg)
+            right_noise = torch.empty((count, 7), device=self.device).uniform_(
+                -noise_rad, noise_rad
+            )
+            right_limits = self._robot.data.joint_pos_limits.torch[
+                env_ids[:, None], self._arm_joint_ids
+            ]
+            joint_pos[:, self._arm_joint_ids] = torch.maximum(
+                right_limits[..., 0],
+                torch.minimum(
+                    right_limits[..., 1],
+                    joint_pos[:, self._arm_joint_ids] + right_noise,
+                ),
+            )
+        if self._hand_only_scene:
+            # The prefixless isolated USD has different joint limits and a
+            # different authored open pose than the historical bimanual asset.
+            # Reusing ``g20_synergy_to_joint_targets(PREGRASP_SYNERGY)`` here
+            # writes invalid values (notably thumb_joint0=1.025 rad although
+            # this USD's upper limit is 0.49 rad), leaving the thumb pinned at
+            # a limit and making every dynamic action look ineffective.  The
+            # USD-authored default state is the only neutral that is valid for
+            # this topology; use it as the fixed-base hand pre-grasp.  This is
+            # an initial state, not a learned or successful grasp pose.
+            nominal = getattr(self, "_nominal_joint_targets", None)
+            if nominal is None:
+                nominal = self._robot.data.default_joint_pos.torch
+            joint_pos[:, self._hand_joint_ids] = nominal[env_ids][:, self._hand_joint_ids]
+        else:
+            pregrasp = torch.tensor(
+                g20_synergy_to_joint_targets(PREGRASP_SYNERGY), device=self.device
+            )
+            joint_pos[:, self._hand_joint_ids] = pregrasp
         self._joint_targets[env_ids] = joint_pos
         self._update_mimic_targets(env_ids)
         joint_pos = self._joint_targets[env_ids]
@@ -1383,6 +1578,18 @@ class TomatoPickEnv(DirectRLEnv):
         )
 
     def _validate_nominal_joint_margin(self) -> None:
+        if self._hand_only_scene:
+            active = self._hand_joint_ids
+            nominal = self._nominal_joint_targets[:, active]
+            limits = self._robot.data.joint_pos_limits.torch[:, active]
+            if bool(
+                ((nominal < limits[..., 0]) | (nominal > limits[..., 1])).any()
+            ):
+                raise RuntimeError("nominal left-hand pose exceeds a hard joint limit")
+            # The isolated asset uses its authored open pose as the reset
+            # reference.  Do not apply the arm-only margin check to an empty
+            # arm list (an amin over an empty tensor would silently produce NaN).
+            return
         all_ids = self._arm_joint_ids + self._left_arm_joint_ids
         all_nominal = self._nominal_joint_targets[:, all_ids]
         all_limits = self._robot.data.joint_pos_limits.torch[:, all_ids]

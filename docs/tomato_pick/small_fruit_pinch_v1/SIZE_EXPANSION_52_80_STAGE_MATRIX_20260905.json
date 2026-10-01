@@ -1,7 +1,7 @@
 {
   "schema": "small_fruit_pinch_v1.size_expansion_plan.v1",
   "created_at": "2026-09-05T00:00:00+08:00",
-  "status": "planned_e0_not_started",
+  "status": "e0_tooling_unit_qualified_physx_model150_pending",
   "hardware_enabled": false,
   "scope": {
     "task": "fixed-left-wrist three-finger pinch",
@@ -16,6 +16,7 @@
     "name": "model150_B0",
     "path": "logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/model_150.pt",
     "sha256": "e39cd14d18912da68638b21b2c16a9d48c3867b833d4af0296a9e03fd5ce0c8d",
+    "available_in_worktree_2026_09_20": false,
     "qualified_diameter_mm": [64.0, 70.0],
     "strict_success_rate": 0.9961,
     "regression_seeds": [20260902, 20261411, 20261530]
@@ -157,5 +158,5 @@
       "regression seeds are not eligible as final blind seeds"
     ]
   },
-  "next_action": "implement_and_qualify_E0_stratified_sampler_and_per_bin_first_episode_evaluator"
+  "next_action": "restore_exact_model150_then_run_E0_physx_smoke_B0_equivalence_and_sensor_negative_control"
 }

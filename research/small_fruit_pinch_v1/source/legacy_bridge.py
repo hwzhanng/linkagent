@@ -49,13 +49,6 @@ def load_legacy_physx() -> tuple[type, type]:
 
 
 def load_legacy_hand_manifold():
-    """只读复用历史 10D→16 关节映射，不加载旧 Isaac 环境。"""
+    """复用归档原样冻结的 10D→16 关节映射，不加载旧 Isaac 环境。"""
 
-    if not HISTORICAL_ROOT.is_dir():
-        raise FileNotFoundError(f"缺少只读历史 PhysX 工作区：{HISTORICAL_ROOT}")
-    import simulation
-
-    historical_simulation = str(HISTORICAL_ROOT / "simulation")
-    if historical_simulation not in simulation.__path__:
-        simulation.__path__.append(historical_simulation)
-    return importlib.import_module("simulation.ppo_tomato_grasp.hand_manifold")
+    return importlib.import_module("research.small_fruit_pinch_v1.source.vendor.hand_manifold")

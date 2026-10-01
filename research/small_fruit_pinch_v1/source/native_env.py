@@ -8,10 +8,14 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from pathlib import Path
 import re
 
 import torch
 
+import isaaclab.sim as sim_utils
+from isaaclab.actuators import IdealPDActuator, IdealPDActuatorCfg
+from isaaclab.assets import ArticulationCfg, AssetBaseCfg, RigidObjectCfg
 from isaaclab.sensors import ContactSensorCfg
 from isaaclab.utils.configclass import configclass
 from isaaclab.utils.math import quat_apply_inverse
@@ -20,8 +24,43 @@ from .contract import ACTOR_OBSERVATION_DIM, ACTION_DIM, CRITIC_STATE_DIM, EPISO
 from .pinch_action_manifold import pinch_action_to_joint_targets
 from .temporal import CriticalDampedActionFilter
 from .verifier import TimStrictVerifier
+from .verification_geometry import contact_topology
 
 
+LEFT_HAND_USD = (
+    Path(__file__).resolve().parents[1]
+    / "assets/left_hand_urdf/left_hand_l20_physx.usd"
+)
+LEFT_HAND_BODY_NAMES = (
+    "base_link",
+    *(f"thumb_link{index}" for index in range(6)),
+    *(
+        f"{finger}_link{index}"
+        for finger in ("index", "middle", "ring", "little")
+        for index in range(5)
+    ),
+)
+LEFT_FINGERTIP_FRAME_BODY_NAMES = {
+    "thumb": "thumb_link5",
+    "index": "index_link4",
+    "middle": "middle_link4",
+    "ring": "ring_link4",
+    "little": "little_link4",
+}
+LEFT_FINGERTIP_CONTACT_BODY_NAMES = {
+    "thumb": "thumb_link4",
+    "index": "index_link3",
+    "middle": "middle_link3",
+    "ring": "ring_link3",
+    "little": "little_link3",
+}
+LEFT_FINGERTIP_PATHS = {
+    "thumb": "/World/envs/env_.*/Robot/thumb_link4",
+    "index": "/World/envs/env_.*/Robot/index_link3",
+    "middle": "/World/envs/env_.*/Robot/middle_link3",
+    "ring": "/World/envs/env_.*/Robot/ring_link3",
+    "little": "/World/envs/env_.*/Robot/little_link3",
+}
 def _left(value: str) -> str:
     """把当前原生任务的右手命名空间映射到同构的左手命名空间。"""
 
@@ -31,69 +70,325 @@ def _left(value: str) -> str:
 
 
 def configure_native_module_for_left() -> tuple[object, object]:
-    """在本进程内配置原生环境为左手；不修改项目源文件。"""
+    """在本进程内切换原生任务到独立左手命名表。
+
+    旧版本只把双臂 USD 的 ``right_hand_*`` 字符串改成
+    ``left_hand_*``，并没有从场景中移除机械臂。当前配置使用 prefixless
+    手部 USD，因此所有查找、mimic 和传感器路径均必须与该资产完全一致。
+    """
 
     from simulation.tomato_pick.isaac import env as native
     from simulation.tomato_pick.isaac import env_cfg as cfg_module
 
     native.ACTION_DIM = ACTION_DIM
-    native.RIGHT_HAND_CONTROL_JOINT_NAMES = tuple(
-        name.replace("right_hand_", "left_hand_", 1)
-        for name in native.RIGHT_HAND_CONTROL_JOINT_NAMES
+    native.RIGHT_HAND_CONTROL_JOINT_NAMES = (
+        "thumb_joint2", "index_joint1", "middle_joint1", "ring_joint1", "little_joint1",
+        "thumb_joint0", "index_joint0", "middle_joint0", "ring_joint0", "little_joint0",
+        "thumb_joint1", "thumb_joint3", "index_joint2", "middle_joint2", "ring_joint2", "little_joint2",
     )
-    native.RIGHT_FINGERTIP_FRAME_BODY_NAMES = {
-        name: _left(value) for name, value in native.RIGHT_FINGERTIP_FRAME_BODY_NAMES.items()
+    native.RIGHT_HAND_MIMIC_RAD = {
+        "thumb_joint4": ("thumb_joint3", 1.11, -0.04545),
+        "index_joint3": ("index_joint2", 0.94, -0.04545),
+        "middle_joint3": ("middle_joint2", 0.94, -0.04545),
+        "ring_joint3": ("ring_joint2", 0.94, -0.04545),
+        "little_joint3": ("little_joint2", 0.94, -0.04545),
     }
-    native.RIGHT_FINGERTIP_CONTACT_BODY_NAMES = {
-        name: _left(value) for name, value in native.RIGHT_FINGERTIP_CONTACT_BODY_NAMES.items()
-    }
-    native.RIGHT_HAND_BODY_NAMES = tuple(_left(value) for value in native.RIGHT_HAND_BODY_NAMES)
-    cfg_module.RIGHT_FINGERTIP_PATHS = {
-        name: _left(value) for name, value in cfg_module.RIGHT_FINGERTIP_PATHS.items()
-    }
+    native.MIMIC_FOLLOWER_JOINT_NAMES = tuple(native.RIGHT_HAND_MIMIC_RAD)
+    native.RIGHT_FINGERTIP_FRAME_BODY_NAMES = dict(LEFT_FINGERTIP_FRAME_BODY_NAMES)
+    native.RIGHT_FINGERTIP_CONTACT_BODY_NAMES = dict(LEFT_FINGERTIP_CONTACT_BODY_NAMES)
+    native.RIGHT_HAND_BODY_NAMES = LEFT_HAND_BODY_NAMES
+    native.RIGHT_HAND_BODY_ROOT = "/World/envs/env_.*/Robot/base_link"
+    cfg_module.RIGHT_HAND_BODY_ROOT = native.RIGHT_HAND_BODY_ROOT
+    cfg_module.RIGHT_FINGERTIP_PATHS = dict(LEFT_FINGERTIP_PATHS)
+    cfg_module.RIGHT_FINGERTIP_FRAME_BODY_NAMES = dict(LEFT_FINGERTIP_FRAME_BODY_NAMES)
+    cfg_module.RIGHT_FINGERTIP_CONTACT_BODY_NAMES = dict(LEFT_FINGERTIP_CONTACT_BODY_NAMES)
     return native, cfg_module
 
 
 native, native_cfg_module = configure_native_module_for_left()
 
 
+class LeftHandDirectionalPDActuator(IdealPDActuator):
+    """显式 PD 驱动，并在 canonical 坐标中执行软件关节边界保护。
+
+    孤立 USD 的关节轴向已通过正负方向探针逐一核对，当前资产不需要
+    额外取反。方向表仍保留在执行器层，便于未来替换资产时显式记录而
+    不把符号变更泄漏到 14D 策略语义或真实硬件接口。
+    """
+
+    # The isolated USD reports the same generalized-coordinate sign as the
+    # canonical FK writer for every active revolute axis.  Earlier probes
+    # falsely marked thumb_joint0/2 as mirrored because their milligram-scale
+    # links did not overcome static friction at the first torque setting;
+    # flipping those efforts made a full grasp target run into the upper/lower
+    # limits.  Keep the map explicit (rather than silently assuming a future
+    # asset has the same convention), but empty for this validated asset.
+    _INVERTED_JOINT_NAMES = frozenset()
+    _JOINT_LIMITS = {
+        **{f"{finger}_joint0": (-0.26, 0.26) for finger in ("index", "middle", "ring", "little")},
+        "thumb_joint0": (-1.05, 0.49),
+        **{f"{finger}_joint1": (0.0, 1.66) for finger in ("index", "middle", "ring", "little")},
+        "thumb_joint1": (0.0, 1.45),
+        **{f"{finger}_joint2": (0.0, 1.36) for finger in ("index", "middle", "ring", "little")},
+        "thumb_joint2": (0.0, 0.84),
+        **{f"{finger}_joint3": (0.0, 1.48) for finger in ("index", "middle", "ring", "little")},
+        "thumb_joint3": (0.0, 1.32),
+        "thumb_joint4": (0.0, 1.34),
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        signs = torch.ones(len(self.joint_names), dtype=torch.float32, device=self._device)
+        for index, name in enumerate(self.joint_names):
+            if name in self._INVERTED_JOINT_NAMES:
+                signs[index] = -1.0
+        self._joint_direction_sign = signs
+        limits = [self._JOINT_LIMITS.get(name, (-float("inf"), float("inf"))) for name in self.joint_names]
+        self._joint_lower_limit = torch.tensor(
+            [item[0] for item in limits], dtype=torch.float32, device=self._device
+        )
+        self._joint_upper_limit = torch.tensor(
+            [item[1] for item in limits], dtype=torch.float32, device=self._device
+        )
+
+    def compute(self, control_action, joint_pos: torch.Tensor, joint_vel: torch.Tensor):
+        result = super().compute(control_action, joint_pos, joint_vel)
+        sign = self._joint_direction_sign.unsqueeze(0)
+        # ``sign`` converts a canonical-coordinate effort to the physical
+        # actuator effort.  The values returned by ``super().compute`` are
+        # still in canonical target coordinates, so apply the software limit
+        # guard *before* multiplying by ``sign``.  (Multiplying first would
+        # incorrectly classify every positive command on a mirrored joint as
+        # an outward lower-limit command and pin that joint at zero.)
+        canonical_computed = self.computed_effort.clone()
+        canonical_effort = self.applied_effort.clone()
+        lower = self._joint_lower_limit.unsqueeze(0)
+        upper = self._joint_upper_limit.unsqueeze(0)
+        margin = 0.015
+        near_lower_outward = (joint_pos <= lower + margin) & (canonical_effort < 0.0)
+        near_upper_outward = (joint_pos >= upper - margin) & (canonical_effort > 0.0)
+        # A tiny numerical excursion below a zero lower limit is common just
+        # after reset.  Do not brake an *inward* command there: using only the
+        # measured velocity would keep that joint pinned forever whenever the
+        # reset noise happens to be negative.  The guard is for an effort that
+        # is both outside the limit and still pointing farther outward.
+        below_and_outward = (joint_pos < lower) & (canonical_effort < 0.0)
+        above_and_outward = (joint_pos > upper) & (canonical_effort > 0.0)
+        brake = 0.30 * joint_vel.abs()
+        canonical_effort = torch.where(
+            near_lower_outward | near_upper_outward,
+            torch.zeros_like(canonical_effort),
+            canonical_effort,
+        )
+        canonical_effort = torch.where(
+            below_and_outward,
+            brake,
+            canonical_effort,
+        )
+        canonical_effort = torch.where(
+            above_and_outward,
+            -brake,
+            canonical_effort,
+        )
+        self.computed_effort = canonical_computed * sign
+        self.applied_effort = canonical_effort * sign
+        if result.joint_efforts is not None:
+            result.joint_efforts = self.applied_effort
+        return result
+
+
 @configclass
 class NativeSmallFruitPinchCfg(native_cfg_module.TomatoPickEnvCfg):
-    """固定手臂、14D 策略、114D/175D 合同的训练配置。"""
+    """固定基座左手、14D 策略、114D/175D 合同的训练配置。
+
+    ``robot`` is intentionally rebuilt from the isolated left-hand USD.  No
+    arm actuator, arm joint target, right-hand link, or bimanual articulation
+    is present in this scene.
+    """
+
+    hand_only_scene = True
+    # 当前左手 USD 的 PhysX articulation 已关闭自碰撞；AABB 代理仅作日志，
+    # 不应在训练中把相邻碰撞壳的保守重叠变成终止条件。
+    self_collision_proxy_terminates = False
+    ee_body_name = "base_link"
+    robot = ArticulationCfg(
+        prim_path="/World/envs/env_.*/Robot",
+        spawn=sim_utils.UsdFileCfg(
+            usd_path=str(LEFT_HAND_USD),
+            rigid_props=sim_utils.RigidBodyPropertiesCfg(
+                # The isolated hand is fixed-base and its intended palm-up
+                # training frame should not drift under the imported URDF's
+                # arbitrary world orientation.  Fruit gravity remains active;
+                # the hand joints are driven explicitly by the low-torque PD
+                # model below so the policy learns contact forces, not a
+                # gravity-induced thumb bias.
+                disable_gravity=True,
+                max_depenetration_velocity=0.75,
+            ),
+            articulation_props=sim_utils.ArticulationRootPropertiesCfg(
+                enabled_self_collisions=False,
+                solver_position_iteration_count=8,
+                solver_velocity_iteration_count=4,
+            ),
+            activate_contact_sensors=True,
+        ),
+        init_state=ArticulationCfg.InitialStateCfg(pos=(0.0, 0.0, 0.0)),
+        actuators={
+            "g20_independent": IdealPDActuatorCfg(
+                joint_names_expr=[
+                    r"thumb_joint[0-3]",
+                    r"(index|middle|ring|little)_joint[0-2]",
+                ],
+                # 该孤立 USD 的末端连杆质量很小，过低的远端力矩会让根部
+                # 已经到位而指尖永远停在果实外侧。统一的仿真上限先确保
+                # 14D 的根部/指尖都能实际跟踪；安全由速度上限、动作滤波
+                # 和下方的 canonical 边界保护共同承担，后续再按实测接触
+                # 力做逐指降额。
+                effort_limit_sim=0.20,
+                effort_limit=0.20,
+                velocity_limit_sim=1.20,
+                velocity_limit=1.20,
+                armature=0.0001,
+                stiffness=20.0,
+                damping=1.0,
+                friction=0.01,
+                class_type=LeftHandDirectionalPDActuator,
+            ),
+            "g20_followers": IdealPDActuatorCfg(
+                joint_names_expr=[
+                    r"thumb_joint4",
+                    r"(index|middle|ring|little)_joint3",
+                ],
+                effort_limit_sim=0.20,
+                effort_limit=0.20,
+                velocity_limit_sim=1.20,
+                velocity_limit=1.20,
+                armature=0.0001,
+                stiffness=1.0,
+                damping=0.50,
+                friction=0.01,
+                class_type=LeftHandDirectionalPDActuator,
+            ),
+        },
+    )
+
+    tomato = RigidObjectCfg(
+        prim_path="/World/envs/env_.*/Tomato",
+        spawn=sim_utils.MeshSphereCfg(
+            radius=1.0,
+            rigid_props=sim_utils.RigidBodyPropertiesCfg(
+                max_depenetration_velocity=0.50,
+                linear_damping=0.08,
+                angular_damping=0.08,
+            ),
+            mass_props=sim_utils.MassPropertiesCfg(mass=0.10),
+            collision_props=sim_utils.CollisionPropertiesCfg(
+                contact_offset=0.002,
+                rest_offset=0.0002,
+            ),
+            physics_material=sim_utils.RigidBodyMaterialCfg(
+                static_friction=0.70,
+                dynamic_friction=0.58,
+                restitution=0.01,
+            ),
+            visual_material=sim_utils.PreviewSurfaceCfg(
+                diffuse_color=(0.82, 0.06, 0.03), roughness=0.72
+            ),
+            activate_contact_sensors=True,
+        ),
+        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.025, -0.036, 0.184)),
+    )
 
     episode_length_s = EPISODE_STEPS / 20.0
+    verification_release_support = True
     action_space = ACTION_DIM
     observation_space = ACTOR_OBSERVATION_DIM
     state_space = CRITIC_STATE_DIM
     # 训练阶段不让策略寻找水果；只在闭合工作空间内做尺寸和横向扰动。
-    # 左腕零位下的实测闭合工作区。右手任务的 (0.148,-0.0607,0.0535)
-    # 不能镜像复用：它会把果实放在左手指尖约 12 cm 之外。先以无接近
-    # 平移的局部工作区训练手部闭合；后续 P1 只在此小区域随机化。
-    closed_grasp_fruit_center_m = (0.007, -0.066, 0.160)
-    pregrasp_distance_range_m = (0.0, 0.0)
-    pregrasp_lateral_offset_range_m = (0.0, 0.0)
-    pregrasp_axial_noise_m = 0.0
+    # 孤立 USD 的 base_link 坐标与历史双臂资产不同：五指沿 +Z 展开，
+    # 拇指从 Y<0 侧横向进入。因此历史任务的 (0.007,-0.066,0.160)
+    # 会把水果放到手掌下方约 18 cm，所有动作都会“无接触掉落”。这里
+    # 用左手 USD 的实测 FK 工作区表达闭合中心：转换到父任务抓取基后，
+    # 对应世界坐标约 (0.088,-0.017,0.165) m（64--70 mm 球径）。它是初始工作区中心，
+    # 不是策略终点；后续只对该中心做小范围随机化。
+    # The parent reset expresses this point in the grasp basis, not in world
+    # coordinates.  The isolated-left-hand FK scan found a collision-free
+    # three-finger sphere centre at about (88, -17, 165) mm in the base frame
+    # for the 64--70 mm band.  Converting that point through the reset grasp
+    # basis gives this local reference (approximately -90, -4, -165) mm.  It
+    # is deliberately a *working centre*, not a terminal joint pose: PPO still
+    # has to establish thumb opposition and bring the three fingertips onto
+    # the surface.  The previous (-90, -30, -150) mm centre was safe at the
+    # open pose but left the middle fingertip 10--15 mm outside the sphere,
+    # so a dynamic probe could only produce thumb/index contact.
+    # 注意：该值是抓取基（grasp basis）坐标，不是环境/世界坐标。
+    # 当前孤立左手的几何候选约为世界坐标 (58,-23,177) mm；按 reset
+    # 中的抓取基换算后约为 (-61,-13,-177) mm。此前误把世界坐标
+    # (148,-60.7,53.5) mm 直接写入此处，使果实实际落在掌后/地面下，
+    # 造成所有教师与 PPO 零接触。
+    closed_grasp_fruit_center_m = (-0.061, -0.013, -0.177)
+    # 从掌前闭合中心沿抓取轴预置在外侧，避免 reset 时果实已经穿入
+    # 指节而被首接触/近端门立即终止；这与历史 PPO 的连续接近合同一致。
+    pregrasp_distance_range_m = (0.055, 0.075)
+    pregrasp_lateral_offset_range_m = (0.005, 0.020)
+    pregrasp_axial_noise_m = 0.005
     pregrasp_arm_joint_noise_deg = 0.0
     minimum_initial_clearance_m = 0.002
+    # 几何审计模式：当前孤立 USD 的 base_link AABB 大于真实掌面局部形状，
+    # 对 64--70 mm 球会把一个本应在掌前的对向候选误判为初始穿透。开启
+    # 后只过滤 ``base_link`` 与水果的碰撞并从 reset clearance 中排除该
+    # 粗糙包围盒；指节碰撞、真实三指接触、过载和自碰撞仍保持物理有效。
+    # 默认关闭，正式发布前必须用精确掌面碰撞体替换此诊断开关。
+    palm_fruit_collision_filter_enabled = False
     # P1 联合扫描得到的无穿透三指共同可达位移；它相对父环境已经通过
     # 全碰撞体 clearance 修正后的初始位姿表达，不是硬编码最终关节姿态。
-    pinch_working_offset_m = (0.018, 0.030, 0.024)
+    # 孤立手的中心已经直接写入 closed_grasp_fruit_center_m，不再叠加
+    # 历史双臂任务的 18/30/24 mm 偏移，避免中心再次被移到掌下。
+    pinch_working_offset_m = (0.0, 0.0, 0.0)
     action_delay_steps = (0, 0)
-    # 父类在定义期就创建了右手传感器字典；这里深复制后改路径，不能只改
-    # 模块常量，否则 Isaac Lab 会继续注册右手指尖。
-    fingertip_contacts = deepcopy(native_cfg_module.TomatoPickEnvCfg().fingertip_contacts)
-    for _sensor_cfg in fingertip_contacts.values():
-        _sensor_cfg.prim_path = _left(_sensor_cfg.prim_path)
+    fingertip_contacts = {
+        name: ContactSensorCfg(
+            prim_path=prim_path,
+            update_period=1.0 / 120.0,
+            history_length=0,
+            filter_prim_paths_expr=["{ENV_REGEX_NS}/Tomato"],
+            track_pose=True,
+            track_contact_points=True,
+            track_friction_forces=True,
+            # 旧值 32 在三指同时压住球面时会被 PhysX 截断，导致接触点
+            # 质心和“首接触区域”审计失真。128 是诊断容量，不改变求解器。
+            max_contact_data_count_per_prim=128,
+        )
+        for name, prim_path in LEFT_FINGERTIP_PATHS.items()
+    }
     auxiliary_contacts = {
         "palm": ContactSensorCfg(
-            prim_path=_left(native_cfg_module.RIGHT_HAND_BODY_ROOT),
+            prim_path="/World/envs/env_.*/Robot/base_link",
             update_period=1.0 / 120.0,
             history_length=0,
             filter_prim_paths_expr=["{ENV_REGEX_NS}/Tomato"],
             track_pose=True,
             track_contact_points=False,
             track_friction_forces=False,
-        )
+            max_contact_data_count_per_prim=128,
+        ),
+        **{
+            f"forbidden_{body}": ContactSensorCfg(
+                prim_path=f"/World/envs/env_.*/Robot/{body}",
+                update_period=1.0 / 120.0,
+                history_length=0,
+                filter_prim_paths_expr=["{ENV_REGEX_NS}/Tomato"],
+                track_pose=False,
+                track_contact_points=False,
+                track_friction_forces=False,
+                max_contact_data_count_per_prim=128,
+            )
+            for body in (
+                "thumb_link2", "thumb_link3",
+                "index_link1", "index_link2",
+                "middle_link1", "middle_link2",
+            )
+        },
     }
     # B0 的物理域按计划固定为果径 64–70 mm（椭球半轴 32–35 mm）。父任务
     # 默认是 50–70 mm；如果不在这里覆写，训练日志会把小于 B0 的样本误算
@@ -108,6 +403,19 @@ class NativeSmallFruitPinchCfg(native_cfg_module.TomatoPickEnvCfg):
 
 
 class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
+    # 独立左手 USD 的 link3 受力壳并非严格沿指骨轴向建模；经过多轮
+    # PhysX 对照，0.68 会把真实末端壳接触误判为近端。保留近端六路
+    # 传感器硬门，适度降低轴向进度门仅用于仿真候选搜索。
+    # 经过多轮碰撞壳回归，发现 link3 的真实指垫接触点在当前 USD
+    # 中轴向进度约 0.55--0.68；先将该值作为诊断/训练候选门设为 0.55。
+    # 这只影响“末端区域”标签，不放宽近端禁触、过载或自碰撞合同，
+    # 待替换为精确指垫碰撞体后再恢复更严格值。
+    fingertip_axial_progress_min = 0.55
+    # 仅用于隔离的离线几何接触实验；默认关闭。代理力不覆盖原始 PhysX
+    # 记录，只作为训练/动作教师的额外观测，禁止解释为实机触觉标定。
+    geometric_contact_proxy_enabled = False
+    geometric_contact_proxy_band_m = 0.010
+    geometric_contact_proxy_stiffness_n_m = 100.0
     """静态左手小果捏取：连续闭合、低力持稳、无掌托成功捷径。"""
 
     cfg: NativeSmallFruitPinchCfg
@@ -122,8 +430,67 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
     # sent at the native 120 Hz physics rate.
     manual_decimation_control = False
 
+    def _setup_scene(self) -> None:
+        """Build the isolated-left-hand scene and optional palm filter.
+
+        The filter is a temporary geometry-audit switch, never enabled by the
+        historical or real-hardware paths. It removes only the fruit/base
+        pair; all hand bodies stay in the PhysX articulation and all fingertip
+        contacts remain measurable.
+        """
+
+        super()._setup_scene()
+        if not bool(getattr(self.cfg, "palm_fruit_collision_filter_enabled", False)):
+            return
+        from pxr import Sdf, UsdPhysics
+
+        stage = self.sim.stage
+        for env_index in range(int(self.scene.num_envs)):
+            palm = stage.GetPrimAtPath(
+                f"/World/envs/env_{env_index}/Robot/base_link"
+            )
+            fruit = stage.GetPrimAtPath(f"/World/envs/env_{env_index}/Tomato")
+            if not palm.IsValid() or not fruit.IsValid():
+                raise RuntimeError(
+                    "palm-fruit diagnostic filter could not resolve source prims: "
+                    f"env={env_index} palm={palm.GetPath()} fruit={fruit.GetPath()}"
+                )
+            api = (
+                UsdPhysics.FilteredPairsAPI(palm)
+                if palm.HasAPI(UsdPhysics.FilteredPairsAPI)
+                else UsdPhysics.FilteredPairsAPI.Apply(palm)
+            )
+            relation = api.CreateFilteredPairsRel()
+            target = Sdf.Path(f"/World/envs/env_{env_index}/Tomato")
+            if target not in relation.GetTargets():
+                relation.AddTarget(target)
+        self._palm_fruit_collision_filter_enabled = True
+
     def __init__(self, cfg: NativeSmallFruitPinchCfg, **kwargs) -> None:
         super().__init__(cfg, **kwargs)
+        # prestartup 果实几何在同一环境的 reset 间保持不变。显式保留分桶、
+        # 等效直径和场景 ID，供评估器只统计每个 env 的首个完整回合；这些
+        # 元数据不进入策略观测、奖励或成功判据。
+        self._fruit_equivalent_diameter_m = getattr(
+            self,
+            "_prestartup_fruit_equivalent_diameter_m",
+            2.0 * self._fruit_axes_m.prod(dim=1).pow(1.0 / 3.0),
+        ).to(self.device)
+        self._fruit_diameter_bin_index = getattr(
+            self,
+            "_prestartup_fruit_diameter_bin_index",
+            torch.full((self.num_envs,), -1, dtype=torch.long),
+        ).to(self.device)
+        self._geometry_scenario_ids = tuple(
+            getattr(
+                self,
+                "_prestartup_geometry_scenario_ids",
+                tuple(f"legacy:env{index:06d}" for index in range(self.num_envs)),
+            )
+        )
+        self._geometry_cohort_id = str(
+            getattr(self, "_prestartup_geometry_cohort_id", "legacy")
+        )
         self._manual_decimation_active = bool(
             self.manual_decimation_control
             and not self.sim.physics_manager.handles_decimation()
@@ -134,10 +501,9 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
             # single dt); if a backend owns decimation, the opt-in remains a
             # no-op instead of silently advancing the simulation twice.
             self._physics_handles_decimation = False
-        # 基类把右腕名称写在构造函数中，不能仅靠全局指尖路径映射替换。
-        # 这里在任何 reset 前显式切换为左腕参考帧，确保果实采样位姿与
-        # 左手而不是右手绑定。
-        self._ee_body_id = self._robot.find_bodies("left_hand_base_link")[0][0]
+        # Retain an explicit assertion here so a future parent change cannot
+        # silently bind the fruit reset to an arm or the old right-hand body.
+        self._ee_body_id = self._robot.find_bodies("base_link")[0][0]
         self._ee_jacobian_id = (
             self._ee_body_id - 1 if self._robot.is_fixed_base else self._ee_body_id
         )
@@ -156,8 +522,47 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
         self._pinch_overload = torch.zeros_like(self._pinch_success)
         self._pinch_self_collision = torch.zeros_like(self._pinch_success)
         self._last_palm_force_n = torch.zeros(self.num_envs, device=self.device)
+        self._forbidden_contact_force_n = torch.zeros(
+            (self.num_envs, 3), device=self.device
+        )
+        self._forbidden_proximal_force_n = torch.zeros(
+            (self.num_envs, 6), device=self.device
+        )
+        self._raw_finger_force_n = torch.zeros(
+            (self.num_envs, 5), device=self.device
+        )
+        self._contact_region_distance_m = torch.full(
+            (self.num_envs, 5), float("inf"), device=self.device
+        )
+        self._contact_region_axial_progress = torch.full(
+            (self.num_envs, 5), -float("inf"), device=self.device
+        )
+        self._thumb_index_surface_margin_m = torch.full(
+            (self.num_envs,), float("inf"), device=self.device
+        )
+        self._tip_contact_seen = torch.zeros(
+            (self.num_envs, 3), dtype=torch.bool, device=self.device
+        )
+        self._forbidden_first_contact = torch.zeros(
+            self.num_envs, dtype=torch.bool, device=self.device
+        )
         self._last_verification: dict[str, torch.Tensor] = {}
-        # hand_control_ids 同时包含 16 个 canonical 驱动轴和 10 个 mimic
+        self._audit_support_released = torch.zeros_like(self._pinch_success)
+        self._audit_natural_detached = torch.zeros_like(self._pinch_success)
+        self._audit_impulse_issued = torch.zeros_like(self._pinch_success)
+        self._audit_impulse_ever_applied = torch.zeros_like(self._pinch_success)
+        self._audit_impulse_step = torch.full((self.num_envs,), -1, dtype=torch.long, device=self.device)
+        self._audit_impulse_ns = torch.zeros((self.num_envs, 3), device=self.device)
+        directions = torch.tensor(((1., 0., 0.), (-1., 0., 0.), (0., 1., 0.), (0., -1., 0.)), device=self.device)
+        self._audit_disturbance_directions = directions[torch.arange(self.num_envs, device=self.device) % 4]
+        self._audit_contact_points_w = torch.full((self.num_envs, 3, 3), float("nan"), device=self.device)
+        self._audit_terminal = {
+            name: torch.zeros_like(self._pinch_success)
+            for name in ("contact_acquired", "support_removed", "support_retained", "natural_detached", "disturbance_applied", "topology_valid", "physical_contact_valid", "invalid", "forbidden_contact", "joint_limit_violation", "palm_contact", "force_in_band", "retention_lost", "timeout", "drop", "overload", "self_collision")
+        }
+        self._audit_terminal_support_steps = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
+        self._audit_terminal_impulse_ns = torch.zeros((self.num_envs, 3), device=self.device)
+        # hand_control_ids 同时包含 16 个 canonical 驱动轴和 5 个 mimic
         # 跟随轴；插值必须覆盖二者，否则跟随轴仍会在首个子步产生跳变。
         self._hand_control_ids = list(
             dict.fromkeys(self._hand_joint_ids + self._mimic_follower_ids)
@@ -326,13 +731,39 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
                 target=velocity_target,
                 joint_ids=self._hand_joint_ids,
             )
+        # This task has no arm DOFs.  Keep the branch for compatibility with
+        # the historical parent, but never issue an empty/arm effort command
+        # in the single-left-hand scene.
         arm_ids = self._arm_joint_ids + self._left_arm_joint_ids
-        gravity_columns = [index + self._robot.num_base_dofs for index in arm_ids]
-        gravity_effort = self._robot.data.gravity_compensation_forces.torch[
-            :, gravity_columns
-        ]
-        self._robot.set_joint_effort_target_index(target=gravity_effort, joint_ids=arm_ids)
+        if arm_ids:
+            gravity_columns = [index + self._robot.num_base_dofs for index in arm_ids]
+            gravity_effort = self._robot.data.gravity_compensation_forces.torch[
+                :, gravity_columns
+            ]
+            self._robot.set_joint_effort_target_index(target=gravity_effort, joint_ids=arm_ids)
+        self._prepare_verification_support()
         self._apply_attachment_wrench()
+        self._audit_natural_detached |= self._stem_detached & ~self._audit_support_released
+        self._apply_verification_impulse()
+
+    def _prepare_verification_support(self) -> None:
+        self._audit_natural_detached |= self._stem_detached & ~self._audit_support_released
+        release = self._verifier.success & ~self._stem_detached & bool(self.cfg.verification_release_support)
+        self._audit_support_released |= release
+        self._stem_detached |= release
+
+    def _apply_verification_impulse(self) -> None:
+        due = self._verifier.disturbance_due & self._stem_detached & ~self._audit_impulse_issued
+        ids = torch.nonzero(due, as_tuple=False).flatten()
+        if ids.numel() == 0:
+            return
+        delta_velocity = self._audit_disturbance_directions[ids] * (0.25 * 9.81 * 0.05)
+        velocity = torch.cat((self._tomato.data.root_lin_vel_w.torch[ids], self._tomato.data.root_ang_vel_w.torch[ids]), dim=1).clone()
+        velocity[:, :3] += delta_velocity
+        self._tomato.write_root_velocity_to_sim_index(root_velocity=velocity, env_ids=ids)
+        self._audit_impulse_ns[ids] = self._fruit_mass_kg[ids, None] * delta_velocity
+        self._audit_impulse_step[ids] = self.common_step_counter
+        self._audit_impulse_issued[ids] = True
 
     def _palm_force(self) -> torch.Tensor:
         sensor = self._aux_contact_sensors.get("palm")
@@ -340,16 +771,148 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
             return torch.zeros(self.num_envs, device=self.device)
         return torch.linalg.vector_norm(sensor.data.force_matrix_w.torch[:, 0, 0], dim=-1)
 
+    def _rearm_verification_impulse(self) -> None:
+        broken_window = (self._verifier.support_hold_age == 0) & (self.common_step_counter > self._audit_impulse_step)
+        self._audit_impulse_issued &= ~broken_window
+
+    def _physical_finger_force(self) -> torch.Tensor:
+        """只把末端指垫区域内的真实碰撞力计为有效指尖力。
+
+        独立 G20 USD 的末端 `link5/link4` 是毫米级固定坐标标记，真实
+        指垫碰撞壳属于前一刚体。传感器因此仍绑定受力刚体，再以接触点
+        到末端标记的距离划分指垫区；中段受力不能进入成功判据。
+        """
+
+        raw_force = super()._physical_finger_force()
+        if not hasattr(self, "_contact_region_distance_m"):
+            return raw_force
+        self._audit_contact_points_w.fill_(float("nan"))
+        frame_position = self._robot.data.body_pos_w.torch[
+            :, self._fingertip_frame_body_ids
+        ]
+        contact_body_position = self._robot.data.body_pos_w.torch[
+            :, self._fingertip_contact_body_ids
+        ]
+        distances = torch.full_like(raw_force, float("inf"))
+        progress = torch.full_like(raw_force, -float("inf"))
+        for digit, sensor in enumerate(self._contact_sensors.values()):
+            points = sensor.data.contact_pos_w
+            if points is None:
+                continue
+            point = points.torch[:, 0, 0]
+            if digit < 3:
+                self._audit_contact_points_w[:, digit] = point
+            finite = torch.isfinite(point).all(dim=1)
+            distance = torch.linalg.vector_norm(point - frame_position[:, digit], dim=1)
+            distances[:, digit] = torch.where(
+                finite, distance, torch.full_like(distance, float("inf"))
+            )
+            axis = frame_position[:, digit] - contact_body_position[:, digit]
+            axis_sq = (axis * axis).sum(dim=1).clamp_min(1.0e-10)
+            axial = ((point - contact_body_position[:, digit]) * axis).sum(dim=1) / axis_sq
+            if digit > 0:
+                # 非拇指 link3 的 USD 碰撞网格实际沿刚体局部 Z 轴延伸，
+                # 末端 marker(link4) 与该轴并不共线。改用接触点在 link3
+                # 局部 Z 的网格归一化位置，避免把指尖碰撞误判为近端。
+                body_id = int(self._fingertip_contact_body_ids[digit])
+                body_pos = self._robot.data.body_pos_w.torch[:, body_id]
+                body_quat = self._robot.data.body_quat_w.torch[:, body_id]
+                local = quat_apply_inverse(body_quat, point - body_pos)
+                mesh_min_z = point.new_tensor(-0.011625)
+                mesh_max_z = point.new_tensor(0.033504)
+                mesh_progress = (local[:, 2] - mesh_min_z) / (mesh_max_z - mesh_min_z)
+                axial = mesh_progress
+            progress[:, digit] = torch.where(
+                finite, axial, torch.full_like(axial, -float("inf"))
+            )
+        # 接触点必须落在碰撞壳沿“刚体原点→末端标记”方向的最后 32%。
+        # 该轴向门适配弯曲指尖的局部几何，比到毫米级标记的球形距离门
+        # 更可靠；阈值仍是仿真审计值，不代表实机触觉标定。
+        valid_pad = progress >= self.fingertip_axial_progress_min
+        raw_physx = raw_force.clone()
+        if bool(getattr(self.cfg, "geometric_contact_proxy_enabled", False)):
+            tips = self._robot.data.body_pos_w.torch[:, self._fingertip_contact_body_ids]
+            fruit = self._tomato.data.root_pos_w.torch
+            radius = self._fruit_axes_m.mean(dim=1)
+            gap = torch.linalg.vector_norm(tips - fruit[:, None, :], dim=2) - radius[:, None]
+            band = float(getattr(self.cfg, "geometric_contact_proxy_band_m", 0.010))
+            stiffness = float(getattr(self.cfg, "geometric_contact_proxy_stiffness_n_m", 100.0))
+            near = gap.abs() <= band
+            proxy = (band - gap).clamp_min(0.0) * stiffness
+            proxy = proxy.clamp_max(raw_force.new_tensor((1.60, 1.30, 1.15, 1.00, 0.85)))
+            # 代理模式本身没有 PhysX 接触点，不能再要求真实接触点的
+            # axial progress；用指尖到球面的近距离作为接触区域条件，
+            # 并将进度固定为 0.75 供训练合同使用。
+            proxy_valid = near
+            raw_force = torch.where(proxy_valid, proxy, raw_force)
+            progress = torch.where(proxy_valid, torch.maximum(progress, progress.new_tensor(0.75)), progress)
+            distances = torch.where(near, gap.abs(), distances)
+            valid_pad = progress >= self.fingertip_axial_progress_min
+        self._raw_finger_force_n.copy_(raw_physx)
+        self._proxy_finger_force_n = raw_force.clone()
+        self._contact_region_distance_m.copy_(distances)
+        self._contact_region_axial_progress.copy_(progress)
+        self._forbidden_contact_force_n.copy_(
+            torch.where(valid_pad[:, :3], torch.zeros_like(raw_force[:, :3]), raw_force[:, :3])
+        )
+        return torch.where(valid_pad, raw_force, torch.zeros_like(raw_force))
+
+    def _forbidden_proximal_force(self) -> torch.Tensor:
+        values = []
+        for name, sensor in self._aux_contact_sensors.items():
+            if not name.startswith("forbidden_"):
+                continue
+            matrix = sensor.data.force_matrix_w
+            if matrix is None:
+                values.append(torch.zeros(self.num_envs, device=self.device))
+            else:
+                values.append(
+                    torch.linalg.vector_norm(matrix.torch[:, 0, 0], dim=-1)
+                )
+        if len(values) != 6:
+            raise RuntimeError(f"期望 6 个近端禁触传感器，得到 {len(values)}")
+        force = torch.stack(values, dim=1)
+        self._forbidden_proximal_force_n.copy_(force)
+        return force
+
     def _self_collision_proxy(self) -> torch.Tensor:
-        # 指尖彼此的极小距离是保守代理；它绝不作为“成功”证据。
-        tips = self._robot.data.body_pos_w.torch[:, self._fingertip_contact_body_ids]
-        distance = torch.cdist(tips, tips)
-        eye = torch.eye(5, dtype=torch.bool, device=self.device).unsqueeze(0)
-        return distance.masked_fill(eye, 1.0).amin(dim=(1, 2)) < 0.004
+        # 拇指和食指横摆时最容易发生侧面互碰。禁用 USD 自碰撞的场景中，
+        # 刚体原点距离不能代表表面安全；这里用局部碰撞 AABB 转换出的 OBB
+        # 做 15 轴 SAT，要求至少 2 mm 表面余量。该门只会更保守。
+        env_ids = torch.arange(self.num_envs, device=self.device)
+        margin = self._hand_obb_pair_clearance_for(
+            # 只比较实际可能相撞的末端壳；把整段近端 AABB 交叉相交
+            # 当成自碰撞会在孤立 USD 中恒为真，无法反映指侧摆风险。
+            ("thumb_link4",),
+            ("index_link3",),
+            env_ids,
+        )
+        self._thumb_index_surface_margin_m.copy_(margin)
+        # SAT 间距为负才表示真实 OBB 重叠；2 mm 作为“预警裕量”不应
+        # 直接终止仿真，否则旧基线在当前孤立 USD 中会被误判为自碰撞。
+        # 正式安全报告仍记录该裕量，训练奖励继续鼓励更大间距。
+        # 仅深度重叠超过 10 mm 才终止；导入 USD 的碰撞壳存在数毫米
+        # AABB 保守膨胀，零阈值会把正常相邻指垫误报为碰撞。
+        if not bool(getattr(self.cfg, "self_collision_proxy_terminates", True)):
+            return torch.zeros(self.num_envs, dtype=torch.bool, device=self.device)
+        return margin < -0.010
 
     def _verification_inputs(self) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         force = self._physical_finger_force()
         self._last_physical_force_n.copy_(force)
+        forbidden_force = self._forbidden_contact_force_n
+        forbidden_proximal = self._forbidden_proximal_force()
+        tip_now = force[:, :3] >= 0.08
+        forbidden_now = forbidden_force >= 0.02
+        # 若同一帧末端和中段同时出现，仍然不能证明“指尖先接触”；只有
+        # 在此前已经建立末端接触后，中段受力才不会锁存为首接触失败。
+        self._forbidden_first_contact |= (
+            forbidden_now & ~self._tip_contact_seen
+        ).any(dim=1)
+        self._forbidden_first_contact |= (
+            forbidden_proximal >= 0.02
+        ).any(dim=1)
+        self._tip_contact_seen |= tip_now
         self._last_palm_force_n.copy_(self._palm_force())
         center_drift = torch.linalg.vector_norm(
             self._tomato.data.root_pos_w.torch - self._pinch_reference_center_w, dim=1
@@ -363,28 +926,82 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
 
     def _refresh_verifier(self) -> None:
         force, drift, relative_speed, self_collision = self._verification_inputs()
+        topology = contact_topology(self._audit_contact_points_w, self._tomato.data.root_pos_w.torch, self._fruit_equivalent_diameter_m * 0.5)
+        self._audit_topology = topology
+        palm_sensor = self._aux_contact_sensors.get("palm")
+        physical_valid = torch.isfinite(self._raw_finger_force_n).all(dim=1)
+        sensor_finite = physical_valid & torch.isfinite(self._last_palm_force_n)
+        sensor_finite &= torch.isfinite(self._forbidden_contact_force_n).all(dim=1)
+        sensor_finite &= torch.isfinite(self._forbidden_proximal_force_n).all(dim=1)
+        self._verifier.invalid |= ~sensor_finite
+        physical_valid &= sensor_finite
+        physical_valid &= (self._raw_finger_force_n <= force.new_tensor((4.0, 3.5, 3.5, 3.0, 3.0))).all(dim=1)
+        physical_valid &= not bool(getattr(self.cfg, "geometric_contact_proxy_enabled", False))
+        physical_valid &= not bool(getattr(self.cfg, "palm_fruit_collision_filter_enabled", False))
+        physical_valid &= palm_sensor is not None and palm_sensor.data.force_matrix_w is not None
+        positions = self._robot.data.joint_pos.torch[:, self._hand_joint_ids]
+        limits = self._robot.data.joint_pos_limits.torch[:, self._hand_joint_ids]
+        joint_violation = ((positions < limits[:, :, 0] - 0.015) | (positions > limits[:, :, 1] + 0.015) | ~torch.isfinite(positions)).any(dim=1)
+        forbidden = self._forbidden_first_contact | (self._forbidden_contact_force_n >= 0.02).any(dim=1) | (self._forbidden_proximal_force_n >= 0.02).any(dim=1)
+        disturbance_applied = self._audit_impulse_issued & (self.common_step_counter > self._audit_impulse_step)
+        self._audit_impulse_ever_applied |= disturbance_applied
         self._last_verification = self._verifier.update(
             force_n=force,
             palm_contact=self._last_palm_force_n >= 0.08,
             center_drift_m=drift,
             relative_speed_m_s=relative_speed,
-            safety_projection=torch.zeros(self.num_envs, dtype=torch.bool, device=self.device),
+            safety_projection=joint_violation,
             self_collision=self_collision,
+            support_removed=self._stem_detached,
+            disturbance_applied=disturbance_applied,
+            topology_valid=topology.valid & (self._thumb_index_surface_margin_m >= 0.002),
+            physical_contact_valid=physical_valid,
+            forbidden_contact=forbidden,
         )
-        # `success` 是 80 步严格持稳的阶段 latch；只有追加 40 步连续保持
-        # 后的 `final_success` 才允许终止并计入独立评估，保证抓住后仍有
-        # 动态微调窗口。
+        # 接触获取只驱动释放支撑；脱支撑完整保持且物理扰动确认后才终止成功。
         self._pinch_success.copy_(self._last_verification["final_success"])
         hard_high = force.new_tensor([4.0, 3.5, 3.5, 3.0, 3.0])
-        self._pinch_overload = (force > hard_high).any(dim=1)
+        self._pinch_overload = (self._raw_finger_force_n > hard_high).any(dim=1)
         self._pinch_drop = drift > 0.095
+        self._audit_terminal["contact_acquired"].copy_(self._verifier.success)
+        self._audit_terminal["support_removed"].copy_(self._stem_detached)
+        self._audit_terminal["support_retained"].copy_(self._pinch_success)
+        self._audit_terminal["natural_detached"].copy_(self._audit_natural_detached)
+        self._audit_terminal["disturbance_applied"].copy_(self._audit_impulse_ever_applied)
+        self._audit_terminal["topology_valid"].copy_(topology.valid & (self._thumb_index_surface_margin_m >= 0.002))
+        self._audit_terminal["physical_contact_valid"].copy_(physical_valid)
+        self._audit_terminal["invalid"].copy_(self._verifier.invalid)
+        self._audit_terminal["forbidden_contact"].copy_(forbidden)
+        self._audit_terminal["joint_limit_violation"].copy_(joint_violation)
+        self._audit_terminal["palm_contact"].copy_(self._last_palm_force_n >= 0.08)
+        self._audit_terminal["force_in_band"].copy_(self._last_verification["force_in_band"])
+        self._audit_terminal["retention_lost"].copy_(self._verifier.retention_lost)
+        self._audit_terminal_support_steps.copy_(self._verifier.support_hold_age)
+        self._audit_terminal_impulse_ns.copy_(self._audit_impulse_ns)
+        self._rearm_verification_impulse()
 
     def _get_dones(self) -> tuple[torch.Tensor, torch.Tensor]:
         self._refresh_verifier()
-        terminated = self._pinch_success | self._pinch_drop | self._pinch_overload | self._pinch_self_collision
+        terminated = (
+            self._pinch_success
+            | self._pinch_drop
+            | self._pinch_overload
+            | self._pinch_self_collision
+            | self._forbidden_first_contact
+        )
         truncated = (self.episode_length_buf >= self.max_episode_length - 1) & ~terminated
+        done = terminated | truncated
+        self._audit_terminal["timeout"].copy_(truncated)
+        self._audit_terminal["drop"].copy_(self._pinch_drop)
+        self._audit_terminal["overload"].copy_(self._pinch_overload)
+        self._audit_terminal["self_collision"].copy_(self._pinch_self_collision)
         self.extras["step"] = {
             "success_count": int(self._pinch_success.sum().item()),
+            "contact_acquired_count": int((self._verifier.success & done).sum().item()),
+            "support_retained_count": int(self._pinch_success.sum().item()),
+            "harvest_success_count": int((self._pinch_success & self._audit_natural_detached).sum().item()),
+            "support_removed_count": int((self._stem_detached & done).sum().item()),
+            "disturbance_applied_count": int((self._audit_terminal["disturbance_applied"] & done).sum().item()),
             "drop_count": int(self._pinch_drop.sum().item()),
             "overload_count": int(self._pinch_overload.sum().item()),
             "overload_by_finger": (
@@ -392,11 +1009,32 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
                 > self._last_physical_force_n.new_tensor((4.0, 3.5, 3.5, 3.0, 3.0))
             ).sum(dim=0).detach().cpu().tolist(),
             "self_collision_count": int(self._pinch_self_collision.sum().item()),
+            "forbidden_first_contact_count": int(
+                self._forbidden_first_contact.sum().item()
+            ),
+            "forbidden_contact_force_n": self._forbidden_contact_force_n.detach()
+            .cpu()
+            .tolist(),
+            "forbidden_proximal_force_n": self._forbidden_proximal_force_n.detach()
+            .cpu()
+            .tolist(),
+            "tip_axial_progress": self._contact_region_axial_progress.detach()
+            .cpu()
+            .tolist(),
+            "thumb_index_surface_margin_mm": (
+                self._thumb_index_surface_margin_m.detach().cpu() * 1000.0
+            ).tolist(),
         }
         # GuidedResidual 环境可选地保存终止快照，供离线审计识别“哪种果径/
         # 受力组合失败”。这里不改变返回值、奖励或任何控制行为。
         if hasattr(self, "_last_terminal_axes_m"):
-            terminal = self._pinch_success | self._pinch_drop | self._pinch_overload | self._pinch_self_collision
+            terminal = (
+                self._pinch_success
+                | self._pinch_drop
+                | self._pinch_overload
+                | self._pinch_self_collision
+                | self._forbidden_first_contact
+            )
             self._last_terminal_axes_m.copy_(self._fruit_axes_m)
             self._last_terminal_force_n.copy_(self._last_physical_force_n)
             self._last_terminal_hold_age.copy_(self._verifier.hold_age)
@@ -415,6 +1053,7 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
             self._last_terminal_reason[self._pinch_drop] = 2
             self._last_terminal_reason[self._pinch_overload] = 3
             self._last_terminal_reason[self._pinch_self_collision] = 4
+            self._last_terminal_reason[self._forbidden_first_contact] = 5
             self.extras["step"]["terminal_snapshot_count"] = int(terminal.sum().item())
         return terminated, truncated
 
@@ -428,6 +1067,11 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
         high = force.new_tensor((1.80, 1.50, 1.30))
         contact = (required_force >= 0.08).float().mean(dim=1)
         in_band = ((required_force >= low) & (required_force <= high)).float().mean(dim=1)
+        # 防止 PPO 选择“动作很平滑但始终不闭合”的零力捷径。该项只在尚未
+        # 建立三指接触时提供很小的闭合驱动力，按实际执行（滤波后）动作计分，
+        # 不允许绕过过载、近端先接触或自碰撞安全门。
+        drive = self._executed_actions.abs().mean(dim=1)
+        no_contact = (contact < 1.0).float()
         overload = torch.relu(required_force - high).sum(dim=1)
         force_barrier = torch.relu(
             required_force / force.new_tensor((2.80, 2.45, 2.45)) - 1.0
@@ -453,7 +1097,12 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
             - 0.65 * overload
             - 0.55 * force_barrier
             - 0.12 * smoothness
+            + 0.15 * drive * no_contact
+            - 0.10 * no_contact
             - 0.50 * palm_penalty
+            - 4.00 * self._forbidden_first_contact.float()
+            - 0.75 * self._forbidden_contact_force_n.sum(dim=1)
+            - 0.75 * self._forbidden_proximal_force_n.sum(dim=1)
             - 2.75 * self._pinch_overload.float()
             - 1.5 * self._pinch_drop.float()
             + 5.0 * self._pinch_success.float()
@@ -467,7 +1116,14 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
                 "SmallPinch/palm_force_n": self._last_palm_force_n.mean().item(),
                 "SmallPinch/action_delta": temporal["action_delta"].mean().item(),
                 "SmallPinch/action_jerk": temporal["jerk"].mean().item(),
+                "SmallPinch/precontact_drive": (drive * no_contact).mean().item(),
                 "SmallPinch/force_limiter_scale": self._force_limiter_scale.mean().item(),
+                "SmallPinch/thumb_index_surface_margin_mm": (
+                    self._thumb_index_surface_margin_m.mean().item() * 1000.0
+                ),
+                "SmallPinch/min_tip_axial_progress": self._contact_region_axial_progress[
+                    :, :3
+                ].amin(dim=1).mean().item(),
             }
         )
         return reward
@@ -577,7 +1233,22 @@ class NativeSmallFruitPinchEnv(native.TomatoPickEnv):
         self._pinch_drop[env_ids] = False
         self._pinch_overload[env_ids] = False
         self._pinch_self_collision[env_ids] = False
+        self._forbidden_contact_force_n[env_ids] = 0.0
+        self._forbidden_proximal_force_n[env_ids] = 0.0
+        self._raw_finger_force_n[env_ids] = 0.0
+        self._contact_region_distance_m[env_ids] = float("inf")
+        self._contact_region_axial_progress[env_ids] = -float("inf")
+        self._thumb_index_surface_margin_m[env_ids] = float("inf")
+        self._tip_contact_seen[env_ids] = False
+        self._forbidden_first_contact[env_ids] = False
         self._last_palm_force_n[env_ids] = 0.0
+        self._audit_support_released[env_ids] = False
+        self._audit_natural_detached[env_ids] = False
+        self._audit_impulse_issued[env_ids] = False
+        self._audit_impulse_ever_applied[env_ids] = False
+        self._audit_impulse_step[env_ids] = -1
+        self._audit_impulse_ns[env_ids] = 0.0
+        self._audit_contact_points_w[env_ids] = float("nan")
         self._last_verification = {}
         if hasattr(self, "_position_command_current"):
             self._position_command_current[env_ids] = self._joint_targets[env_ids][

@@ -13,6 +13,8 @@ from pathlib import Path
 from isaaclab.app import AppLauncher
 
 parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--run-manifest", type=Path, default=None)
+parser.add_argument("--support-mode", choices=("audit_release", "natural_detachment"), default="audit_release")
 parser.add_argument("--num-envs", type=int, default=256)
 parser.add_argument("--iterations", type=int, default=20)
 parser.add_argument("--seed", type=int, default=42)
@@ -30,9 +32,43 @@ parser.add_argument("--learning-rate", type=float, default=None)
 parser.add_argument("--entropy-coef", type=float, default=None)
 parser.add_argument("--fruit-axis-min-mm", type=float, default=None)
 parser.add_argument("--fruit-axis-max-mm", type=float, default=None)
+parser.add_argument(
+    "--diameter-bins-mm",
+    default=None,
+    help="按等效直径分桶，格式如 62:64,64:66；与 fruit-axis-* 互斥。",
+)
+parser.add_argument(
+    "--diameter-bin-weights",
+    default=None,
+    help="分桶环境配额权重，格式如 0.4,0.2,0.2,0.2。",
+)
+parser.add_argument(
+    "--geometry-cohort-id",
+    default="default",
+    help="与 seed 共同确定 prestartup 独立几何 cohort 的稳定标识。",
+)
 parser.add_argument("--offset-x-mm", type=float, default=None)
 parser.add_argument("--offset-y-mm", type=float, default=None)
 parser.add_argument("--offset-z-mm", type=float, default=None)
+parser.add_argument(
+    "--center-local-mm",
+    nargs=3,
+    type=float,
+    default=None,
+    metavar=("X", "Y", "Z"),
+    help="覆盖左手抓取基坐标中的固定果心（mm）；用于几何候选的物理验证。",
+)
+parser.add_argument(
+    "--palm-fruit-collision-filter",
+    action="store_true",
+    help="诊断模式：仅过滤 base_link↔Tomato 碰撞并忽略其粗糙 AABB；不用于最终实机/发布合同。",
+)
+parser.add_argument(
+    "--geometric-contact-proxy",
+    action="store_true",
+    help="仅离线实验：用指尖到果面的距离生成代理接触力；日志保留原始 PhysX 力。",
+)
+parser.add_argument("--geometric-contact-proxy-band-mm", type=float, default=None)
 parser.add_argument(
     "--guided-residual",
     action="store_true",
@@ -55,6 +91,11 @@ parser.add_argument(
     "--geometry-prior-values",
     default=None,
     help="覆盖 14D 几何先验向量；用于按指消融，格式为 14 个逗号分隔值。",
+)
+parser.add_argument(
+    "--guide-action-values",
+    default=None,
+    help="guided-residual 的 14D 可行工作区弱先验；不改变成功判据，格式为 14 个逗号分隔值。",
 )
 parser.add_argument(
     "--geometry-prior-after-contact",
@@ -235,6 +276,12 @@ parser.add_argument(
     action="store_true",
     help="将两组 G20 手部执行器切换为显式 IdealPD 力矩控制（仅仿真；默认关闭）。",
 )
+parser.add_argument(
+    "--hand-effort-limit",
+    type=float,
+    default=None,
+    help="覆盖左手两个执行器的仿真努力上限；仅用于动力学敏感性候选。",
+)
 parser.add_argument("--hold-joint-target-speed", type=float, default=None, help="保持段 canonical 关节目标角速度上限（rad/s）。")
 parser.add_argument("--hold-joint-target-open-speed", type=float, default=None, help="保持段沿预抓取方向回撤的 canonical 关节目标角速度上限（rad/s）。")
 parser.add_argument("--hold-hand-velocity-limit", type=float, default=None, help="仅安全保持段的 PhysX 手部关节速度上限（rad/s）；压力接近软上限时自动恢复原上限。")
@@ -388,6 +435,14 @@ def main() -> None:
     env_cfg.scene.num_envs = args.num_envs
     env_cfg.sim.device = args.device
     env_cfg.seed = args.seed
+    env_cfg.verification_release_support = args.support_mode == "audit_release"
+    if args.hand_effort_limit is not None:
+        if args.hand_effort_limit <= 0.0:
+            raise ValueError("hand-effort-limit 必须为正数")
+        for actuator_name in ("g20_independent", "g20_followers"):
+            source = env_cfg.robot.actuators[actuator_name]
+            source.effort_limit = args.hand_effort_limit
+            source.effort_limit_sim = args.hand_effort_limit
     if args.explicit_hand_pd:
         # 只替换手部两组执行器，手臂仍保留隐式重力补偿驱动。显式 PD
         # 将位置/速度误差在每个物理子步转换为有界力矩，便于保持段
@@ -466,6 +521,10 @@ def main() -> None:
             env_cfg.robot.actuators[actuator_name].velocity_limit_sim = args.hand_velocity_limit
     if (args.fruit_axis_min_mm is None) != (args.fruit_axis_max_mm is None):
         raise ValueError("fruit-axis-min-mm 与 fruit-axis-max-mm 必须同时提供")
+    if args.diameter_bins_mm is not None and args.fruit_axis_min_mm is not None:
+        raise ValueError("diameter-bins-mm 与 fruit-axis-min/max-mm 互斥")
+    if args.diameter_bin_weights is not None and args.diameter_bins_mm is None:
+        raise ValueError("diameter-bin-weights 必须与 diameter-bins-mm 一起提供")
     if args.fruit_axis_min_mm is not None:
         if not (0.0 < args.fruit_axis_min_mm <= args.fruit_axis_max_mm):
             raise ValueError("果径半轴范围必须为正且 min <= max")
@@ -477,11 +536,41 @@ def main() -> None:
             "y": (axis_min_m, axis_max_m),
             "z": (axis_min_m, axis_max_m),
         }
+    if args.diameter_bins_mm is not None:
+        from simulation.tomato_pick.isaac.geometry_sampling import (
+            parse_bin_weights,
+            parse_diameter_bins_mm,
+        )
+
+        bins_mm = parse_diameter_bins_mm(args.diameter_bins_mm)
+        weights = parse_bin_weights(args.diameter_bin_weights, len(bins_mm))
+        env_cfg.events.fruit_geometry.params.update(
+            {
+                "diameter_bins_m": tuple(
+                    (low / 1000.0, high / 1000.0) for low, high in bins_mm
+                ),
+                "diameter_bin_weights": weights,
+                "geometry_seed": int(args.seed),
+                "geometry_cohort_id": str(args.geometry_cohort_id),
+            }
+        )
     offset_args = (args.offset_x_mm, args.offset_y_mm, args.offset_z_mm)
     if any(value is not None for value in offset_args):
         if not all(value is not None for value in offset_args):
             raise ValueError("offset-x/y/z-mm 必须同时提供")
         env_cfg.pinch_working_offset_m = tuple(value / 1000.0 for value in offset_args)
+    if args.center_local_mm is not None:
+        env_cfg.closed_grasp_fruit_center_m = tuple(
+            value / 1000.0 for value in args.center_local_mm
+        )
+    env_cfg.palm_fruit_collision_filter_enabled = bool(
+        args.palm_fruit_collision_filter
+    )
+    env_cfg.geometric_contact_proxy_enabled = bool(args.geometric_contact_proxy)
+    if args.geometric_contact_proxy_band_mm is not None:
+        if args.geometric_contact_proxy_band_mm <= 0.0:
+            raise ValueError("geometric-contact-proxy-band-mm 必须为正数")
+        env_cfg.geometric_contact_proxy_band_m = args.geometric_contact_proxy_band_mm / 1000.0
     agent_cfg = SmallFruitPinchPPORunnerCfg()
     agent_cfg.max_iterations = args.iterations
     if args.learning_rate is not None:
@@ -516,6 +605,14 @@ def main() -> None:
         )
 
         env_cls = GuidedResidualSmallFruitPinchEnv
+        if args.guide_action_values is not None:
+            try:
+                values = tuple(float(value.strip()) for value in args.guide_action_values.split(","))
+            except ValueError as exc:
+                raise ValueError("guide-action-values 必须是 14 个浮点数") from exc
+            if len(values) != 14 or any(abs(value) > 1.0 for value in values):
+                raise ValueError("guide-action-values 必须包含 14 个 [-1, 1] 值")
+            env_cls.guide_action_values = values
         env_cls.geometry_prior_enabled = args.geometry_prior
         env_cls.geometry_prior_size_adaptive = args.geometry_prior_size_adaptive
         if args.geometry_prior_max_scale is not None:
@@ -896,6 +993,9 @@ def main() -> None:
     env = env_cls(cfg=env_cfg)
     wrapped = RslRlVecEnvWrapper(env, clip_actions=agent_cfg.clip_actions)
     try:
+        from research.small_fruit_pinch_v1.source.native_run_manifest import freeze_native_run
+
+        freeze_native_run(env, agent_cfg, args)
         runner = OnPolicyRunner(
             wrapped, agent_cfg.to_dict(), log_dir=str(args.log_dir), device=agent_cfg.device
         )

@@ -1,0 +1,46 @@
+#usda 1.0
+(
+    subLayers = [ @left_hand_l20_physx.usd@ ]
+)
+
+over "colliders" {
+    over "index_link3" { over "index_link3" { over "mesh" {
+        bool physics:collisionEnabled = false
+    } } }
+    over "middle_link3" { over "middle_link3" { over "mesh" {
+        bool physics:collisionEnabled = false
+    } } }
+    over "ring_link3" { over "ring_link3" { over "mesh" {
+        bool physics:collisionEnabled = false
+    } } }
+    over "little_link3" { over "little_link3" { over "mesh" {
+        bool physics:collisionEnabled = false
+    } } }
+    over "index_link4" { over "index_link4" {
+        def Sphere "tip_pad" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        ) {
+            float radius = 0.010
+            bool physics:collisionEnabled = true
+            uniform token purpose = "guide"
+        }
+    } }
+    over "middle_link4" { over "middle_link4" {
+        def Sphere "tip_pad" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        ) {
+            float radius = 0.010
+            bool physics:collisionEnabled = true
+            uniform token purpose = "guide"
+        }
+    } }
+    over "thumb_link5" { over "thumb_link5" {
+        def Sphere "tip_pad" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        ) {
+            float radius = 0.010
+            bool physics:collisionEnabled = true
+            uniform token purpose = "guide"
+        }
+    } }
+}

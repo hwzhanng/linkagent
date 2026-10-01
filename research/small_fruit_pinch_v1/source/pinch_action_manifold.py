@@ -16,7 +16,10 @@ from .legacy_bridge import load_legacy_hand_manifold
 
 PINCH_ACTION_DIM = 14
 _STRAIGHT_DISTAL_JOINTS = (12, 13, 14, 15)
-_DISTAL_RESIDUAL_SPAN_FRACTION = 0.25
+# 旧值 0.25 只能微调远端，实际 link3 碰撞壳较长时会由根部先碰球。
+# 提升到 0.50，使远端指垫可先卷入球面；仍由安全上下限裁剪，且近端
+# 禁触/过载判据保持不变。
+_DISTAL_RESIDUAL_SPAN_FRACTION = 0.50
 
 
 def pinch_action_to_joint_targets(action: torch.Tensor) -> torch.Tensor:

@@ -3,10 +3,17 @@
 from __future__ import annotations
 
 import math
+import re
 
 import torch
 
 import isaaclab.sim as sim_utils
+
+from .geometry_sampling import (
+    equivalent_diameter_m,
+    sample_stratified_ellipsoids,
+    stable_geometry_seed,
+)
 
 
 G20_PALM_MASS_FRACTION = 0.55
@@ -75,6 +82,81 @@ def validate_linkbot_mass_properties(
         "maximum_mass_error_kg": maximum_mass_error,
         "minimum_principal_inertia_kg_m2": minimum_inertia,
         "target_hand_mass_kg": target_hand_mass_kg,
+    }
+
+
+def validate_single_left_hand_topology(
+    root_prim_path: str,
+    *,
+    body_names: tuple[str, ...],
+    joint_names: tuple[str, ...],
+) -> dict[str, object]:
+    """Validate the isolated fixed-base left-hand training asset.
+
+    The old bimanual USD can be made visually left-only while still leaving
+    arm/right-hand rigid bodies in the PhysX scene.  This check is deliberately
+    strict and runs before sensors are registered: exactly one articulation
+    root, only the allow-listed hand bodies, and no arm/right-hand namespace.
+    It is a topology boundary, not a tunable performance gate.
+    """
+
+    from pxr import Usd, UsdPhysics
+    from isaaclab.sim.utils.stage import get_current_stage
+
+    root = get_current_stage().GetPrimAtPath(root_prim_path)
+    if not root.IsValid():
+        raise RuntimeError(f"single-left-hand root does not exist: {root_prim_path}")
+    allow_bodies = set(body_names)
+    actual_bodies = {
+        prim.GetName()
+        for prim in Usd.PrimRange(root)
+        if prim.HasAPI(UsdPhysics.RigidBodyAPI)
+    }
+    missing = sorted(allow_bodies - actual_bodies)
+    unexpected = sorted(actual_bodies - allow_bodies)
+    if missing or unexpected:
+        raise RuntimeError(
+            "single-left-hand body allowlist mismatch: "
+            f"missing={missing}, unexpected={unexpected}"
+        )
+    forbidden = re.compile(r"(?:right_hand|left_hand|(?:^|_)R[1-7]_Joint|(?:^|_)L[1-7]_Joint)")
+    forbidden_bodies = sorted(name for name in actual_bodies if forbidden.search(name))
+    if forbidden_bodies:
+        raise RuntimeError(f"single-left-hand scene contains forbidden body names: {forbidden_bodies}")
+
+    articulation_roots = [
+        prim.GetPath().pathString
+        for prim in Usd.PrimRange(root)
+        if prim.HasAPI(UsdPhysics.ArticulationRootAPI)
+    ]
+    if len(articulation_roots) != 1:
+        raise RuntimeError(
+            "single-left-hand scene must contain exactly one articulation root: "
+            f"{articulation_roots}"
+        )
+
+    allowed_joints = set(joint_names)
+    actual_joints = {
+        prim.GetName()
+        for prim in Usd.PrimRange(root)
+        if prim.IsA(UsdPhysics.Joint)
+    }
+    unexpected_joints = sorted(actual_joints - allowed_joints)
+    forbidden_joints = sorted(name for name in actual_joints if forbidden.search(name))
+    # Fixed fingertip joints and the world root joint are structural and are
+    # allowed in addition to the five software-mimic followers.
+    if forbidden_joints or not set(joint_names).issubset(actual_joints):
+        raise RuntimeError(
+            "single-left-hand joint allowlist mismatch: "
+            f"missing={sorted(allowed_joints - actual_joints)}, "
+            f"forbidden={forbidden_joints}, unexpected={unexpected_joints}"
+        )
+    return {
+        "valid": True,
+        "body_count": len(actual_bodies),
+        "joint_count": len(actual_joints),
+        "articulation_root": articulation_roots[0],
+        "forbidden_namespace_present": False,
     }
 
 
@@ -322,6 +404,49 @@ def extract_collision_aabbs_by_body(
             if previous is None
             else Gf.Range3d.GetUnion(previous, aligned)
         )
+    # Some standalone URDF-to-USD exports put CollisionAPI on an intermediate
+    # Xform while the actual mesh extent is authored on a descendant Gprim.
+    # In that layout the strict collision-only pass above finds no extent at
+    # all, even though PhysX has a valid collider.  Fill only the missing
+    # bodies from composed Gprim bounds.  This fallback is intentionally
+    # conservative (it may include a visual mesh) and is used for reset
+    # clearance only; it never changes collision geometry or runtime physics.
+    missing = requested.difference(bounds)
+    if missing:
+        body_prims = {
+            prim.GetName(): prim
+            for prim in Usd.PrimRange(root)
+            if prim.HasAPI(UsdPhysics.RigidBodyAPI) and prim.GetName() in missing
+        }
+        bbox_cache = UsdGeom.BBoxCache(
+            Usd.TimeCode.Default(),
+            [UsdGeom.Tokens.default_, UsdGeom.Tokens.render, UsdGeom.Tokens.proxy],
+            useExtentsHint=True,
+        )
+        for name, body in body_prims.items():
+            body_inverse = xforms.GetLocalToWorldTransform(body).GetInverse()
+            aggregate: Gf.Range3d | None = None
+            for prim in Usd.PrimRange(body, Usd.TraverseInstanceProxies()):
+                if not prim.IsA(UsdGeom.Gprim):
+                    continue
+                try:
+                    world_box = bbox_cache.ComputeWorldBound(prim)
+                    world_range = world_box.ComputeAlignedRange()
+                except Exception:
+                    continue
+                if world_range.IsEmpty():
+                    continue
+                local_box = Gf.BBox3d(world_range)
+                local_box.Transform(body_inverse)
+                aligned = local_box.ComputeAlignedRange()
+                aggregate = (
+                    aligned
+                    if aggregate is None
+                    else Gf.Range3d.GetUnion(aggregate, aligned)
+                )
+            if aggregate is not None:
+                bounds[name] = aggregate
+
     missing = requested.difference(bounds)
     if missing:
         raise RuntimeError(f"collision bounds missing for bodies: {sorted(missing)}")
@@ -373,6 +498,10 @@ def randomize_correlated_ellipsoid_geometry(
     density_range_kg_m3: tuple[float, float],
     accepted_mass_kg: tuple[float, float],
     maximum_axis_ratio: float,
+    diameter_bins_m: tuple[tuple[float, float], ...] | None = None,
+    diameter_bin_weights: tuple[float, ...] | None = None,
+    geometry_seed: int | None = None,
+    geometry_cohort_id: str = "legacy",
 ) -> None:
     """Author one ellipsoid per environment before physics starts.
 
@@ -392,33 +521,62 @@ def randomize_correlated_ellipsoid_geometry(
         [axis_ranges_m[name] for name in ("x", "y", "z")],
         dtype=torch.float32,
     )
-    axes = torch.empty((count, 3), dtype=torch.float32)
-    density = torch.empty(count, dtype=torch.float32)
-    accepted = torch.zeros(count, dtype=torch.bool)
-    for _ in range(64):
-        pending = (~accepted).nonzero(as_tuple=False).squeeze(-1)
-        if pending.numel() == 0:
-            break
-        samples = ranges[:, 0] + torch.rand((pending.numel(), 3)) * (
-            ranges[:, 1] - ranges[:, 0]
+    if diameter_bins_m is not None:
+        if diameter_bin_weights is None:
+            diameter_bin_weights = tuple(1.0 for _ in diameter_bins_m)
+        base_seed = int(getattr(env.cfg, "seed", 0) if geometry_seed is None else geometry_seed)
+        resolved_seed = stable_geometry_seed(base_seed, str(geometry_cohort_id))
+        sampled = sample_stratified_ellipsoids(
+            count,
+            diameter_bins_m=diameter_bins_m,
+            diameter_bin_weights=diameter_bin_weights,
+            shape_axis_ranges_m=tuple(
+                tuple(float(value) for value in axis_ranges_m[name])
+                for name in ("x", "y", "z")
+            ),
+            density_range_kg_m3=density_range_kg_m3,
+            accepted_mass_kg=accepted_mass_kg,
+            maximum_axis_ratio=maximum_axis_ratio,
+            seed=resolved_seed,
         )
-        sampled_density = density_range_kg_m3[0] + torch.rand(pending.numel()) * (
-            density_range_kg_m3[1] - density_range_kg_m3[0]
-        )
-        mass = 4.0 / 3.0 * math.pi * samples.prod(dim=1) * sampled_density
-        ratio = samples.max(dim=1).values / samples.min(dim=1).values
-        valid = (
-            (mass >= accepted_mass_kg[0])
-            & (mass <= accepted_mass_kg[1])
-            & (ratio <= maximum_axis_ratio)
-        )
-        if valid.any():
-            target_ids = pending[valid]
-            axes[target_ids] = samples[valid]
-            density[target_ids] = sampled_density[valid]
-            accepted[target_ids] = True
-    if not bool(accepted.all()):
-        raise RuntimeError("could not sample correlated tomato geometry in 64 attempts")
+        axes = sampled["axes_m"]
+        density = sampled["density_kg_m3"]
+        diameter_bin_index = sampled["bin_index"]
+        equivalent_diameter = sampled["equivalent_diameter_m"]
+        bin_quotas = sampled["bin_quotas"]
+    else:
+        axes = torch.empty((count, 3), dtype=torch.float32)
+        density = torch.empty(count, dtype=torch.float32)
+        accepted = torch.zeros(count, dtype=torch.bool)
+        # 窄尺寸域配合质量/密度约束时，4096 次只增加初始化重试，
+        # 不改变历史分布或物理参数。
+        for _ in range(4096):
+            pending = (~accepted).nonzero(as_tuple=False).squeeze(-1)
+            if pending.numel() == 0:
+                break
+            samples = ranges[:, 0] + torch.rand((pending.numel(), 3)) * (
+                ranges[:, 1] - ranges[:, 0]
+            )
+            sampled_density = density_range_kg_m3[0] + torch.rand(pending.numel()) * (
+                density_range_kg_m3[1] - density_range_kg_m3[0]
+            )
+            mass = 4.0 / 3.0 * math.pi * samples.prod(dim=1) * sampled_density
+            ratio = samples.max(dim=1).values / samples.min(dim=1).values
+            valid = (
+                (mass >= accepted_mass_kg[0])
+                & (mass <= accepted_mass_kg[1])
+                & (ratio <= maximum_axis_ratio)
+            )
+            if valid.any():
+                target_ids = pending[valid]
+                axes[target_ids] = samples[valid]
+                density[target_ids] = sampled_density[valid]
+                accepted[target_ids] = True
+        if not bool(accepted.all()):
+            raise RuntimeError("could not sample correlated tomato geometry in 4096 attempts")
+        diameter_bin_index = torch.full((count,), -1, dtype=torch.long)
+        equivalent_diameter = equivalent_diameter_m(axes)
+        bin_quotas = torch.empty(0, dtype=torch.long)
 
     prim_paths = sim_utils.find_matching_prim_paths(env.scene[asset_name].cfg.prim_path)
     if len(prim_paths) != count:
@@ -440,6 +598,15 @@ def randomize_correlated_ellipsoid_geometry(
 
     env._prestartup_fruit_axes_m = axes
     env._prestartup_fruit_density_kg_m3 = density
+    env._prestartup_fruit_equivalent_diameter_m = equivalent_diameter
+    env._prestartup_fruit_diameter_bin_index = diameter_bin_index
+    env._prestartup_fruit_diameter_bin_quotas = bin_quotas
+    env._prestartup_geometry_cohort_id = str(geometry_cohort_id)
+    scenario_seed = int(getattr(env.cfg, "seed", 0) if geometry_seed is None else geometry_seed)
+    env._prestartup_geometry_scenario_ids = tuple(
+        f"{geometry_cohort_id}:seed{scenario_seed}:env{index:06d}:bin{int(diameter_bin_index[index])}"
+        for index in range(count)
+    )
 
 
 __all__ = [

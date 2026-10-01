@@ -7,7 +7,7 @@ from research.small_fruit_pinch_v1.source.verifier import TimStrictVerifier
 from research.small_fruit_pinch_v1.source.guided_residual_env import GuidedResidualSmallFruitPinchEnv
 
 
-def _update(verifier: TimStrictVerifier, force: float, *, palm: bool = False):
+def _update(verifier: TimStrictVerifier, force: float, *, palm: bool = False, disturbance: bool = False):
     return verifier.update(
         force_n=torch.tensor([[force, force, force, 0.0, 0.0]]),
         palm_contact=torch.tensor([palm]),
@@ -15,6 +15,11 @@ def _update(verifier: TimStrictVerifier, force: float, *, palm: bool = False):
         relative_speed_m_s=torch.tensor([0.001]),
         safety_projection=torch.tensor([False]),
         self_collision=torch.tensor([False]),
+        support_removed=torch.tensor([True]),
+        disturbance_applied=torch.tensor([disturbance]),
+        topology_valid=torch.tensor([True]),
+        physical_contact_valid=torch.tensor([True]),
+        forbidden_contact=torch.tensor([False]),
     )
 
 
@@ -36,8 +41,8 @@ def test_success_requires_complete_hold_not_single_contact() -> None:
         state = _update(verifier, 0.5)
     assert not bool(state["success"].item())
     # 前两帧只用于接触迟滞确认，不得提前计入 80 步持稳窗。
-    for _ in range(72):
-        state = _update(verifier, 0.5)
+    for frame in range(72):
+        state = _update(verifier, 0.5, disturbance=frame == 32)
     assert bool(state["success"].item())
     assert not bool(state["final_success"].item())
     for _ in range(50):
@@ -59,6 +64,10 @@ def test_palm_shortcut_and_hard_overload_fail() -> None:
 
 def test_residual_trust_region_is_force_directional_and_all_contact_gated() -> None:
     env = object.__new__(GuidedResidualSmallFruitPinchEnv)
+    # 该测试只调用纯张量 helper，不应启动 Isaac 环境。显式标记为已关闭，
+    # 避免 DirectRLEnv.__del__ 在回收这个 object.__new__ 夹具时把缺失的
+    # 基类初始化字段误报成资源释放告警。
+    env._is_closed = True
     env.residual_trust_region_enabled = True
     env.residual_trust_warning_fraction = 0.60
     env.residual_trust_in_band_scale = 0.10

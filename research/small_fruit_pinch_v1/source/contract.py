@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Final
 
 
-TASK_VERSION = "small_fruit_pinch_v1.1.0"
+TASK_VERSION: Final = "small_fruit_pinch_v1.2.0"
+VERIFICATION_CONTRACT_VERSION: Final = "support_retention_v1"
 # 10D 历史动作 + 4D 直指远端残差（食/中/无名/小指）。
 ACTION_DIM = 14
 ACTOR_OBSERVATION_DIM = 114
@@ -41,7 +43,7 @@ FORCE_BANDS = (
 
 
 def validate_contract(*, action_dim: int, actor_dim: int, critic_dim: int) -> None:
-    """拒绝悄悄改变当前 v1.1 小果策略的训练张量接口。"""
+    """拒绝悄悄改变当前 v1.2 小果策略的训练张量接口。"""
 
     expected = (ACTION_DIM, ACTOR_OBSERVATION_DIM, CRITIC_STATE_DIM)
     actual = (int(action_dim), int(actor_dim), int(critic_dim))
