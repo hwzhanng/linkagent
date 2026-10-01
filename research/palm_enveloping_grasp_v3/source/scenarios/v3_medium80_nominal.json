@@ -1,0 +1,224 @@
+{
+  "schema_version": "palm_enveloping_scenario_v3.0",
+  "name": "v3_medium80_nominal",
+  "description": "80 mm isotropic test",
+  "hardware_command_allowed": false,
+  "task": {
+    "stage": 1,
+    "hand_only": true,
+    "arm_search_enabled": false,
+    "stem_enabled": false,
+    "palm_up_required": true,
+    "initial_position_jitter_m": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "object": {
+    "semi_axes_m": [
+      0.04,
+      0.04,
+      0.04
+    ],
+    "density_kg_m3": 850.0,
+    "accepted_mass_kg": [
+      0.05,
+      0.5
+    ],
+    "expected_mass_kg": 0.22787018714037968,
+    "friction": 0.7,
+    "restitution": 0.0,
+    "contact_stiffness_n_m": 9000.0,
+    "contact_offset_m": 0.0003,
+    "rest_offset_m": 0.0,
+    "reset_clearance_m": 0.001
+  },
+  "contact_geometry": {
+    "collision_source": "authored_proxy",
+    "proxy_attachment_mode": "fixed_body",
+    "physical_tip_radius_m": 0.006,
+    "fingertip_proxy_radius_m": 0.006,
+    "fingertip_proxy_physical": true,
+    "proxy_only_collision": true,
+    "proxy_contact_offset_m": 0.0001,
+    "proxy_rest_offset_m": 0.0,
+    "virtual_distal_contact_for_shaping": true,
+    "palm_cup_inner_half_extent_m": [
+      0.04,
+      0.035
+    ],
+    "palm_cup_rim_height_m": 0.02
+  },
+  "strict": {
+    "angular_coverage_min_deg": 200.0,
+    "thumb_opposition_cos_max": -0.35,
+    "same_hemisphere_score_max": 0.85,
+    "palm_load_share": [
+      0.05,
+      0.7
+    ],
+    "palm_first_margin_steps": 4,
+    "diagnostic_hold_steps": 10,
+    "production_hold_steps": 20,
+    "require_measured_distal_contact": true,
+    "require_current_physical_five_digit_contact": true,
+    "require_all_four_distal_joint_participation": true,
+    "proximal_only_closure_allowed": false
+  },
+  "safety": {
+    "safe_force_n": 12.0,
+    "force_ceiling_n": [
+      12.0,
+      9.75,
+      9.75,
+      8.25,
+      8.25
+    ],
+    "drop_allowed": false,
+    "overload_allowed": false,
+    "damage_allowed": false,
+    "command_rate_limit_rad_s": 0.3
+  },
+  "physics": {
+    "urdf_terminal_mimic_enabled": true,
+    "direct_servo_zero_velocity": true,
+    "direct_position_servo_enabled": false,
+    "filter_fingertip_proxy_support_collision": true,
+    "disable_palm_cup_rim_collision": true,
+    "joint_drive_effort_limit_nm": 0.5,
+    "joint_drive_stiffness_nm_rad": 5.0,
+    "joint_drive_damping_nm_s_rad": 2.0,
+    "mimic_drive_effort_limit_nm": 0.5,
+    "mimic_drive_stiffness_nm_rad": 5.0,
+    "mimic_drive_damping_nm_s_rad": 0.2,
+    "mimic_drive_armature_kg_m2": 0.0001,
+    "hand_disable_gravity": true,
+    "use_tomato_filtered_contact_force": true,
+    "contact_history_substeps": 6,
+    "urdf_mimic_servo_rate_rad_s": 1.25,
+    "urdf_mimic": {
+      "straight_multiplier": 0.94,
+      "straight_offset_rad": -0.04545,
+      "thumb_multiplier": 1.11,
+      "thumb_offset_rad": -0.04545
+    }
+  },
+  "controller": {
+    "action_contract": "direct_flexion14_v1",
+    "direct_teacher": {
+      "coarse_steps": 260,
+      "distal_steps": 160,
+      "force_lower_n": [
+        0.08,
+        0.12,
+        0.12,
+        0.1,
+        0.08
+      ],
+      "force_upper_n": [
+        0.7,
+        0.85,
+        0.85,
+        0.75,
+        0.65
+      ],
+      "retreat_action_step": 0.008,
+      "hold_closure_margin": 0.1,
+      "palm_support_threshold_n": 0.2,
+      "precontact_fraction": 0.55,
+      "contact_latch_steps": 2,
+      "lost_contact_grace_steps": 4,
+      "reacquire_action_step": 0.003,
+      "max_closure_extension": 0.18,
+      "contact_detect_n": [
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001
+      ],
+      "contact_latch_start_step": 0,
+      "search_probe_steps": 4,
+      "high_force_dwell_steps": 1
+    },
+    "kind": "candidate123_residual_base",
+    "target_action": [
+      -0.12553474307060242,
+      -1.0,
+      0.7500865459442139,
+      -0.06182107329368591,
+      0.2967073321342468,
+      -0.21046069264411926,
+      0.3833167552947998,
+      1.0,
+      0.2835626006126404,
+      -0.09085021913051605,
+      -0.31022483110427856,
+      0.4818972647190094,
+      0.16131994128227234,
+      0.6307243704795837
+    ],
+    "approach_steps": 260,
+    "per_digit_steps": 45,
+    "hold_steps": 180,
+    "approach_smoothing": 1.0,
+    "distal_filter_alpha": 0.7,
+    "thumb_delay_steps": 0,
+    "thumb_ramp_steps": 60,
+    "thumb_first_steps": 120,
+    "thumb_first_global_scale": 0.0,
+    "straight_digit_force_lower_n": [
+      0.18,
+      0.18,
+      0.18,
+      0.18
+    ],
+    "straight_digit_force_upper_n": [
+      0.8,
+      0.8,
+      0.8,
+      0.8
+    ],
+    "insertion_step_per_digit": [
+      0.06,
+      0.06,
+      0.06,
+      0.06
+    ],
+    "retreat_step_per_digit": [
+      0.1,
+      0.1,
+      0.1,
+      0.1
+    ],
+    "thumb_force_band_n": [
+      0.1,
+      0.8
+    ],
+    "thumb_hold_target_offset": [
+      0.7,
+      0.6
+    ],
+    "thumb_search_amplitude": [
+      0.0,
+      0.5
+    ],
+    "thumb_search_period_steps": 30,
+    "thumb_contact_gate_steps": 5,
+    "thumb_contact_latch_force_n": 0.0,
+    "thumb_contact_latch_steps": 0,
+    "thumb_contact_latch_freeze_coarse": false,
+    "residual_scale": 0.0,
+    "residual_mask": "thumb_distal"
+  },
+  "evaluation": {
+    "checkpoint": "artifacts/enveloping_grasp_v2/t0_thumbfirst_residual_20260819/latest.pt",
+    "legacy_reference_report": "artifacts/enveloping_grasp_v2/diagnostics/eval_candidate123_thumb_gate5_search050_20260819.json",
+    "profile": "v1_nominal_reliable",
+    "seed": 20260820,
+    "num_envs": 8,
+    "steps": 700,
+    "headless": true
+  }
+}

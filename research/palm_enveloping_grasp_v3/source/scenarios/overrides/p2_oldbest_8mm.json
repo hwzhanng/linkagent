@@ -1,0 +1,87 @@
+{
+  "controller": {
+    "kind": "direct_joint_event_v1",
+    "action_contract": "direct_flexion14_v1",
+    "target_action": [
+      0.4550917148590088,
+      0.3132702112197876,
+      -0.9547370672225952,
+      -0.10924643278121948,
+      0.457724928855896,
+      -0.3474658727645874,
+      -0.3309839367866516,
+      0.19072401523590088,
+      -0.3051556944847107,
+      -0.7496434450149536,
+      -0.9221412539482117,
+      -0.12779831886291504,
+      0.183454230427742,
+      0.2856389880180359
+    ],
+    "direct_teacher": {
+      "coarse_steps": 260,
+      "distal_steps": 160,
+      "force_lower_n": [
+        0.08,
+        0.12,
+        0.12,
+        0.1,
+        0.08
+      ],
+      "force_upper_n": [
+        0.7,
+        0.85,
+        0.85,
+        0.75,
+        0.65
+      ],
+      "retreat_action_step": 0.008,
+      "hold_closure_margin": 0.1,
+      "palm_support_threshold_n": 0.2,
+      "precontact_fraction": 0.55,
+      "contact_latch_steps": 2,
+      "lost_contact_grace_steps": 4,
+      "reacquire_action_step": 0.003,
+      "max_closure_extension": 0.18,
+      "contact_detect_n": [
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001
+      ],
+      "contact_latch_start_step": 0,
+      "search_probe_steps": 4,
+      "high_force_dwell_steps": 1
+    }
+  },
+  "physics": {
+    "urdf_terminal_mimic_enabled": true,
+    "direct_servo_zero_velocity": true,
+    "direct_position_servo_enabled": false,
+    "joint_drive_effort_limit_nm": 0.5,
+    "joint_drive_stiffness_nm_rad": 5.0,
+    "joint_drive_damping_nm_s_rad": 2.0,
+    "mimic_drive_effort_limit_nm": 0.1,
+    "mimic_drive_stiffness_nm_rad": 2.0,
+    "mimic_drive_damping_nm_s_rad": 0.05,
+    "hand_disable_gravity": true,
+    "contact_history_substeps": 6
+  },
+  "contact_geometry": {
+    "collision_source": "authored_proxy",
+    "proxy_attachment_mode": "fixed_body",
+    "physical_tip_radius_m": 0.008,
+    "fingertip_proxy_radius_m": 0.008,
+    "fingertip_proxy_physical": true,
+    "proxy_only_collision": true,
+    "proxy_contact_offset_m": 0.0001,
+    "proxy_rest_offset_m": 0.0,
+    "virtual_distal_contact_for_shaping": true,
+    "palm_cup_inner_half_extent_m": [
+      0.04,
+      0.035
+    ],
+    "palm_cup_rim_height_m": 0.02
+  }
+}

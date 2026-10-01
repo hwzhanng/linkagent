@@ -1,0 +1,42 @@
+{
+  "contact_geometry": {
+    "proxy_attachment_mode": "attached_shape"
+  },
+  "physics": {
+    "urdf_terminal_mimic_enabled": true,
+    "joint_drive_effort_limit_nm": 1.0,
+    "mimic_drive_effort_limit_nm": 0.3,
+    "filter_fingertip_proxy_support_collision": true
+  },
+  "controller": {
+    "action_contract": "direct_flexion14_v1",
+    "kind": "direct_joint_event_v1",
+    "target_action": [
+      0.5146765709, -0.3600793481, -0.2347525358, 0.0237911940,
+      -1.0, -0.3133255839, 0.2352441549, -0.9622932673,
+      0.7435826063, 0.5389069319, -0.9722332358, -0.0810935497,
+      1.0, -0.0279436521
+    ],
+    "approach_steps": 260,
+    "per_digit_steps": 45,
+    "hold_steps": 420,
+    "direct_teacher": {
+      "coarse_steps": 260,
+      "distal_steps": 220,
+      "force_lower_n": [0.05, 0.05, 0.05, 0.05, 0.05],
+      "force_upper_n": [0.70, 0.85, 0.85, 0.75, 0.65],
+      "retreat_action_step": 0.001,
+      "hold_closure_margin": 0.0,
+      "palm_support_threshold_n": 0.20,
+      "precontact_fraction": 0.55,
+      "contact_latch_steps": 1,
+      "lost_contact_grace_steps": 6,
+      "reacquire_action_step": 0.002,
+      "max_closure_extension": 0.35,
+      "contact_detect_n": [0.00005, 0.00005, 0.00005, 0.00005, 0.00005],
+      "contact_latch_start_step": 260,
+      "search_probe_steps": 24,
+      "high_force_dwell_steps": 3
+    }
+  }
+}

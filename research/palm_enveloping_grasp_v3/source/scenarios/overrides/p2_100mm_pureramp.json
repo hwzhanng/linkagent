@@ -1,0 +1,71 @@
+{
+  "controller": {
+    "kind": "direct_joint_event_v1",
+    "action_contract": "direct_flexion14_v1",
+    "target_action": [
+      0.638651,
+      0.006403,
+      0.388437,
+      0.139536,
+      -0.476434,
+      -0.594446,
+      -0.61205,
+      -0.394585,
+      -0.554438,
+      -0.724451,
+      -0.763821,
+      0.152521,
+      -0.088006,
+      0.499751
+    ],
+    "direct_teacher": {
+      "coarse_steps": 260,
+      "distal_steps": 160,
+      "force_lower_n": [
+        0.08,
+        0.12,
+        0.12,
+        0.1,
+        0.08
+      ],
+      "force_upper_n": [
+        0.7,
+        0.85,
+        0.85,
+        0.75,
+        0.65
+      ],
+      "retreat_action_step": 0.008,
+      "hold_closure_margin": 0.1,
+      "palm_support_threshold_n": 0.2,
+      "precontact_fraction": 0.55,
+      "contact_latch_steps": 2,
+      "lost_contact_grace_steps": 4,
+      "reacquire_action_step": 0.0001,
+      "max_closure_extension": 0.0,
+      "contact_detect_n": [
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ],
+      "contact_latch_start_step": 0,
+      "search_probe_steps": 4,
+      "high_force_dwell_steps": 1
+    }
+  },
+  "physics": {
+    "urdf_terminal_mimic_enabled": true,
+    "direct_servo_zero_velocity": true,
+    "direct_position_servo_enabled": false,
+    "joint_drive_effort_limit_nm": 0.5,
+    "joint_drive_stiffness_nm_rad": 5.0,
+    "joint_drive_damping_nm_s_rad": 2.0,
+    "mimic_drive_effort_limit_nm": 0.1,
+    "mimic_drive_stiffness_nm_rad": 2.0,
+    "mimic_drive_damping_nm_s_rad": 0.05,
+    "hand_disable_gravity": true,
+    "contact_history_substeps": 6
+  }
+}

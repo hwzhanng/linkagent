@@ -1,0 +1,78 @@
+{
+  "controller": {
+    "kind": "direct_joint_event_v1",
+    "action_contract": "direct_flexion14_v1",
+    "target_action": [
+      0.33031126856803894,
+      -0.4853827953338623,
+      -0.7441421747207642,
+      -0.9467527866363525,
+      -0.4364244341850281,
+      -0.7760177850723267,
+      0.5018323063850403,
+      0.5969616770744324,
+      0.9273030161857605,
+      0.39239630103111267,
+      -0.06517495214939117,
+      0.6435332894325256,
+      0.9065861701965332,
+      -0.7577299475669861
+    ],
+    "direct_teacher": {
+      "coarse_steps": 150,
+      "distal_steps": 100,
+      "force_lower_n": [
+        0.3,
+        0.4,
+        0.4,
+        0.4,
+        0.3
+      ],
+      "force_upper_n": [
+        4.0,
+        5.0,
+        5.0,
+        6.0,
+        4.0
+      ],
+      "retreat_action_step": 0.02,
+      "hold_closure_margin": 0.1,
+      "palm_support_threshold_n": 0.2,
+      "precontact_fraction": 0.55,
+      "contact_latch_steps": 2,
+      "lost_contact_grace_steps": 4,
+      "reacquire_action_step": 0.02,
+      "max_closure_extension": 0.18,
+      "contact_detect_n": [
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ],
+      "contact_latch_start_step": 0,
+      "search_probe_steps": 4,
+      "high_force_dwell_steps": 1,
+      "digit_start_steps": null
+    }
+  },
+  "physics": {
+    "urdf_terminal_mimic_enabled": true,
+    "direct_servo_zero_velocity": true,
+    "direct_position_servo_enabled": false,
+    "joint_drive_effort_limit_nm": 0.5,
+    "joint_drive_stiffness_nm_rad": 5.0,
+    "joint_drive_damping_nm_s_rad": 2.0,
+    "mimic_drive_effort_limit_nm": 0.5,
+    "mimic_drive_stiffness_nm_rad": 5.0,
+    "mimic_drive_damping_nm_s_rad": 0.2,
+    "hand_disable_gravity": true,
+    "contact_history_substeps": 6
+  },
+  "contact_geometry": {
+    "proxy_attachment_mode": "attached_shape"
+  },
+  "strict": {
+    "sequential_contact_allowed": true
+  }
+}
