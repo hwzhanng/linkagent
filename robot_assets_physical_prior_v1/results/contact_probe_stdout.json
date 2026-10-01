@@ -1,0 +1,54 @@
+{
+  "scope": "Isolated MuJoCo friction law check; not a fitted fingertip/tomato contact model.",
+  "engine": "3.14.0",
+  "tests": [
+    {
+      "mu": 0.3,
+      "angle_deg": 13.699244233993621,
+      "analytic_threshold_deg": 16.69924423399362,
+      "displacement_m": 0.000663892712413407,
+      "slipped": false,
+      "expected": false
+    },
+    {
+      "mu": 0.3,
+      "angle_deg": 19.699244233993625,
+      "analytic_threshold_deg": 16.69924423399362,
+      "displacement_m": 0.2689407864224429,
+      "slipped": true,
+      "expected": true
+    },
+    {
+      "mu": 0.55,
+      "angle_deg": 25.810793742973065,
+      "analytic_threshold_deg": 28.810793742973065,
+      "displacement_m": 0.0016041927596746656,
+      "slipped": false,
+      "expected": false
+    },
+    {
+      "mu": 0.55,
+      "angle_deg": 31.81079374297306,
+      "analytic_threshold_deg": 28.810793742973065,
+      "displacement_m": 0.29323086155591865,
+      "slipped": true,
+      "expected": true
+    },
+    {
+      "mu": 0.8,
+      "angle_deg": 35.6598082540901,
+      "analytic_threshold_deg": 38.659808254090095,
+      "displacement_m": 0.003279509243774555,
+      "slipped": false,
+      "expected": false
+    },
+    {
+      "mu": 0.8,
+      "angle_deg": 41.659808254090095,
+      "analytic_threshold_deg": 38.659808254090095,
+      "displacement_m": 0.34635847369702594,
+      "slipped": true,
+      "expected": true
+    }
+  ]
+}
