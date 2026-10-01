@@ -1,0 +1,140 @@
+pageType: content
+background:
+  type: solid
+  color: "$bg"
+notes: |
+  [Sources]
+  - PPO task boundary and observation/action contracts: linkagent/preview.md
+  - Isaac Sim acceptance and frozen policy boundary: linkagent/docs/harvest_cycle/ISAAC_SIM_ACCEPTANCE.md
+  - Physics-v1 and PhysX environment descriptions: linkagent/docs/tomato_pick/PHYSICS_V1_SHOWCASE.md and ppo_tomato_grasp_stage01_work/simulation/ppo_tomato_grasp/PHYSX_FINAL_TRAINING.md
+  [/Sources]
+elements:
+  - elementId: p5-top-rule
+    elementType: shape
+    bounds: [56, 22, 848, 2]
+    shapeName: rect
+    fill: {type: solid, color: "$primary"}
+  - elementId: p5-kicker
+    elementType: text
+    bounds: [56, 38, 420, 20]
+    content:
+      style: "$kicker"
+      text: "04  /  LEARNING LOOP  ·  学习闭环"
+      wrap: false
+  - elementId: p5-title
+    elementType: text
+    bounds: [56, 64, 830, 48]
+    content:
+      style: "$slideTitle"
+      text: "Contact-rich learning / 复杂接触学习"
+      wrap: false
+  - elementId: p5-step1
+    elementType: shape
+    bounds: [56, 160, 470, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$primarySoft"}
+    border: {style: solid, width: 1, color: "$primary"}
+  - elementId: p5-step1-text
+    elementType: text
+    bounds: [76, 172, 430, 32]
+    content:
+      style: "$diagram"
+      text: "URDF / USD  →  geometry & limits  /  几何与关节边界"
+      wrap: false
+  - elementId: p5-step2
+    elementType: shape
+    bounds: [56, 236, 470, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$primarySoft"}
+    border: {style: solid, width: 1, color: "$primary"}
+  - elementId: p5-step2-text
+    elementType: text
+    bounds: [76, 248, 430, 32]
+    content:
+      style: "$diagram"
+      text: "PhysX  →  friction, compliance, retention  /  摩擦、柔顺、保持"
+      wrap: false
+  - elementId: p5-step3
+    elementType: shape
+    bounds: [56, 312, 470, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$primarySoft"}
+    border: {style: solid, width: 1, color: "$primary"}
+  - elementId: p5-step3-text
+    elementType: text
+    bounds: [76, 324, 430, 32]
+    content:
+      style: "$diagram"
+      text: "PPO  →  adaptive actions  /  PPO → 自适应动作"
+      wrap: false
+  - elementId: p5-step4
+    elementType: shape
+    bounds: [56, 388, 470, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$primarySoft"}
+    border: {style: solid, width: 1, color: "$primary"}
+  - elementId: p5-step4-text
+    elementType: text
+    bounds: [76, 400, 430, 32]
+    content:
+      style: "$diagram"
+      text: "Replay + verifier  →  evidence  /  回放与验证 → 证据"
+      wrap: false
+  - elementId: p5-arrow1
+    elementType: line
+    bounds: [275, 216, 2, 20]
+    viewBox: [1, 1]
+    points: "0.5,0 0.5,1"
+    arrow: [null, arrow]
+    border: {style: solid, width: 1.2, color: "$accent"}
+  - elementId: p5-arrow2
+    elementType: line
+    bounds: [275, 292, 2, 20]
+    viewBox: [1, 1]
+    points: "0.5,0 0.5,1"
+    arrow: [null, arrow]
+    border: {style: solid, width: 1.2, color: "$accent"}
+  - elementId: p5-arrow3
+    elementType: line
+    bounds: [275, 368, 2, 20]
+    viewBox: [1, 1]
+    points: "0.5,0 0.5,1"
+    arrow: [null, arrow]
+    border: {style: solid, width: 1.2, color: "$accent"}
+  - elementId: p5-photo-placeholder
+    elementType: shape
+    bounds: [610, 148, 292, 244]
+    shapeName: rect
+    fill: {type: solid, color: "$primarySoft"}
+    border: {style: dash, width: 1.5, color: "$accent"}
+  - elementId: p5-photo-placeholder-text
+    elementType: text
+    bounds: [638, 224, 236, 108]
+    content:
+      style: "$bodyMuted"
+      color: "$primary"
+      text: |
+        <p style="text-align:center"><strong>ISAAC SIM SCENE PLACEHOLDER</strong></p>
+        <p style="text-align:center">Isaac Sim 场景占位</p>
+        <p style="text-align:center"><span style="font-size:14px;">Insert scene image / video frame</span></p>
+        <p style="text-align:center"><span style="font-size:14px;">替换为仿真截图或视频帧</span></p>
+      align: [center, middle]
+  - elementId: p5-side-note
+    elementType: text
+    bounds: [610, 416, 292, 62]
+    content:
+      style: "$bodyMuted"
+      text: |
+        <p><strong>Explicit hypotheses</strong></p>
+        <p>geometry · mass · friction · tactile delay</p>
+        <p>几何 · 质量 · 摩擦 · 触觉延迟</p>
+      align: [left, top]
+  - elementId: p5-page
+    elementType: text
+    bounds: [868, 480, 36, 20]
+    content:
+      style: "$small"
+      color: "$primary"
+      text: "05"
+      align: [right, middle]
+      wrap: false

@@ -1,0 +1,106 @@
+version: v2
+title: "LinkAgent · Safe, Tactile, Dexterous Tomato Harvesting"
+size: [960, 540]
+fonts:
+  english: { family: "Arial" }
+  chinese: { family: "Microsoft YaHei" }
+theme:
+  colors:
+    primary: "#245B45"
+    accent: "#B8862E"
+    bg: "#F7F9F4"
+    text: "#1D2A24"
+    muted: "#617167"
+    line: "#D6E0D7"
+    success: "#3F8C63"
+    warning: "#B88435"
+    danger: "#A85C53"
+    primarySoft: "#EFF5F0"
+    primaryTint: "#DDEAE0"
+    primaryDeep: "#173B2D"
+    accent3: "#557C67"
+    accent4: "#8FAE90"
+    accent5: "#8C7650"
+    accent6: "#A56A59"
+  textStyles:
+    kicker:
+      fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+      fontSize: 12
+      color: "$accent"
+      bold: true
+      letterSpacing: 2
+      lineHeight: 1.2
+    coverTitle:
+      fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+      fontSize: 42
+      color: "$bg"
+      bold: true
+      lineHeight: 1.08
+    coverSub:
+      fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+      fontSize: 20
+      color: "$primaryTint"
+      lineHeight: 1.35
+    slideTitle:
+      fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+      fontSize: 34
+      color: "$text"
+      bold: true
+      lineHeight: 1.15
+    slideSub:
+      fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+      fontSize: 18
+      color: "$muted"
+      lineHeight: 1.35
+    body:
+      fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+      fontSize: 17
+      color: "$text"
+      lineHeight: 1.35
+    bodyMuted:
+      fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+      fontSize: 16
+      color: "$muted"
+      lineHeight: 1.35
+    small:
+      fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+      fontSize: 12
+      color: "$muted"
+      lineHeight: 1.25
+    diagram:
+      fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+      fontSize: 15
+      color: "$text"
+      lineHeight: 1.2
+    stat:
+      fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+      fontSize: 30
+      color: "$primary"
+      bold: true
+      lineHeight: 1.05
+  tableStyles:
+    default:
+      cellStyle:
+        fontFamily: {latin: "Arial", ea: "Microsoft YaHei"}
+        fontSize: 14
+        color: "$text"
+        fill: {type: solid, color: "$bg"}
+        border: [null, null, {style: solid, width: 1, color: "$line"}, null]
+        align: [left, middle]
+      firstRowStyle:
+        fill: {type: solid, color: "$primary"}
+        color: "#FFFFFF"
+        bold: true
+      bodyStyles:
+        - {fill: {type: solid, color: "$primarySoft"}}
+        - {fill: {type: solid, color: "$bg"}}
+      rowOverColumn: true
+pages:
+  - pages/1_cover.page
+  - pages/2_vision.page
+  - pages/3_architecture.page
+  - pages/4_platform.page
+  - pages/5_learning.page
+  - pages/6_research.page
+  - pages/7_roadmap.page
+  - pages/8_close.page

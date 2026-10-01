@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>番茄自适应抓取控制台</title>
+  <link rel="stylesheet" href="/style.css?v=20260825-4">
+  <script type="importmap">{"imports":{"three":"/vendor/three.module.min.js","three/examples/jsm/loaders/STLLoader.js":"/vendor/STLLoader.js"}}</script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">TF</span><div><h1>番茄自适应抓取控制台</h1><p>真实果实 · 软网球三指基线 × 几何估计 × 触觉闭环</p></div></div>
+    <div id="connectionBadge" class="status offline"><i></i><span>仿真服务</span><small id="connectionDetail">不发送实机命令</small></div>
+  </header>
+
+  <main>
+    <section class="tab-panel active" data-panel="model">
+      <div class="grid two">
+        <article class="card">
+          <div class="eyebrow">TOMATO OBSERVATION</div><h2>当前果实参数</h2>
+          <p class="hint">参数可来自视觉/深度模块，也可先手动录入。它们只用于生成候选包络，不会固化为一组示教位姿。</p>
+          <div class="form-grid">
+            <label>等效直径 (mm)<output id="diameterOut">72</output><input id="diameter" type="range" min="35" max="120" value="72"></label>
+            <label>高度 (mm)<output id="heightOut">68</output><input id="height" type="range" min="30" max="140" value="68"></label>
+          </div>
+          <label class="check"><input id="palmSupport" type="checkbox" checked> 手掌向上，允许掌部支撑接触</label>
+          <button id="planButton" class="primary wide">生成自适应包络方案</button>
+        </article>
+        <article class="card plan-card">
+          <div class="eyebrow">ADAPTIVE POLICY</div><h2>规划结果</h2>
+          <div id="planEmpty" class="empty">等待果实参数与规划</div>
+          <div id="planResult" class="hidden">
+            <div class="plan-title"><strong id="strategyLabel"></strong><span id="planId"></span></div>
+            <dl class="metrics"><dt>拇指软对齐目标</dt><dd id="thumbTarget">—</dd><dt>主动手指</dt><dd>拇指 / 食指 / 中指</dd><dt>示教参考权重</dt><dd id="referenceWeight">—</dd><dt>参考包络容差</dt><dd id="referenceTolerance">—</dd><dt>果实支撑</dt><dd id="palmResult">—</dd><dt>果梗动作</dt><dd>锁定</dd></dl>
+            <div id="fingerPlan" class="finger-plan"></div>
+            <ol id="stagePlan" class="stage-plan"></ol>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-panel="preview">
+      <div class="grid viewer-grid">
+        <article class="card viewer-card"><div class="card-head"><div><div class="eyebrow">URDF DIGITAL TWIN</div><h2>左手模型与动作预演</h2></div><button id="resetView" class="small">复位视角</button></div><div id="viewport"><div id="loading">正在加载左手 URDF…</div></div><div class="view-hint">拖动旋转 · 滚轮缩放 · 预演仅驱动手部模型，不发送实机命令 · 坐标轴 X 红 / Y 绿 / Z 蓝</div></article>
+        <article class="card safety-card"><div class="eyebrow">PRE-FLIGHT GATE</div><h2>执行前安全门</h2><div id="checks" class="checks"><div data-check="geometry_valid"><i>—</i>果实几何有效</div><div data-check="vision_confidence"><i>—</i>视觉置信度达标</div><div data-check="palm_support"><i>—</i>掌部支撑开启</div><div data-check="three_finger_only"><i>—</i>仅拇指 / 食指 / 中指参与</div><div data-check="inactive_fingers_open"><i>—</i>无名指与小指保持张开</div><div data-check="thumb_soft_alignment"><i>—</i>拇指仅作软对齐</div><div data-check="reference_relaxed"><i>—</i>示教参考已放宽</div><div data-check="per_finger_pressure"><i>—</i>三指独立压力目标</div><div data-check="step_bounded"><i>—</i>单步关节变化有界</div><div data-check="stem_action_locked"><i>✓</i>果梗动作默认锁定</div></div><label class="check"><input id="safetyConfirm" type="checkbox"> 我已确认番茄和手掌周围净空，急停可触达</label><button id="previewButton" class="primary wide" disabled>播放三指候选轨迹</button><button id="startButton" class="accent wide" disabled>确认并开始三指自适应抓取</button><p id="previewMessage" class="hint">请先生成方案。</p></article>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-panel="hardware">
+      <div class="grid hardware-grid">
+        <article class="card"><div class="eyebrow">LEFT G20 · HARDWARE GATE</div><h2>实机权限</h2><p class="hint">本页默认仿真。真实链路必须由服务端环境授权、命令行开关和页面确认共同开启。</p><div class="hardware-state"><span>连接</span><b id="hwConnected">—</b><span>运动权限</span><b id="hwMotion">—</b><span>页面解锁</span><b id="hwArmed">—</b></div><div class="button-row"><button id="connectButton">连接左手（只读）</button><button id="armButton">解锁实机</button><button id="disarmButton">失能控制</button></div></article>
+        <article class="card tactile-card"><div class="eyebrow">TACTILE FEEDBACK · THREE ACTIVE FINGERS</div><h2>三指触觉矩阵</h2><div id="matrices" class="matrices"></div><div class="locked-note">无名指与小指：保持张开，不参与抓取</div><div id="contactSummary" class="contact-summary"></div></article>
+        <article class="card actions-card"><div class="eyebrow">SAFE ACTIONS</div><h2>动作控制</h2><button id="releaseButton" class="secondary wide">复位张开</button><button id="stopButton" class="emergency wide">急停 · 复位张开</button><dl class="metrics"><dt>当前阶段</dt><dd id="phase">待机</dd><dt>抓牢门控</dt><dd id="secureGate">未就绪</dd><dt>命令计数</dt><dd id="commands">0</dd><dt>传感器延迟</dt><dd id="sensorAge">—</dd><dt>动态安全上限</dt><dd id="safetyLimits">—</dd><dt>三指相对压力目标</dt><dd id="closedLoopEffort">—</dd><dt>三指指尖动态偏移</dt><dd id="thumbAdjustment">0 raw</dd></dl></article>
+      </div>
+    </section>
+  </main>
+  <footer><span id="footer">服务连接中…</span><span>番茄控制台与软网球控制台完全隔离</span><span class="risk">果梗摘取动作未启用</span></footer>
+  <div id="toast" class="toast"></div>
+  <script type="module" src="/app.js?v=20260826-4"></script>
+</body>
+</html>

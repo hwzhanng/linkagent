@@ -1,0 +1,122 @@
+pageType: content
+background:
+  type: solid
+  color: "$bg"
+notes: |
+  [Sources]
+  - Hardware and tactile baseline: PROJECT_TIMELINE_AND_EVIDENCE_20260818.md
+  - Device and gateway boundaries: C4-H_真机Vendor_Gateway任务书.md
+  - Raw tactile matrix contract: linkagent/README.md
+  [/Sources]
+elements:
+  - elementId: p4-top-rule
+    elementType: shape
+    bounds: [56, 22, 848, 2]
+    shapeName: rect
+    fill: {type: solid, color: "$primary"}
+  - elementId: p4-kicker
+    elementType: text
+    bounds: [56, 38, 420, 20]
+    content:
+      style: "$kicker"
+      text: "03  /  PLATFORM  ·  硬件平台"
+      wrap: false
+  - elementId: p4-title
+    elementType: text
+    bounds: [56, 64, 830, 48]
+    content:
+      style: "$slideTitle"
+      text: "Robot and tactile foundation / 机器人与触觉基础设施"
+      wrap: false
+  - elementId: p4-photo-placeholder
+    elementType: shape
+    bounds: [56, 142, 376, 278]
+    shapeName: rect
+    fill: {type: solid, color: "$primarySoft"}
+    border: {style: dash, width: 1.5, color: "$accent"}
+  - elementId: p4-photo-placeholder-text
+    elementType: text
+    bounds: [92, 240, 304, 82]
+    content:
+      style: "$bodyMuted"
+      color: "$primary"
+      text: |
+        <p style="text-align:center"><strong>HARDWARE PHOTO PLACEHOLDER</strong></p>
+        <p style="text-align:center">硬件照片占位</p>
+        <p style="text-align:center"><span style="font-size:14px;">Insert dual-arm / dexterous-hand photo</span></p>
+      align: [center, middle]
+  - elementId: p4-heading
+    elementType: text
+    bounds: [492, 140, 380, 36]
+    content:
+      style: "$body"
+      text: "Contact-rich manipulation / 面向复杂接触操作"
+      wrap: false
+  - elementId: p4-line1
+    elementType: line
+    bounds: [492, 198, 374, 1]
+    viewBox: [1, 1]
+    points: "0,0.5 1,0.5"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: p4-text1
+    elementType: text
+    bounds: [492, 216, 388, 64]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>Two 7-DoF robotic arms</strong></p>
+        <p>两个 7 自由度机械臂，覆盖双臂操作空间。</p>
+      align: [left, top]
+  - elementId: p4-line2
+    elementType: line
+    bounds: [492, 296, 374, 1]
+    viewBox: [1, 1]
+    points: "0,0.5 1,0.5"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: p4-text2
+    elementType: text
+    bounds: [492, 314, 388, 72]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>Two G20 dexterous hands</strong></p>
+        <p>两只 G20 灵巧手，每只手提供 20 维逻辑状态/控制接口。</p>
+      align: [left, top]
+  - elementId: p4-line3
+    elementType: line
+    bounds: [492, 400, 374, 1]
+    viewBox: [1, 1]
+    points: "0,0.5 1,0.5"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: p4-text3
+    elementType: text
+    bounds: [492, 418, 388, 54]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>Five tactile matrices per hand</strong></p>
+        <p>每只手五个 12 × 6 触觉矩阵，保留原始空间信息。</p>
+      align: [left, top]
+  - elementId: p4-callout
+    elementType: shape
+    bounds: [56, 464, 848, 38]
+    shapeName: rect
+    fill: {type: solid, color: "$primaryTint"}
+    border: {style: solid, width: 0.8, color: "$primaryTint"}
+  - elementId: p4-callout-text
+    elementType: text
+    bounds: [72, 471, 780, 24]
+    content:
+      style: "$bodyMuted"
+      color: "$primaryDeep"
+      text: "Boundary / 边界：raw tactile values available; force calibration pending. / 原始触觉可读，力值标定待完成。"
+      wrap: false
+  - elementId: p4-page
+    elementType: text
+    bounds: [868, 480, 36, 20]
+    content:
+      style: "$small"
+      color: "$primary"
+      text: "04"
+      align: [right, middle]
+      wrap: false

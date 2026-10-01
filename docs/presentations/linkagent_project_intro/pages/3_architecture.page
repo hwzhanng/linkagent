@@ -1,0 +1,161 @@
+pageType: content
+background:
+  type: solid
+  color: "$bg"
+notes: |
+  [Sources]
+  - Agent architecture and tool boundaries: linkagent/README.md
+  - Safety and gateway boundaries: linkagent/preview.md and C4-H hardware gateway task
+  [/Sources]
+elements:
+  - elementId: p3-top-rule
+    elementType: shape
+    bounds: [56, 22, 848, 2]
+    shapeName: rect
+    fill: {type: solid, color: "$primary"}
+  - elementId: p3-kicker
+    elementType: text
+    bounds: [56, 38, 420, 20]
+    content:
+      style: "$kicker"
+      text: "02  /  SYSTEM LOGIC  ·  系统逻辑"
+      wrap: false
+  - elementId: p3-title
+    elementType: text
+    bounds: [56, 64, 830, 48]
+    content:
+      style: "$slideTitle"
+      text: "Bounded agent–robot loop / 安全边界下的闭环"
+      wrap: false
+  - elementId: p3-input-label
+    elementType: text
+    bounds: [60, 132, 820, 24]
+    content:
+      style: "$bodyMuted"
+      text: "Inputs: RGB-D, robot state, tactile observations, task context  /  输入：RGB-D、机器人状态、触觉观测与任务上下文"
+      wrap: false
+  - elementId: p3-box1
+    elementType: shape
+    bounds: [56, 184, 168, 118]
+    shapeName: rect
+    fill: {type: solid, color: "$primarySoft"}
+    border: {style: solid, width: 1.2, color: "$primary"}
+  - elementId: p3-box1-text
+    elementType: text
+    bounds: [70, 204, 140, 78]
+    content:
+      style: "$diagram"
+      text: |
+        <p style="text-align:center"><strong>Perception</strong></p>
+        <p style="text-align:center">感知与目标理解</p>
+        <p style="text-align:center"><span style="font-size:13px;color:$muted;">RGB-D / tactile</span></p>
+      align: [center, middle]
+  - elementId: p3-box2
+    elementType: shape
+    bounds: [264, 184, 168, 118]
+    shapeName: rect
+    fill: {type: solid, color: "$primarySoft"}
+    border: {style: solid, width: 1.2, color: "$primary"}
+  - elementId: p3-box2-text
+    elementType: text
+    bounds: [278, 204, 140, 78]
+    content:
+      style: "$diagram"
+      text: |
+        <p style="text-align:center"><strong>TopAgent</strong></p>
+        <p style="text-align:center">任务级决策</p>
+        <p style="text-align:center"><span style="font-size:13px;color:$muted;">bounded tools</span></p>
+      align: [center, middle]
+  - elementId: p3-box3
+    elementType: shape
+    bounds: [472, 184, 168, 118]
+    shapeName: rect
+    fill: {type: solid, color: "$primarySoft" }
+    border: {style: solid, width: 1.2, color: "$primary"}
+  - elementId: p3-box3-text
+    elementType: text
+    bounds: [486, 204, 140, 78]
+    content:
+      style: "$diagram"
+      text: |
+        <p style="text-align:center"><strong>Atomic Skills</strong></p>
+        <p style="text-align:center">原子技能执行</p>
+        <p style="text-align:center"><span style="font-size:13px;color:$muted;">limits / watchdog</span></p>
+      align: [center, middle]
+  - elementId: p3-box4
+    elementType: shape
+    bounds: [680, 184, 168, 118]
+    shapeName: rect
+    fill: {type: solid, color: "$primarySoft"}
+    border: {style: solid, width: 1.2, color: "$primary"}
+  - elementId: p3-box4-text
+    elementType: text
+    bounds: [694, 204, 140, 78]
+    content:
+      style: "$diagram"
+      text: |
+        <p style="text-align:center"><strong>Verifier</strong></p>
+        <p style="text-align:center">独立结果验收</p>
+        <p style="text-align:center"><span style="font-size:13px;color:$muted;">pass / fail / observe</span></p>
+      align: [center, middle]
+  - elementId: p3-arrow1
+    elementType: line
+    bounds: [224, 242, 40, 2]
+    viewBox: [1, 1]
+    points: "0,0.5 1,0.5"
+    arrow: [null, arrow]
+    border: {style: solid, width: 1.6, color: "$primary"}
+  - elementId: p3-arrow2
+    elementType: line
+    bounds: [432, 242, 40, 2]
+    viewBox: [1, 1]
+    points: "0,0.5 1,0.5"
+    arrow: [null, arrow]
+    border: {style: solid, width: 1.6, color: "$primary"}
+  - elementId: p3-arrow3
+    elementType: line
+    bounds: [640, 242, 40, 2]
+    viewBox: [1, 1]
+    points: "0,0.5 1,0.5"
+    arrow: [null, arrow]
+    border: {style: solid, width: 1.6, color: "$primary"}
+  - elementId: p3-feedback
+    elementType: line
+    bounds: [450, 332, 230, 34]
+    viewBox: [1, 1]
+    points: "1,0.5 0.72,0.5 0.40,0.5 0,0.5"
+    arrow: [null, arrow]
+    border: {style: dash, width: 1.2, color: "$accent"}
+  - elementId: p3-feedback-label
+    elementType: text
+    bounds: [300, 326, 300, 22]
+    content:
+      style: "$small"
+      color: "$accent"
+      text: "failure → observe again / 失败时回到观测"
+      align: [center, middle]
+      wrap: false
+  - elementId: p3-safety-rule
+    elementType: line
+    bounds: [56, 410, 848, 2]
+    viewBox: [1, 1]
+    points: "0,0.5 1,0.5"
+    border: {style: solid, width: 2, color: "$primary"}
+  - elementId: p3-safety-label
+    elementType: text
+    bounds: [56, 426, 848, 46]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>Hardware boundary / 真机边界：</strong> explicit opt-in · shadow FK/IK · motion limits · emergency stop</p>
+        <p><span style="font-size:15px;color:$muted;">真机执行需要显式授权、Shadow 验证、运动限制和急停保护。</span></p>
+      align: [left, top]
+  - elementId: p3-page
+    elementType: text
+    bounds: [868, 480, 36, 20]
+    content:
+      style: "$small"
+      color: "$primary"
+      text: "03"
+      align: [right, middle]
+      wrap: false

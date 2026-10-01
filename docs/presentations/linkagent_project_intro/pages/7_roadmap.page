@@ -1,0 +1,153 @@
+pageType: content
+background:
+  type: solid
+  color: "$bg"
+notes: |
+  [Sources]
+  - Current implementation and boundaries: linkagent/preview.md
+  - Hardware validation stages: C4-H_真机Vendor_Gateway任务书.md
+  - Project roadmap and evidence status: PROJECT_TIMELINE_AND_EVIDENCE_20260818.md
+  [/Sources]
+elements:
+  - elementId: p7-top-rule
+    elementType: shape
+    bounds: [56, 22, 848, 2]
+    shapeName: rect
+    fill: {type: solid, color: "$primary"}
+  - elementId: p7-kicker
+    elementType: text
+    bounds: [56, 38, 420, 20]
+    content:
+      style: "$kicker"
+      text: "06  /  ROADMAP  ·  路线图"
+      wrap: false
+  - elementId: p7-title
+    elementType: text
+    bounds: [56, 64, 830, 48]
+    content:
+      style: "$slideTitle"
+      text: "A research program / 一项研究计划"
+      wrap: false
+  - elementId: p7-lead
+    elementType: text
+    bounds: [56, 130, 800, 42]
+    content:
+      style: "$body"
+      text: "From controllable infrastructure to measured field validation. / 从可控基础设施走向实测田间验证。"
+      wrap: false
+  - elementId: p7-timeline
+    elementType: line
+    bounds: [112, 232, 742, 2]
+    viewBox: [1, 1]
+    points: "0,0.5 1,0.5"
+    border: {style: solid, width: 2, color: "$line"}
+  - elementId: p7-dot1
+    elementType: shape
+    bounds: [102, 222, 22, 22]
+    shapeName: ellipse
+    fill: {type: solid, color: "$primary"}
+  - elementId: p7-dot2
+    elementType: shape
+    bounds: [334, 222, 22, 22]
+    shapeName: ellipse
+    fill: {type: solid, color: "$primary"}
+  - elementId: p7-dot3
+    elementType: shape
+    bounds: [566, 222, 22, 22]
+    shapeName: ellipse
+    fill: {type: solid, color: "$accent"}
+  - elementId: p7-dot4
+    elementType: shape
+    bounds: [798, 222, 22, 22]
+    shapeName: ellipse
+    fill: {type: solid, color: "$accent"}
+  - elementId: p7-stage1
+    elementType: text
+    bounds: [58, 158, 150, 74]
+    content:
+      style: "$diagram"
+      text: |
+        <p><strong>Foundation</strong></p>
+        <p>控制台 · SDK · 触觉</p>
+        <p><span style="font-size:13px;color:$primary;">implemented</span></p>
+      align: [left, top]
+  - elementId: p7-stage2
+    elementType: text
+    bounds: [286, 258, 168, 74]
+    content:
+      style: "$diagram"
+      text: |
+        <p><strong>Simulation</strong></p>
+        <p>URDF/USD · PhysX</p>
+        <p><span style="font-size:13px;color:$primary;">validated in layers</span></p>
+      align: [left, top]
+  - elementId: p7-stage3
+    elementType: text
+    bounds: [516, 158, 170, 74]
+    content:
+      style: "$diagram"
+      text: |
+        <p><strong>Policy learning</strong></p>
+        <p>PPO · tactile loop</p>
+        <p><span style="font-size:13px;color:$accent;">research focus</span></p>
+      align: [left, top]
+  - elementId: p7-stage4
+    elementType: text
+    bounds: [748, 258, 170, 74]
+    content:
+      style: "$diagram"
+      text: |
+        <p><strong>Field validation</strong></p>
+        <p>calibration · supervised tests</p>
+        <p><span style="font-size:13px;color:$accent;">future gate</span></p>
+      align: [left, top]
+  - elementId: p7-measure-label
+    elementType: text
+    bounds: [56, 380, 260, 28]
+    content:
+      style: "$body"
+      text: "What we measure / 关注的证据"
+      wrap: false
+  - elementId: p7-measure-line
+    elementType: line
+    bounds: [56, 422, 848, 1]
+    viewBox: [1, 1]
+    points: "0,0.5 1,0.5"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: p7-m1
+    elementType: text
+    bounds: [56, 438, 184, 46]
+    content:
+      style: "$bodyMuted"
+      text: "Safety\n安全边界"
+      wrap: false
+  - elementId: p7-m2
+    elementType: text
+    bounds: [270, 438, 184, 46]
+    content:
+      style: "$bodyMuted"
+      text: "Contact\n接触与触觉"
+      wrap: false
+  - elementId: p7-m3
+    elementType: text
+    bounds: [484, 438, 184, 46]
+    content:
+      style: "$bodyMuted"
+      text: "Robustness\n随机化鲁棒性"
+      wrap: false
+  - elementId: p7-m4
+    elementType: text
+    bounds: [698, 438, 184, 46]
+    content:
+      style: "$bodyMuted"
+      text: "Reproducibility\n可复现性"
+      wrap: false
+  - elementId: p7-page
+    elementType: text
+    bounds: [868, 480, 36, 20]
+    content:
+      style: "$small"
+      color: "$primary"
+      text: "07"
+      align: [right, middle]
+      wrap: false
