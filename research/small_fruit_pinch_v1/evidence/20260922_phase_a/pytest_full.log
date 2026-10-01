@@ -1,0 +1,3681 @@
+...FF......................................F..................... [ 14%]
+.........FFFFFFFFFFFFF.F.................................FFF.F........ [ 30%]
+....FFF..F.FFF................................FFFFF....F.........................................................F....F............. [ 60%]
+...............................F...F.F........................ [ 75%]
+.............FFFFF...................................................... [ 91%]
+.....................................                                    [100%]
+=================================== FAILURES ===================================
+_ ActiveViewHarvestCycleTests.test_occluded_target_recovers_and_completes_the_entire_cycle _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_active_view_reposition.ActiveViewHarvestCycleTests testMethod=test_occluded_target_recovers_and_completes_the_entire_cycle>
+
+    def test_occluded_target_recovers_and_completes_the_entire_cycle(self) -> None:
+        config = _task_config(
+            target_observation={
+                "type": "mock",
+                "occlusion_sequence": [0.10, 0.10],
+                "sample_advance_s": 0.01,
+            }
+        )
+        config["atomic_skills"]["target_reobserve"] = {  # type: ignore[index]
+            "type": "target_reobserve",
+            "require_depth": False,
+            "require_new_sample": True,
+        }
+        config["atomic_skills"]["select_harvest_target"][  # type: ignore[index]
+            "min_pick_confidence"
+        ] = 0.10
+        observation = _occluded_observation()
+>       task = build_task(config)
+               ^^^^^^^^^^^^^^^^^^
+
+tests/test_active_view_reposition.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ ActiveViewHarvestCycleTests.test_shipped_active_view_config_completes_one_recovery_cycle _
+
+env_config = {'type': 'mock', 'observations': [{'sequence': 0, 'timestamp_s': 0.0, 'metadata': {'tomatoes': [{'target_id': 'tomato-1', 'center_pose': {...}, 'semi_axes_m': [...], 'ripeness_score': 0.92, ...}]}}]}
+task_config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+agent_config = {'model': 'offline_harvest_active_view', 'max_iterations': 15, 'max_tool_calls': 14, 'max_tool_calls_per_turn': 1}
+runtime_config = {'max_steps': 1}
+model_profiles = {'ark_anthropic_doubao': {'type': 'ark_anthropic_messages', 'model': 'doubao-seed-2.0-pro', 'base_url': 'https://ark.c...nts': {'execution_id': 'exec-plan-tomato-1-right-0'}}], 'final_output': 'Offline tomato pick workflow finished.'}, ...}
+perception_profiles = {'offline_mock': {'type': 'mock'}}
+
+    def _validate_assembly_config(
+        *,
+        env_config: Mapping[str, Any],
+        task_config: Mapping[str, Any],
+        agent_config: Mapping[str, Any],
+        runtime_config: Mapping[str, Any],
+        model_profiles: Mapping[str, Mapping[str, Any]],
+        perception_profiles: Mapping[str, Mapping[str, Any]],
+    ) -> tuple[Mapping[str, Any], dict[str, int], int]:
+        """Validate the complete configuration before acquiring any resources."""
+    
+        _reject_unknown_keys(
+            agent_config,
+            allowed={
+                "model",
+                "max_iterations",
+                "max_tool_calls",
+                "max_tool_calls_per_turn",
+            },
+            label="agent",
+        )
+        model_profile_name = agent_config.get("model")
+        if not isinstance(model_profile_name, str) or not model_profile_name.strip():
+            raise ValueError("agent.model must be a non-empty profile name")
+        if model_profile_name != model_profile_name.strip():
+            raise ValueError("agent.model must not contain surrounding whitespace")
+        try:
+>           model_config = model_profiles[model_profile_name]
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'offline_harvest_active_view'
+
+script/run.py:261: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_active_view_reposition.ActiveViewHarvestCycleTests testMethod=test_shipped_active_view_config_completes_one_recovery_cycle>
+
+    def test_shipped_active_view_config_completes_one_recovery_cycle(self) -> None:
+        from script.run import build_runtime_from_file
+    
+        root = Path(__file__).resolve().parents[1]
+>       runtime = build_runtime_from_file(
+            root / "config" / "harvest_cycle_active_view_mock.yaml"
+        )
+
+tests/test_active_view_reposition.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+script/run.py:33: in build_runtime_from_file
+    return build_runtime(config, config_dir=config_path.parent)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+script/run.py:71: in build_runtime
+    model_config, agent_limits, max_steps = _validate_assembly_config(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+env_config = {'type': 'mock', 'observations': [{'sequence': 0, 'timestamp_s': 0.0, 'metadata': {'tomatoes': [{'target_id': 'tomato-1', 'center_pose': {...}, 'semi_axes_m': [...], 'ripeness_score': 0.92, ...}]}}]}
+task_config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+agent_config = {'model': 'offline_harvest_active_view', 'max_iterations': 15, 'max_tool_calls': 14, 'max_tool_calls_per_turn': 1}
+runtime_config = {'max_steps': 1}
+model_profiles = {'ark_anthropic_doubao': {'type': 'ark_anthropic_messages', 'model': 'doubao-seed-2.0-pro', 'base_url': 'https://ark.c...nts': {'execution_id': 'exec-plan-tomato-1-right-0'}}], 'final_output': 'Offline tomato pick workflow finished.'}, ...}
+perception_profiles = {'offline_mock': {'type': 'mock'}}
+
+    def _validate_assembly_config(
+        *,
+        env_config: Mapping[str, Any],
+        task_config: Mapping[str, Any],
+        agent_config: Mapping[str, Any],
+        runtime_config: Mapping[str, Any],
+        model_profiles: Mapping[str, Mapping[str, Any]],
+        perception_profiles: Mapping[str, Mapping[str, Any]],
+    ) -> tuple[Mapping[str, Any], dict[str, int], int]:
+        """Validate the complete configuration before acquiring any resources."""
+    
+        _reject_unknown_keys(
+            agent_config,
+            allowed={
+                "model",
+                "max_iterations",
+                "max_tool_calls",
+                "max_tool_calls_per_turn",
+            },
+            label="agent",
+        )
+        model_profile_name = agent_config.get("model")
+        if not isinstance(model_profile_name, str) or not model_profile_name.strip():
+            raise ValueError("agent.model must be a non-empty profile name")
+        if model_profile_name != model_profile_name.strip():
+            raise ValueError("agent.model must not contain surrounding whitespace")
+        try:
+            model_config = model_profiles[model_profile_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(model_profiles)) or "<none>"
+>           raise ValueError(
+                f"unknown model profile {model_profile_name!r}; profiles: {choices}"
+            ) from exc
+E           ValueError: unknown model profile 'offline_harvest_active_view'; profiles: ark_anthropic_doubao, ark_openai_doubao, offline_agri_pick, offline_hardware_capability_validation, offline_mock
+
+script/run.py:264: ValueError
+_ ArchitectureBoundaryTests.test_registries_are_explicit_and_only_expose_reviewed_implementations _
+
+self = <tests.test_architecture.ArchitectureBoundaryTests testMethod=test_registries_are_explicit_and_only_expose_reviewed_implementations>
+
+    def test_registries_are_explicit_and_only_expose_reviewed_implementations(self) -> None:
+        self.assertEqual(
+            {"mock", "ark_anthropic_messages", "ark_openai_responses"},
+            set(MODEL_REGISTRY),
+        )
+        self.assertEqual({"mock"}, set(ENV_REGISTRY))
+        self.assertEqual({"mock"}, set(PERCEPTION_REGISTRY))
+        self.assertEqual({"mock"}, set(MANIPULATION_REGISTRY))
+>       self.assertEqual(
+            {
+                "locate_target",
+                "agri_pick",
+                "harvest_cycle",
+                "hardware_capability_validation",
+                "hardware_read_only_validation",
+            },
+            set(TASK_REGISTRY),
+        )
+E       AssertionError: Items in the first set but not the second:
+E       'harvest_cycle'
+
+tests/test_architecture.py:162: AssertionError
+_ HarvestCycleTaskTests.test_fake_transcript_cannot_complete_before_service_evidence _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_fake_transcript_cannot_complete_before_service_evidence>
+
+    def test_fake_transcript_cannot_complete_before_service_evidence(self) -> None:
+>       task = build_task(_task_config())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_harvest_cycle_task.py:306: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+___ HarvestCycleTaskTests.test_missing_reobservation_returns_stable_failure ____
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_missing_reobservation_returns_stable_failure>
+
+    def test_missing_reobservation_returns_stable_failure(self) -> None:
+>       task = build_task(
+            _task_config(target_observation={"type": "mock", "force_missing": True})
+        )
+
+tests/test_harvest_cycle_task.py:359: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+___ HarvestCycleTaskTests.test_reachability_profile_must_match_the_task_arm ____
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "/home/miobarnacle/linkbot/linkagent/task/factory.py", line 39, in build_task
+    task_type = TASK_REGISTRY[task_name]
+                ~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'harvest_cycle'
+
+The above exception was the direct cause of the following exception:
+
+ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_reachability_profile_must_match_the_task_arm>
+
+    def test_reachability_profile_must_match_the_task_arm(self) -> None:
+        config = _task_config()
+        config["atomic_skills"]["select_harvest_target"][  # type: ignore[index]
+            "reachability_arm_side"
+        ] = "left"
+>       with self.assertRaisesRegex(ValueError, "must match default_arm_side"):
+E       AssertionError: "must match default_arm_side" does not match "unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target"
+
+tests/test_harvest_cycle_task.py:465: AssertionError
+____ HarvestCycleTaskTests.test_reobservation_requires_the_pinned_selection ____
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_reobservation_requires_the_pinned_selection>
+
+    def test_reobservation_requires_the_pinned_selection(self) -> None:
+>       task = build_task(_task_config())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_harvest_cycle_task.py:338: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ HarvestCycleTaskTests.test_shipped_config_completes_one_offline_harvest_cycle _
+
+env_config = {'type': 'mock', 'observations': [{'sequence': 0, 'timestamp_s': 0.0, 'metadata': {'tomato_vision': {'camera': {'devic...confidence': 0.95, 'reason': 'ripe, reachable, and minimally occluded numbered candidate', 'point_xy': [...], ...}}}}]}
+task_config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+agent_config = {'model': 'offline_harvest_cycle', 'max_iterations': 13, 'max_tool_calls': 12, 'max_tool_calls_per_turn': 1}
+runtime_config = {'max_steps': 1}
+model_profiles = {'ark_anthropic_doubao': {'type': 'ark_anthropic_messages', 'model': 'doubao-seed-2.0-pro', 'base_url': 'https://ark.c...nts': {'execution_id': 'exec-plan-tomato-1-right-0'}}], 'final_output': 'Offline tomato pick workflow finished.'}, ...}
+perception_profiles = {'offline_mock': {'type': 'mock'}}
+
+    def _validate_assembly_config(
+        *,
+        env_config: Mapping[str, Any],
+        task_config: Mapping[str, Any],
+        agent_config: Mapping[str, Any],
+        runtime_config: Mapping[str, Any],
+        model_profiles: Mapping[str, Mapping[str, Any]],
+        perception_profiles: Mapping[str, Mapping[str, Any]],
+    ) -> tuple[Mapping[str, Any], dict[str, int], int]:
+        """Validate the complete configuration before acquiring any resources."""
+    
+        _reject_unknown_keys(
+            agent_config,
+            allowed={
+                "model",
+                "max_iterations",
+                "max_tool_calls",
+                "max_tool_calls_per_turn",
+            },
+            label="agent",
+        )
+        model_profile_name = agent_config.get("model")
+        if not isinstance(model_profile_name, str) or not model_profile_name.strip():
+            raise ValueError("agent.model must be a non-empty profile name")
+        if model_profile_name != model_profile_name.strip():
+            raise ValueError("agent.model must not contain surrounding whitespace")
+        try:
+>           model_config = model_profiles[model_profile_name]
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'offline_harvest_cycle'
+
+script/run.py:261: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_shipped_config_completes_one_offline_harvest_cycle>
+
+    def test_shipped_config_completes_one_offline_harvest_cycle(self) -> None:
+>       runtime = build_runtime_from_file(ROOT / "config" / "harvest_cycle_mock.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_harvest_cycle_task.py:267: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+script/run.py:33: in build_runtime_from_file
+    return build_runtime(config, config_dir=config_path.parent)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+script/run.py:71: in build_runtime
+    model_config, agent_limits, max_steps = _validate_assembly_config(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+env_config = {'type': 'mock', 'observations': [{'sequence': 0, 'timestamp_s': 0.0, 'metadata': {'tomato_vision': {'camera': {'devic...confidence': 0.95, 'reason': 'ripe, reachable, and minimally occluded numbered candidate', 'point_xy': [...], ...}}}}]}
+task_config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+agent_config = {'model': 'offline_harvest_cycle', 'max_iterations': 13, 'max_tool_calls': 12, 'max_tool_calls_per_turn': 1}
+runtime_config = {'max_steps': 1}
+model_profiles = {'ark_anthropic_doubao': {'type': 'ark_anthropic_messages', 'model': 'doubao-seed-2.0-pro', 'base_url': 'https://ark.c...nts': {'execution_id': 'exec-plan-tomato-1-right-0'}}], 'final_output': 'Offline tomato pick workflow finished.'}, ...}
+perception_profiles = {'offline_mock': {'type': 'mock'}}
+
+    def _validate_assembly_config(
+        *,
+        env_config: Mapping[str, Any],
+        task_config: Mapping[str, Any],
+        agent_config: Mapping[str, Any],
+        runtime_config: Mapping[str, Any],
+        model_profiles: Mapping[str, Mapping[str, Any]],
+        perception_profiles: Mapping[str, Mapping[str, Any]],
+    ) -> tuple[Mapping[str, Any], dict[str, int], int]:
+        """Validate the complete configuration before acquiring any resources."""
+    
+        _reject_unknown_keys(
+            agent_config,
+            allowed={
+                "model",
+                "max_iterations",
+                "max_tool_calls",
+                "max_tool_calls_per_turn",
+            },
+            label="agent",
+        )
+        model_profile_name = agent_config.get("model")
+        if not isinstance(model_profile_name, str) or not model_profile_name.strip():
+            raise ValueError("agent.model must be a non-empty profile name")
+        if model_profile_name != model_profile_name.strip():
+            raise ValueError("agent.model must not contain surrounding whitespace")
+        try:
+            model_config = model_profiles[model_profile_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(model_profiles)) or "<none>"
+>           raise ValueError(
+                f"unknown model profile {model_profile_name!r}; profiles: {choices}"
+            ) from exc
+E           ValueError: unknown model profile 'offline_harvest_cycle'; profiles: ark_anthropic_doubao, ark_openai_doubao, offline_agri_pick, offline_hardware_capability_validation, offline_mock
+
+script/run.py:264: ValueError
+_ HarvestCycleTaskTests.test_success_requires_independent_end_to_end_evidence __
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_success_requires_independent_end_to_end_evidence>
+
+    def test_success_requires_independent_end_to_end_evidence(self) -> None:
+>       task = build_task(_task_config())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_harvest_cycle_task.py:274: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_____ HarvestCycleTaskTests.test_target_must_be_reobserved_before_planning _____
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_target_must_be_reobserved_before_planning>
+
+    def test_target_must_be_reobserved_before_planning(self) -> None:
+>       task = build_task(_task_config())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_harvest_cycle_task.py:322: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+____ HarvestCycleTaskTests.test_task_exposes_exactly_sixteen_bounded_tools _____
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_task_exposes_exactly_sixteen_bounded_tools>
+
+    def test_task_exposes_exactly_sixteen_bounded_tools(self) -> None:
+>       task = build_task(_task_config())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_harvest_cycle_task.py:228: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_______ HarvestCycleTaskTests.test_unavailable_container_is_fail_closed ________
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_unavailable_container_is_fail_closed>
+
+    def test_unavailable_container_is_fail_closed(self) -> None:
+>       task = build_task(_task_config(container_available=False))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_harvest_cycle_task.py:447: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ HarvestCycleTaskTests.test_unconfirmed_container_evidence_does_not_complete __
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_unconfirmed_container_evidence_does_not_complete>
+
+    def test_unconfirmed_container_evidence_does_not_complete(self) -> None:
+>       task = build_task(
+            _task_config(
+                placement_verifier={"type": "mock", "force_unconfirmed": True}
+            )
+        )
+
+tests/test_harvest_cycle_task.py:378: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+__ HarvestCycleTaskTests.test_unstable_retreat_can_use_safe_retract_recovery ___
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_harvest_cycle_task.HarvestCycleTaskTests testMethod=test_unstable_retreat_can_use_safe_retract_recovery>
+
+    def test_unstable_retreat_can_use_safe_retract_recovery(self) -> None:
+>       task = build_task(
+            _task_config(
+                payload_retreat={"type": "payload_retreat", "force_payload_unstable": True}
+            )
+        )
+
+tests/test_harvest_cycle_task.py:406: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ PregraspClearanceTests.test_blocked_transit_never_sends_motion_and_ready_stays_locked _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_pregrasp_clearance.PregraspClearanceTests testMethod=test_blocked_transit_never_sends_motion_and_ready_stays_locked>
+
+    def test_blocked_transit_never_sends_motion_and_ready_stays_locked(self) -> None:
+        scene = {
+            "type": "mock",
+            "obstacle_points_world_m": [
+                [0.188, -0.098, 0.607],
+                [0.90, 0.80, 1.30],
+                [-0.30, -0.70, 0.25],
+            ],
+        }
+>       task, env, tools, _ = _planned_task(clearance_scene=scene)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pregrasp_clearance.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_pregrasp_clearance.py:20: in _planned_task
+    task = build_task(_task_config(clearance_scene=clearance_scene))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ PregraspClearanceTests.test_clear_scene_is_read_only_and_releases_the_exact_plan _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_pregrasp_clearance.PregraspClearanceTests testMethod=test_clear_scene_is_read_only_and_releases_the_exact_plan>
+
+    def test_clear_scene_is_read_only_and_releases_the_exact_plan(self) -> None:
+>       task, env, tools, plan = _planned_task()
+                                 ^^^^^^^^^^^^^^^
+
+tests/test_pregrasp_clearance.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_pregrasp_clearance.py:20: in _planned_task
+    task = build_task(_task_config(clearance_scene=clearance_scene))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ PregraspClearanceTests.test_missing_stale_and_low_coverage_scenes_have_stable_failures (scene={'type': 'mock', 'force_missing': True}) _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_pregrasp_clearance.PregraspClearanceTests testMethod=test_missing_stale_and_low_coverage_scenes_have_stable_failures>
+
+    def test_missing_stale_and_low_coverage_scenes_have_stable_failures(self) -> None:
+        cases = (
+            ({"type": "mock", "force_missing": True}, "clearance_context_missing"),
+            ({"type": "mock", "sample_age_s": 0.6}, "clearance_scene_stale"),
+            ({"type": "mock", "coverage_ratio": 0.2}, "clearance_context_missing"),
+        )
+        for scene, expected in cases:
+            with self.subTest(scene=scene):
+>               task, env, tools, _ = _planned_task(clearance_scene=scene)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pregrasp_clearance.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_pregrasp_clearance.py:20: in _planned_task
+    task = build_task(_task_config(clearance_scene=clearance_scene))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ PregraspClearanceTests.test_missing_stale_and_low_coverage_scenes_have_stable_failures (scene={'type': 'mock', 'sample_age_s': 0.6}) _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_pregrasp_clearance.PregraspClearanceTests testMethod=test_missing_stale_and_low_coverage_scenes_have_stable_failures>
+
+    def test_missing_stale_and_low_coverage_scenes_have_stable_failures(self) -> None:
+        cases = (
+            ({"type": "mock", "force_missing": True}, "clearance_context_missing"),
+            ({"type": "mock", "sample_age_s": 0.6}, "clearance_scene_stale"),
+            ({"type": "mock", "coverage_ratio": 0.2}, "clearance_context_missing"),
+        )
+        for scene, expected in cases:
+            with self.subTest(scene=scene):
+>               task, env, tools, _ = _planned_task(clearance_scene=scene)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pregrasp_clearance.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_pregrasp_clearance.py:20: in _planned_task
+    task = build_task(_task_config(clearance_scene=clearance_scene))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ PregraspClearanceTests.test_missing_stale_and_low_coverage_scenes_have_stable_failures (scene={'type': 'mock', 'coverage_ratio': 0.2}) _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_pregrasp_clearance.PregraspClearanceTests testMethod=test_missing_stale_and_low_coverage_scenes_have_stable_failures>
+
+    def test_missing_stale_and_low_coverage_scenes_have_stable_failures(self) -> None:
+        cases = (
+            ({"type": "mock", "force_missing": True}, "clearance_context_missing"),
+            ({"type": "mock", "sample_age_s": 0.6}, "clearance_scene_stale"),
+            ({"type": "mock", "coverage_ratio": 0.2}, "clearance_context_missing"),
+        )
+        for scene, expected in cases:
+            with self.subTest(scene=scene):
+>               task, env, tools, _ = _planned_task(clearance_scene=scene)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pregrasp_clearance.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_pregrasp_clearance.py:20: in _planned_task
+    task = build_task(_task_config(clearance_scene=clearance_scene))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ PregraspClearanceTests.test_observation_pointcloud_port_uses_runtime_observation_not_agent_arguments _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_pregrasp_clearance.PregraspClearanceTests testMethod=test_observation_pointcloud_port_uses_runtime_observation_not_agent_arguments>
+
+    def test_observation_pointcloud_port_uses_runtime_observation_not_agent_arguments(self) -> None:
+        original = _observation()
+        metadata = deepcopy(dict(original.metadata))
+        metadata["pregrasp_clearance"] = {
+            "scene_id": "depth-scene-0",
+            "sample_monotonic_ns": 1_000_000_000,
+            "points_world_m": [
+                [0.90, 0.80, 1.30],
+                [0.85, 0.75, 1.25],
+                [-0.30, -0.70, 0.25],
+            ],
+            "coverage_ratio": 0.95,
+            "calibration_id": "future-depth-camera-calibration",
+            "frame_id": "world",
+            "simulated": True,
+            "evidence_sources": ["observation.aligned_depth_pointcloud"],
+        }
+        observation = Observation(sequence=0, metadata=metadata)
+>       task, env, tools, _ = _planned_task(
+            clearance_scene={"type": "observation_pointcloud"},
+            observation=observation,
+        )
+
+tests/test_pregrasp_clearance.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_pregrasp_clearance.py:20: in _planned_task
+    task = build_task(_task_config(clearance_scene=clearance_scene))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ PregraspClearanceTests.test_target_surface_is_excluded_but_a_nearby_branch_is_not (name='fruit_only') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_pregrasp_clearance.PregraspClearanceTests testMethod=test_target_surface_is_excluded_but_a_nearby_branch_is_not>
+
+    def test_target_surface_is_excluded_but_a_nearby_branch_is_not(self) -> None:
+        cases = (
+            (
+                "fruit_only",
+                [[0.45, -0.25, 0.72], [0.90, 0.80, 1.30], [-0.30, -0.70, 0.25]],
+                True,
+            ),
+            (
+                "near_branch",
+                [[0.45, -0.25, 0.72], [0.40, -0.205, 0.55], [0.90, 0.80, 1.30]],
+                False,
+            ),
+        )
+        for name, points, expected_clear in cases:
+            with self.subTest(name=name):
+>               task, env, tools, _ = _planned_task(
+                    clearance_scene={"type": "mock", "obstacle_points_world_m": points}
+                )
+
+tests/test_pregrasp_clearance.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_pregrasp_clearance.py:20: in _planned_task
+    task = build_task(_task_config(clearance_scene=clearance_scene))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ PregraspClearanceTests.test_target_surface_is_excluded_but_a_nearby_branch_is_not (name='near_branch') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_pregrasp_clearance.PregraspClearanceTests testMethod=test_target_surface_is_excluded_but_a_nearby_branch_is_not>
+
+    def test_target_surface_is_excluded_but_a_nearby_branch_is_not(self) -> None:
+        cases = (
+            (
+                "fruit_only",
+                [[0.45, -0.25, 0.72], [0.90, 0.80, 1.30], [-0.30, -0.70, 0.25]],
+                True,
+            ),
+            (
+                "near_branch",
+                [[0.45, -0.25, 0.72], [0.40, -0.205, 0.55], [0.90, 0.80, 1.30]],
+                False,
+            ),
+        )
+        for name, points, expected_clear in cases:
+            with self.subTest(name=name):
+>               task, env, tools, _ = _planned_task(
+                    clearance_scene={"type": "mock", "obstacle_points_world_m": points}
+                )
+
+tests/test_pregrasp_clearance.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_pregrasp_clearance.py:20: in _planned_task
+    task = build_task(_task_config(clearance_scene=clearance_scene))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ ResetForNextTargetTests.test_nonempty_hand_blocks_reset_and_a_new_attempt_can_recover _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_reset_for_next_target.ResetForNextTargetTests testMethod=test_nonempty_hand_blocks_reset_and_a_new_attempt_can_recover>
+
+    def test_nonempty_hand_blocks_reset_and_a_new_attempt_can_recover(self) -> None:
+>       task = build_task(_task_config())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_reset_for_next_target.py:116: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ ResetForNextTargetTests.test_reset_before_verified_completion_is_rejected_without_motion _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_reset_for_next_target.ResetForNextTargetTests testMethod=test_reset_before_verified_completion_is_rejected_without_motion>
+
+    def test_reset_before_verified_completion_is_rejected_without_motion(self) -> None:
+>       task = build_task(_task_config())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_reset_for_next_target.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ ResetForNextTargetTests.test_verified_cycle_resets_to_observe_and_a_second_cycle_completes _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_reset_for_next_target.ResetForNextTargetTests testMethod=test_verified_cycle_resets_to_observe_and_a_second_cycle_completes>
+
+    def test_verified_cycle_resets_to_observe_and_a_second_cycle_completes(self) -> None:
+        first_observation = _observation()
+>       task = build_task(_task_config())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_reset_for_next_target.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ DeploymentConfigTests.test_sdk_manifest_points_only_to_present_canonical_sources _
+
+self = <tests.test_robotics_adapters.DeploymentConfigTests testMethod=test_sdk_manifest_points_only_to_present_canonical_sources>
+
+    def test_sdk_manifest_points_only_to_present_canonical_sources(self) -> None:
+        manifest = json.loads(
+            (ROOT / "botSDK/INTEGRATION_MANIFEST.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["device_shape"]["arms"], 2)
+        self.assertEqual(manifest["device_shape"]["joints_per_arm"], 7)
+        self.assertEqual(manifest["device_shape"]["hands"], 2)
+        for relative in manifest["canonical"].values():
+            self.assertTrue((ROOT / "botSDK" / relative).exists(), relative)
+        for relative in manifest["evidence"].values():
+>           self.assertTrue((ROOT / "botSDK" / relative).is_file(), relative)
+E           AssertionError: False is not true : linkerhand-control-workspace/logs/left_g20_connection_20260726.json
+
+tests/test_robotics_adapters.py:235: AssertionError
+_ SystemSelfCheckTests.test_camera_depth_and_calibration_fail_closed (expected_check='camera_sdk') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_camera_depth_and_calibration_fail_closed>
+
+    def test_camera_depth_and_calibration_fail_closed(self) -> None:
+        cases = (
+            (
+                {
+                    "type": "mock",
+                    "sdk_root": "/tmp/linkagent-missing-orbbec-sdk",
+                },
+                "camera_sdk",
+            ),
+            (
+                {"type": "mock", "depth_live": False},
+                "camera_depth",
+            ),
+            (
+                {"type": "mock", "calibration_id": "wrong-calibration"},
+                "camera_calibration",
+            ),
+            (
+                {"type": "mock", "stale_by_s": 2.0},
+                "camera_connection",
+            ),
+        )
+        for camera_health, expected_check in cases:
+            with self.subTest(expected_check=expected_check):
+>               task, env, _, tools = self._build(
+                    _task_config(camera_health=camera_health)
+                )
+
+tests/test_system_self_check.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ SystemSelfCheckTests.test_camera_depth_and_calibration_fail_closed (expected_check='camera_depth') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_camera_depth_and_calibration_fail_closed>
+
+    def test_camera_depth_and_calibration_fail_closed(self) -> None:
+        cases = (
+            (
+                {
+                    "type": "mock",
+                    "sdk_root": "/tmp/linkagent-missing-orbbec-sdk",
+                },
+                "camera_sdk",
+            ),
+            (
+                {"type": "mock", "depth_live": False},
+                "camera_depth",
+            ),
+            (
+                {"type": "mock", "calibration_id": "wrong-calibration"},
+                "camera_calibration",
+            ),
+            (
+                {"type": "mock", "stale_by_s": 2.0},
+                "camera_connection",
+            ),
+        )
+        for camera_health, expected_check in cases:
+            with self.subTest(expected_check=expected_check):
+>               task, env, _, tools = self._build(
+                    _task_config(camera_health=camera_health)
+                )
+
+tests/test_system_self_check.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ SystemSelfCheckTests.test_camera_depth_and_calibration_fail_closed (expected_check='camera_calibration') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_camera_depth_and_calibration_fail_closed>
+
+    def test_camera_depth_and_calibration_fail_closed(self) -> None:
+        cases = (
+            (
+                {
+                    "type": "mock",
+                    "sdk_root": "/tmp/linkagent-missing-orbbec-sdk",
+                },
+                "camera_sdk",
+            ),
+            (
+                {"type": "mock", "depth_live": False},
+                "camera_depth",
+            ),
+            (
+                {"type": "mock", "calibration_id": "wrong-calibration"},
+                "camera_calibration",
+            ),
+            (
+                {"type": "mock", "stale_by_s": 2.0},
+                "camera_connection",
+            ),
+        )
+        for camera_health, expected_check in cases:
+            with self.subTest(expected_check=expected_check):
+>               task, env, _, tools = self._build(
+                    _task_config(camera_health=camera_health)
+                )
+
+tests/test_system_self_check.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ SystemSelfCheckTests.test_camera_depth_and_calibration_fail_closed (expected_check='camera_connection') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_camera_depth_and_calibration_fail_closed>
+
+    def test_camera_depth_and_calibration_fail_closed(self) -> None:
+        cases = (
+            (
+                {
+                    "type": "mock",
+                    "sdk_root": "/tmp/linkagent-missing-orbbec-sdk",
+                },
+                "camera_sdk",
+            ),
+            (
+                {"type": "mock", "depth_live": False},
+                "camera_depth",
+            ),
+            (
+                {"type": "mock", "calibration_id": "wrong-calibration"},
+                "camera_calibration",
+            ),
+            (
+                {"type": "mock", "stale_by_s": 2.0},
+                "camera_connection",
+            ),
+        )
+        for camera_health, expected_check in cases:
+            with self.subTest(expected_check=expected_check):
+>               task, env, _, tools = self._build(
+                    _task_config(camera_health=camera_health)
+                )
+
+tests/test_system_self_check.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_______ SystemSelfCheckTests.test_detection_is_blocked_before_admission ________
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_detection_is_blocked_before_admission>
+
+    def test_detection_is_blocked_before_admission(self) -> None:
+>       task, env, _, tools = self._build(_task_config())
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_system_self_check.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+__ SystemSelfCheckTests.test_hardware_mode_rejects_simulated_health_evidence ___
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_hardware_mode_rejects_simulated_health_evidence>
+
+    def test_hardware_mode_rejects_simulated_health_evidence(self) -> None:
+        config = _task_config()
+        config["atomic_skills"]["system_self_check"] = {  # type: ignore[index]
+            "type": "system_self_check",
+            "execution_mode": "hardware",
+        }
+        config["atomic_skills"]["target_reobserve"][  # type: ignore[index]
+            "require_new_sample"
+        ] = True
+>       task, env, _, tools = self._build(config)
+                              ^^^^^^^^^^^^^^^^^^^
+
+tests/test_system_self_check.py:197: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+__ SystemSelfCheckTests.test_healthy_check_is_read_only_and_admits_detection ___
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_healthy_check_is_read_only_and_admits_detection>
+
+    def test_healthy_check_is_read_only_and_admits_detection(self) -> None:
+        config = _task_config(
+            camera_health={
+                "type": "mock",
+                "sdk_root": str(ORBBEC_ROOT),
+            }
+        )
+>       task, env, _, tools = self._build(config)
+                              ^^^^^^^^^^^^^^^^^^^
+
+tests/test_system_self_check.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+________ SystemSelfCheckTests.test_policy_mapper_mismatch_fails_closed _________
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_policy_mapper_mismatch_fails_closed>
+
+    def test_policy_mapper_mismatch_fails_closed(self) -> None:
+        config = _task_config()
+        config["atomic_skills"]["system_self_check"] = {  # type: ignore[index]
+            "type": "system_self_check",
+            "execution_mode": "offline_mock",
+            "expected_hand_mapper_id": "wrong-mapper",
+        }
+>       task, env, _, tools = self._build(config)
+                              ^^^^^^^^^^^^^^^^^^^
+
+tests/test_system_self_check.py:223: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ SystemSelfCheckTests.test_robot_hand_and_tactile_faults_fail_closed (outcome='arm_state_stale') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_robot_hand_and_tactile_faults_fail_closed>
+
+    def test_robot_hand_and_tactile_faults_fail_closed(self) -> None:
+        cases = (
+            ("arm_state_stale", "arm_state"),
+            ("device_fault", "hand_state"),
+            ("tactile_stale", "tactile_state"),
+        )
+        for outcome, expected_check in cases:
+            with self.subTest(outcome=outcome):
+>               task, env, _, tools = self._build(_task_config(outcome=outcome))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_system_self_check.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ SystemSelfCheckTests.test_robot_hand_and_tactile_faults_fail_closed (outcome='device_fault') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_robot_hand_and_tactile_faults_fail_closed>
+
+    def test_robot_hand_and_tactile_faults_fail_closed(self) -> None:
+        cases = (
+            ("arm_state_stale", "arm_state"),
+            ("device_fault", "hand_state"),
+            ("tactile_stale", "tactile_state"),
+        )
+        for outcome, expected_check in cases:
+            with self.subTest(outcome=outcome):
+>               task, env, _, tools = self._build(_task_config(outcome=outcome))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_system_self_check.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ SystemSelfCheckTests.test_robot_hand_and_tactile_faults_fail_closed (outcome='tactile_stale') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_robot_hand_and_tactile_faults_fail_closed>
+
+    def test_robot_hand_and_tactile_faults_fail_closed(self) -> None:
+        cases = (
+            ("arm_state_stale", "arm_state"),
+            ("device_fault", "hand_state"),
+            ("tactile_stale", "tactile_state"),
+        )
+        for outcome, expected_check in cases:
+            with self.subTest(outcome=outcome):
+>               task, env, _, tools = self._build(_task_config(outcome=outcome))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_system_self_check.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ SystemSelfCheckTests.test_shadow_or_hardware_config_cannot_disable_fresh_reobservation _
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "/home/miobarnacle/linkbot/linkagent/task/factory.py", line 39, in build_task
+    task_type = TASK_REGISTRY[task_name]
+                ~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'harvest_cycle'
+
+The above exception was the direct cause of the following exception:
+
+ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_shadow_or_hardware_config_cannot_disable_fresh_reobservation>
+
+    def test_shadow_or_hardware_config_cannot_disable_fresh_reobservation(self) -> None:
+        config = _task_config()
+        config["atomic_skills"]["system_self_check"] = {  # type: ignore[index]
+            "type": "system_self_check",
+            "execution_mode": "shadow",
+        }
+>       with self.assertRaisesRegex(ValueError, "require_new_sample=true"):
+E       AssertionError: "require_new_sample=true" does not match "unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target"
+
+tests/test_system_self_check.py:213: AssertionError
+__ SystemSelfCheckTests.test_unknown_estop_and_busy_control_lease_fail_closed __
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_unknown_estop_and_busy_control_lease_fail_closed>
+
+    def test_unknown_estop_and_busy_control_lease_fail_closed(self) -> None:
+>       task, env, _, tools = self._build(
+            _task_config(
+                emergency_stop_health={
+                    "type": "mock",
+                    "available": True,
+                    "healthy": None,
+                }
+            )
+        )
+
+tests/test_system_self_check.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+__ SystemSelfCheckTests.test_unready_vision_worker_blocks_detection_admission __
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_system_self_check.SystemSelfCheckTests testMethod=test_unready_vision_worker_blocks_detection_admission>
+
+    def test_unready_vision_worker_blocks_detection_admission(self) -> None:
+>       task, env, _, tools = self._build(
+            _task_config(vision_worker_health={"type": "mock", "ready": False})
+        )
+
+tests/test_system_self_check.py:121: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_system_self_check.py:24: in _build
+    task = build_task(config)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+______ test_packaged_torchscript_policy_matches_saved_canaries[manifest0] ______
+
+manifest = PosixPath('/home/miobarnacle/linkbot/linkagent/artifacts/simulation/tomato_pick_clean_v5/model_1350_best/skill_manifest.json')
+
+    @pytest.mark.parametrize(
+        "manifest",
+        (_BEST, _CANDIDATE),
+    )
+    def test_packaged_torchscript_policy_matches_saved_canaries(manifest: Path) -> None:
+        pytest.importorskip("torch")
+        if not manifest.is_file():
+            pytest.skip(f"skill package has not been generated: {manifest.parent.name}")
+        policy = TorchScriptTomatoPickPolicy(manifest_path=manifest)
+        canaries = json.loads(
+            (manifest.parent / "inference_canaries.json").read_text(encoding="utf-8")
+        )["cases"]
+        for case in canaries:
+            actual = policy.act(TomatoPickObservation(tuple(case["observation"])))
+>           assert actual.values == pytest.approx(case["clipped_action"], abs=1.0e-6)
+E           assert (-0.690323114...334, 1.0, ...) == approx([-0.69....0 ± 1.0e-06])
+E             
+E             comparison failed. Mismatched elements: 1 / 11:
+E             Max absolute difference: 1.2814998626708984e-06
+E             Max relative difference: 4.608936556487716e-06
+E             Index | Obtained            | Expected                    
+E             4     | 0.27804675698280334 | 0.2780454754829407 ± 1.0e-06
+
+tests/test_tomato_exported_policy.py:85: AssertionError
+______ test_packaged_torchscript_policy_matches_saved_canaries[manifest1] ______
+
+manifest = PosixPath('/home/miobarnacle/linkbot/linkagent/artifacts/simulation/tomato_pick_clean_v5/model_1600_candidate/skill_manifest.json')
+
+    @pytest.mark.parametrize(
+        "manifest",
+        (_BEST, _CANDIDATE),
+    )
+    def test_packaged_torchscript_policy_matches_saved_canaries(manifest: Path) -> None:
+        pytest.importorskip("torch")
+        if not manifest.is_file():
+            pytest.skip(f"skill package has not been generated: {manifest.parent.name}")
+        policy = TorchScriptTomatoPickPolicy(manifest_path=manifest)
+        canaries = json.loads(
+            (manifest.parent / "inference_canaries.json").read_text(encoding="utf-8")
+        )["cases"]
+        for case in canaries:
+            actual = policy.act(TomatoPickObservation(tuple(case["observation"])))
+>           assert actual.values == pytest.approx(case["clipped_action"], abs=1.0e-6)
+E           assert (0.7983471751...1.0, 1.0, ...) == approx([0.798....0 ± 1.0e-06])
+E             
+E             comparison failed. Mismatched elements: 1 / 11:
+E             Max absolute difference: 1.430511474609375e-06
+E             Max relative difference: 1.7918413432001076e-06
+E             Index | Obtained           | Expected                    
+E             0     | 0.7983471751213074 | 0.7983457446098328 ± 1.0e-06
+
+tests/test_tomato_exported_policy.py:85: AssertionError
+___________ test_candidate_torchscript_policy_matches_saved_canaries ___________
+
+    def test_candidate_torchscript_policy_matches_saved_canaries() -> None:
+        pytest.importorskip("torch")
+        if not _CANDIDATE.is_file():
+            pytest.skip("candidate skill package has not been generated")
+        policy = TorchScriptTomatoPickPolicy(manifest_path=_CANDIDATE)
+        canaries = json.loads(
+            (_CANDIDATE.parent / "inference_canaries.json").read_text(encoding="utf-8")
+        )["cases"]
+        for case in canaries:
+            actual = policy.act(TomatoPickObservation(tuple(case["observation"])))
+>           assert actual.values == pytest.approx(case["clipped_action"], abs=1.0e-6)
+E           assert (0.7983471751...1.0, 1.0, ...) == approx([0.798....0 ± 1.0e-06])
+E             
+E             comparison failed. Mismatched elements: 1 / 11:
+E             Max absolute difference: 1.430511474609375e-06
+E             Max relative difference: 1.7918413432001076e-06
+E             Index | Obtained           | Expected                    
+E             0     | 0.7983471751213074 | 0.7983457446098328 ± 1.0e-06
+
+tests/test_tomato_exported_policy.py:103: AssertionError
+_ test_packaged_torch_export_and_profile_match_saved_canaries[manifest0-tomato_pick_clean_v5_model1350_best.json] _
+
+manifest = PosixPath('/home/miobarnacle/linkbot/linkagent/artifacts/simulation/tomato_pick_clean_v5/model_1350_best/skill_manifest.json')
+profile_name = 'tomato_pick_clean_v5_model1350_best.json'
+
+    @pytest.mark.parametrize(
+        ("manifest", "profile_name"),
+        (
+            (_BEST, "tomato_pick_clean_v5_model1350_best.json"),
+            (_CANDIDATE, "tomato_pick_clean_v5_model1600_candidate.json"),
+        ),
+    )
+    def test_packaged_torch_export_and_profile_match_saved_canaries(
+        manifest: Path,
+        profile_name: str,
+    ) -> None:
+        pytest.importorskip("torch")
+        if not manifest.is_file():
+            pytest.skip(f"skill package has not been generated: {manifest.parent.name}")
+        profile = (
+            Path(__file__).resolve().parents[1]
+            / "config/skills"
+            / profile_name
+        )
+        values = load_skill_profile(profile)
+        policy = build_policy(values)
+        assert isinstance(policy, TorchExportTomatoPickPolicy)
+        canaries = json.loads(
+            (manifest.parent / "inference_canaries.json").read_text(encoding="utf-8")
+        )["cases"]
+        for case in canaries:
+            actual = policy.act(TomatoPickObservation(tuple(case["observation"])))
+>           assert actual.values == pytest.approx(case["clipped_action"], abs=1.0e-6)
+E           assert (-0.690323114...334, 1.0, ...) == approx([-0.69....0 ± 1.0e-06])
+E             
+E             comparison failed. Mismatched elements: 1 / 11:
+E             Max absolute difference: 1.2814998626708984e-06
+E             Max relative difference: 4.608936556487716e-06
+E             Index | Obtained            | Expected                    
+E             4     | 0.27804675698280334 | 0.2780454754829407 ± 1.0e-06
+
+tests/test_tomato_exported_policy.py:138: AssertionError
+_ test_packaged_torch_export_and_profile_match_saved_canaries[manifest1-tomato_pick_clean_v5_model1600_candidate.json] _
+
+manifest = PosixPath('/home/miobarnacle/linkbot/linkagent/artifacts/simulation/tomato_pick_clean_v5/model_1600_candidate/skill_manifest.json')
+profile_name = 'tomato_pick_clean_v5_model1600_candidate.json'
+
+    @pytest.mark.parametrize(
+        ("manifest", "profile_name"),
+        (
+            (_BEST, "tomato_pick_clean_v5_model1350_best.json"),
+            (_CANDIDATE, "tomato_pick_clean_v5_model1600_candidate.json"),
+        ),
+    )
+    def test_packaged_torch_export_and_profile_match_saved_canaries(
+        manifest: Path,
+        profile_name: str,
+    ) -> None:
+        pytest.importorskip("torch")
+        if not manifest.is_file():
+            pytest.skip(f"skill package has not been generated: {manifest.parent.name}")
+        profile = (
+            Path(__file__).resolve().parents[1]
+            / "config/skills"
+            / profile_name
+        )
+        values = load_skill_profile(profile)
+        policy = build_policy(values)
+        assert isinstance(policy, TorchExportTomatoPickPolicy)
+        canaries = json.loads(
+            (manifest.parent / "inference_canaries.json").read_text(encoding="utf-8")
+        )["cases"]
+        for case in canaries:
+            actual = policy.act(TomatoPickObservation(tuple(case["observation"])))
+>           assert actual.values == pytest.approx(case["clipped_action"], abs=1.0e-6)
+E           assert (0.7983471751...1.0, 1.0, ...) == approx([0.798....0 ± 1.0e-06])
+E             
+E             comparison failed. Mismatched elements: 1 / 11:
+E             Max absolute difference: 1.430511474609375e-06
+E             Max relative difference: 1.7918413432001076e-06
+E             Index | Obtained           | Expected                    
+E             0     | 0.7983471751213074 | 0.7983457446098328 ± 1.0e-06
+
+tests/test_tomato_exported_policy.py:138: AssertionError
+____________ test_frozen_calibration_matches_saved_draft_and_mapper ____________
+
+    def test_frozen_calibration_matches_saved_draft_and_mapper() -> None:
+        payload = json.loads(CALIBRATION.read_text())
+        assert payload["mapping_id"] == MAPPING_ID
+>       assert hashlib.sha256(DRAFT.read_bytes()).hexdigest() == SOURCE_DRAFT_SHA256
+                              ^^^^^^^^^^^^^^^^^^
+
+tests/test_tomato_hand_synergy_calibrated_v2.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../.local/share/uv/python/cpython-3.12.3-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/home/miobarnacle/linkbot/linkagent/logs/hand_5d_viewer/latest_draft.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/miobarnacle/linkbot/linkagent/logs/hand_5d_viewer/latest_draft.json'
+
+../../.local/share/uv/python/cpython-3.12.3-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_________________ test_physics_v2_parent_baseline_hashes_match _________________
+
+    def test_physics_v2_parent_baseline_hashes_match() -> None:
+        result = verify_parent_physics_v1_baseline()
+>       assert result["passed"] is True
+E       assert False is True
+
+tests/test_tomato_physics_v2.py:58: AssertionError
+_____________________ test_physics_v2_step1_report_passes ______________________
+
+    def test_physics_v2_step1_report_passes() -> None:
+        report = physics_v2_step1_report()
+>       assert report["passed"] is True
+E       assert False is True
+
+tests/test_tomato_physics_v2.py:131: AssertionError
+_ TomatoVisionPipelineTests.test_effectful_ready_skill_returns_the_exact_nine_visual_inputs _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_tomato_vision_pipeline.TomatoVisionPipelineTests testMethod=test_effectful_ready_skill_returns_the_exact_nine_visual_inputs>
+
+    def test_effectful_ready_skill_returns_the_exact_nine_visual_inputs(self) -> None:
+        config = _task_config()
+        config["robotics"]["scenario"]["stable_hold_ticks"] = 8  # type: ignore[index]
+>       task = build_task(config)
+               ^^^^^^^^^^^^^^^^^^
+
+tests/test_tomato_vision_pipeline.py:225: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ TomatoVisionPipelineTests.test_ready_skill_rejects_stale_or_out_of_distribution_geometry (failure='stale') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_tomato_vision_pipeline.TomatoVisionPipelineTests testMethod=test_ready_skill_rejects_stale_or_out_of_distribution_geometry>
+
+    def test_ready_skill_rejects_stale_or_out_of_distribution_geometry(self) -> None:
+        for failure in ("stale", "axis"):
+            with self.subTest(failure=failure):
+>               task = build_task(_task_config())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_tomato_vision_pipeline.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ TomatoVisionPipelineTests.test_ready_skill_rejects_stale_or_out_of_distribution_geometry (failure='axis') _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_tomato_vision_pipeline.TomatoVisionPipelineTests testMethod=test_ready_skill_rejects_stale_or_out_of_distribution_geometry>
+
+    def test_ready_skill_rejects_stale_or_out_of_distribution_geometry(self) -> None:
+        for failure in ("stale", "axis"):
+            with self.subTest(failure=failure):
+>               task = build_task(_task_config())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_tomato_vision_pipeline.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ TomatoVisionPipelineTests.test_reobservation_requires_a_strictly_new_camera_sample_by_default _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_tomato_vision_pipeline.TomatoVisionPipelineTests testMethod=test_reobservation_requires_a_strictly_new_camera_sample_by_default>
+
+    def test_reobservation_requires_a_strictly_new_camera_sample_by_default(self) -> None:
+        config = _task_config()
+        config["atomic_skills"]["target_reobserve"] = {  # type: ignore[index]
+            "type": "target_reobserve",
+            "require_depth": True,
+            "require_new_sample": True,
+        }
+>       task = build_task(config)
+               ^^^^^^^^^^^^^^^^^^
+
+tests/test_tomato_vision_pipeline.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ TomatoVisionPipelineTests.test_shadow_ready_skill_submits_no_motion_and_cannot_start_ppo _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_tomato_vision_pipeline.TomatoVisionPipelineTests testMethod=test_shadow_ready_skill_submits_no_motion_and_cannot_start_ppo>
+
+    def test_shadow_ready_skill_submits_no_motion_and_cannot_start_ppo(self) -> None:
+        config = _task_config()
+        config["atomic_skills"]["move_to_pick_ready"] = {  # type: ignore[index]
+            "type": "move_to_pick_ready",
+            "execution_mode": "shadow",
+        }
+>       task = build_task(config)
+               ^^^^^^^^^^^^^^^^^^
+
+tests/test_tomato_vision_pipeline.py:191: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ TransportPayloadTests.test_drop_after_lift_routes_localization_and_never_authorizes_place _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_transport_payload.TransportPayloadTests testMethod=test_drop_after_lift_routes_localization_and_never_authorizes_place>
+
+    def test_drop_after_lift_routes_localization_and_never_authorizes_place(self) -> None:
+>       task, env, tools = _retreated_task(
+            transport_config={
+                "type": "transport_payload",
+                "force_drop_after_segment": 1,
+            }
+        )
+
+tests/test_transport_payload.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_transport_payload.py:25: in _retreated_task
+    task = build_task(_task_config(transport_payload=transport_config))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_____ TransportPayloadTests.test_place_is_locked_until_transport_succeeds ______
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_transport_payload.TransportPayloadTests testMethod=test_place_is_locked_until_transport_succeeds>
+
+    def test_place_is_locked_until_transport_succeeds(self) -> None:
+>       task, env, tools = _retreated_task()
+                           ^^^^^^^^^^^^^^^^^
+
+tests/test_transport_payload.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_transport_payload.py:25: in _retreated_task
+    task = build_task(_task_config(transport_payload=transport_config))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ TransportPayloadTests.test_place_rejects_motion_if_arm_left_the_bound_preplace_pose _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_transport_payload.TransportPayloadTests testMethod=test_place_rejects_motion_if_arm_left_the_bound_preplace_pose>
+
+    def test_place_rejects_motion_if_arm_left_the_bound_preplace_pose(self) -> None:
+>       task, env, tools = _retreated_task()
+                           ^^^^^^^^^^^^^^^^^
+
+tests/test_transport_payload.py:134: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_transport_payload.py:25: in _retreated_task
+    task = build_task(_task_config(transport_payload=transport_config))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_ TransportPayloadTests.test_two_segment_transport_samples_retention_and_reaches_preplace _
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_transport_payload.TransportPayloadTests testMethod=test_two_segment_transport_samples_retention_and_reaches_preplace>
+
+    def test_two_segment_transport_samples_retention_and_reaches_preplace(self) -> None:
+>       task, env, tools = _retreated_task()
+                           ^^^^^^^^^^^^^^^^^
+
+tests/test_transport_payload.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_transport_payload.py:25: in _retreated_task
+    task = build_task(_task_config(transport_payload=transport_config))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+_____ TransportPayloadTests.test_unstable_grip_at_preplace_blocks_release ______
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+>           task_type = TASK_REGISTRY[task_name]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'harvest_cycle'
+
+task/factory.py:39: KeyError
+
+The above exception was the direct cause of the following exception:
+
+self = <tests.test_transport_payload.TransportPayloadTests testMethod=test_unstable_grip_at_preplace_blocks_release>
+
+    def test_unstable_grip_at_preplace_blocks_release(self) -> None:
+>       task, env, tools = _retreated_task(
+            transport_config={
+                "type": "transport_payload",
+                "force_payload_unstable_after_segment": 2,
+            }
+        )
+
+tests/test_transport_payload.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_transport_payload.py:25: in _retreated_task
+    task = build_task(_task_config(transport_payload=transport_config))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'type': 'harvest_cycle', 'default_arm_side': 'right', 'max_skill_duration_s': 4.0, 'max_atomic_duration_s': 8.0, ...}
+perception_profiles = None
+
+    def build_task(
+        config: Mapping[str, Any],
+        *,
+        perception_profiles: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> BaseTask:
+        """Build a registered Task from composition-root configuration."""
+    
+        if not isinstance(config, Mapping):
+            raise TypeError("task config must be a mapping")
+        task_name = config.get("type")
+        if not isinstance(task_name, str) or not task_name:
+            raise ValueError("task.type must be a non-empty string")
+        try:
+            task_type = TASK_REGISTRY[task_name]
+        except KeyError as exc:
+            choices = ", ".join(sorted(TASK_REGISTRY)) or "<none>"
+>           raise ValueError(
+                f"unknown task type {task_name!r}; registered types: {choices}"
+            ) from exc
+E           ValueError: unknown task type 'harvest_cycle'; registered types: agri_pick, hardware_capability_validation, hardware_read_only_validation, locate_target
+
+task/factory.py:42: ValueError
+=============================== warnings summary ===============================
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513: DeprecationWarning: 'RigidBodyMaterialCfg' is deprecated and will be removed in 5.0. Use 'isaaclab_physx.sim.spawners.materials.PhysxRigidBodyMaterialCfg' for PhysX properties, or 'isaaclab.sim.spawners.materials.RigidBodyMaterialBaseCfg' for solver-common properties only.
+    f1(*args, **kwargs)
+
+../IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/torch/jit/_script.py:1480: 35 warnings
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/torch/jit/_script.py:1480: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513: DeprecationWarning: ViewerCfg is deprecated. In a future release, this config will be streamlined with the KitVisualizerCfg.
+    f1(*args, **kwargs)
+
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513: DeprecationWarning: 'RigidBodyPropertiesCfg' is deprecated and will be removed in 5.0. Use 'isaaclab_physx.sim.schemas.PhysxRigidBodyPropertiesCfg' for PhysX properties, or 'isaaclab.sim.schemas.RigidBodyBaseCfg' for solver-common properties only.
+    f1(*args, **kwargs)
+
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513: DeprecationWarning: 'ArticulationRootPropertiesCfg' is deprecated and will be removed in 5.0. Use 'isaaclab_physx.sim.schemas.PhysxArticulationRootPropertiesCfg' for PhysX properties, or 'isaaclab.sim.schemas.ArticulationRootBaseCfg' for solver-common properties only.
+    f1(*args, **kwargs)
+
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513: DeprecationWarning: 'CollisionPropertiesCfg' is deprecated and will be removed in 5.0. Use 'isaaclab_physx.sim.schemas.PhysxCollisionPropertiesCfg' for PhysX properties, or 'isaaclab.sim.schemas.CollisionBaseCfg' for solver-common properties only.
+    f1(*args, **kwargs)
+
+tests/test_tomato_exported_policy.py::test_packaged_torchscript_policy_matches_saved_canaries[manifest0]
+tests/test_tomato_exported_policy.py::test_packaged_torchscript_policy_matches_saved_canaries[manifest1]
+tests/test_tomato_exported_policy.py::test_candidate_torchscript_policy_matches_saved_canaries
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/torch/jit/_serialization.py:176: DeprecationWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+    warnings.warn(
+
+tests/test_tomato_exported_policy.py::test_packaged_torch_export_and_profile_match_saved_canaries[manifest0-tomato_pick_clean_v5_model1350_best.json]
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/torch/export/pt2_archive/_package.py:785: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_new.cpp:1581.)
+    tensor = torch.frombuffer(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_active_view_reposition.py::ActiveViewHarvestCycleTests::test_occluded_target_recovers_and_completes_the_entire_cycle
+FAILED tests/test_active_view_reposition.py::ActiveViewHarvestCycleTests::test_shipped_active_view_config_completes_one_recovery_cycle
+FAILED tests/test_architecture.py::ArchitectureBoundaryTests::test_registries_are_explicit_and_only_expose_reviewed_implementations
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_fake_transcript_cannot_complete_before_service_evidence
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_missing_reobservation_returns_stable_failure
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_reachability_profile_must_match_the_task_arm
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_reobservation_requires_the_pinned_selection
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_shipped_config_completes_one_offline_harvest_cycle
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_success_requires_independent_end_to_end_evidence
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_target_must_be_reobserved_before_planning
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_task_exposes_exactly_sixteen_bounded_tools
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_unavailable_container_is_fail_closed
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_unconfirmed_container_evidence_does_not_complete
+FAILED tests/test_harvest_cycle_task.py::HarvestCycleTaskTests::test_unstable_retreat_can_use_safe_retract_recovery
+FAILED tests/test_pregrasp_clearance.py::PregraspClearanceTests::test_blocked_transit_never_sends_motion_and_ready_stays_locked
+FAILED tests/test_pregrasp_clearance.py::PregraspClearanceTests::test_clear_scene_is_read_only_and_releases_the_exact_plan
+SUBFAILED(scene={'type': 'mock', 'force_missing': True}) tests/test_pregrasp_clearance.py::PregraspClearanceTests::test_missing_stale_and_low_coverage_scenes_have_stable_failures
+SUBFAILED(scene={'type': 'mock', 'sample_age_s': 0.6}) tests/test_pregrasp_clearance.py::PregraspClearanceTests::test_missing_stale_and_low_coverage_scenes_have_stable_failures
+SUBFAILED(scene={'type': 'mock', 'coverage_ratio': 0.2}) tests/test_pregrasp_clearance.py::PregraspClearanceTests::test_missing_stale_and_low_coverage_scenes_have_stable_failures
+FAILED tests/test_pregrasp_clearance.py::PregraspClearanceTests::test_observation_pointcloud_port_uses_runtime_observation_not_agent_arguments
+SUBFAILED(name='fruit_only') tests/test_pregrasp_clearance.py::PregraspClearanceTests::test_target_surface_is_excluded_but_a_nearby_branch_is_not
+SUBFAILED(name='near_branch') tests/test_pregrasp_clearance.py::PregraspClearanceTests::test_target_surface_is_excluded_but_a_nearby_branch_is_not
+FAILED tests/test_reset_for_next_target.py::ResetForNextTargetTests::test_nonempty_hand_blocks_reset_and_a_new_attempt_can_recover
+FAILED tests/test_reset_for_next_target.py::ResetForNextTargetTests::test_reset_before_verified_completion_is_rejected_without_motion
+FAILED tests/test_reset_for_next_target.py::ResetForNextTargetTests::test_verified_cycle_resets_to_observe_and_a_second_cycle_completes
+FAILED tests/test_robotics_adapters.py::DeploymentConfigTests::test_sdk_manifest_points_only_to_present_canonical_sources
+SUBFAILED(expected_check='camera_sdk') tests/test_system_self_check.py::SystemSelfCheckTests::test_camera_depth_and_calibration_fail_closed
+SUBFAILED(expected_check='camera_depth') tests/test_system_self_check.py::SystemSelfCheckTests::test_camera_depth_and_calibration_fail_closed
+SUBFAILED(expected_check='camera_calibration') tests/test_system_self_check.py::SystemSelfCheckTests::test_camera_depth_and_calibration_fail_closed
+SUBFAILED(expected_check='camera_connection') tests/test_system_self_check.py::SystemSelfCheckTests::test_camera_depth_and_calibration_fail_closed
+FAILED tests/test_system_self_check.py::SystemSelfCheckTests::test_detection_is_blocked_before_admission
+FAILED tests/test_system_self_check.py::SystemSelfCheckTests::test_hardware_mode_rejects_simulated_health_evidence
+FAILED tests/test_system_self_check.py::SystemSelfCheckTests::test_healthy_check_is_read_only_and_admits_detection
+FAILED tests/test_system_self_check.py::SystemSelfCheckTests::test_policy_mapper_mismatch_fails_closed
+SUBFAILED(outcome='arm_state_stale') tests/test_system_self_check.py::SystemSelfCheckTests::test_robot_hand_and_tactile_faults_fail_closed
+SUBFAILED(outcome='device_fault') tests/test_system_self_check.py::SystemSelfCheckTests::test_robot_hand_and_tactile_faults_fail_closed
+SUBFAILED(outcome='tactile_stale') tests/test_system_self_check.py::SystemSelfCheckTests::test_robot_hand_and_tactile_faults_fail_closed
+FAILED tests/test_system_self_check.py::SystemSelfCheckTests::test_shadow_or_hardware_config_cannot_disable_fresh_reobservation
+FAILED tests/test_system_self_check.py::SystemSelfCheckTests::test_unknown_estop_and_busy_control_lease_fail_closed
+FAILED tests/test_system_self_check.py::SystemSelfCheckTests::test_unready_vision_worker_blocks_detection_admission
+FAILED tests/test_tomato_exported_policy.py::test_packaged_torchscript_policy_matches_saved_canaries[manifest0]
+FAILED tests/test_tomato_exported_policy.py::test_packaged_torchscript_policy_matches_saved_canaries[manifest1]
+FAILED tests/test_tomato_exported_policy.py::test_candidate_torchscript_policy_matches_saved_canaries
+FAILED tests/test_tomato_exported_policy.py::test_packaged_torch_export_and_profile_match_saved_canaries[manifest0-tomato_pick_clean_v5_model1350_best.json]
+FAILED tests/test_tomato_exported_policy.py::test_packaged_torch_export_and_profile_match_saved_canaries[manifest1-tomato_pick_clean_v5_model1600_candidate.json]
+FAILED tests/test_tomato_hand_synergy_calibrated_v2.py::test_frozen_calibration_matches_saved_draft_and_mapper
+FAILED tests/test_tomato_physics_v2.py::test_physics_v2_parent_baseline_hashes_match
+FAILED tests/test_tomato_physics_v2.py::test_physics_v2_step1_report_passes
+FAILED tests/test_tomato_vision_pipeline.py::TomatoVisionPipelineTests::test_effectful_ready_skill_returns_the_exact_nine_visual_inputs
+SUBFAILED(failure='stale') tests/test_tomato_vision_pipeline.py::TomatoVisionPipelineTests::test_ready_skill_rejects_stale_or_out_of_distribution_geometry
+SUBFAILED(failure='axis') tests/test_tomato_vision_pipeline.py::TomatoVisionPipelineTests::test_ready_skill_rejects_stale_or_out_of_distribution_geometry
+FAILED tests/test_tomato_vision_pipeline.py::TomatoVisionPipelineTests::test_reobservation_requires_a_strictly_new_camera_sample_by_default
+FAILED tests/test_tomato_vision_pipeline.py::TomatoVisionPipelineTests::test_shadow_ready_skill_submits_no_motion_and_cannot_start_ppo
+FAILED tests/test_transport_payload.py::TransportPayloadTests::test_drop_after_lift_routes_localization_and_never_authorizes_place
+FAILED tests/test_transport_payload.py::TransportPayloadTests::test_place_is_locked_until_transport_succeeds
+FAILED tests/test_transport_payload.py::TransportPayloadTests::test_place_rejects_motion_if_arm_left_the_bound_preplace_pose
+FAILED tests/test_transport_payload.py::TransportPayloadTests::test_two_segment_transport_samples_retention_and_reaches_preplace
+FAILED tests/test_transport_payload.py::TransportPayloadTests::test_unstable_grip_at_preplace_blocks_release
+58 failed, 394 passed, 54 warnings, 89 subtests passed in 12.09s

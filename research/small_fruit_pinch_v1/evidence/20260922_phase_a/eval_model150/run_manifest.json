@@ -1,0 +1,2608 @@
+{
+  "cli_argv": [
+    "/home/miobarnacle/linkbot/linkagent/research/small_fruit_pinch_v1/source/native_evaluate.py",
+    "--checkpoint",
+    "/media/miobarnacle/Seagate Expansion Drive/Codex整理/linkbot/linkagent/logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/model_150.pt",
+    "--guided-residual",
+    "--residual-scale",
+    "0.04",
+    "--distal-residual-scale",
+    "0.06",
+    "--num-envs",
+    "2",
+    "--episodes",
+    "2",
+    "--seed",
+    "20260902",
+    "--device",
+    "cuda:0",
+    "--run-manifest",
+    "research/small_fruit_pinch_v1/evidence/20260922_phase_a/eval_model150/run_manifest.json"
+  ],
+  "dimensions": {
+    "action": 14,
+    "critic": 175,
+    "observation": 114
+  },
+  "files": {
+    "assets": [
+      {
+        "path": "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/mdl/core/Base/OmniPBR.mdl",
+        "sha256": "d384fc800f120e3cad1b7ca8837f9c554f9c34343d194813fca27caa493001f2"
+      },
+      {
+        "path": "/tmp/Assets/Isaac/6.0/Isaac/Environments/Grid/default_environment.usd",
+        "sha256": "78e9a1e72a8838a13d0f65c49cd487ab92e89233cd128b057730b5b5b4ca2164"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_base.usd",
+        "sha256": "c78ed17edac5ac8bd06e5a5605b6fcd39449ef405e46a689e7dfc7121d70ea98"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_physics.usd",
+        "sha256": "bc433c24664473d6d207e309cd456ef4246f9bd98bb219377ad861feff206e43"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_sensor.usd",
+        "sha256": "e757e2045204d0f0664aad91d2b133a992fb73b9253d0536a227e54357950ff3"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_l20_physx.usd",
+        "sha256": "b5ab656b3b58b2e19b349755158c9f11f84f9b48c2211c474fac6fd66b7ddb57"
+      }
+    ],
+    "checkpoint": {
+      "path": "/media/miobarnacle/Seagate Expansion Drive/Codex整理/linkbot/linkagent/logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/model_150.pt",
+      "sha256": "e39cd14d18912da68638b21b2c16a9d48c3867b833d4af0296a9e03fd5ce0c8d"
+    },
+    "source": [
+      {
+        "path": "research/small_fruit_pinch_v1/source/__init__.py",
+        "sha256": "e38fe653f708f0b81b8d66b95f912142567fd17dda7d8b13c73f648b15dbd429"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/action_probe.py",
+        "sha256": "2ae677375957f3d4227589e4e526af23a89821d9061760d68df062f3ff0a359e"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/action_search.py",
+        "sha256": "e8256aad252e834045a5ffdf597222f74aefa0a4053f9deb2fa7b36d2acb9c75"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/agents.py",
+        "sha256": "94f4f914c40ca0354dbbbedd2a60b4453eb445a5dbad24b54bdb24ece52316c9"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/cartesian_teacher_search.py",
+        "sha256": "4d98cac63f958c13582f7b0c93b74592afa29b352b363ba9c61473fc9781bac4"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/contact_binding_probe.py",
+        "sha256": "4873b4f7a427fae47ec8095eefbe1fecccfb96c38a5099d38158aee8d656ce70"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/contract.py",
+        "sha256": "f586ed151a7ac66ca06611927a3121dd559f2e6c49cbb1a8073993ba454adbad"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/current_runtime_probe.py",
+        "sha256": "515b97bbf37c41921598f368755ee09e7bab7a0f0c1b0bba48d84a00b500854b"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/direct_joint_trajectory_probe.py",
+        "sha256": "2e050afdf44e9a54443c4ac65af2b8ca875d9fd5fd1bf2df305535af9dfa29ee"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/direction_probe.py",
+        "sha256": "1e98481989db26ba201f786c14df4fcae7fdea042791b4427de18dafad765b2d"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/drive_probe.py",
+        "sha256": "c0316ad54b8c36b866e59cdf5acecfa2ff30a5a12badb36d0edc2e6ba9034589"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/dynamic_contact_cem.py",
+        "sha256": "be71348a551c08f9df45e3e0149891a727e0d1cc857100432da0ccf090b2ef94"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/env.py",
+        "sha256": "d80ed8c64dc7e28fc4c01f8bfdf27a6bc1e881a3d77ae3b5ad6de7f4c98e7e5c"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/geometry_scan.py",
+        "sha256": "c91b715d6fdf90af77f0925b7011109ef2b2848a49d96487a7958341ab72be4d"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/guided_probe.py",
+        "sha256": "1907324f1df59c300d04332a009f0fbb3cc65e9f127352274e1818b9586e280d"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/guided_residual_env.py",
+        "sha256": "445fb15f3c23f8d4788a8bc6206f3b84a0c4feb7d7e07f9b22f32941980bba17"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/implicit_probe.py",
+        "sha256": "4c7935ee19b7a63dad8fbd6f3561d50648d310511d788a2ee748bccf4607cb52"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/joint_direction_probe.py",
+        "sha256": "4f6e3b30b97fc515d8d0885e3fb26a873055ae68069011029f33e34eeca86d0a"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/left_action_geometry_probe.py",
+        "sha256": "8ee8694146cafee92e8aa6dd2f6246a1aa9e1e3bc3e2fe1b9b7ba03a92ca86ba"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/left_action_search_fk.py",
+        "sha256": "f901917db05006075559d817d543f374db4c7ad914cc3bfafc4f5888e53c0365"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/left_hand_geometry_probe.py",
+        "sha256": "0a0e8216aebfc678ead3a090c0acb45e201c87f42f270c784b19d09d0623d6ae"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/left_target_workspace_scan.py",
+        "sha256": "7226e695f608f6a709219a812d7611a74f9dae7afb9ccb91fc920372d9e5fc70"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/legacy_bridge.py",
+        "sha256": "6907e2a8b639f93b199ca0eacbf962561c4ec81a728541746b46f9a061c40542"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/make_constant_teacher.py",
+        "sha256": "62057ac9cffa36cda658e279d314767e4a86eb6566459f49e4821db1862bf29d"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/make_direct_teacher.py",
+        "sha256": "a265b9c28191ac8e44425dbd28bbbf9cb22b5ce78f4f8fe9b0389eadf29fb085"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/manual_three_finger_replay.py",
+        "sha256": "5de93127c7a17bcca0923c8a720ad755b29bd7e3d42457a28d6f777fb79a79ee"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/native_env.py",
+        "sha256": "2b5a9c344838b4db31632e9b91eb1a378cc3160c04126cc1f5de3039812d66b5"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/native_evaluate.py",
+        "sha256": "3ab4d7466ebd3998c92f09ebeb323a8e84a3730ad79658578ca8cf911640410e"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/native_left_runtime_probe.py",
+        "sha256": "48231b2aec800a7cd0969461c7db4d6230ce4e911e09a89fae6047f6ee490cd2"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/native_physx_smoke.py",
+        "sha256": "3f56a37b4f9a302ea941808eeafb0f9d64d6e05136298ea16569fb9d210cefc3"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/native_run_manifest.py",
+        "sha256": "970fe3738dd2b45a807107cd668dc309f6b0396801508498ab21e284705450b2"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/native_train.py",
+        "sha256": "277936705e4d7239fe22f4442700a5915f21b23394d6ca291e9e5a3b7538de54"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/opposition_circumcenter_scan.py",
+        "sha256": "78cf6e4de9f40bd6f2b21ea6efa931fca57e382203c7f602e9a98897da67a4be"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/opposition_local_scan.py",
+        "sha256": "13dc7977f7175d8a479d87f0d1944548c2c260c89aa16a1b902e615ccc4fe24c"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/opposition_surface_cem.py",
+        "sha256": "8118c0b5db41aeb8e7899868d6ca77bc0c5a5b393ea80e81a047347781771fc3"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/opposition_target_scan.py",
+        "sha256": "1b8b337e461bb10597a6cc4ddf290d3015e2d288fdb4a3f3deaa7c1524ac5e77"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/opposition_workspace_scan.py",
+        "sha256": "c6906a01af0b6f234a14b9f85ebd85ae44991c6bb67ddd288d905bd4fa6ca455"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/physical_action_probe.py",
+        "sha256": "a16d7d688f26d6e076ea40c5394c19f23e84796f84e4174594c45ae3a27e82d7"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/physical_contact_cem.py",
+        "sha256": "dc389a6366658b992164edbb85a3c625f2460cf647af7a5debf184bff15bc31a"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/physx_smoke.py",
+        "sha256": "f28f705c277f652431176f55132885a26a35b2cf3e8782e377c2ccb1f5a5b152"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/pinch_action_manifold.py",
+        "sha256": "4c94c58516d50c7fd24eb2539ff99439fb302624049f16a994bbe029b0b5b40e"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/policy_trace_probe.py",
+        "sha256": "5560e47fe1b403d67c12680e805a275d67b3a27700be01587df4a90d397eaa0c"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/prior_probe.py",
+        "sha256": "8e401ef3fb034f63cd9ef74b551d3cca459ddcb40cf73f1b8d786c6cf0fcd24c"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/register_task.py",
+        "sha256": "d49ce04dc4f23f71deb5599beb0d9b532f2a7f7ea1fe585495aedf8adb0658f6"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/run_manifest.py",
+        "sha256": "d9a96c27aff622e26adfb388ee85cac98ed8890d87756dbfa4b0f4c4fb49629b"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/servo_sweep.py",
+        "sha256": "fe368e23e974dfe6fa8bd4163b7662ceaaa4fc2df2d2ac4c8975f6f984a9bd12"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/single_target_env_probe.py",
+        "sha256": "3e63a989a81c74fd6c66c15dcc4d0899a7bee1ed0422ccbe6acdc412696b04f7"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/size_evidence.py",
+        "sha256": "378fc618edb171e062cd6213d698eeac07645c54f4b256e81db5e4b2c267e552"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/temporal.py",
+        "sha256": "d3552703a10d3aa6f3be1e864adc52f64c2379ba747c2a9aa068ab1c7127f6bb"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/trace_probe.py",
+        "sha256": "f46a3fcd3f6683e71fb67026338416389a9e67a01fdc48ad0169e0eb30bbeb4c"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/vendor/hand_manifold.py",
+        "sha256": "7782539e65b5a80e6a50647680292dd84c3a94e8767102a38fe0d614e6fb79bf"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/verification_geometry.py",
+        "sha256": "6e1639abb932410bea4ce9a42090f1b0062cf17bea1e8bd64354a34597e4a771"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/verifier.py",
+        "sha256": "4b7268c95ac74a367e2c06cfe1c1371d8faac6b753b75153dcc858daeabb0750"
+      },
+      {
+        "path": "simulation/tomato_pick/__init__.py",
+        "sha256": "5488316e1490fb2553a88d6bba16ede1e997961deb8d954ba5bae84d1d63a29d"
+      },
+      {
+        "path": "simulation/tomato_pick/calibration_v2.py",
+        "sha256": "b2bde65b3795420e8d0dde7561b9260709d7cfd1801ebf31d0261208ce9f15d0"
+      },
+      {
+        "path": "simulation/tomato_pick/config.py",
+        "sha256": "d3f46bb6235e9d535d5aff90c6e6d9b1f3635925742c21a4c178ce717f736590"
+      },
+      {
+        "path": "simulation/tomato_pick/curriculum_v2.py",
+        "sha256": "829f3ab7f38d6c7f97abf9f39949dc559f72997efb183edf4a9fda33dada6b86"
+      },
+      {
+        "path": "simulation/tomato_pick/data_protocol_v2.py",
+        "sha256": "f048940a203847de99dab07487e9e31cd3203de65c69769b4b1570cd60dee2ce"
+      },
+      {
+        "path": "simulation/tomato_pick/experiment_v2.py",
+        "sha256": "bcaed46d77ca0936490ab3cef3f3dae6166753e6d07e269c9c47f3322792c279"
+      },
+      {
+        "path": "simulation/tomato_pick/initialization.py",
+        "sha256": "03294eab6aacb9793bb6f06cbd40740585206c5ee93db4771e555149281ca62b"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/__init__.py",
+        "sha256": "741d52f7e3b95577573b345a29de18dd791f1a07d74d83ba4e008f83099e4a80"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/agents/__init__.py",
+        "sha256": "4a026906f19f3f263041f5709721c64135b1caec68c779cf4bd1f0f5139e6863"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/agents/rsl_rl_ppo_cfg.py",
+        "sha256": "038f845f9ffd4382db47b9e9ce86b164475334c33a86c15ee5df4518a33791cf"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/assets.py",
+        "sha256": "e4b24fc8e182521481bdd037f38eae01f33ab2f3bb41414854fbf0e6f7dc4a02"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/env.py",
+        "sha256": "191737c0644bf9c53621ee62e3794b190e07134183f6b8dcf08211c78569f99c"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/env_cfg.py",
+        "sha256": "8dbd538bcdd40ce4e81e22c17e75ac50fed6a37bc5384aba11b8598f8a32592c"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/geometry_sampling.py",
+        "sha256": "2781559090245a30a424975c090bde1f9f5ad98f352a0bd03415fb0f61d56d33"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v1/__init__.py",
+        "sha256": "46cb21fefcdef7106d3b8da4c21074f2459c6662d0669457e9c272eb2e648688"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v1/agents/__init__.py",
+        "sha256": "e97203b4cec42ec611f05500e76bf3106a8cc5338b640898438684cfb20fb9d4"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v1/agents/rsl_rl_ppo_cfg.py",
+        "sha256": "c47740757d7568a2f041400e0534adbea92cde5d3024ff1012083f2e2111d7d3"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v1/assets.py",
+        "sha256": "4d6aee7974ac05fff67ac7d0c2239bbdba6d9731e8e24f9bf5f8e883c5f4c064"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v1/env.py",
+        "sha256": "5402791387d97798a89f780b582a7b8924c6b19573852f45f7e958e6d7569dac"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v1/env_cfg.py",
+        "sha256": "218053080db9d537c1df7f446074e6baae1c232eb1cb27b067c20f871d7477fe"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v2/__init__.py",
+        "sha256": "27254c0e606d2b8357bc3379f7d7a890296209d69dbcdb9bef77c28c067392fa"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v2/agents/__init__.py",
+        "sha256": "4873c178952dd63a5ead660dd425262b9fb2683567dc48852ab502e213597f55"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v2/agents/rsl_rl_ppo_cfg.py",
+        "sha256": "62f104d1ce8a6a137dc91b48a4a270dfce5b3e17fbf43764214533fd7ac880fa"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v2/assets.py",
+        "sha256": "ef288d6ef7b55e989e9df9e63591ac62cffb49143c863e5289ca7dbf7fee20aa"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v2/env.py",
+        "sha256": "f55ccba3c7f7d5092691e98b8d097c66f9497cecdd2410e4e2bde54a38b95323"
+      },
+      {
+        "path": "simulation/tomato_pick/isaac/physics_v2/env_cfg.py",
+        "sha256": "1d5e20662056376ab6559a17f9f608ecea4500b9cb91de7e59c6b9d62ed20324"
+      },
+      {
+        "path": "simulation/tomato_pick/physics_v1.py",
+        "sha256": "9c736a79b66b5516d7a52dda19e1b933f63dec9382dd6578afd7d6fe84ad713b"
+      },
+      {
+        "path": "simulation/tomato_pick/physics_v2.py",
+        "sha256": "209df15ec9ae16c0865ae182a62e1781e1b3f162190412dab8f573fcee306ce2"
+      },
+      {
+        "path": "simulation/tomato_pick/physics_v2_isolated.py",
+        "sha256": "3c2ac1f590248117fe0bfae8d568e6951f15108b75c9c7cf583b17b48afc531e"
+      },
+      {
+        "path": "simulation/tomato_pick/physics_v2_models.py",
+        "sha256": "eb93f9d125cea1728edb7869b8455e14f2eaddf2a7543ce28f1ac9dd1251a26f"
+      },
+      {
+        "path": "simulation/tomato_pick/physics_v2_scenarios.py",
+        "sha256": "80d18d0d4031f7dd2711e551f0f78af6d7b0f2c0ec958ccd42eaf9fd9c2ecf28"
+      },
+      {
+        "path": "simulation/tomato_pick/reset_v1.py",
+        "sha256": "376d9977637f968899c17ff6377bb1016b5cc3da0fbaa36565feb0bd44408c56"
+      },
+      {
+        "path": "simulation/tomato_pick/reward.py",
+        "sha256": "a14861aac283e157ae022bcb1f663ec1aafd649968354ece89ee59bc18a36e78"
+      },
+      {
+        "path": "simulation/tomato_pick/stem_fracture.py",
+        "sha256": "9dcdf0ae0d4a45467f939a4ffbad6a17f78b9d0f2eee76a0c5ce7cda89e4e0f4"
+      }
+    ]
+  },
+  "resolved_config": {
+    "agent": {
+      "actor": {
+        "activation": "elu",
+        "class_name": "MLPModel",
+        "distribution_cfg": {
+          "class_name": "GaussianDistribution",
+          "init_std": 0.2,
+          "std_type": "log"
+        },
+        "hidden_dims": [
+          512,
+          256,
+          128
+        ],
+        "obs_normalization": true
+      },
+      "algorithm": {
+        "class_name": "PPO",
+        "clip_param": 0.2,
+        "desired_kl": 0.01,
+        "entropy_coef": 0.003,
+        "gamma": 0.995,
+        "lam": 0.95,
+        "learning_rate": 0.0003,
+        "max_grad_norm": 0.75,
+        "normalize_advantage_per_mini_batch": false,
+        "num_learning_epochs": 4,
+        "num_mini_batches": 8,
+        "optimizer": "adam",
+        "rnd_cfg": null,
+        "schedule": "adaptive",
+        "share_cnn_encoders": false,
+        "symmetry_cfg": null,
+        "use_clipped_value_loss": true,
+        "value_loss_coef": 1.0
+      },
+      "check_for_nan": true,
+      "class_name": "OnPolicyRunner",
+      "clip_actions": 1.0,
+      "critic": {
+        "activation": "elu",
+        "class_name": "MLPModel",
+        "distribution_cfg": null,
+        "hidden_dims": [
+          512,
+          256,
+          128
+        ],
+        "obs_normalization": true
+      },
+      "device": "cuda:0",
+      "empirical_normalization": {},
+      "experiment_name": "small_fruit_pinch_v1",
+      "load_checkpoint": "model_.*.pt",
+      "load_run": ".*",
+      "logger": "tensorboard",
+      "max_iterations": 2400,
+      "neptune_project": "isaaclab",
+      "num_steps_per_env": 64,
+      "obs_groups": {
+        "actor": [
+          "policy"
+        ],
+        "critic": [
+          "critic"
+        ]
+      },
+      "policy": {},
+      "resume": false,
+      "run_name": "from_scratch",
+      "save_interval": 50,
+      "seed": 42,
+      "wandb_project": "linkagent-small-fruit-pinch"
+    },
+    "cli_args": {
+      "active_gpu": 0,
+      "adaptive_closure": false,
+      "allow_nonrequired_digits": false,
+      "anim_recording_enabled": false,
+      "anim_recording_start_time": 0,
+      "anim_recording_stop_time": 10,
+      "approach_speed": null,
+      "center_local_mm": null,
+      "checkpoint": "/media/miobarnacle/Seagate Expansion Drive/Codex整理/linkbot/linkagent/logs/rsl_rl/small_fruit_pinch_v1_structural_retrain_anchor040_actorinit_resume50_to200_20260905/model_150.pt",
+      "contact_hand_damping": null,
+      "contact_hand_stiffness": null,
+      "contact_hand_target_speed": null,
+      "contact_hand_velocity_limit": null,
+      "cpu": false,
+      "create_new_stage": false,
+      "deterministic": false,
+      "device": "cuda:0",
+      "diagnostic_only": false,
+      "diameter_bin_weights": null,
+      "diameter_bins_mm": null,
+      "direct_force_alpha": null,
+      "direct_force_high_gain": null,
+      "direct_force_high_gain_by_digit": null,
+      "direct_force_low_gain": null,
+      "direct_force_max_open": null,
+      "direct_force_projection": false,
+      "direct_force_rate_deadband_n": null,
+      "direct_force_rate_gain": null,
+      "direct_force_rate_scale_n": null,
+      "direct_force_root_fraction": null,
+      "direct_force_warning_fraction": null,
+      "distal_residual_scale": 0.06,
+      "enable_cameras": false,
+      "enhanced_determinism": false,
+      "episodes": 2,
+      "explicit_hand_pd": false,
+      "external_forces_every_iteration": false,
+      "first_episode_evidence_json": null,
+      "force_balance": false,
+      "force_gate_start_fraction": null,
+      "force_servo": false,
+      "force_servo_alpha": null,
+      "force_servo_band_seek_gain": null,
+      "force_servo_max_offset": null,
+      "force_servo_rate_deadband_n": null,
+      "force_servo_rate_gain": null,
+      "force_servo_rate_scale_n": null,
+      "force_servo_retract_direction": null,
+      "force_servo_retract_gain": null,
+      "force_servo_seek_direction": null,
+      "force_servo_seek_gain": null,
+      "force_servo_target_gain": null,
+      "force_servo_warning_fraction": null,
+      "freeze_required_distal": false,
+      "fruit_axis_max_mm": null,
+      "fruit_axis_min_mm": null,
+      "fruit_contact_offset": null,
+      "fruit_max_depenetration_velocity": null,
+      "fruit_rest_offset": null,
+      "geometric_contact_proxy": false,
+      "geometric_contact_proxy_band_mm": null,
+      "geometry_approach": false,
+      "geometry_approach_alpha": null,
+      "geometry_approach_gain": null,
+      "geometry_approach_max_offset": null,
+      "geometry_approach_scale_mm": null,
+      "geometry_approach_target_gap_mm": null,
+      "geometry_cohort_id": "default",
+      "geometry_contact_gain": null,
+      "geometry_contact_margin_mm": null,
+      "geometry_contact_max_open": null,
+      "geometry_contact_projection": false,
+      "geometry_contact_root_fraction": null,
+      "geometry_prior": false,
+      "geometry_prior_after_contact": false,
+      "geometry_prior_max_scale": null,
+      "geometry_prior_scale": null,
+      "geometry_prior_size_adaptive": false,
+      "geometry_prior_values": null,
+      "guide_action_values": null,
+      "guide_feedback": false,
+      "guided_residual": true,
+      "hand_armature": null,
+      "hand_damping": null,
+      "hand_only_view": false,
+      "hand_stiffness": null,
+      "hand_velocity_limit": null,
+      "hand_viscous_friction": null,
+      "headless": true,
+      "hide_ui": true,
+      "hold_acceleration": null,
+      "hold_current_impedance": false,
+      "hold_effort_control": false,
+      "hold_effort_damping": null,
+      "hold_effort_high_fraction": null,
+      "hold_effort_in_band": null,
+      "hold_effort_low_fraction": null,
+      "hold_effort_max": null,
+      "hold_effort_stiffness": null,
+      "hold_force_impedance": false,
+      "hold_hand_damping": null,
+      "hold_hand_damping_by_joint": null,
+      "hold_hand_effort_limit": null,
+      "hold_hand_stiffness": null,
+      "hold_hand_stiffness_by_joint": null,
+      "hold_hand_velocity_limit": null,
+      "hold_hand_velocity_limit_by_joint": null,
+      "hold_impedance_damping": null,
+      "hold_impedance_effort_by_digit": null,
+      "hold_impedance_force_gain": null,
+      "hold_impedance_force_target": null,
+      "hold_impedance_ramp_substeps": null,
+      "hold_impedance_start_fraction": null,
+      "hold_joint_target_anchor_fraction": null,
+      "hold_joint_target_anchor_fraction_by_joint": null,
+      "hold_joint_target_error_limit": null,
+      "hold_joint_target_error_limit_by_joint": null,
+      "hold_joint_target_open_speed": null,
+      "hold_joint_target_speed": null,
+      "hold_joint_velocity_target": null,
+      "hold_speed": null,
+      "hold_target_filter_alpha": null,
+      "hold_velocity_damping_effort": null,
+      "hold_zero_velocity_target": false,
+      "info": false,
+      "kit_args": "",
+      "manual_decimation_control": false,
+      "natural_frequency": null,
+      "num_envs": 2,
+      "offset_x_mm": null,
+      "offset_y_mm": null,
+      "offset_z_mm": null,
+      "palm_fruit_collision_filter": false,
+      "per_joint_metrics": false,
+      "phase_close_step": null,
+      "phase_controller": false,
+      "phase_geometry": false,
+      "phase_geometry_gap_scale_m": null,
+      "phase_geometry_step": null,
+      "phase_hysteresis_n": null,
+      "phase_low_delay_steps": null,
+      "phase_low_ramp_steps": null,
+      "phase_max_offset": null,
+      "phase_offset_alpha": null,
+      "phase_retract_step": null,
+      "phase_root_fraction": null,
+      "phase_search_step": null,
+      "phase_target_alpha": null,
+      "phase_target_controller": false,
+      "phase_target_deadband_n": null,
+      "phase_target_error_scale_n": null,
+      "phase_target_force_n": null,
+      "phase_target_raw_mix": null,
+      "phase_target_step": null,
+      "physics_gpu": 0,
+      "position_target_interpolation": null,
+      "precontact_residual_fraction": null,
+      "pregrasp_distance_mm": null,
+      "projection_guard_fraction": null,
+      "proximity_speed": false,
+      "proximity_speed_floor": null,
+      "proximity_speed_global": false,
+      "proximity_speed_start_mm": null,
+      "rendering_mode": null,
+      "residual_require_all_contact": false,
+      "residual_scale": 0.04,
+      "residual_trust_in_band_scale": null,
+      "residual_trust_region": false,
+      "residual_trust_warning_fraction": null,
+      "robot_max_depenetration_velocity": null,
+      "run_manifest": "research/small_fruit_pinch_v1/evidence/20260922_phase_a/eval_model150/run_manifest.json",
+      "seed": 20260902,
+      "solver_position_iterations": null,
+      "solver_type": null,
+      "solver_velocity_iterations": null,
+      "support_mode": "audit_release",
+      "verbose": false,
+      "visualization_delay_ms": 0.0,
+      "visualizer": [],
+      "xr": false
+    },
+    "env": {
+      "action_delay_steps": [
+        0,
+        0
+      ],
+      "action_noise_model": null,
+      "action_scales": [
+        0.004,
+        0.004,
+        0.006,
+        0.04,
+        0.04,
+        0.06
+      ],
+      "action_space": 14,
+      "auxiliary_contacts": {
+        "forbidden_index_link1": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/index_link1",
+          "track_air_time": false,
+          "track_contact_points": false,
+          "track_friction_forces": false,
+          "track_pose": false,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        },
+        "forbidden_index_link2": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/index_link2",
+          "track_air_time": false,
+          "track_contact_points": false,
+          "track_friction_forces": false,
+          "track_pose": false,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        },
+        "forbidden_middle_link1": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/middle_link1",
+          "track_air_time": false,
+          "track_contact_points": false,
+          "track_friction_forces": false,
+          "track_pose": false,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        },
+        "forbidden_middle_link2": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/middle_link2",
+          "track_air_time": false,
+          "track_contact_points": false,
+          "track_friction_forces": false,
+          "track_pose": false,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        },
+        "forbidden_thumb_link2": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/thumb_link2",
+          "track_air_time": false,
+          "track_contact_points": false,
+          "track_friction_forces": false,
+          "track_pose": false,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        },
+        "forbidden_thumb_link3": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/thumb_link3",
+          "track_air_time": false,
+          "track_contact_points": false,
+          "track_friction_forces": false,
+          "track_pose": false,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        },
+        "palm": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/base_link",
+          "track_air_time": false,
+          "track_contact_points": false,
+          "track_friction_forces": false,
+          "track_pose": true,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        }
+      },
+      "break_force_range_n": [
+        3.0,
+        7.0
+      ],
+      "closed_grasp_fruit_center_m": [
+        -0.061,
+        -0.013,
+        -0.177
+      ],
+      "debug_vis": false,
+      "decimation": 6,
+      "ee_body_name": "base_link",
+      "episode_length_s": 16.0,
+      "events": {
+        "fruit_geometry": {
+          "func": "simulation.tomato_pick.isaac.assets:randomize_correlated_ellipsoid_geometry",
+          "interval_range_s": null,
+          "is_global_time": false,
+          "min_step_count_between_reset": 0,
+          "mode": "prestartup",
+          "params": {
+            "accepted_mass_kg": [
+              0.03,
+              0.5
+            ],
+            "asset_name": "tomato",
+            "axis_ranges_m": {
+              "x": [
+                0.032,
+                0.035
+              ],
+              "y": [
+                0.032,
+                0.035
+              ],
+              "z": [
+                0.032,
+                0.035
+              ]
+            },
+            "density_range_kg_m3": [
+              650.0,
+              1050.0
+            ],
+            "maximum_axis_ratio": 1.6
+          }
+        }
+      },
+      "fingertip_contacts": {
+        "index": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/index_link3",
+          "track_air_time": false,
+          "track_contact_points": true,
+          "track_friction_forces": true,
+          "track_pose": true,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        },
+        "little": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/little_link3",
+          "track_air_time": false,
+          "track_contact_points": true,
+          "track_friction_forces": true,
+          "track_pose": true,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        },
+        "middle": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/middle_link3",
+          "track_air_time": false,
+          "track_contact_points": true,
+          "track_friction_forces": true,
+          "track_pose": true,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        },
+        "ring": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/ring_link3",
+          "track_air_time": false,
+          "track_contact_points": true,
+          "track_friction_forces": true,
+          "track_pose": true,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        },
+        "thumb": {
+          "class_type": "isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor",
+          "debug_vis": false,
+          "filter_prim_paths_expr": [
+            "/World/envs/env_.*/Tomato"
+          ],
+          "force_threshold": null,
+          "history_length": 0,
+          "max_contact_data_count_per_prim": 128,
+          "prim_path": "/World/envs/env_.*/Robot/thumb_link4",
+          "track_air_time": false,
+          "track_contact_points": true,
+          "track_friction_forces": true,
+          "track_pose": true,
+          "update_period": 0.008333333333333333,
+          "visualizer_cfg": {
+            "markers": {
+              "contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": true,
+                "visual_material": {
+                  "diffuse_color": [
+                    1.0,
+                    0.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              },
+              "no_contact": {
+                "activate_contact_sensors": false,
+                "collision_props": null,
+                "copy_from_source": true,
+                "func": "isaaclab.sim.spawners.shapes.shapes:spawn_sphere",
+                "mass_props": null,
+                "physics_material": null,
+                "physics_material_path": "material",
+                "radius": 0.02,
+                "rigid_props": null,
+                "semantic_tags": null,
+                "spawn_path": null,
+                "visible": false,
+                "visual_material": {
+                  "diffuse_color": [
+                    0.0,
+                    1.0,
+                    0.0
+                  ],
+                  "emissive_color": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+                  "metallic": 0.0,
+                  "opacity": 1.0,
+                  "roughness": 0.5
+                },
+                "visual_material_path": "material"
+              }
+            },
+            "prim_path": "/Visuals/ContactSensor"
+          }
+        }
+      },
+      "fruit_axis_relative_noise": 0.08,
+      "geometric_contact_proxy_enabled": false,
+      "grasp_full_contact_force_n": 0.6,
+      "hand_only_scene": true,
+      "ik_damping": 0.035,
+      "ik_nullspace_gain": 0.05,
+      "is_finite_horizon": false,
+      "log_dir": null,
+      "max_residual_rotation_rad": [
+        0.8,
+        0.8,
+        1.4
+      ],
+      "max_residual_translation_m": [
+        0.2,
+        0.08,
+        0.15
+      ],
+      "maximum_arm_joint_delta_rad": 0.055,
+      "maximum_arm_target_lead_rad": 0.1,
+      "maximum_fingertip_force_n": 15.0,
+      "maximum_retained_distance_m": 0.12,
+      "maximum_retained_relative_speed_m_s": 0.25,
+      "maximum_stem_force_n": 100.0,
+      "maximum_stem_torque_nm": 0.3,
+      "minimum_initial_clearance_m": 0.002,
+      "minimum_joint_limit_margin_fraction": 0.1,
+      "num_actions": null,
+      "num_observations": null,
+      "num_rerenders_on_reset": 0,
+      "num_states": null,
+      "observation_noise_model": null,
+      "observation_space": 114,
+      "palm_fruit_collision_filter_enabled": false,
+      "pinch_working_offset_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pregrasp_arm_joint_noise_deg": 0.0,
+      "pregrasp_axial_noise_m": 0.005,
+      "pregrasp_distance_range_m": [
+        0.055,
+        0.075
+      ],
+      "pregrasp_lateral_offset_range_m": [
+        0.005,
+        0.02
+      ],
+      "reach_distance_scale_m": 0.3,
+      "rerender_on_reset": false,
+      "reward_curriculum_iteration_offset": 0,
+      "reward_rollout_steps": 32,
+      "robot": {
+        "actuator_value_resolution_debug_print": false,
+        "actuators": {
+          "g20_followers": {
+            "armature": 0.0001,
+            "class_type": "research.small_fruit_pinch_v1.source.native_env:LeftHandDirectionalPDActuator",
+            "damping": 0.5,
+            "dynamic_friction": null,
+            "effort_limit": 0.2,
+            "effort_limit_sim": 0.2,
+            "friction": 0.01,
+            "joint_names_expr": [
+              "thumb_joint4",
+              "(index|middle|ring|little)_joint3"
+            ],
+            "stiffness": 1.0,
+            "velocity_limit": 1.2,
+            "velocity_limit_sim": 1.2,
+            "viscous_friction": null
+          },
+          "g20_independent": {
+            "armature": 0.0001,
+            "class_type": "research.small_fruit_pinch_v1.source.native_env:LeftHandDirectionalPDActuator",
+            "damping": 1.0,
+            "dynamic_friction": null,
+            "effort_limit": 0.2,
+            "effort_limit_sim": 0.2,
+            "friction": 0.01,
+            "joint_names_expr": [
+              "thumb_joint[0-3]",
+              "(index|middle|ring|little)_joint[0-2]"
+            ],
+            "stiffness": 20.0,
+            "velocity_limit": 1.2,
+            "velocity_limit_sim": 1.2,
+            "viscous_friction": null
+          }
+        },
+        "articulation_root_prim_path": null,
+        "class_type": "isaaclab.assets.articulation.articulation:Articulation",
+        "collision_group": 0,
+        "debug_vis": false,
+        "disable_shape_checks": null,
+        "init_state": {
+          "ang_vel": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "joint_pos": {
+            ".*": 0.0
+          },
+          "joint_vel": {
+            ".*": 0.0
+          },
+          "lin_vel": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "pos": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "prim_path": "/World/envs/env_.*/Robot",
+        "soft_joint_pos_limit_factor": 1.0,
+        "spawn": {
+          "activate_contact_sensors": true,
+          "articulation_props": {
+            "_usd_applied_schema": "PhysxArticulationAPI",
+            "_usd_field_exceptions": {
+              "PhysxArticulationAPI": [
+                "physxArticulation",
+                [
+                  "articulation_enabled"
+                ]
+              ]
+            },
+            "_usd_namespace": "physxArticulation",
+            "articulation_enabled": null,
+            "enabled_self_collisions": false,
+            "fix_root_link": null,
+            "sleep_threshold": null,
+            "solver_position_iteration_count": 8,
+            "solver_velocity_iteration_count": 4,
+            "stabilization_threshold": null
+          },
+          "collision_props": null,
+          "copy_from_source": true,
+          "deformable_props": null,
+          "fixed_tendons_props": null,
+          "func": "isaaclab.sim.spawners.from_files.from_files:spawn_from_usd",
+          "joint_drive_props": null,
+          "mass_props": null,
+          "physics_material": null,
+          "physics_material_path": "material",
+          "rigid_props": {
+            "_usd_applied_schema": "PhysxRigidBodyAPI",
+            "_usd_field_exceptions": {
+              "PhysxRigidBodyAPI": [
+                "physxRigidBody",
+                [
+                  "disable_gravity"
+                ]
+              ]
+            },
+            "_usd_namespace": "physxRigidBody",
+            "angular_damping": null,
+            "disable_gravity": true,
+            "enable_gyroscopic_forces": null,
+            "kinematic_enabled": null,
+            "linear_damping": null,
+            "max_angular_velocity": null,
+            "max_contact_impulse": null,
+            "max_depenetration_velocity": 0.75,
+            "max_linear_velocity": null,
+            "retain_accelerations": null,
+            "rigid_body_enabled": null,
+            "sleep_threshold": null,
+            "solver_position_iteration_count": null,
+            "solver_velocity_iteration_count": null,
+            "stabilization_threshold": null
+          },
+          "scale": null,
+          "semantic_tags": null,
+          "spatial_tendons_props": null,
+          "spawn_path": null,
+          "usd_path": "/home/miobarnacle/linkbot/linkagent/research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_l20_physx.usd",
+          "variants": null,
+          "visible": true,
+          "visual_material": null,
+          "visual_material_path": "material"
+        }
+      },
+      "scene": {
+        "clone_in_fabric": false,
+        "env_spacing": 1.8,
+        "filter_collisions": true,
+        "lazy_sensor_update": true,
+        "num_envs": 2,
+        "replicate_physics": false
+      },
+      "seed": 20260902,
+      "self_collision_proxy_terminates": false,
+      "sim": {
+        "create_stage_in_memory": false,
+        "device": "cuda:0",
+        "dt": 0.008333333333333333,
+        "enable_scene_query_support": false,
+        "gravity": [
+          0.0,
+          0.0,
+          -9.81
+        ],
+        "log_dir": null,
+        "logging_level": "WARNING",
+        "physics": {
+          "bounce_threshold_velocity": 0.5,
+          "class_type": "isaaclab_physx.physics.physx_manager:PhysxManager",
+          "enable_ccd": false,
+          "enable_enhanced_determinism": false,
+          "enable_external_forces_every_iteration": false,
+          "enable_scene_query_support": false,
+          "enable_stabilization": false,
+          "friction_correlation_distance": 0.025,
+          "friction_offset_threshold": 0.04,
+          "gpu_collision_stack_size": 67108864,
+          "gpu_found_lost_aggregate_pairs_capacity": 33554432,
+          "gpu_found_lost_pairs_capacity": 2097152,
+          "gpu_heap_capacity": 67108864,
+          "gpu_max_num_partitions": 8,
+          "gpu_max_particle_contacts": 1048576,
+          "gpu_max_rigid_contact_count": 8388608,
+          "gpu_max_rigid_patch_count": 2097152,
+          "gpu_max_soft_body_contacts": 1048576,
+          "gpu_temp_buffer_capacity": 16777216,
+          "gpu_total_aggregate_pairs_capacity": 2097152,
+          "max_position_iteration_count": 255,
+          "max_velocity_iteration_count": 255,
+          "min_position_iteration_count": 1,
+          "min_velocity_iteration_count": 0,
+          "solve_articulation_contact_last": false,
+          "solver_type": 1
+        },
+        "physics_material": {
+          "_usd_applied_schema": "PhysxMaterialAPI",
+          "_usd_field_exceptions": {},
+          "_usd_namespace": "physxMaterial",
+          "compliant_contact_damping": null,
+          "compliant_contact_stiffness": null,
+          "dynamic_friction": 1.0,
+          "friction_combine_mode": "multiply",
+          "func": "isaaclab.sim.spawners.materials.physics_materials:spawn_rigid_body_material",
+          "restitution": 0.02,
+          "restitution_combine_mode": "min",
+          "static_friction": 1.0
+        },
+        "physics_prim_path": "/physicsScene",
+        "render": {
+          "ambient_light_intensity": null,
+          "ambient_occlusion_denoiser_mode": null,
+          "antialiasing_mode": null,
+          "carb_settings": null,
+          "dlss_mode": null,
+          "dome_light_upper_lower_strategy": null,
+          "enable_ambient_occlusion": null,
+          "enable_direct_lighting": null,
+          "enable_dl_denoiser": null,
+          "enable_dlssg": null,
+          "enable_global_illumination": null,
+          "enable_reflections": null,
+          "enable_shadows": null,
+          "enable_translucency": null,
+          "max_bounces": null,
+          "rendering_mode": null,
+          "samples_per_pixel": null,
+          "split_clearcoat": null,
+          "split_glass": null,
+          "split_rough_reflection": null,
+          "view_tile_limit": null
+        },
+        "render_interval": 6,
+        "save_logs_to_file": true,
+        "use_fabric": true,
+        "use_newton_actuators": false,
+        "visualizer_cfgs": []
+      },
+      "stable_detach_credit_steps": 3,
+      "state_space": 175,
+      "stem": {
+        "class_type": null,
+        "collision_group": 0,
+        "debug_vis": false,
+        "disable_shape_checks": null,
+        "init_state": {
+          "pos": [
+            0.0,
+            -0.24,
+            1.23
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "prim_path": "/World/envs/env_.*/Stem",
+        "spawn": {
+          "activate_contact_sensors": false,
+          "axis": "Z",
+          "collision_props": null,
+          "copy_from_source": true,
+          "deformable_props": null,
+          "func": "isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cylinder",
+          "height": 0.05,
+          "mass_props": null,
+          "physics_material": null,
+          "physics_material_path": "material",
+          "radius": 0.003,
+          "rigid_props": null,
+          "semantic_tags": null,
+          "spawn_path": null,
+          "visible": true,
+          "visual_material": {
+            "diffuse_color": [
+              0.08,
+              0.42,
+              0.06
+            ],
+            "emissive_color": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+            "metallic": 0.0,
+            "opacity": 1.0,
+            "roughness": 0.8
+          },
+          "visual_material_path": "material"
+        }
+      },
+      "stem_angular_damping_ratio": 1.0,
+      "stem_angular_natural_frequency_rad_s": 15.0,
+      "stem_break_persistence_substeps": 1,
+      "stem_linear_damping_ratio": 1.0,
+      "stem_linear_natural_frequency_rad_s": 45.0,
+      "stem_visual_height_m": 0.05,
+      "strict_runtime_checks": true,
+      "success_hold_steps": 20,
+      "tactile_force_bias_n": [
+        -0.15,
+        0.15
+      ],
+      "tactile_force_gain": [
+        0.85,
+        1.15
+      ],
+      "target_position_noise_m": 0.006,
+      "terrain": {
+        "class_type": "isaaclab.terrains.terrain_importer:TerrainImporter",
+        "collision_group": -1,
+        "debug_vis": false,
+        "env_spacing": 1.8,
+        "max_init_terrain_level": null,
+        "num_envs": 2,
+        "physics_material": {
+          "_usd_applied_schema": "PhysxMaterialAPI",
+          "_usd_field_exceptions": {},
+          "_usd_namespace": "physxMaterial",
+          "compliant_contact_damping": null,
+          "compliant_contact_stiffness": null,
+          "dynamic_friction": 0.5,
+          "friction_combine_mode": null,
+          "func": "isaaclab.sim.spawners.materials.physics_materials:spawn_rigid_body_material",
+          "restitution": 0.0,
+          "restitution_combine_mode": null,
+          "static_friction": 0.5
+        },
+        "prim_path": "/World/ground",
+        "terrain_generator": null,
+        "terrain_type": "plane",
+        "usd_path": null,
+        "use_terrain_origins": true,
+        "visual_material": {
+          "diffuse_color": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "emissive_color": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+          "metallic": 0.0,
+          "opacity": 1.0,
+          "roughness": 0.5
+        }
+      },
+      "tomato": {
+        "class_type": "isaaclab.assets.rigid_object.rigid_object:RigidObject",
+        "collision_group": 0,
+        "debug_vis": false,
+        "disable_shape_checks": null,
+        "init_state": {
+          "ang_vel": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "lin_vel": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "pos": [
+            0.025,
+            -0.036,
+            0.184
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "prim_path": "/World/envs/env_.*/Tomato",
+        "spawn": {
+          "activate_contact_sensors": true,
+          "collision_props": {
+            "_usd_applied_schema": "PhysxCollisionAPI",
+            "_usd_field_exceptions": {
+              "PhysxCollisionAPI": [
+                "physxCollision",
+                [
+                  "contact_offset",
+                  "rest_offset"
+                ]
+              ]
+            },
+            "_usd_namespace": "physxCollision",
+            "collision_enabled": null,
+            "contact_offset": 0.002,
+            "min_torsional_patch_radius": null,
+            "rest_offset": 0.0002,
+            "torsional_patch_radius": null
+          },
+          "copy_from_source": true,
+          "deformable_props": null,
+          "func": "isaaclab.sim.spawners.meshes.meshes:spawn_mesh_sphere",
+          "mass_props": {
+            "_usd_applied_schema": null,
+            "_usd_field_exceptions": {},
+            "_usd_namespace": "physics",
+            "density": null,
+            "mass": 0.1
+          },
+          "physics_material": {
+            "_usd_applied_schema": "PhysxMaterialAPI",
+            "_usd_field_exceptions": {},
+            "_usd_namespace": "physxMaterial",
+            "compliant_contact_damping": null,
+            "compliant_contact_stiffness": null,
+            "dynamic_friction": 0.58,
+            "friction_combine_mode": null,
+            "func": "isaaclab.sim.spawners.materials.physics_materials:spawn_rigid_body_material",
+            "restitution": 0.01,
+            "restitution_combine_mode": null,
+            "static_friction": 0.7
+          },
+          "physics_material_path": "material",
+          "radius": 1.0,
+          "rigid_props": {
+            "_usd_applied_schema": "PhysxRigidBodyAPI",
+            "_usd_field_exceptions": {
+              "PhysxRigidBodyAPI": [
+                "physxRigidBody",
+                [
+                  "disable_gravity"
+                ]
+              ]
+            },
+            "_usd_namespace": "physxRigidBody",
+            "angular_damping": 0.08,
+            "disable_gravity": null,
+            "enable_gyroscopic_forces": null,
+            "kinematic_enabled": null,
+            "linear_damping": 0.08,
+            "max_angular_velocity": null,
+            "max_contact_impulse": null,
+            "max_depenetration_velocity": 0.5,
+            "max_linear_velocity": null,
+            "retain_accelerations": null,
+            "rigid_body_enabled": null,
+            "sleep_threshold": null,
+            "solver_position_iteration_count": null,
+            "solver_velocity_iteration_count": null,
+            "stabilization_threshold": null
+          },
+          "semantic_tags": null,
+          "spawn_path": null,
+          "visible": true,
+          "visual_material": {
+            "diffuse_color": [
+              0.82,
+              0.06,
+              0.03
+            ],
+            "emissive_color": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "func": "isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface",
+            "metallic": 0.0,
+            "opacity": 1.0,
+            "roughness": 0.72
+          },
+          "visual_material_path": "material"
+        }
+      },
+      "ui_window_class_type": "isaaclab.envs.ui.base_env_window:BaseEnvWindow",
+      "verification_release_support": true,
+      "video_recorder": {
+        "backend_source": "visualizer",
+        "class_type": "isaaclab.envs.utils.video_recorder:VideoRecorder",
+        "env_render_mode": null,
+        "eye": [
+          1.35,
+          -0.58,
+          2.1
+        ],
+        "lookat": [
+          0.97,
+          -0.385,
+          1.93
+        ],
+        "window_height": 720,
+        "window_width": 1280
+      },
+      "viewer": {
+        "asset_name": null,
+        "body_name": null,
+        "cam_prim_path": "/OmniverseKit_Persp",
+        "env_index": 0,
+        "eye": [
+          1.35,
+          -0.58,
+          2.1
+        ],
+        "lookat": [
+          0.97,
+          -0.385,
+          1.93
+        ],
+        "origin_type": "world",
+        "resolution": [
+          1280,
+          720
+        ]
+      },
+      "wait_for_textures": true,
+      "xr": null
+    },
+    "env_controls": {
+      "adaptive_closure_enabled": false,
+      "adaptive_closure_steps": [
+        0.0,
+        0.007,
+        0.007
+      ],
+      "adaptive_contact_threshold_n": 0.08,
+      "approach_acceleration": 4.0,
+      "approach_speed": 0.45,
+      "canonical_joint_names": [
+        "thumb_joint2",
+        "index_joint1",
+        "middle_joint1",
+        "ring_joint1",
+        "little_joint1",
+        "thumb_joint0",
+        "index_joint0",
+        "middle_joint0",
+        "ring_joint0",
+        "little_joint0",
+        "thumb_joint1",
+        "thumb_joint3",
+        "index_joint2",
+        "middle_joint2",
+        "ring_joint2",
+        "little_joint2"
+      ],
+      "contact_hand_damping": null,
+      "contact_hand_stiffness": null,
+      "contact_hand_target_speed_rad_s": null,
+      "contact_hand_velocity_limit_rad_s": null,
+      "derivative_gain": 0.03,
+      "digit_latch_enabled": false,
+      "direct_force_projection_alpha": 0.3,
+      "direct_force_projection_contact_n": 0.08,
+      "direct_force_projection_enabled": false,
+      "direct_force_projection_high_gain": 0.3,
+      "direct_force_projection_high_gain_by_digit": null,
+      "direct_force_projection_low_gain": 0.06,
+      "direct_force_projection_max_open": 0.28,
+      "direct_force_projection_rate_deadband_n": 0.05,
+      "direct_force_projection_rate_gain": 0.0,
+      "direct_force_projection_rate_scale_n": 0.25,
+      "direct_force_projection_root_fraction": 0.45,
+      "direct_force_projection_warning_fraction": 0.6,
+      "distal_residual_scale": 0.06,
+      "fingertip_axial_progress_min": 0.55,
+      "fingertip_contact_body_names": [
+        "thumb_link4",
+        "index_link3",
+        "middle_link3",
+        "ring_link3",
+        "little_link3"
+      ],
+      "fingertip_frame_body_names": [
+        "thumb_link5",
+        "index_link4",
+        "middle_link4",
+        "ring_link4",
+        "little_link4"
+      ],
+      "force_balance_alpha": 0.12,
+      "force_balance_deadband_n": 0.05,
+      "force_balance_enabled": false,
+      "force_balance_gain": 0.1,
+      "force_balance_max_offset": 0.22,
+      "force_balance_target_n": [
+        0.85,
+        0.65,
+        0.45
+      ],
+      "force_balance_width_n": [
+        0.9,
+        0.75,
+        0.65
+      ],
+      "force_center_reward": 0.3,
+      "force_center_targets_n": [
+        0.85,
+        0.65,
+        0.45
+      ],
+      "force_center_width_n": [
+        0.9,
+        0.75,
+        0.65
+      ],
+      "force_error_alpha": 0.18,
+      "force_gate_enabled": true,
+      "force_gate_floor": 0.05,
+      "force_gate_start_fraction": null,
+      "force_retract_sign": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "force_servo_alpha": 0.16,
+      "force_servo_band_seek_gain": 0.0,
+      "force_servo_contact_n": 0.08,
+      "force_servo_enabled": false,
+      "force_servo_max_offset": 0.35,
+      "force_servo_rate_deadband_n": 0.05,
+      "force_servo_rate_gain": 0.0,
+      "force_servo_rate_scale_n": 0.25,
+      "force_servo_retract_direction": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "force_servo_retract_gain": 0.2,
+      "force_servo_seek_direction": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "force_servo_seek_gain": 0.2,
+      "force_servo_target_gain": 0.0,
+      "force_servo_target_n": [
+        0.85,
+        0.65,
+        0.45
+      ],
+      "force_servo_warning_fraction": 0.78,
+      "freeze_required_distal": false,
+      "geometric_contact_proxy_band_m": 0.01,
+      "geometric_contact_proxy_enabled": false,
+      "geometric_contact_proxy_stiffness_n_m": 100.0,
+      "geometry_approach_alpha": 0.25,
+      "geometry_approach_direction": [
+        -1.0,
+        1.0,
+        -1.0
+      ],
+      "geometry_approach_enabled": false,
+      "geometry_approach_gain": 0.2,
+      "geometry_approach_max_offset": 0.12,
+      "geometry_approach_scale_m": 0.015,
+      "geometry_approach_target_gap_m": 0.003,
+      "geometry_contact_projection_enabled": false,
+      "geometry_contact_projection_gain": 0.8,
+      "geometry_contact_projection_margin_m": 0.006,
+      "geometry_contact_projection_max_open": 0.45,
+      "geometry_contact_projection_root_fraction": 0.45,
+      "geometry_prior_after_contact": false,
+      "geometry_prior_axis_max_m": 0.035,
+      "geometry_prior_axis_min_m": 0.032,
+      "geometry_prior_enabled": false,
+      "geometry_prior_max_scale": 0.3,
+      "geometry_prior_residual": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -1.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "geometry_prior_scale": 0.3,
+      "geometry_prior_size_adaptive": false,
+      "guard_margin_n": [
+        0.2,
+        0.2,
+        0.2,
+        0.12,
+        0.1
+      ],
+      "guide_action_alpha": 0.22,
+      "guide_action_values": [
+        0.9562,
+        -0.5214,
+        0.0,
+        0.0,
+        0.4017,
+        -0.7592,
+        0.2345,
+        -0.9126,
+        0.0,
+        0.0,
+        -0.3269,
+        0.0349,
+        0.0,
+        0.0
+      ],
+      "guide_feedback_enabled": false,
+      "hold_acceleration": 1.5,
+      "hold_current_impedance_enabled": false,
+      "hold_effort_control_enabled": false,
+      "hold_effort_damping": 0.35,
+      "hold_effort_high_fraction": 0.55,
+      "hold_effort_in_band": 0.16,
+      "hold_effort_low_fraction": 0.78,
+      "hold_effort_max": 0.45,
+      "hold_effort_stiffness": 0.0,
+      "hold_force_impedance_enabled": false,
+      "hold_hand_damping": null,
+      "hold_hand_damping_by_joint": null,
+      "hold_hand_effort_limit": null,
+      "hold_hand_stiffness": null,
+      "hold_hand_stiffness_by_joint": null,
+      "hold_hand_velocity_limit_by_joint": null,
+      "hold_hand_velocity_limit_rad_s": null,
+      "hold_impedance_effort_by_digit": [
+        0.12,
+        0.1,
+        0.08
+      ],
+      "hold_impedance_force_gain": 0.5,
+      "hold_impedance_force_target_n": [
+        0.7,
+        0.5,
+        0.35
+      ],
+      "hold_impedance_ramp_substeps": 12,
+      "hold_impedance_start_fraction": 0.65,
+      "hold_joint_target_anchor_fraction": null,
+      "hold_joint_target_anchor_fraction_by_joint": null,
+      "hold_joint_target_error_limit_by_joint": null,
+      "hold_joint_target_error_limit_rad": null,
+      "hold_joint_target_open_speed_rad_s": null,
+      "hold_joint_target_speed_rad_s": null,
+      "hold_joint_velocity_target_rad_s": null,
+      "hold_speed": 0.15,
+      "hold_target_filter_alpha": null,
+      "hold_velocity_damping_effort": null,
+      "hold_zero_velocity_target": false,
+      "isolate_nonrequired_digits": true,
+      "joint_acceleration_reward_scale": 3.0,
+      "joint_jerk_reward_scale": 80.0,
+      "joint_smoothness_reward_weight": 0.0,
+      "joint_velocity_reward_scale": 0.2,
+      "manual_decimation_control": false,
+      "max_guide_offset": 0.08,
+      "natural_frequency_hz": 5.0,
+      "phase_close_step": 0.0015,
+      "phase_contact_speed_scale": 0.42,
+      "phase_controller_enabled": false,
+      "phase_geometry_enabled": false,
+      "phase_geometry_gap_scale_m": 0.01,
+      "phase_geometry_step": 0.0015,
+      "phase_high_speed_scale": 0.24,
+      "phase_hysteresis_n": 0.03,
+      "phase_low_delay_steps": 3,
+      "phase_low_ramp_steps": 5,
+      "phase_max_offset": 0.18,
+      "phase_offset_alpha": 0.3,
+      "phase_retract_step": 0.003,
+      "phase_root_fraction": 0.55,
+      "phase_search_step": 0.003,
+      "phase_target_alpha": 0.5,
+      "phase_target_controller_enabled": false,
+      "phase_target_deadband_n": 0.04,
+      "phase_target_error_scale_n": [
+        0.7,
+        0.55,
+        0.35
+      ],
+      "phase_target_force_n": [
+        0.7,
+        0.55,
+        0.3
+      ],
+      "phase_target_raw_mix": 0.35,
+      "phase_target_step": 0.006,
+      "position_target_interpolation_steps": 1,
+      "precontact_residual_fraction": 0.0,
+      "projection_guard_fraction": null,
+      "proportional_gain": 0.5,
+      "proximity_speed_enabled": false,
+      "proximity_speed_floor": 0.3,
+      "proximity_speed_global": false,
+      "proximity_speed_start_m": 0.012,
+      "residual_require_all_contact": false,
+      "residual_scale": 0.04,
+      "residual_trust_in_band_scale": 0.1,
+      "residual_trust_region_enabled": false,
+      "residual_trust_warning_fraction": 0.6,
+      "residual_trust_zero_global": true,
+      "retract_fraction": 0.08,
+      "soft_high_n": [
+        1.8,
+        1.5,
+        1.3
+      ],
+      "warning_fraction": 0.72
+    }
+  },
+  "resolved_config_sha256": "d1b22a453fa2d6750d676707d8013aafc44a4b9c2afce50f2ba7791e06d3f333",
+  "run_sha256": "90b84b075a83aa14afdd767e1050f1ec2dc895385afc5d909661d3464b57c10f",
+  "runtime_versions": {
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "isaaclab": "6.1.14",
+    "isaacsim": "6.0.1.0",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.3",
+    "python_implementation": "CPython",
+    "rsl_rl": "5.0.1",
+    "torch": "2.10.0+cu128"
+  },
+  "schema_version": "small_fruit_pinch_v1.run_manifest.v1",
+  "task_version": "small_fruit_pinch_v1.2.0",
+  "validation_contract_version": "support_retention_v1"
+}

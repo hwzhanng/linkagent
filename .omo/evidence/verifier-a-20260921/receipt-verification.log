@@ -1,0 +1,110 @@
++ PYTHONDONTWRITEBYTECODE=1
++ /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python -m pytest -p no:cacheprovider -v --tb=short research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py research/small_fruit_pinch_v1/source/tests/test_temporal_and_verifier.py --junitxml=.omo/evidence/verifier-a-20260921/receipt-verification.xml
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python
+rootdir: /home/miobarnacle/linkbot/linkagent
+configfile: pyproject.toml
+plugins: hydra-core-1.4.0.dev8, mock-3.15.1, flaky-3.8.1, anyio-4.14.2
+collecting ... collected 62 items
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_soft_band_loss_after_acquisition_cannot_pass_final PASSED [  1%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[False-support_removed] PASSED [  3%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[False-disturbance_applied] PASSED [  4%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[False-topology_valid] PASSED [  6%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[False-physical_contact_valid] PASSED [  8%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[True-support_removed] PASSED [  9%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[True-disturbance_applied] PASSED [ 11%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[True-topology_valid] PASSED [ 12%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[True-physical_contact_valid] PASSED [ 14%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_missing_required_digit_blocks_acquisition[0] PASSED [ 16%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_missing_required_digit_blocks_acquisition[1] PASSED [ 17%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_missing_required_digit_blocks_acquisition[2] PASSED [ 19%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[palm_contact-True] PASSED [ 20%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[forbidden_contact-True] PASSED [ 22%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[safety_projection-True] PASSED [ 24%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[self_collision-True] PASSED [ 25%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[topology_valid-False] PASSED [ 27%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[physical_contact_valid-False] PASSED [ 29%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[support_removed-False] PASSED [ 30%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[center_drift_m-0.02] PASSED [ 32%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[relative_speed_m_s-0.04] PASSED [ 33%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[force_n-0.0] PASSED [ 35%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[force_n-2.0] PASSED [ 37%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[force_n-5.0] PASSED [ 38%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[nan-force_n] PASSED [ 40%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[nan-palm_contact] PASSED [ 41%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[nan-center_drift_m] PASSED [ 43%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[nan-relative_speed_m_s] PASSED [ 45%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[inf-force_n] PASSED [ 46%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[inf-palm_contact] PASSED [ 48%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[inf-center_drift_m] PASSED [ 50%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[inf-relative_speed_m_s] PASSED [ 51%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[-inf-force_n] PASSED [ 53%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[-inf-palm_contact] PASSED [ 54%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[-inf-center_drift_m] PASSED [ 56%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[-inf-relative_speed_m_s] PASSED [ 58%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[force_n] PASSED [ 59%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[palm_contact] PASSED [ 61%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[center_drift_m] PASSED [ 62%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[relative_speed_m_s] PASSED [ 64%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[safety_projection] PASSED [ 66%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[self_collision] PASSED [ 67%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[support_removed] PASSED [ 69%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[disturbance_applied] PASSED [ 70%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[topology_valid] PASSED [ 72%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[physical_contact_valid] PASSED [ 74%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[forbidden_contact] PASSED [ 75%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_positive_real_sequence_and_output_aliases PASSED [ 77%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_initial_true_disturbance_is_not_current_window_evidence[0] PASSED [ 79%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_initial_true_disturbance_is_not_current_window_evidence[90] PASSED [ 80%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_recovery_requires_new_window_and_fresh_disturbance PASSED [ 82%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_safety_violation_requires_episode_reset[force_n] PASSED [ 83%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_safety_violation_requires_episode_reset[self_collision] PASSED [ 85%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_safety_violation_requires_episode_reset[safety_projection] PASSED [ 87%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_safety_violation_requires_episode_reset[forbidden_contact] PASSED [ 88%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_vector_reset_isolates_all_window_state PASSED [ 90%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_one_environment_fault_does_not_invalidate_its_neighbor PASSED [ 91%]
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_contract_version_changes_without_tensor_dimension_changes PASSED [ 93%]
+research/small_fruit_pinch_v1/source/tests/test_temporal_and_verifier.py::test_filter_is_stateful_bounded_and_keeps_hold_response PASSED [ 95%]
+research/small_fruit_pinch_v1/source/tests/test_temporal_and_verifier.py::test_success_requires_complete_hold_not_single_contact PASSED [ 96%]
+research/small_fruit_pinch_v1/source/tests/test_temporal_and_verifier.py::test_palm_shortcut_and_hard_overload_fail PASSED [ 98%]
+research/small_fruit_pinch_v1/source/tests/test_temporal_and_verifier.py::test_residual_trust_region_is_force_directional_and_all_contact_gated PASSED [100%]
+
+=============================== warnings summary ===============================
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513: DeprecationWarning: 'RigidBodyMaterialCfg' is deprecated and will be removed in 5.0. Use 'isaaclab_physx.sim.spawners.materials.PhysxRigidBodyMaterialCfg' for PhysX properties, or 'isaaclab.sim.spawners.materials.RigidBodyMaterialBaseCfg' for solver-common properties only.
+    f1(*args, **kwargs)
+
+../IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/torch/jit/_script.py:1480: 35 warnings
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/torch/jit/_script.py:1480: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513: DeprecationWarning: ViewerCfg is deprecated. In a future release, this config will be streamlined with the KitVisualizerCfg.
+    f1(*args, **kwargs)
+
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513: DeprecationWarning: 'RigidBodyPropertiesCfg' is deprecated and will be removed in 5.0. Use 'isaaclab_physx.sim.schemas.PhysxRigidBodyPropertiesCfg' for PhysX properties, or 'isaaclab.sim.schemas.RigidBodyBaseCfg' for solver-common properties only.
+    f1(*args, **kwargs)
+
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513: DeprecationWarning: 'ArticulationRootPropertiesCfg' is deprecated and will be removed in 5.0. Use 'isaaclab_physx.sim.schemas.PhysxArticulationRootPropertiesCfg' for PhysX properties, or 'isaaclab.sim.schemas.ArticulationRootBaseCfg' for solver-common properties only.
+    f1(*args, **kwargs)
+
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+../IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513
+  /home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/utils/configclass.py:513: DeprecationWarning: 'CollisionPropertiesCfg' is deprecated and will be removed in 5.0. Use 'isaaclab_physx.sim.schemas.PhysxCollisionPropertiesCfg' for PhysX properties, or 'isaaclab.sim.schemas.CollisionBaseCfg' for solver-common properties only.
+    f1(*args, **kwargs)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /home/miobarnacle/linkbot/linkagent/.omo/evidence/verifier-a-20260921/receipt-verification.xml -
+======================= 62 passed, 50 warnings in 3.81s ========================

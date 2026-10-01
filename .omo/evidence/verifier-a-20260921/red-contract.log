@@ -1,0 +1,1348 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF                [100%]
+=================================== FAILURES ===================================
+___________ test_soft_band_loss_after_acquisition_cannot_pass_final ____________
+
+    def test_soft_band_loss_after_acquisition_cannot_pass_final() -> None:
+        # 前提：83 帧 0.5 N 获取接触，并在当前窗内确认真实扰动。
+        verifier = TimStrictVerifier(1, device="cpu")
+        inputs = _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714abaa4b500>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+__________ test_required_evidence_fails_closed[False-support_removed] __________
+
+key = 'support_removed', missing = False
+
+    @pytest.mark.parametrize("key", ["support_removed", "disturbance_applied", "topology_valid", "physical_contact_valid"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_required_evidence_fails_closed(key: str, missing: bool) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        if missing:
+            inputs.pop(key)
+        else:
+            inputs[key].fill_(False)
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba228080>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+________ test_required_evidence_fails_closed[False-disturbance_applied] ________
+
+key = 'disturbance_applied', missing = False
+
+    @pytest.mark.parametrize("key", ["support_removed", "disturbance_applied", "topology_valid", "physical_contact_valid"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_required_evidence_fails_closed(key: str, missing: bool) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        if missing:
+            inputs.pop(key)
+        else:
+            inputs[key].fill_(False)
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba22ae70>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+__________ test_required_evidence_fails_closed[False-topology_valid] ___________
+
+key = 'topology_valid', missing = False
+
+    @pytest.mark.parametrize("key", ["support_removed", "disturbance_applied", "topology_valid", "physical_contact_valid"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_required_evidence_fails_closed(key: str, missing: bool) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        if missing:
+            inputs.pop(key)
+        else:
+            inputs[key].fill_(False)
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba22b740>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+______ test_required_evidence_fails_closed[False-physical_contact_valid] _______
+
+key = 'physical_contact_valid', missing = False
+
+    @pytest.mark.parametrize("key", ["support_removed", "disturbance_applied", "topology_valid", "physical_contact_valid"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_required_evidence_fails_closed(key: str, missing: bool) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        if missing:
+            inputs.pop(key)
+        else:
+            inputs[key].fill_(False)
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba22bd70>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+__________ test_required_evidence_fails_closed[True-support_removed] ___________
+
+key = 'support_removed', missing = True
+
+    @pytest.mark.parametrize("key", ["support_removed", "disturbance_applied", "topology_valid", "physical_contact_valid"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_required_evidence_fails_closed(key: str, missing: bool) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        if missing:
+            inputs.pop(key)
+        else:
+            inputs[key].fill_(False)
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba280440>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'disturbance_applied'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+________ test_required_evidence_fails_closed[True-disturbance_applied] _________
+
+key = 'disturbance_applied', missing = True
+
+    @pytest.mark.parametrize("key", ["support_removed", "disturbance_applied", "topology_valid", "physical_contact_valid"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_required_evidence_fails_closed(key: str, missing: bool) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        if missing:
+            inputs.pop(key)
+        else:
+            inputs[key].fill_(False)
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba280a70>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+___________ test_required_evidence_fails_closed[True-topology_valid] ___________
+
+key = 'topology_valid', missing = True
+
+    @pytest.mark.parametrize("key", ["support_removed", "disturbance_applied", "topology_valid", "physical_contact_valid"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_required_evidence_fails_closed(key: str, missing: bool) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        if missing:
+            inputs.pop(key)
+        else:
+            inputs[key].fill_(False)
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba2812e0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_______ test_required_evidence_fails_closed[True-physical_contact_valid] _______
+
+key = 'physical_contact_valid', missing = True
+
+    @pytest.mark.parametrize("key", ["support_removed", "disturbance_applied", "topology_valid", "physical_contact_valid"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_required_evidence_fails_closed(key: str, missing: bool) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        if missing:
+            inputs.pop(key)
+        else:
+            inputs[key].fill_(False)
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba281a00>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+______________ test_missing_required_digit_blocks_acquisition[0] _______________
+
+digit = 0
+
+    @pytest.mark.parametrize("digit", [0, 1, 2])
+    def test_missing_required_digit_blocks_acquisition(digit: int) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        inputs["force_n"][:, digit] = 0.0
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba2823c0>
+inputs = {'force_n': tensor([[0.0000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+______________ test_missing_required_digit_blocks_acquisition[1] _______________
+
+digit = 1
+
+    @pytest.mark.parametrize("digit", [0, 1, 2])
+    def test_missing_required_digit_blocks_acquisition(digit: int) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        inputs["force_n"][:, digit] = 0.0
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba282ea0>
+inputs = {'force_n': tensor([[0.5000, 0.0000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+______________ test_missing_required_digit_blocks_acquisition[2] _______________
+
+digit = 2
+
+    @pytest.mark.parametrize("digit", [0, 1, 2])
+    def test_missing_required_digit_blocks_acquisition(digit: int) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        inputs["force_n"][:, digit] = 0.0
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba283ad0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.0000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+________ test_invalid_frame_revokes_final_and_window[palm_contact-True] ________
+
+key = 'palm_contact', value = True
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba29a0c0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_____ test_invalid_frame_revokes_final_and_window[forbidden_contact-True] ______
+
+key = 'forbidden_contact', value = True
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba298bc0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_____ test_invalid_frame_revokes_final_and_window[safety_projection-True] ______
+
+key = 'safety_projection', value = True
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba299490>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_______ test_invalid_frame_revokes_final_and_window[self_collision-True] _______
+
+key = 'self_collision', value = True
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba299dc0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+______ test_invalid_frame_revokes_final_and_window[topology_valid-False] _______
+
+key = 'topology_valid', value = False
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba29a960>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+__ test_invalid_frame_revokes_final_and_window[physical_contact_valid-False] ___
+
+key = 'physical_contact_valid', value = False
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba29b530>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+______ test_invalid_frame_revokes_final_and_window[support_removed-False] ______
+
+key = 'support_removed', value = False
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba306c00>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_______ test_invalid_frame_revokes_final_and_window[center_drift_m-0.02] _______
+
+key = 'center_drift_m', value = 0.02
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba304290>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_____ test_invalid_frame_revokes_final_and_window[relative_speed_m_s-0.04] _____
+
+key = 'relative_speed_m_s', value = 0.04
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba304ce0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+___________ test_invalid_frame_revokes_final_and_window[force_n-0.0] ___________
+
+key = 'force_n', value = 0.0
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba3056a0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+___________ test_invalid_frame_revokes_final_and_window[force_n-2.0] ___________
+
+key = 'force_n', value = 2.0
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba3061e0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+___________ test_invalid_frame_revokes_final_and_window[force_n-5.0] ___________
+
+key = 'force_n', value = 5.0
+
+    @pytest.mark.parametrize("key,value", [
+        ("palm_contact", True), ("forbidden_contact", True),
+        ("safety_projection", True), ("self_collision", True),
+        ("topology_valid", False), ("physical_contact_valid", False),
+        ("support_removed", False), ("center_drift_m", 0.02),
+        ("relative_speed_m_s", 0.04), ("force_n", 0.0),
+        ("force_n", 2.0), ("force_n", 5.0),
+    ])
+    def test_invalid_frame_revokes_final_and_window(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba306ed0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+________________ test_nonfinite_inputs_cannot_pass[nan-force_n] ________________
+
+key = 'force_n', value = nan
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba307bf0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_____________ test_nonfinite_inputs_cannot_pass[nan-palm_contact] ______________
+
+key = 'palm_contact', value = nan
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba13fa10>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+____________ test_nonfinite_inputs_cannot_pass[nan-center_drift_m] _____________
+
+key = 'center_drift_m', value = nan
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba13ca70>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+__________ test_nonfinite_inputs_cannot_pass[nan-relative_speed_m_s] ___________
+
+key = 'relative_speed_m_s', value = nan
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba13d5e0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+________________ test_nonfinite_inputs_cannot_pass[inf-force_n] ________________
+
+key = 'force_n', value = inf
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba13e0f0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_____________ test_nonfinite_inputs_cannot_pass[inf-palm_contact] ______________
+
+key = 'palm_contact', value = inf
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba13ed50>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+____________ test_nonfinite_inputs_cannot_pass[inf-center_drift_m] _____________
+
+key = 'center_drift_m', value = inf
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba13f830>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+__________ test_nonfinite_inputs_cannot_pass[inf-relative_speed_m_s] ___________
+
+key = 'relative_speed_m_s', value = inf
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba19f920>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_______________ test_nonfinite_inputs_cannot_pass[-inf-force_n] ________________
+
+key = 'force_n', value = -inf
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba19caa0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_____________ test_nonfinite_inputs_cannot_pass[-inf-palm_contact] _____________
+
+key = 'palm_contact', value = -inf
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba19d670>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+____________ test_nonfinite_inputs_cannot_pass[-inf-center_drift_m] ____________
+
+key = 'center_drift_m', value = -inf
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba19e0c0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+__________ test_nonfinite_inputs_cannot_pass[-inf-relative_speed_m_s] __________
+
+key = 'relative_speed_m_s', value = -inf
+
+    @pytest.mark.parametrize("key", ["force_n", "palm_contact", "center_drift_m", "relative_speed_m_s"])
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_inputs_cannot_pass(key: str, value: float) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 83)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba19eb40>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 83
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_________ test_shape_errors_are_rejected_before_state_changes[force_n] _________
+
+key = 'force_n'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+______ test_shape_errors_are_rejected_before_state_changes[palm_contact] _______
+
+key = 'palm_contact'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+_____ test_shape_errors_are_rejected_before_state_changes[center_drift_m] ______
+
+key = 'center_drift_m'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+___ test_shape_errors_are_rejected_before_state_changes[relative_speed_m_s] ____
+
+key = 'relative_speed_m_s'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+____ test_shape_errors_are_rejected_before_state_changes[safety_projection] ____
+
+key = 'safety_projection'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+_____ test_shape_errors_are_rejected_before_state_changes[self_collision] ______
+
+key = 'self_collision'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+_____ test_shape_errors_are_rejected_before_state_changes[support_removed] _____
+
+key = 'support_removed'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+___ test_shape_errors_are_rejected_before_state_changes[disturbance_applied] ___
+
+key = 'disturbance_applied'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+_____ test_shape_errors_are_rejected_before_state_changes[topology_valid] ______
+
+key = 'topology_valid'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+_ test_shape_errors_are_rejected_before_state_changes[physical_contact_valid] __
+
+key = 'physical_contact_valid'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+____ test_shape_errors_are_rejected_before_state_changes[forbidden_contact] ____
+
+key = 'forbidden_contact'
+
+    @pytest.mark.parametrize("key", list(_inputs()))
+    def test_shape_errors_are_rejected_before_state_changes(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+        inputs[key] = torch.zeros((2, 1))
+        with pytest.raises(ValueError):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:124: TypeError
+________________ test_positive_real_sequence_and_output_aliases ________________
+
+    def test_positive_real_sequence_and_output_aliases() -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        inputs.pop("forbidden_contact")
+        inputs["support_removed"].fill_(False)
+>       _advance(verifier, inputs, 81)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba1c1820>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 81
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_______ test_initial_true_disturbance_is_not_current_window_evidence[0] ________
+
+supported_prefix = 0
+
+    @pytest.mark.parametrize("supported_prefix", [0, 90])
+    def test_initial_true_disturbance_is_not_current_window_evidence(supported_prefix: int) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        inputs["disturbance_applied"].fill_(True)
+        inputs["support_removed"].fill_(False)
+        _advance(verifier, inputs, supported_prefix)
+        inputs["support_removed"].fill_(True)
+>       _advance(verifier, inputs, 180)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:169: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba1c22d0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 180
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_______ test_initial_true_disturbance_is_not_current_window_evidence[90] _______
+
+supported_prefix = 90
+
+    @pytest.mark.parametrize("supported_prefix", [0, 90])
+    def test_initial_true_disturbance_is_not_current_window_evidence(supported_prefix: int) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        inputs["disturbance_applied"].fill_(True)
+        inputs["support_removed"].fill_(False)
+>       _advance(verifier, inputs, supported_prefix)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba1c2f30>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 90
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+___________ test_recovery_requires_new_window_and_fresh_disturbance ____________
+
+    def test_recovery_requires_new_window_and_fresh_disturbance() -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba1c3c50>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+____________ test_safety_violation_requires_episode_reset[force_n] _____________
+
+key = 'force_n'
+
+    @pytest.mark.parametrize("key", ["force_n", "self_collision", "safety_projection", "forbidden_contact"])
+    def test_safety_violation_requires_episode_reset(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        inputs[key].fill_(5)
+>       _advance(verifier, inputs, 1)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:201: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba1c84a0>
+inputs = {'force_n': tensor([[5., 5., 5., 5., 5.]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 1
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_________ test_safety_violation_requires_episode_reset[self_collision] _________
+
+key = 'self_collision'
+
+    @pytest.mark.parametrize("key", ["force_n", "self_collision", "safety_projection", "forbidden_contact"])
+    def test_safety_violation_requires_episode_reset(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        inputs[key].fill_(5)
+>       _advance(verifier, inputs, 1)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:201: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba1c8b30>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 1
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_______ test_safety_violation_requires_episode_reset[safety_projection] ________
+
+key = 'safety_projection'
+
+    @pytest.mark.parametrize("key", ["force_n", "self_collision", "safety_projection", "forbidden_contact"])
+    def test_safety_violation_requires_episode_reset(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        inputs[key].fill_(5)
+>       _advance(verifier, inputs, 1)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:201: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba1c96a0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 1
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_______ test_safety_violation_requires_episode_reset[forbidden_contact] ________
+
+key = 'forbidden_contact'
+
+    @pytest.mark.parametrize("key", ["force_n", "self_collision", "safety_projection", "forbidden_contact"])
+    def test_safety_violation_requires_episode_reset(key: str) -> None:
+        verifier, inputs = TimStrictVerifier(1, device="cpu"), _inputs()
+        inputs[key].fill_(5)
+>       _advance(verifier, inputs, 1)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:201: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba1ca0c0>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'palm_contact': tensor([False]), 'center_drift_m': tensor([0.0010]), 'relative_speed_m_s': tensor([0.0010]), ...}
+frames = 1
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+_________________ test_vector_reset_isolates_all_window_state __________________
+
+    def test_vector_reset_isolates_all_window_state() -> None:
+        verifier, inputs = TimStrictVerifier(2, device="cpu"), _inputs(2)
+>       _advance(verifier, inputs, 42)
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+verifier = <research.small_fruit_pinch_v1.source.verifier.TimStrictVerifier object at 0x714aba1cac00>
+inputs = {'force_n': tensor([[0.5000, 0.5000, 0.5000, 0.0000, 0.0000],
+        [0.5000, 0.5000, 0.5000, 0.0000, 0.0000]]), 'pal...ensor([False, False]), 'center_drift_m': tensor([0.0010, 0.0010]), 'relative_speed_m_s': tensor([0.0010, 0.0010]), ...}
+frames = 42
+
+    def _advance(verifier: TimStrictVerifier, inputs: Inputs, frames: int) -> None:
+        for _ in range(frames):
+>           verifier.update(**inputs)
+E           TypeError: TimStrictVerifier.update() got an unexpected keyword argument 'support_removed'
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:44: TypeError
+________ test_contract_version_changes_without_tensor_dimension_changes ________
+
+    def test_contract_version_changes_without_tensor_dimension_changes() -> None:
+>       assert contract.TASK_VERSION == "small_fruit_pinch_v1.2.0"
+E       AssertionError: assert 'small_fruit_pinch_v1.1.0' == 'small_fruit_pinch_v1.2.0'
+E         
+E         - small_fruit_pinch_v1.2.0
+E         ?                      ^
+E         + small_fruit_pinch_v1.1.0
+E         ?                      ^
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:229: AssertionError
+=========================== short test summary info ============================
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_soft_band_loss_after_acquisition_cannot_pass_final
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[False-support_removed]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[False-disturbance_applied]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[False-topology_valid]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[False-physical_contact_valid]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[True-support_removed]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[True-disturbance_applied]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[True-topology_valid]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_required_evidence_fails_closed[True-physical_contact_valid]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_missing_required_digit_blocks_acquisition[0]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_missing_required_digit_blocks_acquisition[1]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_missing_required_digit_blocks_acquisition[2]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[palm_contact-True]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[forbidden_contact-True]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[safety_projection-True]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[self_collision-True]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[topology_valid-False]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[physical_contact_valid-False]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[support_removed-False]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[center_drift_m-0.02]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[relative_speed_m_s-0.04]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[force_n-0.0]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[force_n-2.0]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_invalid_frame_revokes_final_and_window[force_n-5.0]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[nan-force_n]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[nan-palm_contact]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[nan-center_drift_m]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[nan-relative_speed_m_s]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[inf-force_n]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[inf-palm_contact]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[inf-center_drift_m]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[inf-relative_speed_m_s]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[-inf-force_n]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[-inf-palm_contact]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[-inf-center_drift_m]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_nonfinite_inputs_cannot_pass[-inf-relative_speed_m_s]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[force_n]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[palm_contact]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[center_drift_m]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[relative_speed_m_s]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[safety_projection]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[self_collision]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[support_removed]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[disturbance_applied]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[topology_valid]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[physical_contact_valid]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_shape_errors_are_rejected_before_state_changes[forbidden_contact]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_positive_real_sequence_and_output_aliases
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_initial_true_disturbance_is_not_current_window_evidence[0]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_initial_true_disturbance_is_not_current_window_evidence[90]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_recovery_requires_new_window_and_fresh_disturbance
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_safety_violation_requires_episode_reset[force_n]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_safety_violation_requires_episode_reset[self_collision]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_safety_violation_requires_episode_reset[safety_projection]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_safety_violation_requires_episode_reset[forbidden_contact]
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_vector_reset_isolates_all_window_state
+FAILED research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py::test_contract_version_changes_without_tensor_dimension_changes
+57 failed in 1.12s

@@ -1,0 +1,6 @@
+动态 CEM 试验（2026-09-10，离线仅左手）
+
+命令：
+PYTHONPATH=. IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python research/small_fruit_pinch_v1/source/dynamic_contact_cem.py --viz none --num-envs 8 --iterations 2 --steps 420 --coarse-steps 80 --thumb-steps 150 --distal-steps 150 --diameter-mm 70 --initial-center-mm 75.5 -41.9 164.4
+
+结果：两代候选末段三路有效指尖力均为 0 N，轴向进度为 0；近端六路力为 0 N，未触发禁触，SAT 裕量约 48.2 mm。该结果表示当前预对向阶段使手指离开果实，不能作为训练成功率或安全阈值问题处理。候选保持只读，PPO 继续冻结。

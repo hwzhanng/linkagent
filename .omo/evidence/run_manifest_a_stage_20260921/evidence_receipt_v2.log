@@ -1,0 +1,11 @@
+INVOCATION: env_isaaclab/python -m pytest -q research/small_fruit_pinch_v1/source/tests/test_run_manifest.py
+..........                                                               [100%]
+10 passed in 0.05s
+INVOCATION: env_isaaclab/python -m py_compile run_manifest.py test_run_manifest.py
+OBSERVABLE: py_compile_exit_0=true
+INVOCATION: env_isaaclab/python inline driver build_run_manifest + write_run_manifest twice
+{"artifact": "/home/miobarnacle/linkbot/linkagent/.omo/evidence/run_manifest_a_stage_20260921/manual_run_manifest_v2.json", "asset_count": 6, "checkpoint_sha256_length": 64, "config_has_repr_address": false, "overwrite_rejected": true, "run_sha256_recomputed": true, "source_count": 2}
+INVOCATION: git status --short limited to assigned files
+?? research/small_fruit_pinch_v1/source/run_manifest.py
+?? research/small_fruit_pinch_v1/source/tests/test_run_manifest.py
+OBSERVABLE: validation_complete=true

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.804" timestamp="2026-09-21T01:45:52.312430+08:00" hostname="miobarnacle-ThinkBook-16p"><testcase classname="research.small_fruit_pinch_v1.source.tests.test_verifier_contract" name="test_soft_band_loss_after_acquisition_cannot_pass_final" time="0.022"><failure message="assert not True&#10; +  where True = &lt;built-in method item of Tensor object at 0x76d82056c550&gt;()&#10; +    where &lt;built-in method item of Tensor object at 0x76d82056c550&gt; = tensor([True]).item">def test_soft_band_loss_after_acquisition_cannot_pass_final() -&gt; None:
+        # 前提：真实验证器先经历 83 帧 0.5 N，已获取三指接触。
+        verifier = TimStrictVerifier(1, device="cpu")
+        inputs = {
+            "force_n": torch.tensor([[0.5, 0.5, 0.5, 0.0, 0.0]]),
+            "palm_contact": torch.tensor([False]),
+            "center_drift_m": torch.tensor([0.001]),
+            "relative_speed_m_s": torch.tensor([0.001]),
+            "safety_projection": torch.tensor([False]),
+            "self_collision": torch.tensor([False]),
+        }
+        for _ in range(83):
+            state = verifier.update(**inputs)
+        assert state["success"].item()
+        # 操作：随后 46 帧压力高于软带，但未达到硬过载阈值。
+        inputs["force_n"][:, :3] = 2.0
+        for _ in range(46):
+            state = verifier.update(**inputs)
+        # 预期：先前的成功锁存不能充当最终保持证明。
+&gt;       assert not state["final_success"].item()
+E       assert not True
+E        +  where True = &lt;built-in method item of Tensor object at 0x76d82056c550&gt;()
+E        +    where &lt;built-in method item of Tensor object at 0x76d82056c550&gt; = tensor([True]).item
+
+research/small_fruit_pinch_v1/source/tests/test_verifier_contract.py:27: AssertionError</failure></testcase></testsuite></testsuites>

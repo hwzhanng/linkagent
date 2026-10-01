@@ -1,0 +1,214 @@
+[Warning] [simulation_app.simulation_app] Modules: ['omni.kit_app'] were loaded before SimulationApp was started and might not be loaded correctly.
+[Warning] [simulation_app.simulation_app] Please check to make sure no extra omniverse or pxr modules are imported before the call to SimulationApp(...)
+Loading user config located at: '/home/miobarnacle/anaconda3/envs/isaacsim/lib/python3.10/site-packages/omni/data/Kit/Isaac-Sim/4.5/user.config.json'
+[Info] [carb] Logging to file: /home/miobarnacle/anaconda3/envs/isaacsim/lib/python3.10/site-packages/omni/logs/Kit/Isaac-Sim/4.5/kit_20260822_091427.log
+2026-08-22 01:14:27 [0ms] [Warning] [omni.kit.app.plugin] No crash reporter present, dumps uploading isn't available.
+2026-08-22 01:14:27 [1ms] [Warning] [omni.ext.plugin] [ext: rendering_modes] Extensions config 'extension.toml' doesn't exist '/home/miobarnacle/linkbot/IsaacLab-2.3.2/apps/isaacsim_4_5/rendering_modes' or '/home/miobarnacle/linkbot/IsaacLab-2.3.2/apps/isaacsim_4_5/rendering_modes/config'
+2026-08-22 01:14:27 [88ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+2026-08-22 01:14:28 [328ms] [Warning] [omni.datastore] OmniHub is inaccessible
+2026-08-22 01:14:28 [401ms] [Warning] [omni.isaac.dynamic_control] omni.isaac.dynamic_control is deprecated as of Isaac Sim 4.5. No action is needed from end-users.
+2026-08-22 01:14:30 [2,348ms] [Warning] [gpu.foundation.plugin] Skipping unsupported non-NVIDIA GPU: Intel(R) Graphics (RPL-S)
+2026-08-22 01:14:30 [2,348ms] [Warning] [gpu.foundation.plugin] Skipping unsupported non-NVIDIA GPU: Intel(R) Graphics (RPL-S)
+
+|---------------------------------------------------------------------------------------------|
+| Driver Version: 580.173.02    | Graphics API: Vulkan
+|=============================================================================================|
+| GPU | Name                             | Active | LDA | GPU Memory | Vendor-ID | LUID       |
+|     |                                  |        |     |            | Device-ID | UUID       |
+|     |                                  |        |     |            | Bus-ID    |            |
+|---------------------------------------------------------------------------------------------|
+| 0   | NVIDIA GeForce RTX 4060 Laptop.. | Yes: 0 |     | 8188    MB | 10de      | 0          |
+|     |                                  |        |     |            | 28e0      | f9663ac1.. |
+|     |                                  |        |     |            | 1         |            |
+|---------------------------------------------------------------------------------------------|
+| 1   | Intel(R) Graphics (RPL-S)        |        |     | 11770   MB | 8086      | 0          |
+|     |                                  |        |     |            | a78b      | 86808ba7.. |
+|     |                                  |        |     |            | 0         |            |
+|=============================================================================================|
+| OS: 22.04.5 LTS (Jammy Jellyfish) ubuntu, Version: 22.04.5, Kernel: 6.8.0-138-generic
+| XServer Vendor: The X.Org Foundation, XServer Version: 12201001 (1.22.1.1)
+| Processor: Intel(R) Core(TM) i7-14650HX
+| Cores: 16 | Logical Cores: 24
+|---------------------------------------------------------------------------------------------|
+| Total Memory (MB): 15694 | Free Memory: 5249
+| Total Page/Swap (MB): 16383 | Free Page/Swap: 13075
+|---------------------------------------------------------------------------------------------|
+2026-08-22 01:14:30 [2,576ms] [Warning] [gpu.foundation.plugin] IOMMU is enabled.
+2026-08-22 01:14:30 [2,576ms] [Warning] [gpu.foundation.plugin] Detected IOMMU is enabled. Running CUDA peer-to-peer bandwidth and latency validation.
+Unidirectional P2P=Enabled Bandwidth (P2P Writes) Matrix (GB/s)
+   D\D     0 
+     0 205.13 
+P2P=Enabled Latency (P2P Writes) Matrix (us)
+   GPU     0 
+     0   1.32 
+
+   CPU     0 
+     0   1.68 
+2026-08-22 01:14:30 [2,617ms] [Warning] [omni.kvdb.plugin] Disabling key-value database because another [INFO][AppLauncher]: Using device: cuda:0
+[INFO][AppLauncher]: Loading experience file: /home/miobarnacle/linkbot/IsaacLab-2.3.2/apps/isaacsim_4_5/isaaclab.python.headless.kit
+
+[36m======================================================================================[0m
+[36m[1m[INFO][IsaacLab]: Logging to file: /tmp/isaaclab/logs/isaaclab_2026-08-22_09-14-30.log[0m
+[36m======================================================================================[0m
+
+[33m09:14:30 [stage.py] WARNING: Isaac Sim < 5.0 does not support thread-local stage contexts. Skipping use_stage().[0m
+[33m09:14:30 [simulation_context.py] WARNING: The `enable_external_forces_every_iteration` parameter in the PhysxCfg is set to False. If you are experiencing noisy velocities, consider enabling this flag. You may need to slightly increase the number of velocity iterations (setting it to 1 or 2 rather than 0), together with this flag, to improve the accuracy of velocity updates.[0m
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 20260822
+	Physics step-size     : 0.008333333333333333
+	Rendering step-size   : 0.05
+	Environment step-size : 0.05
+[INFO]: Time taken for scene creation : 0.303684 seconds
+[INFO]: Scene manager:  <class InteractiveScene>
+	Number of environments: 32
+	Environment spacing   : 1.5
+	Source prim name      : /World/envs/env_0
+	Global prim paths     : []
+	Replicate physics     : False
+[INFO]: Starting the simulation. This may take a few seconds. Please wait...
+[33m09:14:32 [articulation.py] WARNING: Spatial tendons are not supported in Isaac Sim < 5.0: patching spatial-tendon getter and setter to use dummy value[0m
+[INFO]: Time taken for simulation start : 1.799554 seconds
+[INFO] Event Manager:  <EventManager> contains 1 active terms.
++--------------------------------------------+
+|  Active Event Terms in Mode: 'prestartup'  |
++--------+-----------------------------------+
+| Index  | Name                              |
++--------+-----------------------------------+
+|   0    | tomato_geometry                   |
+|   1    | v2_fingertip_collision_proxies    |
++--------+-----------------------------------+
+
+[INFO]: Completed setting up the environment...
+{"update": 0, "reward_mean": 0.33722376823425293, "skipped_updates": 0, "log_std_mean": 0.3696412444114685}
+{"update": 1, "reward_mean": 0.33693259954452515, "skipped_updates": 0, "log_std_mean": 0.37113112211227417}
+{"update": 2, "reward_mean": 0.3354940414428711, "skipped_updates": 0, "log_std_mean": 0.3723542392253876}
+{"update": 3, "reward_mean": 0.33607667684555054, "skipped_updates": 0, "log_std_mean": 0.3734379708766937}
+{"update": 4, "reward_mean": 0.33730459213256836, "skipped_updates": 0, "log_std_mean": 0.37455376982688904}
+{"update": 5, "reward_mean": 0.33679789304733276, "skipped_updates": 0, "log_std_mean": 0.3757499158382416}
+{"update": 6, "reward_mean": 0.3370659351348877, "skipped_updates": 0, "log_std_mean": 0.37702977657318115}
+{"update": 7, "reward_mean": 0.3358864188194275, "skipped_updates": 0, "log_std_mean": 0.3783949017524719}
+{"update": 8, "reward_mean": 0.3368093967437744, "skipped_updates": 0, "log_std_mean": 0.3798360228538513}
+{"update": 9, "reward_mean": 0.3376377820968628, "skipped_updates": 0, "log_std_mean": 0.38134706020355225}
+{"update": 10, "reward_mean": 0.3371632695198059, "skipped_updates": 0, "log_std_mean": 0.38292768597602844}
+{"update": 11, "reward_mean": 0.3357052206993103, "skipped_updates": 0, "log_std_mean": 0.3845851719379425}
+{"update": 12, "reward_mean": 0.33709561824798584, "skipped_updates": 0, "log_std_mean": 0.3863082826137543}
+{"update": 13, "reward_mean": 0.33698344230651855, "skipped_updates": 0, "log_std_mean": 0.3880954086780548}
+{"update": 14, "reward_mean": 0.337632417678833, "skipped_updates": 0, "log_std_mean": 0.3899449110031128}
+{"update": 15, "reward_mean": 0.33642578125, "skipped_updates": 0, "log_std_mean": 0.39186614751815796}
+{"update": 16, "reward_mean": 0.33661720156669617, "skipped_updates": 0, "log_std_mean": 0.3938562572002411}
+{"update": 17, "reward_mean": 0.3350604474544525, "skipped_updates": 0, "log_std_mean": 0.3959266245365143}
+{"update": 18, "reward_mean": 0.33600789308547974, "skipped_updates": 0, "log_std_mean": 0.39794236421585083}
+{"update": 19, "eval": {"sim_digits_mean": 0.8489583333333334, "coverage_current_mean": 0.0, "seq_success_rate": 0.0}}
+{"update": 19, "reward_mean": 0.3368532061576843, "skipped_updates": 0, "log_std_mean": 0.39912769198417664, "eval": {"sim_digits_mean": 0.8489583333333334, "coverage_current_mean": 0.0, "seq_success_rate": 0.0}, "score": 0.8489583333333334}
+{"update": 20, "reward_mean": 0.3761977553367615, "skipped_updates": 0, "log_std_mean": 0.4005820155143738}
+{"update": 21, "reward_mean": 0.3374825417995453, "skipped_updates": 0, "log_std_mean": 0.4022691547870636}
+{"update": 22, "reward_mean": 0.33623212575912476, "skipped_updates": 0, "log_std_mean": 0.4039880335330963}
+{"update": 23, "reward_mean": 0.33807623386383057, "skipped_updates": 0, "log_std_mean": 0.40576472878456116}
+{"update": 24, "reward_mean": 0.33633753657341003, "skipped_updates": 0, "log_std_mean": 0.407625287771225}
+{"update": 25, "reward_mean": 0.33771753311157227, "skipped_updates": 0, "log_std_mean": 0.40956443548202515}
+{"update": 26, "reward_mean": 0.3371194303035736, "skipped_updates": 0, "log_std_mean": 0.4112708270549774}
+{"update": 27, "reward_mean": 0.3363790512084961, "skipped_updates": 0, "log_std_mean": 0.41314414143562317}
+{"update": 28, "reward_mean": 0.33672794699668884, "skipped_updates": 0, "log_std_mean": 0.4145860970020294}
+{"update": 29, "reward_mean": 0.3352370262145996, "skipped_updates": 0, "log_std_mean": 0.41644760966300964}
+{"update": 30, "reward_mean": 0.33497104048728943, "skipped_updates": 0, "log_std_mean": 0.41734978556632996}
+{"update": 31, "reward_mean": 0.336301326751709, "skipped_updates": 0, "log_std_mean": 0.4186471104621887}
+{"update": 32, "reward_mean": 0.33606499433517456, "skipped_updates": 0, "log_std_mean": 0.42018958926200867}
+{"update": 33, "reward_mean": 0.33531254529953003, "skipped_updates": 0, "log_std_mean": 0.4219050705432892}
+{"update": 34, "reward_mean": 0.3366367220878601, "skipped_updates": 0, "log_std_mean": 0.42378538846969604}
+{"update": 35, "reward_mean": 0.33664560317993164, "skipped_updates": 0, "log_std_mean": 0.42582204937934875}
+{"update": 36, "reward_mean": 0.3373457193374634, "skipped_updates": 0, "log_std_mean": 0.42812687158584595}
+{"update": 37, "reward_mean": 0.33504173159599304, "skipped_updates": 0, "log_std_mean": 0.43074241280555725}
+{"update": 38, "reward_mean": 0.33689814805984497, "skipped_updates": 0, "log_std_mean": 0.43374761939048767}
+{"update": 39, "eval": {"sim_digits_mean": 0.836875, "coverage_current_mean": 0.0, "seq_success_rate": 0.0}}
+{"update": 39, "reward_mean": 0.33568471670150757, "skipped_updates": 0, "log_std_mean": 0.43563732504844666, "eval": {"sim_digits_mean": 0.836875, "coverage_current_mean": 0.0, "seq_success_rate": 0.0}, "score": 0.836875}
+{"update": 40, "reward_mean": 0.3775970935821533, "skipped_updates": 0, "log_std_mean": 0.43614116311073303}
+{"update": 41, "reward_mean": 0.33586856722831726, "skipped_updates": 0, "log_std_mean": 0.43681609630584717}
+{"update": 42, "reward_mean": 0.3352607190608978, "skipped_updates": 0, "log_std_mean": 0.437651664018631}
+{"update": 43, "reward_mean": 0.3364593982696533, "skipped_updates": 0, "log_std_mean": 0.4385872185230255}
+{"update": 44, "reward_mean": 0.33610647916793823, "skipped_updates": 0, "log_std_mean": 0.43944647908210754}
+{"update": 45, "reward_mean": 0.3370908498764038, "skipped_updates": 0, "log_std_mean": 0.4405168294906616}
+{"update": 46, "reward_mean": 0.336635947227478, "skipped_updates": 0, "log_std_mean": 0.4418638050556183}
+{"update": 47, "reward_mean": 0.33565574884414673, "skipped_updates": 0, "log_std_mean": 0.44470271468162537}
+{"update": 48, "reward_mean": 0.3354170322418213, "skipped_updates": 0, "log_std_mean": 0.4469204246997833}
+{"update": 49, "reward_mean": 0.33483582735061646, "skipped_updates": 0, "log_std_mean": 0.44726717472076416}
+{"update": 50, "reward_mean": 0.3373098373413086, "skipped_updates": 0, "log_std_mean": 0.4478572905063629}
+{"update": 51, "reward_mean": 0.33676618337631226, "skipped_updates": 0, "log_std_mean": 0.44841957092285156}
+{"update": 52, "reward_mean": 0.33452093601226807, "skipped_updates": 0, "log_std_mean": 0.4490134119987488}
+{"update": 53, "reward_mean": 0.3369564712047577, "skipped_updates": 0, "log_std_mean": 0.4496256411075592}
+{"update": 54, "reward_mean": 0.3345106542110443, "skipped_updates": 0, "log_std_mean": 0.4503699839115143}
+{"update": 55, "reward_mean": 0.33774352073669434, "skipped_updates": 0, "log_std_mean": 0.4510500431060791}
+{"update": 56, "reward_mean": 0.3341907858848572, "skipped_updates": 0, "log_std_mean": 0.45179083943367004}
+{"update": 57, "reward_mean": 0.3349723219871521, "skipped_updates": 0, "log_std_mean": 0.45238161087036133}
+{"update": 58, "reward_mean": 0.33409222960472107, "skipped_updates": 0, "log_std_mean": 0.4525933861732483}
+{"update": 59, "eval": {"sim_digits_mean": 0.848125, "coverage_current_mean": 0.0, "seq_success_rate": 0.0}}
+{"update": 59, "reward_mean": 0.3364439606666565, "skipped_updates": 0, "log_std_mean": 0.45382535457611084, "eval": {"sim_digits_mean": 0.848125, "coverage_current_mean": 0.0, "seq_success_rate": 0.0}, "score": 0.848125}
+{"update": 60, "reward_mean": 0.3768339157104492, "skipped_updates": 0, "log_std_mean": 0.45465222001075745}
+{"update": 61, "reward_mean": 0.3369278609752655, "skipped_updates": 0, "log_std_mean": 0.45491790771484375}
+{"update": 62, "reward_mean": 0.3354387879371643, "skipped_updates": 0, "log_std_mean": 0.4550756812095642}
+{"update": 63, "reward_mean": 0.33621734380722046, "skipped_updates": 0, "log_std_mean": 0.4552145302295685}
+{"update": 64, "reward_mean": 0.3355519771575928, "skipped_updates": 0, "log_std_mean": 0.45535123348236084}
+{"update": 65, "reward_mean": 0.33623918890953064, "skipped_updates": 0, "log_std_mean": 0.455488920211792}
+{"update": 66, "reward_mean": 0.33651208877563477, "skipped_updates": 0, "log_std_mean": 0.4556282162666321}
+{"update": 67, "reward_mean": 0.3359665274620056, "skipped_updates": 0, "log_std_mean": 0.45576924085617065}
+{"update": 68, "reward_mean": 0.33576011657714844, "skipped_updates": 0, "log_std_mean": 0.4559119939804077}
+{"update": 69, "reward_mean": 0.33562523126602173, "skipped_updates": 0, "log_std_mean": 0.45605653524398804}
+{"update": 70, "reward_mean": 0.33585625886917114, "skipped_updates": 0, "log_std_mean": 0.45620283484458923}
+{"update": 71, "reward_mean": 0.33705663681030273, "skipped_updates": 0, "log_std_mean": 0.4563509225845337}
+{"update": 72, "reward_mean": 0.33575138449668884, "skipped_updates": 0, "log_std_mean": 0.456500768661499}
+{"update": 73, "reward_mean": 0.3368065059185028, "skipped_updates": 0, "log_std_mean": 0.4566524624824524}
+{"update": 74, "reward_mean": 0.33601629734039307, "skipped_updates": 0, "log_std_mean": 0.456805944442749}
+{"update": 75, "reward_mean": 0.33589982986450195, "skipped_updates": 0, "log_std_mean": 0.45696118474006653}
+{"update": 76, "reward_mean": 0.33613619208335876, "skipped_updates": 0, "log_std_mean": 0.45711830258369446}
+{"update": 77, "reward_mean": 0.3350784182548523, "skipped_updates": 0, "log_std_mean": 0.45727720856666565}
+{"update": 78, "reward_mean": 0.3372311592102051, "skipped_updates": 0, "log_std_mean": 0.45743802189826965}
+{"update": 79, "eval": {"sim_digits_mean": 0.8464583333333333, "coverage_current_mean": 0.0, "seq_success_rate": 0.0}}
+{"update": 79, "reward_mean": 0.3356421887874603, "skipped_updates": 0, "log_std_mean": 0.4576006531715393, "eval": {"sim_digits_mean": 0.8464583333333333, "coverage_current_mean": 0.0, "seq_success_rate": 0.0}, "score": 0.8464583333333333}
+{"update": 80, "reward_mean": 0.37699949741363525, "skipped_updates": 0, "log_std_mean": 0.4577541649341583}
+{"update": 81, "reward_mean": 0.336508572101593, "skipped_updates": 0, "log_std_mean": 0.45791783928871155}
+{"update": 82, "reward_mean": 0.3343074321746826, "skipped_updates": 0, "log_std_mean": 0.4580855965614319}
+{"update": 83, "reward_mean": 0.33463335037231445, "skipped_updates": 0, "log_std_mean": 0.4582556486129761}
+{"update": 84, "reward_mean": 0.3362535834312439, "skipped_updates": 0, "log_std_mean": 0.45842769742012024}
+{"update": 85, "reward_mean": 0.33614397048950195, "skipped_updates": 0, "log_std_mean": 0.458601713180542}
+{"update": 86, "reward_mean": 0.33482903242111206, "skipped_updates": 0, "log_std_mean": 0.4587775766849518}
+{"update": 87, "reward_mean": 0.3363438546657562, "skipped_updates": 0, "log_std_mean": 0.45895543694496155}
+{"update": 88, "reward_mean": 0.3367404341697693, "skipped_updates": 0, "log_std_mean": 0.4591353237628937}
+{"update": 89, "reward_mean": 0.3360311686992645, "skipped_updates": 0, "log_std_mean": 0.45931708812713623}
+{"update": 90, "reward_mean": 0.3350658416748047, "skipped_updates": 0, "log_std_mean": 0.459499716758728}
+{"update": 91, "reward_mean": 0.33723196387290955, "skipped_updates": 0, "log_std_mean": 0.45968425273895264}
+{"update": 92, "reward_mean": 0.3367965817451477, "skipped_updates": 0, "log_std_mean": 0.459871768951416}
+{"update": 93, "reward_mean": 0.33739063143730164, "skipped_updates": 0, "log_std_mean": 0.4600614607334137}
+{"update": 94, "reward_mean": 0.33386558294296265, "skipped_updates": 0, "log_std_mean": 0.4602533280849457}
+{"update": 95, "reward_mean": 0.33554357290267944, "skipped_updates": 0, "log_std_mean": 0.46044719219207764}
+{"update": 96, "reward_mean": 0.33705663681030273, "skipped_updates": 0, "log_std_mean": 0.46064311265945435}
+{"update": 97, "reward_mean": 0.3361586034297943, "skipped_updates": 0, "log_std_mean": 0.4608410894870758}
+{"update": 98, "reward_mean": 0.3363794982433319, "skipped_updates": 0, "log_std_mean": 0.4610412120819092}
+{"update": 99, "eval": {"sim_digits_mean": 0.8464583333333333, "coverage_current_mean": 0.0, "seq_success_rate": 0.0}}
+{"update": 99, "reward_mean": 0.33707231283187866, "skipped_updates": 0, "log_std_mean": 0.4612433910369873, "eval": {"sim_digits_mean": 0.8464583333333333, "coverage_current_mean": 0.0, "seq_success_rate": 0.0}, "score": 0.8464583333333333}
+kit process is locking it
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPreviewSurface.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdUVTexture.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_float.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_float2.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_float3.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_float4.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_int.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_string.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_normal.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_point.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_vector.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_matrix.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2026-08-22 01:14:30 [2,982ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdTransform2d.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+

@@ -1,0 +1,101 @@
+{
+  "cli_argv": [
+    "native_train.py",
+    "--run-manifest",
+    "manual_run_manifest_v2.json"
+  ],
+  "dimensions": {
+    "action": 14,
+    "observation": 96
+  },
+  "files": {
+    "assets": [
+      {
+        "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/.asset_hash",
+        "sha256": "8ba484d5bbabd8e6b84a17ecd35c590ae5b10c6583fc96384feded85c4977cc8"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_base.usd",
+        "sha256": "c78ed17edac5ac8bd06e5a5605b6fcd39449ef405e46a689e7dfc7121d70ea98"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_physics.usd",
+        "sha256": "bc433c24664473d6d207e309cd456ef4246f9bd98bb219377ad861feff206e43"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_sensor.usd",
+        "sha256": "e757e2045204d0f0664aad91d2b133a992fb73b9253d0536a227e54357950ff3"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_l20_physx.usd",
+        "sha256": "b5ab656b3b58b2e19b349755158c9f11f84f9b48c2211c474fac6fd66b7ddb57"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_tip_pad_collision.usda",
+        "sha256": "a8a9aac3250d9e85ff0ecba2b67732d4d93915b0139db389d03a7a41d235c35b"
+      }
+    ],
+    "checkpoint": {
+      "path": "research/small_fruit_pinch_v1/assets/left_hand_urdf/.asset_hash",
+      "sha256": "8ba484d5bbabd8e6b84a17ecd35c590ae5b10c6583fc96384feded85c4977cc8"
+    },
+    "source": [
+      {
+        "path": "research/small_fruit_pinch_v1/source/run_manifest.py",
+        "sha256": "cceb931ed95507a3c4de9b48956a844565b92e67615cdd06be60f563fed9d477"
+      },
+      {
+        "path": "research/small_fruit_pinch_v1/source/size_evidence.py",
+        "sha256": "378fc618edb171e062cd6213d698eeac07645c54f4b256e81db5e4b2c267e552"
+      }
+    ]
+  },
+  "resolved_config": {
+    "agent": {
+      "learning_rate": 0.001
+    },
+    "cli_args": {
+      "run_manifest": ".omo/evidence/run_manifest_a_stage_20260921/manual_run_manifest_v2.json",
+      "seed": 17
+    },
+    "env": {
+      "scene": {
+        "num_envs": 64
+      },
+      "schedule": [
+        1,
+        2,
+        3
+      ]
+    },
+    "env_controls": {
+      "control_decimation": 2,
+      "env_class": {
+        "python_type": "builtins.dict"
+      },
+      "joint_names": [
+        "thumb",
+        "index",
+        "middle"
+      ],
+      "manifest_builder": {
+        "python_callable": "research.small_fruit_pinch_v1.source.run_manifest.build_run_manifest"
+      }
+    }
+  },
+  "resolved_config_sha256": "b75580050e8a0f0849127cbe8ad83581333d615508fec85cd6fc5106ec10e7c8",
+  "run_sha256": "39baa052507e0040ed71cb03b44f43280d418a5747b2d058b47191546fabef62",
+  "runtime_versions": {
+    "isaac_runtime": "manual-qa-v2",
+    "isaaclab": "6.1.14",
+    "isaacsim": "6.0.1.0",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.3",
+    "python_implementation": "CPython",
+    "rsl_rl": "5.0.1",
+    "torch": "2.10.0+cu128"
+  },
+  "schema_version": "small_fruit_pinch_v1.run_manifest.v1",
+  "task_version": "small_fruit_pinch_v1",
+  "validation_contract_version": "a-stage-v1"
+}
