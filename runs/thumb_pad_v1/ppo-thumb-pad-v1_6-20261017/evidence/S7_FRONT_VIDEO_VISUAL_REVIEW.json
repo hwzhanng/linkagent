@@ -1,0 +1,85 @@
+{
+  "status": "FRONT_VIDEO_VISUALLY_INSPECTED_AND_RAW_WINDOW_VERIFIED",
+  "frames_inspected": [
+    0,
+    65
+  ],
+  "observations": "Observed open initial hand and closed thumb/index grasp during released hold; caption env1 episode1 age132 hold.600s, thumb PAD2.00N nonPAD0.00N. Full120-substep success proven by raw trace, not by10fps caption. Successful episode automatically resets near7s; later video samples show subsequent episode.",
+  "receipt": {
+    "actual_num_envs": 4,
+    "camera": {
+      "configured": true,
+      "env_index": 1,
+      "eye_world_m": [
+        1.379999976158142,
+        0.2799999761581421,
+        0.38
+      ],
+      "lookat_world_m": [
+        0.8999999761581421,
+        0.8999999761581421,
+        0.1125
+      ],
+      "origin_type": "env",
+      "origin_world_m": [
+        0.8999999761581421,
+        0.8999999761581421,
+        0.0
+      ],
+      "selection": "front",
+      "verified_by_valid_rgb_frames": true
+    },
+    "checkpoint_sha256": "0650ac4b35e742430f910319492d8ada621ee1c25f954e8aba6bd8163e59ddf6",
+    "contact_overlay": {
+      "enabled": true,
+      "error": null,
+      "geometry_sha256": "abd16607249509762ac07483f9542b6b460628beee5b13a464fca31217b04258",
+      "legend": "green outlines=confirmed PAD boundaries; contact points and normals green PAD / red NON_PAD / yellow UNKNOWN; force>=0.01N display threshold only",
+      "physics": "display geometry only; no CollisionAPI or RigidBodyAPI; labels are visualizations of runtime trace, not independent success evidence"
+    },
+    "errors": {
+      "capture": null,
+      "encoder": null,
+      "runtime": null
+    },
+    "evaluation_return_code": 0,
+    "evaluation_status": "EVALUATION_COMPLETE",
+    "raw_pad_trace": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-thumb-pad-v1-20261016/evidence/video_low_noise_v1_6_front_01/pad_trace.jsonl",
+    "receipt_written_before_app_close": true,
+    "record_video_source_sha256": "01081c7c7fdf105d08ee2e93484933ab68b6132d94c04c935101600174088210",
+    "sampling": {
+      "blank_frames_skipped": 1,
+      "frame_limit_reached": false,
+      "policy_steps_per_frame": 2
+    },
+    "schema_version": "thumb_pad_video_receipt.v1",
+    "selected_env_index": 1,
+    "status": "RECORDED",
+    "task_id": "thumb_pad_grasp_v1",
+    "video": {
+      "fps": 10,
+      "frame_count": 179,
+      "partial_path": null,
+      "partial_sha256": null,
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-thumb-pad-v1-20261016/evidence/video_low_noise_v1_6_front_01/evaluation.mp4",
+      "sha256": "d410ba2330bf34110d4595598b12bada7cc2bfea3b737ec27b3336a529a35f9a"
+    }
+  },
+  "evaluation": {
+    "requested_denominator": 4,
+    "denominator_rows": 4,
+    "completed_episode_records": 4,
+    "outcomes": {
+      "SUCCESS": 1,
+      "FAILURE": 3,
+      "UNKNOWN": 0
+    },
+    "vectorized_policy_steps": 359,
+    "interaction_transitions": 1436,
+    "max_interaction_transitions": 7200,
+    "pad_physical_substep_trace_rows": 2154
+  },
+  "video_sha256": "d410ba2330bf34110d4595598b12bada7cc2bfea3b737ec27b3336a529a35f9a",
+  "same_checkpoint_as_headless": true,
+  "raw_mesh_review": "S7_FRONT_VIDEO_FULL_MESH_REVIEW.json"
+}

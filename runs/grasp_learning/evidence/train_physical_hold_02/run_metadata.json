@@ -1,0 +1,1433 @@
+{
+  "agent_architecture": {
+    "actor": {
+      "activation": "elu",
+      "distribution_cfg": {
+        "init_std": 0.2,
+        "std_type": "log"
+      },
+      "hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "obs_normalization": true
+    },
+    "actor_obs_dim": 114,
+    "check_for_nan": true,
+    "clip_actions": 1.0,
+    "critic": {
+      "activation": "elu",
+      "distribution_cfg": null,
+      "hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "obs_normalization": true
+    },
+    "num_actions": 14,
+    "obs_groups": {
+      "actor": [
+        "policy"
+      ],
+      "critic": [
+        "critic"
+      ]
+    }
+  },
+  "agent_architecture_sha256": "751f8f8f264d4544575527b4472a4e7f7ca81ebcebd523f9c5160ba0f6142293",
+  "agent_config": {
+    "actor": {
+      "activation": "elu",
+      "distribution_cfg": {
+        "init_std": 0.2,
+        "std_type": "log"
+      },
+      "hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "obs_normalization": true
+    },
+    "algorithm": {
+      "clip_param": 0.2,
+      "desired_kl": 0.01,
+      "entropy_coef": 0.003,
+      "gamma": 0.995,
+      "lam": 0.95,
+      "learning_rate": 0.0003,
+      "max_grad_norm": 0.75,
+      "normalize_advantage_per_mini_batch": false,
+      "num_learning_epochs": 4,
+      "num_mini_batches": 8,
+      "optimizer": "adam",
+      "rnd_cfg": null,
+      "schedule": "fixed",
+      "symmetry_cfg": null,
+      "use_clipped_value_loss": true,
+      "value_loss_coef": 1.0
+    },
+    "check_for_nan": true,
+    "class_name": "OnPolicyRunner",
+    "clip_actions": 1.0,
+    "critic": {
+      "activation": "elu",
+      "distribution_cfg": null,
+      "hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "obs_normalization": true
+    },
+    "device": "cuda:0",
+    "empirical_normalization": {},
+    "experiment_name": "small_fruit_pinch_v1",
+    "load_checkpoint": "model_.*.pt",
+    "load_run": ".*",
+    "logger": "tensorboard",
+    "max_iterations": 2400,
+    "multi_gpu": null,
+    "neptune_project": "isaaclab",
+    "num_steps_per_env": 64,
+    "obs_groups": {
+      "actor": [
+        "policy"
+      ],
+      "critic": [
+        "critic"
+      ]
+    },
+    "policy": {},
+    "resume": false,
+    "run_name": "fixed_fruit_grasp_v1",
+    "save_interval": 50,
+    "seed": 42,
+    "wandb_project": "linkagent-small-fruit-pinch"
+  },
+  "agent_config_comparison_sha256": "17d06141e3c4c40b6647e57d69964b93a46cad060c015bdf4e9b791b654429e9",
+  "agent_config_sha256": "d996b3fddc85f7a0aba0f486b8c7a4db317e3f6eb942a174beb41b613f8c5339",
+  "agent_settings": {
+    "initial_std": 0.2,
+    "learning_rate": 0.0003,
+    "num_actions": 14,
+    "schedule": "fixed"
+  },
+  "command": [
+    "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/fixed_fruit_grasp_v1/train.py",
+    "--headless",
+    "--device",
+    "cuda:0",
+    "--num-envs",
+    "4",
+    "--iterations",
+    "60",
+    "--max-seconds",
+    "1500",
+    "--resume",
+    "/tmp/linkbot-ppo-grasp-learning-20261013/evidence/train_physical_hold_01/final.pt",
+    "--stage",
+    "contact",
+    "--seed",
+    "42",
+    "--pregrasp-distance-mm",
+    "5",
+    "--center-local-mm",
+    "-79.16",
+    "11.16",
+    "-160",
+    "--log-dir",
+    "/tmp/linkbot-ppo-grasp-learning-20261013/evidence/train_physical_hold_02",
+    "--kit_args",
+    "--portable --portable-root=/tmp/linkbot-ppo-grasp-learning-20261013/cache/kit --/log/file=/tmp/linkbot-ppo-grasp-learning-20261013/evidence/train_physical_hold_02-kit.log"
+  ],
+  "contract_id": "fixed_fruit_grasp_v1",
+  "contract_sha256": "210b0a13eb7f1369807ee2c05d3ef81eee7ebd19162a4c7da3a64d18776cb74f",
+  "device": "cuda:0",
+  "initialization_kind": "checkpoint_resume",
+  "initialize_only": false,
+  "num_envs": 4,
+  "policy_initialization": {
+    "actor_normalizer_transferred": true,
+    "classification": "pretrained_actor_prior_not_new_semantics_success",
+    "critic_optimizer_and_iteration_reset": true,
+    "destination_task_version": "fixed_fruit_grasp_v1.4.0",
+    "is_new_semantics_success_evidence": false,
+    "kind": "actor_only_task_semantics_transfer",
+    "mode": "actor_only_task_semantics_transfer",
+    "new_semantics_updates_before": 0,
+    "source_checkpoint": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/evidence/train_seeded_contact_02/final.pt",
+    "source_checkpoint_sha256": "217860c781392cd871ccb67c577214f7192a6096c35c9a46a6d69856746d9f5b",
+    "source_initialization": {
+      "actor_output_layer": "mlp.6",
+      "bias": [
+        0.6,
+        0.5,
+        0.0,
+        0.0,
+        0.1,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.8,
+        0.8,
+        0.8,
+        0.8
+      ],
+      "bias_sha256_after": "e15e8a89aea30d65e9f06cd02eebbbc8698ba743ffb821c3460e2adbe32f222e",
+      "bias_sha256_before": "77dfa77effdb039589e9dad460b1980f77973e11bfd37cf0c7c2dc7a6ccf44cf",
+      "changed": true,
+      "classification": "declared_initialization_prior_not_learned_success",
+      "kind": "zero_output_weight_declared_action_bias_prior",
+      "weight_sha256_after": "1aae2dda4016febd2765e64d20dd992319d388cc8a8690f1ae5f7984a4734dd3",
+      "weight_sha256_before": "283f60fccfde5f1d2556689f56be24637e7235e99fdd12e518dcb6c07d922754"
+    },
+    "source_task_version": "fixed_fruit_grasp_v1.3.0",
+    "source_total_updates_completed": 55
+  },
+  "requested_iterations": 60,
+  "requested_pose_mm": {
+    "center_local_mm": [
+      -79.16,
+      11.16,
+      -160.0
+    ],
+    "pregrasp_distance_mm": 5.0
+  },
+  "reset_source": "RslRlVecEnvWrapper constructor performs a complete env.reset()",
+  "rsl_rl_version": "5.0.1",
+  "seed": 42,
+  "source_and_asset_hashes": {
+    "asset_config_missing_reason": null,
+    "asset_config_sha256": "c187678726766df7572d1a75c49fed40056877abbe56cb348f15034c9cae6366",
+    "asset_files_manifest_sha256": "cb5aba1c787116068fe3aa4d4333d3122cb312889a37eca38fad809a28292d35",
+    "evaluation_semantics_sha256": "bf6b24de6b46cd0b49c289501d59a809cfe492668145f4c29cf33458848089c0",
+    "evaluation_semantics_source_files": {
+      "research/fixed_fruit_grasp_v1/collision_cooking.py": "c83d9f67f97731c61f831f437d7f869198a471c694e648ad49573fb6240323fb",
+      "research/fixed_fruit_grasp_v1/contract.py": "4270972c8191e095a60cb70827b7e6d8c97dc2e13df240723a2539e3cf51a1aa",
+      "research/fixed_fruit_grasp_v1/env.py": "34a33cb29ed1b8cc5cb849c5a83f97fe49379e344b4b77d9038271cd2bfa8817",
+      "research/fixed_fruit_grasp_v1/evaluate.py": "d7cb0e1e9c00eb971aaa98a8ce3e9a21bc27503cecd019af279b0e8b04098517",
+      "research/fixed_fruit_grasp_v1/physical_contacts.py": "7df3c722f7eda6268fa0f7bccfdb2aa1a79216e357be1b99da2ac2cc31d122cd",
+      "research/fixed_fruit_grasp_v1/physical_hold.py": "8a7740ad56fdc6a557e64ec3ef6cc8de64b0c35debca68871cf3e5932c7c3879",
+      "research/fixed_fruit_grasp_v1/run_utils.py": "5593ecb4b9911ecb734f9a7564f5f49d5882bb3cedb9a2478aeaa962b3c7becc",
+      "research/small_fruit_pinch_v1/source/agents.py": "94f4f914c40ca0354dbbbedd2a60b4453eb445a5dbad24b54bdb24ece52316c9"
+    },
+    "missing_referenced_paths": [],
+    "package_source_sha256": "00c426aceaca952bfd2776bc89f06187bbb001f1b7b06e1b14ec04e8901d4fcd",
+    "referenced_asset_files": {
+      "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_physics.usd": "bc433c24664473d6d207e309cd456ef4246f9bd98bb219377ad861feff206e43",
+      "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_l20_physx.usd": "b5ab656b3b58b2e19b349755158c9f11f84f9b48c2211c474fac6fd66b7ddb57",
+      "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/source/native_env.py": "ccad0362c475a5d0c3517d0dbbb269771b261b3dba16558b5a14b945ab2af087",
+      "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/source/pinch_action_manifold.py": "4c94c58516d50c7fd24eb2539ff99439fb302624049f16a994bbe029b0b5b40e",
+      "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/source/temporal.py": "d3552703a10d3aa6f3be1e864adc52f64c2379ba747c2a9aa068ab1c7127f6bb",
+      "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/source/vendor/hand_manifold.py": "7782539e65b5a80e6a50647680292dd84c3a94e8767102a38fe0d614e6fb79bf",
+      "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/simulation/tomato_pick/isaac/assets.py": "e4b24fc8e182521481bdd037f38eae01f33ab2f3bb41414854fbf0e6f7dc4a02",
+      "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/simulation/tomato_pick/isaac/env.py": "191737c0644bf9c53621ee62e3794b190e07134183f6b8dcf08211c78569f99c",
+      "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/simulation/tomato_pick/isaac/env_cfg.py": "8dbd538bcdd40ce4e81e22c17e75ac50fed6a37bc5384aba11b8598f8a32592c",
+      "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/simulation/tomato_pick/isaac/geometry_sampling.py": "2781559090245a30a424975c090bde1f9f5ad98f352a0bd03415fb0f61d56d33"
+    },
+    "task_identity_sha256": "0e52115c2aa05f008ca1baaac81395217508ff48baedc708f8e5089d532127e7",
+    "training_semantics_sha256": "f1f20121c79f2634fd5bb9778e14397b7222231a768dad2bd2bba575108670e9",
+    "training_semantics_source_files": {
+      "research/fixed_fruit_grasp_v1/collision_cooking.py": "c83d9f67f97731c61f831f437d7f869198a471c694e648ad49573fb6240323fb",
+      "research/fixed_fruit_grasp_v1/contract.py": "4270972c8191e095a60cb70827b7e6d8c97dc2e13df240723a2539e3cf51a1aa",
+      "research/fixed_fruit_grasp_v1/env.py": "34a33cb29ed1b8cc5cb849c5a83f97fe49379e344b4b77d9038271cd2bfa8817",
+      "research/fixed_fruit_grasp_v1/physical_contacts.py": "7df3c722f7eda6268fa0f7bccfdb2aa1a79216e357be1b99da2ac2cc31d122cd",
+      "research/fixed_fruit_grasp_v1/physical_hold.py": "8a7740ad56fdc6a557e64ec3ef6cc8de64b0c35debca68871cf3e5932c7c3879",
+      "research/fixed_fruit_grasp_v1/run_utils.py": "5593ecb4b9911ecb734f9a7564f5f49d5882bb3cedb9a2478aeaa962b3c7becc",
+      "research/fixed_fruit_grasp_v1/train.py": "4882aeb06ee97799ac73638ae6c60aa08dd1851caea6da7b51afc04a6b45a7e6",
+      "research/small_fruit_pinch_v1/source/agents.py": "94f4f914c40ca0354dbbbedd2a60b4453eb445a5dbad24b54bdb24ece52316c9"
+    }
+  },
+  "stage": "contact",
+  "task_identity": {
+    "action_effect": {
+      "joint_limit_note": "可达范围越出 USD 声明限位时只记录：执行器软件限位与 PhysX 仍会拦截，但该关节在越界区间的动作无作用，需要显式复核",
+      "joint_limit_overhang_names": [],
+      "joint_limit_overhang_rad": 0.0,
+      "manifold_zero_target_gap_rad": 1.1343600749969482,
+      "mean_joint_span_rad": 0.7819181680679321,
+      "min_joint_span_rad": 0.0105060413479805,
+      "neutral_targets_rad": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ok": true,
+      "per_joint_span_rad": [
+        0.5928000807762146,
+        1.2901960611343384,
+        1.202733039855957,
+        0.7894650101661682,
+        0.6136173009872437,
+        1.3340001106262207,
+        0.028141170740127563,
+        0.0105060413479805,
+        0.0105060413479805,
+        0.015008628368377686,
+        1.2696000337600708,
+        1.2247059345245361,
+        1.0376471281051636,
+        1.0376471281051636,
+        1.0164705514907837,
+        1.0376471281051636
+      ],
+      "probe_targets_rad": [
+        [
+          0.7064000368118286,
+          0.027450980618596077,
+          0.09863355755805969,
+          0.34365659952163696,
+          0.4743748903274536,
+          -0.9419999718666077,
+          -0.1184784322977066,
+          -0.03655090183019638,
+          0.04062933102250099,
+          0.15869176387786865,
+          1.3248000144958496,
+          0.025294117629528046,
+          0.021176470443606377,
+          0.021176470443606377,
+          0.021176470443606377,
+          0.021176470443606377
+        ],
+        [
+          0.6611600518226624,
+          0.25710588693618774,
+          0.2668784260749817,
+          0.2668784260749817,
+          0.25710588693618774,
+          -0.7418999671936035,
+          -0.13254901766777039,
+          -0.04180392250418663,
+          0.04588235169649124,
+          0.1661960780620575,
+          1.1343600749969482,
+          0.24329176545143127,
+          0.2058776617050171,
+          0.2058776617050171,
+          0.202108234167099,
+          0.2058776617050171
+        ],
+        [
+          0.11359997093677521,
+          1.317647099494934,
+          1.3013665676116943,
+          1.05634343624115,
+          0.8707231879234314,
+          0.39200007915496826,
+          -0.14661960303783417,
+          -0.04705694317817688,
+          0.05113537237048149,
+          0.17370039224624634,
+          0.05519994720816612,
+          1.25,
+          1.058823585510254,
+          1.058823585510254,
+          1.037647008895874,
+          1.058823585510254
+        ]
+      ]
+    },
+    "actuation": {
+      "groups": {
+        "g20_followers": {
+          "armature": 0.01,
+          "class_type": "ABCMeta",
+          "damping": 0.5,
+          "effort_limit_sim": 0.2,
+          "friction": 0.01,
+          "stiffness": 1.0,
+          "velocity_limit_sim": 1.2
+        },
+        "g20_independent": {
+          "armature": 0.01,
+          "class_type": "ABCMeta",
+          "damping": 1.0,
+          "effort_limit_sim": 0.2,
+          "friction": 0.01,
+          "stiffness": 20.0,
+          "velocity_limit_sim": 1.2
+        }
+      },
+      "joint_hard_limits_rad": {
+        "index_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "index_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "index_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "index_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "little_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "little_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "little_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "little_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "middle_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "middle_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "middle_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "middle_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "ring_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "ring_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "ring_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "ring_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "thumb_joint0": [
+          -1.0499998331069946,
+          0.4899999797344208
+        ],
+        "thumb_joint1": [
+          0.0,
+          1.4500000476837158
+        ],
+        "thumb_joint2": [
+          0.0,
+          0.8399999737739563
+        ],
+        "thumb_joint3": [
+          0.0,
+          1.3199999332427979
+        ],
+        "thumb_joint4": [
+          0.0,
+          1.340000033378601
+        ]
+      },
+      "joint_hard_limits_source": "robot.data.joint_pos_limits（USD 关节限位）",
+      "joint_software_limits_source": "LeftHandDirectionalPDActuator._JOINT_LIMITS",
+      "mimic": {
+        "index_joint3": {
+          "driver": "index_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        },
+        "little_joint3": {
+          "driver": "little_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        },
+        "middle_joint3": {
+          "driver": "middle_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        },
+        "ring_joint3": {
+          "driver": "ring_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        },
+        "thumb_joint4": {
+          "driver": "thumb_joint3",
+          "multiplier": 1.11,
+          "offset_rad": -0.04545
+        }
+      },
+      "mimic_note": "保留 canonical 软件 mimic 关系；不继承派生 PPV1 资产的 NewtonMimicAPI/offset=0 被动零驱动路线（运行时支持未证实）",
+      "minimal_repair": {
+        "armature_kg_m2": 0.01,
+        "post_brake_effort_clip": true,
+        "source": "wave2 native_env 差异（brake 后逐轴 effort 裁剪 + armature 0.01）"
+      },
+      "source": "cfg.robot.actuators（canonical 孤立左手 USD 驱动）+ wave2 最小修复"
+    },
+    "asset_config": {
+      "actuation": {
+        "groups": {
+          "g20_followers": {
+            "armature": 0.01,
+            "class_type": "ABCMeta",
+            "damping": 0.5,
+            "effort_limit_sim": 0.2,
+            "friction": 0.01,
+            "stiffness": 1.0,
+            "velocity_limit_sim": 1.2
+          },
+          "g20_independent": {
+            "armature": 0.01,
+            "class_type": "ABCMeta",
+            "damping": 1.0,
+            "effort_limit_sim": 0.2,
+            "friction": 0.01,
+            "stiffness": 20.0,
+            "velocity_limit_sim": 1.2
+          }
+        },
+        "joint_hard_limits_rad": {
+          "index_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "index_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "index_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "index_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "little_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "little_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "little_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "little_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "middle_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "middle_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "middle_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "middle_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "ring_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "ring_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "ring_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "ring_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "thumb_joint0": [
+            -1.0499998331069946,
+            0.4899999797344208
+          ],
+          "thumb_joint1": [
+            0.0,
+            1.4500000476837158
+          ],
+          "thumb_joint2": [
+            0.0,
+            0.8399999737739563
+          ],
+          "thumb_joint3": [
+            0.0,
+            1.3199999332427979
+          ],
+          "thumb_joint4": [
+            0.0,
+            1.340000033378601
+          ]
+        },
+        "joint_hard_limits_source": "robot.data.joint_pos_limits（USD 关节限位）",
+        "joint_software_limits_source": "LeftHandDirectionalPDActuator._JOINT_LIMITS",
+        "mimic": {
+          "index_joint3": {
+            "driver": "index_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          },
+          "little_joint3": {
+            "driver": "little_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          },
+          "middle_joint3": {
+            "driver": "middle_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          },
+          "ring_joint3": {
+            "driver": "ring_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          },
+          "thumb_joint4": {
+            "driver": "thumb_joint3",
+            "multiplier": 1.11,
+            "offset_rad": -0.04545
+          }
+        },
+        "mimic_note": "保留 canonical 软件 mimic 关系；不继承派生 PPV1 资产的 NewtonMimicAPI/offset=0 被动零驱动路线（运行时支持未证实）",
+        "minimal_repair": {
+          "armature_kg_m2": 0.01,
+          "post_brake_effort_clip": true,
+          "source": "wave2 native_env 差异（brake 后逐轴 effort 裁剪 + armature 0.01）"
+        },
+        "source": "cfg.robot.actuators（canonical 孤立左手 USD 驱动）+ wave2 最小修复"
+      },
+      "asset_config_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_physics.usd",
+      "asset_files": {
+        ".asset_hash": "8ba484d5bbabd8e6b84a17ecd35c590ae5b10c6583fc96384feded85c4977cc8",
+        "configuration/left_hand_l20_physx_base.usd": "c78ed17edac5ac8bd06e5a5605b6fcd39449ef405e46a689e7dfc7121d70ea98",
+        "configuration/left_hand_l20_physx_physics.usd": "bc433c24664473d6d207e309cd456ef4246f9bd98bb219377ad861feff206e43",
+        "configuration/left_hand_l20_physx_sensor.usd": "e757e2045204d0f0664aad91d2b133a992fb73b9253d0536a227e54357950ff3",
+        "left_hand_l20_physx.usd": "b5ab656b3b58b2e19b349755158c9f11f84f9b48c2211c474fac6fd66b7ddb57",
+        "left_hand_tip_pad_collision.usda": "a8a9aac3250d9e85ff0ecba2b67732d4d93915b0139db389d03a7a41d235c35b"
+      },
+      "contact": {
+        "claims_out_of_scope": [
+          "完整穿透/碰撞审计",
+          "26 场景或 110 对覆盖",
+          "实机触觉标定",
+          "真机可达性/集成完成"
+        ],
+        "declared_self_collision_pairs": [
+          [
+            "thumb_link4",
+            "index_link3"
+          ],
+          [
+            "thumb_link4",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "ring_link3"
+          ],
+          [
+            "middle_link3",
+            "ring_link3"
+          ]
+        ],
+        "effective_self_collision_pairs": [
+          [
+            "thumb_link4",
+            "index_link3"
+          ],
+          [
+            "thumb_link4",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "ring_link3"
+          ],
+          [
+            "middle_link3",
+            "ring_link3"
+          ]
+        ],
+        "force_threshold_n": 0.08,
+        "hard_high_n": [
+          15.0,
+          15.0,
+          15.0,
+          15.0,
+          15.0
+        ],
+        "legacy_thumb_index_proxy_is_sufficient": false,
+        "min_contact_fingers": 2,
+        "palm_fruit_collision_filter_enabled": false,
+        "palm_may_carry_load": true,
+        "palm_only_counts_as_success": false,
+        "penetration_guard_scope": "硬门读取全部27个手部刚体→果实的PhysX packed逐点separation，每个真实1/120 s物理子步判定（v1.4.0）；AABB重叠与接触点质心深度仅诊断，不作为真实穿透深度",
+        "physical_penetration_method": "packed_separation_all_27_hand_bodies_per_physics_substep",
+        "real_self_collisions_enabled": true,
+        "self_collision_diagnostic_scope": "声明的5对跨指刚体以PhysX packed逐点separation作为硬守护，OBB-SAT只诊断；硬守护在每个真实1/120 s物理子步判定（v1.4.0），但仍不是全部手内刚体对的完整审计",
+        "self_collision_guard_source": "PhysX packed separation; 5 declared cross-digit pairs; every 1/120 s physics substep (v1.4.0)",
+        "self_collision_penetration_limit_m": 0.01,
+        "self_collision_status": "ENABLED_WITH_EXPLICIT_FINE_CONVEX_DECOMPOSITION（仍需同条件评估）",
+        "skipped_self_collision_pairs": [],
+        "soft_high_n": [
+          1.8,
+          1.5,
+          1.3,
+          1.2,
+          1.0
+        ],
+        "soft_low_n": [
+          0.2,
+          0.15,
+          0.12,
+          0.08,
+          0.05
+        ],
+        "solver_self_collision_config": "cfg.robot.spawn.articulation_props.enabled_self_collisions=True（真实 PhysX 求解器自碰撞，不在运行时关闭）；运行时实际值由主线程 physics smoke 读取 PhysxSchema 记录"
+      },
+      "criteria": {
+        "approach_reward_source": "body_AABB_gap_proxy_only_not_success_evidence",
+        "collider_overlap_limit_m": 0.012,
+        "contact_source": "max_filtered_fruit_force_over_all_bodies_per_digit",
+        "drop_height_tolerance_m": 0.08,
+        "drop_max_drift_m": 0.12,
+        "goal_hold_s": 3.0,
+        "goal_min_height_gain_m": 0.03,
+        "hold_drift_reference": "hand_frame_fruit_position_at_physical_substep_streak_start（v1.4.0：120 Hz 子步 streak 起点，策略刷新不重置）",
+        "hold_hard_fault_gate": "seven_hard_faults_evaluated_every_physics_substep_sticky_until_env_reset",
+        "hold_max_drift_m": 0.01,
+        "hold_max_relative_speed_m_s": 0.05,
+        "hold_streak_gate": "per_physics_substep_120hz_continuous_streak_zeroed_on_any_violation",
+        "instability_max_fruit_speed_m_s": 5.0,
+        "instability_max_joint_velocity_rad_s": 4.0,
+        "joint_limit_margin_rad": 0.01,
+        "penetration_limit_m": 0.005,
+        "thumb_required": false
+      },
+      "fruit": {
+        "axes_m": [
+          0.03350000083446503,
+          0.03350000083446503,
+          0.03350000083446503
+        ],
+        "computed_mass_kg": 0.14173123240470886,
+        "density_kg_m3": 900.0,
+        "equivalent_diameter_m": 0.067,
+        "expected_mass_kg": 0.14173122469074406,
+        "friction": {
+          "combine_mode": "multiply",
+          "dynamic": 0.58,
+          "hand_side_material_source": "USD 未 author PhysicsMaterial，沿用模拟器默认物理材质；本层不覆写",
+          "restitution": 0.01,
+          "solver_default_dynamic": 1.0,
+          "solver_default_static": 1.0,
+          "source": "cfg.tomato.spawn.physics_material",
+          "static": 0.7
+        },
+        "mass_declared_in_cfg_tomato_mass": 0.1,
+        "mass_declared_source_note": "cfg.tomato.spawn.mass_props.mass 只是 USD 初始声明值，实际质量以 computed_mass_kg（父环境写回 PhysX）为准",
+        "mass_source": "parent_env computes 4/3*pi*a*b*c*rho from prestartup axes and density",
+        "mass_tolerance_kg": 0.0005,
+        "sampling": "deterministic_fixed_no_randomization",
+        "shape": "sphere"
+      },
+      "physics": {
+        "decimation": 6,
+        "episode_length_s": 18.0,
+        "episode_steps": 360,
+        "hand_collision_cooking": {
+          "added_filtered_pairs": [],
+          "approximation": "convexDecomposition",
+          "authoring": "original_instanceable_collision_wrappers_before_PhysX_cooking",
+          "bodies": [
+            "base_link",
+            "thumb_link0",
+            "thumb_link1",
+            "thumb_link2",
+            "thumb_link3",
+            "thumb_link4",
+            "thumb_link5",
+            "index_link0",
+            "index_link1",
+            "index_link2",
+            "index_link3",
+            "index_link4",
+            "middle_link0",
+            "middle_link1",
+            "middle_link2",
+            "middle_link3",
+            "middle_link4",
+            "ring_link0",
+            "ring_link1",
+            "ring_link2",
+            "ring_link3",
+            "ring_link4",
+            "little_link0",
+            "little_link1",
+            "little_link2",
+            "little_link3",
+            "little_link4"
+          ],
+          "geometry_and_joint_frames_changed": false,
+          "parameters": {
+            "error_percentage": 1.0,
+            "hull_vertex_limit": 64,
+            "max_convex_hulls": 64,
+            "min_thickness": 0.0002,
+            "shrink_wrap": true,
+            "voxel_resolution": 1000000
+          },
+          "source": "research.fixed_fruit_grasp_v1.collision_cooking"
+        },
+        "observation_dims": {
+          "action": 14,
+          "actor": 114,
+          "critic": 175
+        },
+        "physical_hold_guard": {
+          "anchor_semantics": "hand_frame_fruit_position_at_physical_streak_start",
+          "decimation_branch_required": "external_per_substep_decimation_false",
+          "diagnostic_aabb_obb_skipped_per_substep": true,
+          "dt_zero_reset_callbacks_recorded": false,
+          "duplicate_scene_update_not_counted": true,
+          "effort_limits_source": "robot.data.joint_effort_limits[安全关节(21)]（共享向量，helper 校验长度并按行广播）",
+          "expected_substeps_per_policy_step": 6,
+          "finger_hard_high_source": "C.FINGER_HARD_HIGH_N（5 指共享向量）",
+          "guard_frequency": "per_physics_substep",
+          "guard_frequency_unit": "1/120 s 物理子步",
+          "hard_fault_persistence": "sticky_until_env_reset",
+          "hold_streak_semantics": "continuous_physical_substeps_zeroed_on_any_violation",
+          "missing_data_policy": "fail_closed",
+          "required_hold_substeps": 120,
+          "scene_update_hook": "wrap_scene_update_after_original; record only when _sim_step_counter advances and dt == physics_dt",
+          "sim_step_counter_delta_required": 1,
+          "sim_step_counter_gap_policy": "fail_closed",
+          "success_semantics": "success_requires_physical_streak_ge_required_policy_steps_times_decimation",
+          "support_release_signal": "只消费原有支撑掩码 _stem_detached（attached 取反）；guard 不重新测量支撑 wrench",
+          "support_wrench_zero_provenance": "释放后外力/力矩为零来自原 _apply_attachment_wrench 的 attached 掩码（fixture 撤支撑 F/T zero 代码未变），由外置 raw 采集物理证据核验；guard 不声称自己检测了 wrench 为零"
+        },
+        "policy_dt_s": 0.05,
+        "policy_rate_hz": 20,
+        "sim_dt_s": 0.008333333333333333,
+        "support": {
+          "angular_damping_ratio": 1.0,
+          "angular_natural_frequency_rad_s": 15.0,
+          "declared_break_force_n": 60.0,
+          "kind": "declared_compliant_support_physx_wrench_no_state_write",
+          "linear_damping_ratio": 1.0,
+          "linear_natural_frequency_rad_s": 20.0,
+          "maximum_stem_force_n": 100.0,
+          "maximum_stem_torque_nm": 0.3,
+          "release_is_success_triggered": false,
+          "release_step": 60,
+          "release_time_s": 3.0
+        }
+      },
+      "usd_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_l20_physx.usd"
+    },
+    "assets": {
+      "asset_config_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_physics.usd",
+      "closure_algorithm": "sha256 of sorted 'relative_path  sha256' manifest",
+      "closure_bytes": 17288506,
+      "closure_file_count": 6,
+      "closure_sha256": "011de237f6e3db111671f0c3e6d282a14b6dcd9ef57aed9275b81ab8bcd8686a",
+      "declared_asset_hash_file": "67f2ffca858670da9edc0792bb693ca4",
+      "files": {
+        ".asset_hash": "8ba484d5bbabd8e6b84a17ecd35c590ae5b10c6583fc96384feded85c4977cc8",
+        "configuration/left_hand_l20_physx_base.usd": "c78ed17edac5ac8bd06e5a5605b6fcd39449ef405e46a689e7dfc7121d70ea98",
+        "configuration/left_hand_l20_physx_physics.usd": "bc433c24664473d6d207e309cd456ef4246f9bd98bb219377ad861feff206e43",
+        "configuration/left_hand_l20_physx_sensor.usd": "e757e2045204d0f0664aad91d2b133a992fb73b9253d0536a227e54357950ff3",
+        "left_hand_l20_physx.usd": "b5ab656b3b58b2e19b349755158c9f11f84f9b48c2211c474fac6fd66b7ddb57",
+        "left_hand_tip_pad_collision.usda": "a8a9aac3250d9e85ff0ecba2b67732d4d93915b0139db389d03a7a41d235c35b"
+      },
+      "missing_files": [],
+      "not_selected": {
+        "derived_ppv1_usda": "research/small_fruit_pinch_v1/assets/physical_prior_v1/left_hand_ppv1.usda",
+        "tip_pad_overlay_usda": "research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_tip_pad_collision.usda"
+      },
+      "root": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/assets/left_hand_urdf",
+      "selected": "canonical isolated left hand USD (16 active + 5 mimic followers + 27 bodies)",
+      "selection_note": "派生 PPV1 资产 physical_prior_v1/left_hand_ppv1.usda 要求 mimic offset=0 且依赖 NewtonMimicAPI；本任务不继承未证实的运行时后端，故不选它。",
+      "usd_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_l20_physx.usd"
+    },
+    "contact": {
+      "claims_out_of_scope": [
+        "完整穿透/碰撞审计",
+        "26 场景或 110 对覆盖",
+        "实机触觉标定",
+        "真机可达性/集成完成"
+      ],
+      "declared_self_collision_pairs": [
+        [
+          "thumb_link4",
+          "index_link3"
+        ],
+        [
+          "thumb_link4",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "ring_link3"
+        ],
+        [
+          "middle_link3",
+          "ring_link3"
+        ]
+      ],
+      "effective_self_collision_pairs": [
+        [
+          "thumb_link4",
+          "index_link3"
+        ],
+        [
+          "thumb_link4",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "ring_link3"
+        ],
+        [
+          "middle_link3",
+          "ring_link3"
+        ]
+      ],
+      "force_threshold_n": 0.08,
+      "hard_high_n": [
+        15.0,
+        15.0,
+        15.0,
+        15.0,
+        15.0
+      ],
+      "legacy_thumb_index_proxy_is_sufficient": false,
+      "min_contact_fingers": 2,
+      "palm_fruit_collision_filter_enabled": false,
+      "palm_may_carry_load": true,
+      "palm_only_counts_as_success": false,
+      "penetration_guard_scope": "硬门读取全部27个手部刚体→果实的PhysX packed逐点separation，每个真实1/120 s物理子步判定（v1.4.0）；AABB重叠与接触点质心深度仅诊断，不作为真实穿透深度",
+      "physical_penetration_method": "packed_separation_all_27_hand_bodies_per_physics_substep",
+      "real_self_collisions_enabled": true,
+      "self_collision_diagnostic_scope": "声明的5对跨指刚体以PhysX packed逐点separation作为硬守护，OBB-SAT只诊断；硬守护在每个真实1/120 s物理子步判定（v1.4.0），但仍不是全部手内刚体对的完整审计",
+      "self_collision_guard_source": "PhysX packed separation; 5 declared cross-digit pairs; every 1/120 s physics substep (v1.4.0)",
+      "self_collision_penetration_limit_m": 0.01,
+      "self_collision_status": "ENABLED_WITH_EXPLICIT_FINE_CONVEX_DECOMPOSITION（仍需同条件评估）",
+      "skipped_self_collision_pairs": [],
+      "soft_high_n": [
+        1.8,
+        1.5,
+        1.3,
+        1.2,
+        1.0
+      ],
+      "soft_low_n": [
+        0.2,
+        0.15,
+        0.12,
+        0.08,
+        0.05
+      ],
+      "solver_self_collision_config": "cfg.robot.spawn.articulation_props.enabled_self_collisions=True（真实 PhysX 求解器自碰撞，不在运行时关闭）；运行时实际值由主线程 physics smoke 读取 PhysxSchema 记录"
+    },
+    "contract_id": "fixed_fruit_grasp_v1",
+    "criteria": {
+      "approach_reward_source": "body_AABB_gap_proxy_only_not_success_evidence",
+      "collider_overlap_limit_m": 0.012,
+      "contact_source": "max_filtered_fruit_force_over_all_bodies_per_digit",
+      "drop_height_tolerance_m": 0.08,
+      "drop_max_drift_m": 0.12,
+      "goal_hold_s": 3.0,
+      "goal_min_height_gain_m": 0.03,
+      "hold_drift_reference": "hand_frame_fruit_position_at_physical_substep_streak_start（v1.4.0：120 Hz 子步 streak 起点，策略刷新不重置）",
+      "hold_hard_fault_gate": "seven_hard_faults_evaluated_every_physics_substep_sticky_until_env_reset",
+      "hold_max_drift_m": 0.01,
+      "hold_max_relative_speed_m_s": 0.05,
+      "hold_streak_gate": "per_physics_substep_120hz_continuous_streak_zeroed_on_any_violation",
+      "instability_max_fruit_speed_m_s": 5.0,
+      "instability_max_joint_velocity_rad_s": 4.0,
+      "joint_limit_margin_rad": 0.01,
+      "penetration_limit_m": 0.005,
+      "thumb_required": false
+    },
+    "declared_limitations": [
+      "holding-only：30 mm+3 s 提举目标未实现（缺声明式受驱动升降关节）",
+      "自碰撞在 canonical 孤立左手 USD 上开启但未在本机 GPU 上验证，静态姿态有自激记录",
+      "粗穿透代理排除 base_link（导入掌心 AABB 远大于真实掌面形状）",
+      "掌心侧摩擦/材质来自 USD 资产，本层不覆写",
+      "接触力/阈值是仿真量，不是实机触觉标定",
+      "本包不启动 Kit/PhysX；物理与动态验证由主线程负责"
+    ],
+    "episode_record_fields": [
+      "schema_version",
+      "task_id",
+      "task_version",
+      "stage",
+      "success_criterion",
+      "env_id",
+      "episode_id",
+      "success",
+      "goal_success",
+      "goal_status",
+      "reason",
+      "reason_code",
+      "terminated",
+      "truncated",
+      "steps",
+      "sim_time_s",
+      "contact_fraction",
+      "finger_contact_fraction",
+      "required_contact_fraction",
+      "unsupported_contact_fraction",
+      "any_contact_fraction",
+      "mean_contact_fingers",
+      "max_contact_fingers",
+      "palm_contact_fraction",
+      "palm_only_fraction",
+      "forbidden_contact_steps",
+      "peak_finger_force_n",
+      "mean_finger_force_n",
+      "support_release_step",
+      "support_release_time_s",
+      "support_released",
+      "stem_fracture_before_release",
+      "max_unsupported_hold_s",
+      "final_unsupported_hold_s",
+      "hold_steps_required",
+      "max_physical_hold_streak_substeps",
+      "final_physical_hold_streak_substeps",
+      "physical_hold_streak_required_substeps",
+      "max_unsupported_hold_s_from_physical_substeps",
+      "physical_hold_streak_semantics",
+      "physical_substep_hard_fault_flags",
+      "max_height_gain_m",
+      "final_height_gain_m",
+      "height_gain_sufficient",
+      "min_height_gain_m",
+      "goal_min_height_gain_m",
+      "stage_success_requires_height_gain",
+      "stage_requires_lift_program",
+      "stage_is_goal",
+      "max_center_drift_m",
+      "max_relative_speed_m_s",
+      "max_joint_limit_excursion_rad",
+      "max_applied_effort_nm",
+      "min_self_collision_clearance_m",
+      "min_collider_distance_m",
+      "max_penetration_depth_m",
+      "instability_step",
+      "first_fault_step",
+      "immediate_failure",
+      "failure_phase",
+      "stem_fracture",
+      "overload",
+      "nonfinite",
+      "penetration",
+      "joint_limit",
+      "self_collision",
+      "instability",
+      "joint_effort",
+      "action_effect_ok",
+      "open_hand_baseline",
+      "open_hand_fraction"
+    ],
+    "fruit": {
+      "axes_m": [
+        0.03350000083446503,
+        0.03350000083446503,
+        0.03350000083446503
+      ],
+      "computed_mass_kg": 0.14173123240470886,
+      "density_kg_m3": 900.0,
+      "equivalent_diameter_m": 0.067,
+      "expected_mass_kg": 0.14173122469074406,
+      "friction": {
+        "combine_mode": "multiply",
+        "dynamic": 0.58,
+        "hand_side_material_source": "USD 未 author PhysicsMaterial，沿用模拟器默认物理材质；本层不覆写",
+        "restitution": 0.01,
+        "solver_default_dynamic": 1.0,
+        "solver_default_static": 1.0,
+        "source": "cfg.tomato.spawn.physics_material",
+        "static": 0.7
+      },
+      "mass_declared_in_cfg_tomato_mass": 0.1,
+      "mass_declared_source_note": "cfg.tomato.spawn.mass_props.mass 只是 USD 初始声明值，实际质量以 computed_mass_kg（父环境写回 PhysX）为准",
+      "mass_source": "parent_env computes 4/3*pi*a*b*c*rho from prestartup axes and density",
+      "mass_tolerance_kg": 0.0005,
+      "sampling": "deterministic_fixed_no_randomization",
+      "shape": "sphere"
+    },
+    "goal": {
+      "goal_requires_height_gain_m": 0.03,
+      "goal_requires_hold_s": 3.0,
+      "lift_available": false,
+      "lift_program": {
+        "axis": "world_z",
+        "duration_s": 3.5000000000000004,
+        "duration_steps": 70,
+        "executed": false,
+        "hold_s": 3.0,
+        "min_height_gain_m": 0.03,
+        "speed_m_s": 0.01,
+        "travel_m": 0.035
+      },
+      "lift_stage_status": "NOT_IMPLEMENTED_DECLARED_ONLY",
+      "metric_this_delivery": "unsupported_hold_s",
+      "note": "height_gain 与 goal_success 恒为诊断/False：需要声明的受驱动升降关节，禁止用逐帧传送手根/果实或给果实加力制造提举",
+      "status": "GOAL_NOT_REACHED_LIFT_PROGRAM_NOT_IMPLEMENTED"
+    },
+    "initial_pose": {
+      "closed_grasp_fruit_center_m": [
+        -0.07916,
+        0.01116,
+        -0.16
+      ],
+      "deterministic": true,
+      "minimum_initial_clearance_m": 0.002,
+      "pinch_working_offset_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pregrasp_axial_noise_m": 0.0,
+      "pregrasp_distance_m": 0.005,
+      "pregrasp_lateral_offset_range_m": [
+        0.0,
+        0.0
+      ],
+      "randomization": "none",
+      "recorded_by": "env.last_reset_poses / env.first_reset_poses / env.reset_pose_count",
+      "selection_note": "预抓取距离是确定单值但不必为 65 mm：本任务不学习接近，固定场景选择由有限场景计划给出；实际 reset 姿态见 env.last_reset_poses / env.first_reset_poses，无接触由父环境 clearance 检查强制"
+    },
+    "open_control": {
+      "action_inverse_available": false,
+      "bounded_closure_reference": "closure_reference_action(closure=0..1)",
+      "manifold_zero_target_gap_rad": 1.1343600749969482,
+      "mechanism": "set_open_hand_baseline",
+      "open_hand_action_available": false,
+      "reason": "14D 流形写了 16 个关节（max()/区间夹紧 + 每指残差共享同一关节），像集不满秩，零动作不是 reset 的真实 neutral 张开姿态"
+    },
+    "physics": {
+      "decimation": 6,
+      "episode_length_s": 18.0,
+      "episode_steps": 360,
+      "hand_collision_cooking": {
+        "added_filtered_pairs": [],
+        "approximation": "convexDecomposition",
+        "authoring": "original_instanceable_collision_wrappers_before_PhysX_cooking",
+        "bodies": [
+          "base_link",
+          "thumb_link0",
+          "thumb_link1",
+          "thumb_link2",
+          "thumb_link3",
+          "thumb_link4",
+          "thumb_link5",
+          "index_link0",
+          "index_link1",
+          "index_link2",
+          "index_link3",
+          "index_link4",
+          "middle_link0",
+          "middle_link1",
+          "middle_link2",
+          "middle_link3",
+          "middle_link4",
+          "ring_link0",
+          "ring_link1",
+          "ring_link2",
+          "ring_link3",
+          "ring_link4",
+          "little_link0",
+          "little_link1",
+          "little_link2",
+          "little_link3",
+          "little_link4"
+        ],
+        "geometry_and_joint_frames_changed": false,
+        "parameters": {
+          "error_percentage": 1.0,
+          "hull_vertex_limit": 64,
+          "max_convex_hulls": 64,
+          "min_thickness": 0.0002,
+          "shrink_wrap": true,
+          "voxel_resolution": 1000000
+        },
+        "source": "research.fixed_fruit_grasp_v1.collision_cooking"
+      },
+      "observation_dims": {
+        "action": 14,
+        "actor": 114,
+        "critic": 175
+      },
+      "physical_hold_guard": {
+        "anchor_semantics": "hand_frame_fruit_position_at_physical_streak_start",
+        "decimation_branch_required": "external_per_substep_decimation_false",
+        "diagnostic_aabb_obb_skipped_per_substep": true,
+        "dt_zero_reset_callbacks_recorded": false,
+        "duplicate_scene_update_not_counted": true,
+        "effort_limits_source": "robot.data.joint_effort_limits[安全关节(21)]（共享向量，helper 校验长度并按行广播）",
+        "expected_substeps_per_policy_step": 6,
+        "finger_hard_high_source": "C.FINGER_HARD_HIGH_N（5 指共享向量）",
+        "guard_frequency": "per_physics_substep",
+        "guard_frequency_unit": "1/120 s 物理子步",
+        "hard_fault_persistence": "sticky_until_env_reset",
+        "hold_streak_semantics": "continuous_physical_substeps_zeroed_on_any_violation",
+        "missing_data_policy": "fail_closed",
+        "required_hold_substeps": 120,
+        "scene_update_hook": "wrap_scene_update_after_original; record only when _sim_step_counter advances and dt == physics_dt",
+        "sim_step_counter_delta_required": 1,
+        "sim_step_counter_gap_policy": "fail_closed",
+        "success_semantics": "success_requires_physical_streak_ge_required_policy_steps_times_decimation",
+        "support_release_signal": "只消费原有支撑掩码 _stem_detached（attached 取反）；guard 不重新测量支撑 wrench",
+        "support_wrench_zero_provenance": "释放后外力/力矩为零来自原 _apply_attachment_wrench 的 attached 掩码（fixture 撤支撑 F/T zero 代码未变），由外置 raw 采集物理证据核验；guard 不声称自己检测了 wrench 为零"
+      },
+      "policy_dt_s": 0.05,
+      "policy_rate_hz": 20,
+      "sim_dt_s": 0.008333333333333333,
+      "support": {
+        "angular_damping_ratio": 1.0,
+        "angular_natural_frequency_rad_s": 15.0,
+        "declared_break_force_n": 60.0,
+        "kind": "declared_compliant_support_physx_wrench_no_state_write",
+        "linear_damping_ratio": 1.0,
+        "linear_natural_frequency_rad_s": 20.0,
+        "maximum_stem_force_n": 100.0,
+        "maximum_stem_torque_nm": 0.3,
+        "release_is_success_triggered": false,
+        "release_step": 60,
+        "release_time_s": 3.0
+      }
+    },
+    "randomization": {
+      "action_delay_steps": [
+        0,
+        0
+      ],
+      "arm_joint_noise_deg": 0.0,
+      "enforced_by": "validate_cfg（任何偏离一律 fail-closed）",
+      "fruit_density": "fixed",
+      "fruit_geometry": "fixed",
+      "fruit_position": "fixed",
+      "measured_axes_noise": 0.0,
+      "pregrasp_axial_noise_m": 0.0,
+      "pregrasp_distance_range_m": [
+        0.005,
+        0.005
+      ],
+      "pregrasp_lateral_offset_range_m": [
+        0.0,
+        0.0
+      ],
+      "tactile_bias_n": [
+        0.0,
+        0.0
+      ],
+      "tactile_gain": [
+        1.0,
+        1.0
+      ],
+      "target_position_noise_m": 0.0
+    },
+    "record_schema_version": "fixed_fruit_grasp_episode_record.v1",
+    "reward": {
+      "approach": {
+        "first_reward_increment": 0.0,
+        "gamma": 0.995,
+        "gamma_source": "research.small_fruit_pinch_v1.source.agents.SmallFruitPinchPPORunnerCfg.algorithm.gamma",
+        "potential": "mean_top_2(exp(-max(digit_AABB_gap_m, 0) / 0.025))",
+        "reset_scope": "selected_env_ids_only",
+        "type": "discounted_potential_difference",
+        "weight": 1.0
+      },
+      "hard_fault_penalty": 2.0,
+      "hard_fault_penalty_flags": [
+        "overload",
+        "nonfinite",
+        "penetration",
+        "joint_limit",
+        "self_collision",
+        "instability",
+        "joint_effort"
+      ],
+      "unsupported_hold": {
+        "progress": "hold_age / required_unsupported_hold_steps",
+        "progress_weight": 2.0,
+        "stability": "exp(-hold_window_drift_m / 0.02) * support_released * _hold_ok",
+        "stability_weight": 0.2
+      }
+    },
+    "run": {
+      "configured_sim_device": "cuda:0",
+      "device": "cuda:0",
+      "device_binding_note": "Isaac Lab 3.x DirectRLEnv 实际使用 cfg.sim.device；cfg.device 是镜像簿记字段，validate_cfg 强制两者一致",
+      "num_envs": 4,
+      "seed": 42
+    },
+    "safety_guard": {
+      "effort_guard_tolerance": 0.05,
+      "effort_limits_nm": {
+        "index_joint0": 0.20000000298023224,
+        "index_joint1": 0.20000000298023224,
+        "index_joint2": 0.20000000298023224,
+        "index_joint3": 0.20000000298023224,
+        "little_joint0": 0.20000000298023224,
+        "little_joint1": 0.20000000298023224,
+        "little_joint2": 0.20000000298023224,
+        "little_joint3": 0.20000000298023224,
+        "middle_joint0": 0.20000000298023224,
+        "middle_joint1": 0.20000000298023224,
+        "middle_joint2": 0.20000000298023224,
+        "middle_joint3": 0.20000000298023224,
+        "ring_joint0": 0.20000000298023224,
+        "ring_joint1": 0.20000000298023224,
+        "ring_joint2": 0.20000000298023224,
+        "ring_joint3": 0.20000000298023224,
+        "thumb_joint0": 0.20000000298023224,
+        "thumb_joint1": 0.20000000298023224,
+        "thumb_joint2": 0.20000000298023224,
+        "thumb_joint3": 0.20000000298023224,
+        "thumb_joint4": 0.20000000298023224
+      },
+      "guarded_joint_count": 21,
+      "guarded_joints": [
+        "thumb_joint2",
+        "index_joint1",
+        "middle_joint1",
+        "ring_joint1",
+        "little_joint1",
+        "thumb_joint0",
+        "index_joint0",
+        "middle_joint0",
+        "ring_joint0",
+        "little_joint0",
+        "thumb_joint1",
+        "thumb_joint3",
+        "index_joint2",
+        "middle_joint2",
+        "ring_joint2",
+        "little_joint2",
+        "thumb_joint4",
+        "index_joint3",
+        "middle_joint3",
+        "ring_joint3",
+        "little_joint3"
+      ],
+      "instability_max_joint_velocity_rad_s": 4.0,
+      "joint_limit_margin_rad": 0.01,
+      "note": "关节硬限/速度/非有限/effort 守护覆盖 16 主动 + 5 跟随；策略观测仍为 16 维（114D 不变）",
+      "policy_observation_joints": 16
+    },
+    "source_dependencies": {
+      "geometry_sampling": {
+        "sha256": "2781559090245a30a424975c090bde1f9f5ad98f352a0bd03415fb0f61d56d33",
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/simulation/tomato_pick/isaac/geometry_sampling.py"
+      },
+      "isaac_assets": {
+        "sha256": "e4b24fc8e182521481bdd037f38eae01f33ab2f3bb41414854fbf0e6f7dc4a02",
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/simulation/tomato_pick/isaac/assets.py"
+      },
+      "isaac_env": {
+        "sha256": "191737c0644bf9c53621ee62e3794b190e07134183f6b8dcf08211c78569f99c",
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/simulation/tomato_pick/isaac/env.py"
+      },
+      "isaac_env_cfg": {
+        "sha256": "8dbd538bcdd40ce4e81e22c17e75ac50fed6a37bc5384aba11b8598f8a32592c",
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/simulation/tomato_pick/isaac/env_cfg.py"
+      },
+      "pinch_action_manifold": {
+        "sha256": "4c94c58516d50c7fd24eb2539ff99439fb302624049f16a994bbe029b0b5b40e",
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/source/pinch_action_manifold.py"
+      },
+      "pinch_native_env": {
+        "sha256": "ccad0362c475a5d0c3517d0dbbb269771b261b3dba16558b5a14b945ab2af087",
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/source/native_env.py"
+      },
+      "temporal_filter": {
+        "sha256": "d3552703a10d3aa6f3be1e864adc52f64c2379ba747c2a9aa068ab1c7127f6bb",
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/source/temporal.py"
+      },
+      "vendor_hand_manifold": {
+        "sha256": "7782539e65b5a80e6a50647680292dd84c3a94e8767102a38fe0d614e6fb79bf",
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v4/research/small_fruit_pinch_v1/source/vendor/hand_manifold.py"
+      }
+    },
+    "stage": {
+      "counts_as_goal": false,
+      "goal_status": "GOAL_NOT_REACHED_LIFT_PROGRAM_NOT_IMPLEMENTED",
+      "min_height_gain_m": 0.0,
+      "required_unsupported_hold_s": 1.0,
+      "required_unsupported_hold_steps": 20,
+      "required_unsupported_hold_substeps": 120,
+      "requires_lift_program": false,
+      "stage": "contact",
+      "success_criterion": "contact_grasp_hold_1s_without_support",
+      "success_requires_height_gain": false,
+      "support_release_step": 60,
+      "support_release_time_s": 3.0
+    },
+    "task_id": "LinkAgent-FixedFruitGrasp-v1",
+    "task_version": "fixed_fruit_grasp_v1.4.0"
+  },
+  "task_identity_sha256": "0e52115c2aa05f008ca1baaac81395217508ff48baedc708f8e5089d532127e7",
+  "video_recording": {
+    "missing_reason": "training entrypoint has no camera capture path",
+    "recorded": false
+  }
+}

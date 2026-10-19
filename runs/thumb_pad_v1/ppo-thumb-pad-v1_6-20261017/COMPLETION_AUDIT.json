@@ -1,0 +1,114 @@
+{
+  "status": "CONTENTS_VERIFIED_FIRST_UPDATED_WEIGHT_PAD_HOLD",
+  "user_objective": "按最新计划执行任务，目标为交付新的修改改进后的权重，仿真时间上限不设要求可视情况自我判断放宽，成功率不做严格要求可以适当放宽，优先跑出成功",
+  "scope_authority": "Latest user objective and plan current-execution scope recorded before S7; larger20/50 denominators and3seeds not first-weight gates. Original geometry/no-support/120Hz/fault thresholds preserved.",
+  "requirements": {
+    "R01_new_PPO_weight_and_actual_mean_network_updates": "S7_UPDATE1_PARAMETER_REVIEW.json + train summary/updates + independent CPU tensor audit",
+    "R02_original_weight_unchanged": "SHA256 rechecked against protected original file",
+    "R03_confirmed_ROI_unchanged": "SHA256 rechecked against approved ROI",
+    "R04_real_PAD_unsupported_120_substeps": "success_window.jsonl + independent full-mesh/local/world reclassification + independent raw aggregation",
+    "R05_strict_reload_and_identity": "actual completed checkpoint evaluation + recomputed six canonical identity digests",
+    "R06_initial_and_open_controls_complete": {
+      "eval_low_noise_v1_6_update1_01": {
+        "requested_denominator": 4,
+        "denominator_rows": 4,
+        "completed_episode_records": 4,
+        "outcomes": {
+          "SUCCESS": 1,
+          "FAILURE": 3,
+          "UNKNOWN": 0
+        },
+        "vectorized_policy_steps": 359,
+        "interaction_transitions": 1436,
+        "max_interaction_transitions": 7200,
+        "pad_physical_substep_trace_rows": 2154
+      },
+      "eval_low_noise_v1_6_initial_control_01": {
+        "requested_denominator": 4,
+        "denominator_rows": 4,
+        "completed_episode_records": 4,
+        "outcomes": {
+          "SUCCESS": 1,
+          "FAILURE": 3,
+          "UNKNOWN": 0
+        },
+        "vectorized_policy_steps": 359,
+        "interaction_transitions": 1436,
+        "max_interaction_transitions": 7200,
+        "pad_physical_substep_trace_rows": 2154
+      },
+      "eval_low_noise_v1_6_open_control_01": {
+        "requested_denominator": 4,
+        "denominator_rows": 4,
+        "completed_episode_records": 4,
+        "outcomes": {
+          "SUCCESS": 0,
+          "FAILURE": 4,
+          "UNKNOWN": 0
+        },
+        "vectorized_policy_steps": 359,
+        "interaction_transitions": 1436,
+        "max_interaction_transitions": 7200,
+        "pad_physical_substep_trace_rows": 2154
+      }
+    },
+    "R07_implementation_checks": "72 targeted CPU tests; actual profile192/.02/2e-5; original hard physical guards unchanged",
+    "R08_front_and_side_recorded_success_and_visual_review": {
+      "front": {
+        "evaluation": {
+          "requested_denominator": 4,
+          "denominator_rows": 4,
+          "completed_episode_records": 4,
+          "outcomes": {
+            "SUCCESS": 1,
+            "FAILURE": 3,
+            "UNKNOWN": 0
+          },
+          "vectorized_policy_steps": 359,
+          "interaction_transitions": 1436,
+          "max_interaction_transitions": 7200,
+          "pad_physical_substep_trace_rows": 2154
+        },
+        "receipt_sha256": "71078f878112bf8aae663e95ebc6e52cf5cb791fa270cbcf55ac4bae422f6f69",
+        "video_sha256": "d410ba2330bf34110d4595598b12bada7cc2bfea3b737ec27b3336a529a35f9a",
+        "review": "S7_FRONT_VIDEO_FULL_MESH_REVIEW.json"
+      },
+      "side": {
+        "evaluation": {
+          "requested_denominator": 4,
+          "denominator_rows": 4,
+          "completed_episode_records": 4,
+          "outcomes": {
+            "SUCCESS": 1,
+            "FAILURE": 3,
+            "UNKNOWN": 0
+          },
+          "vectorized_policy_steps": 359,
+          "interaction_transitions": 1436,
+          "max_interaction_transitions": 7200,
+          "pad_physical_substep_trace_rows": 2154
+        },
+        "receipt_sha256": "74456aecf0ef53a8a4df8586859c7676f530124a6b2ec3b2938582e28cbbf713",
+        "video_sha256": "57a69308680072a9dc93ca84d6f6fcfc3f31debf284939af374ef9a852b6bc58",
+        "review": "S7_SIDE_VIDEO_FULL_MESH_REVIEW.json"
+      }
+    },
+    "R09_source_asset_and_delivered_weight_integrity": "35 declared critical/hand asset files byte-matched in source archive; weight SHA matched",
+    "R10_documented_claim_limits": "RESULTS.md: first updated successful checkpoint, no rate-improvement, convergence, generalization or lift claim",
+    "R11_independent_core_QA": "S7_INDEPENDENT_CORE_QA_RAW.json (core claims only; final media/archive checked by main)"
+  },
+  "checkpoint_sha256": "0650ac4b35e742430f910319492d8ada621ee1c25f954e8aba6bd8163e59ddf6",
+  "critical_source_sha256": "4e7b7df5c4dbf5802c076c024a16f690f096afa708b36045ae97fae72b5299d3",
+  "task_identity_sha256": "f0835907be4b751af7c702b86ad7359aedd577d8b047f39f8ff2a1e37e7e334d",
+  "ROI_sha256": "abd16607249509762ac07483f9542b6b460628beee5b13a464fca31217b04258",
+  "PPO_success_rate_improvement_proven": false,
+  "future_uncompleted_research": [
+    "legacyv6 new-rule adapter comparison (UNKNOWN)",
+    "large denominators/multiple seeds",
+    "statistical low-impact gains",
+    "perturbation/generalization",
+    "lift/real hardware"
+  ],
+  "archive_validation": "See sibling ZIP verification receipt and detached SHA256 after archive is built",
+  "created_at_utc": "2026-10-16T17:41:01.491783+00:00"
+}

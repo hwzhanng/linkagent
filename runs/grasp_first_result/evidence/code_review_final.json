@@ -1,0 +1,431 @@
+{
+  "schema_version": "1.0",
+  "review_type": "read_only_independent_qa",
+  "review_date": "2026-10-13",
+  "scope": {
+    "workspace": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/research/fixed_fruit_grasp_v1",
+    "evidence_root": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/evidence",
+    "checkpoint_hashes_used": false,
+    "early_checkpoint_hashes_used": false,
+    "running_training_process_interrogated": false
+  },
+  "code_review": {
+    "evaluator_goal_metrics": {
+      "status": "CONFIRMED_FIXED",
+      "evidence": "evaluate.py now counts boolean goal_success values directly from episode_rows, emits goal_success_observed, withholds the count when observation is incomplete, and requires the complete denominator for the goal 90 percent flag. The stage 90 percent flag remains based on the separate success summary and complete success observation.",
+      "source": "research/fixed_fruit_grasp_v1/evaluate.py:398-445"
+    },
+    "supervisor_spawn_failure": {
+      "status": "CONFIRMED_FIXED",
+      "evidence": "A subprocess.Popen exception is recorded as SPAWN_FAILED with error, elapsed time, and end time, and returns nonzero.",
+      "source": "research/fixed_fruit_grasp_v1/supervisor.py:93-105"
+    },
+    "remaining_reviewed_source_findings": [],
+    "tests": "Not run in this read-only review."
+  },
+  "physics_smoke_07_gentle_closure": {
+    "artifacts": [
+      "physics_smoke_07_gentle_closure.json",
+      "physics_smoke_07_gentle_closure-process.json"
+    ],
+    "process": {
+      "status": "EXITED_OK",
+      "exit_code": 0
+    },
+    "gate_pass": true,
+    "required_checks": {
+      "finite_observations": true,
+      "action_effect_observed": true,
+      "real_contact_observed": true,
+      "self_collision_enabled": true,
+      "open_episode_completed": true,
+      "open_baseline_failed": true,
+      "no_hard_physical_faults": true,
+      "closure_reached_support_release": true
+    },
+    "runtime_self_collision_enabled": true,
+    "episodes": {
+      "open": {
+        "steps": 42,
+        "reason": "drop",
+        "success": false,
+        "goal_success": false,
+        "support_released": true,
+        "any_contact_fraction": 0.0238095238,
+        "task_contact_fraction": 0.0,
+        "max_contact_fingers": 1,
+        "max_sampled_raw_penetration_depth_m": 0.0,
+        "max_aabb_overlap_m_diagnostic": 0.0065955743
+      },
+      "bounded_closure": {
+        "steps": 42,
+        "reason": "drop",
+        "success": false,
+        "goal_success": false,
+        "support_released": true,
+        "any_contact_fraction": 0.6904761905,
+        "task_contact_fraction": 0.0,
+        "max_contact_fingers": 1,
+        "max_sampled_raw_penetration_depth_m": 0.0,
+        "max_aabb_overlap_m_diagnostic": 0.0094414968
+      }
+    },
+    "limited_acceptance": "Received only as a bounded wiring and safety-gate smoke: required checks passed, sampled contact was observed, support was released, and no listed hard fault or sampled raw penetration was recorded. Both episodes dropped the fruit; this is not a grasp/hold success or lift result.",
+    "penetration_scope_limit": "The recorded raw separation check covers all 27 hand bodies against the fruit at policy samples. AABB overlap is diagnostic. This evidence is not a full mesh or every-physics-substep penetration audit."
+  },
+  "eval_initial_contact_v2": {
+    "artifacts": [
+      "eval_initial_contact_v2.json",
+      "eval_initial_contact_v2.receipt.json",
+      "eval_initial_contact_v2.episodes.jsonl",
+      "eval_initial_contact_v2-process.json"
+    ],
+    "valid": true,
+    "result_status": "EVALUATED",
+    "process_status": "EXITED_OK",
+    "stage": "contact",
+    "policy": "checkpoint",
+    "num_envs": 4,
+    "requested_episodes": 20,
+    "actual_denominator": 20,
+    "success_count": 0,
+    "success_rate": 0.0,
+    "contact_fraction_mean": 0.03748551084616659,
+    "max_unsupported_hold_s": 0.0,
+    "failure_reason_counts": {
+      "drop": 12,
+      "overload": 8
+    },
+    "goal_success_count": 0,
+    "goal_success_observed": 20,
+    "meets_stage_90_percent_target": false,
+    "meets_90_percent_target": false,
+    "limited_acceptance": "Received as a complete, valid negative initial-contact evaluation only. It is not evidence of successful grasping or a positive policy result.",
+    "lift_boundary": {
+      "lift_program_implemented": false,
+      "stage_is_goal": false,
+      "stage_requires_lift_program": false,
+      "goal_status_in_episode_records": "GOAL_NOT_REACHED_LIFT_PROGRAM_NOT_IMPLEMENTED",
+      "interpretation": "The 0/20 goal_success value does not evaluate an implemented lift behavior; no lift capability or lift failure claim is made."
+    }
+  },
+  "training_status": {
+    "short_contact_01": {
+      "process_status": "FAILED",
+      "exit_code": 1,
+      "reported_outcome": "Pose input was omitted, contract validation rejected the run before updates; zero updates reported.",
+      "accepted_as_training_evidence": false
+    },
+    "short_contact_02": {
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "stop_reason": "termination_signal_15",
+      "episodes_completed": 869,
+      "valid_ppo_updates": 17,
+      "all_17_update_loss_records_finite": true,
+      "actor_parameters_changed": true,
+      "checkpoint_artifacts_present": [
+        "actor_final.pt",
+        "final.pt"
+      ],
+      "independent_reload_verified": true,
+      "first_two_independent_windows": [
+        {
+          "window": 1,
+          "episode_indices": "0-31",
+          "episodes": 32,
+          "thumb_positive_rows": 0,
+          "required_opposition_positive_rows": 0,
+          "unsupported_hold_max_s": 0.0,
+          "generic_contact_positive_rows": 1
+        },
+        {
+          "window": 2,
+          "episode_indices": "32-63",
+          "episodes": 32,
+          "thumb_positive_rows": 0,
+          "required_opposition_positive_rows": 0,
+          "unsupported_hold_max_s": 0.0,
+          "generic_contact_positive_rows": 3
+        }
+      ],
+      "all_episodes_contact_audit": {
+        "episodes": 869,
+        "thumb_positive_rows": 0,
+        "required_opposition_positive_rows": 0,
+        "unsupported_hold_positive_rows": 0,
+        "generic_contact_positive_rows": 63,
+        "generic_contact_fraction_mean": 0.005341288799553082,
+        "finger_array_order_source": "contract.FINGER_NAMES = (thumb, index, middle, ring, little)"
+      },
+      "episode_failure_reasons": {
+        "overload": 626,
+        "instability": 140,
+        "drop": 88,
+        "penetration": 15
+      },
+      "behavioral_effectiveness": "NOT_ESTABLISHED: 17 finite PPO updates and changed actor parameters are verified; a separate valid reload evaluation of final.pt remained negative (0/20 stage success, zero thumb-positive, required-contact-positive, or hold-positive rows). Generic any-contact rows occurred and are not counted as required grasp contact.",
+      "independent_reload_evidence": {
+        "evaluation": "eval_trained_contact_02",
+        "policy": "checkpoint",
+        "checkpoint_artifact": "short_contact_02/final.pt",
+        "valid": true,
+        "actual_denominator": 20,
+        "result": "0/20 stage successes; no required thumb opposition or unsupported hold",
+        "hash_used_in_review": false
+      }
+    },
+    "training_update_effectiveness": "NOT_ESTABLISHED"
+  },
+  "overall_disposition": {
+    "smoke_07": "LIMITED_SCOPE_RECEIVED",
+    "initial_contact_v2": "VALID_NEGATIVE_RESULT_RECEIVED",
+    "training": "17_VALID_PPO_UPDATES_AND_ACTOR_CHANGE_VERIFIED; CHECKPOINT_RELOAD_EVALUATION_NEGATIVE; NO_FURTHER_TRAINING_AFTER_SINGLE_POSE_CHANGE",
+    "final_research_acceptance": "NOT_GRANTED",
+    "smoke_08_pose_fix": "B_GATE_FAILED_NO_REAL_CONTACT; OTHER_REQUIRED_CHECKS_PASSED; BOTH_EPISODES_DROPPED_AFTER_SUPPORT_RELEASE",
+    "smoke_09_pose_fix_closure": "B_GATE_FAILED_NO_REAL_CONTACT; OTHER_REQUIRED_CHECKS_PASSED; BOTH_EPISODES_DROPPED_AFTER_SUPPORT_RELEASE",
+    "trained_contact_02": "VALID_INDEPENDENT_CHECKPOINT_RELOAD_NEGATIVE_0_OF_20",
+    "open_contact": "VALID_NEGATIVE_0_OF_21_ALL_COMPLETED_EPISODES_RETAINED",
+    "goal_acceptance": "NOT_GRANTED; LIFT_PROGRAM_NOT_IMPLEMENTED_AND_NO_LIFT_EVALUATION_CLAIMED",
+    "video_evidence": "NOT_PRODUCED_RECORDING_FAILED"
+  },
+  "review_actions": {
+    "source_modified": false,
+    "tests_run": false,
+    "only_written_file": "evidence/code_review_final.json",
+    "reviewer_started_gpu_kit_or_hardware": false,
+    "latest_evidence_append": "Added valid independent checkpoint reload evaluation (20/20, 0 success), retained 21/21 open baseline, pose-fix smoke08 and smoke09 gate failures, and video capture failure/no media artifact. No training, GPU/Kit, hardware, source edits, or tests were started by reviewer."
+  },
+  "plan_alignment": {
+    "zero_required_opposition_stop": {
+      "assessment": "CONSISTENT_WITH_TARGETED_NO_BLIND_RUN_STOP; no substantive plan violation found.",
+      "basis": "Two independent 32-episode windows each had zero thumb-positive rows, zero required-opposition rows, and zero unsupported hold. The task implementation defines required contact as thumb plus an opposing finger and at least two contacting fingers; the contact and hold criteria are therefore not progressing toward the intended grasp.",
+      "terminology_caveat": "Do not describe this as zero physical contact overall: generic contact_fraction was positive in 1/32 and 3/32 episodes in the first two windows, and in 63/869 episodes overall. Those contacts did not include the thumb and did not satisfy required opposition."
+    },
+    "single_fixed_pose_change": {
+      "assessment": "WITHIN_THE_BOUNDED_POSE_ONLY_CHECK; NO_CONTACT_GATE_FAILED; STOPPING_WITHOUT_ADDITIONAL_TRAINING_OR_A_SECOND_CHANGE_IS_CONSISTENT_WITH_THE_STOP_BOUNDARY.",
+      "basis": "The sole targeted pose change was tested at bounded closure amplitudes 0.15 (smoke08) and 0.65 (smoke09). Both runs had zero finger/required contact, released support, and dropped the fruit; smoke09 had seven of eight required checks true and failed only real_contact_observed. No second pose/material/drive change or further training followed.",
+      "candidate_center_local_mm": [
+        -87.3,
+        -42.5,
+        -160.0
+      ],
+      "actual_world_clearance_from_palm_aabb_verified": false,
+      "pose_reachability_verified": false,
+      "next_evidence_needed": "None for this stopped run. The candidate did not demonstrate real contact, so it is not a B pass and does not justify main training or goal acceptance."
+    },
+    "scope_drift": false
+  },
+  "eval_trained_contact_02": {
+    "artifacts": [
+      "eval_trained_contact_02.json",
+      "eval_trained_contact_02.receipt.json",
+      "eval_trained_contact_02.episodes.jsonl",
+      "eval_trained_contact_02-process.json"
+    ],
+    "valid": true,
+    "result_status": "EVALUATED",
+    "process_status": "EXITED_OK",
+    "exit_code": 0,
+    "independent_checkpoint_reload": true,
+    "policy": "checkpoint",
+    "checkpoint_artifact": "short_contact_02/final.pt",
+    "stage": "contact",
+    "num_envs": 4,
+    "requested_episodes": 20,
+    "actual_denominator": 20,
+    "success_count": 0,
+    "success_rate": 0.0,
+    "contact_fraction_mean": 0.01353566681435534,
+    "max_unsupported_hold_s": 0.0,
+    "failure_reason_counts": {
+      "drop": 9,
+      "overload": 11
+    },
+    "raw_episode_audit": {
+      "episodes": 20,
+      "thumb_positive_rows": 0,
+      "required_contact_positive_rows": 0,
+      "unsupported_hold_positive_rows": 0,
+      "generic_any_contact_positive_rows": 18
+    },
+    "goal_success_count": 0,
+    "goal_success_observed": 20,
+    "lift_boundary": "The task record declares the lift program unimplemented; goal_success=false is not an evaluation of implemented lift behavior and is not reported as a lift failure.",
+    "limited_acceptance": "Received as a valid independent checkpoint reload and negative contact-stage evaluation only. No grasp/hold effectiveness or goal/lift acceptance."
+  },
+  "eval_open_contact": {
+    "artifacts": [
+      "eval_open_contact.json",
+      "eval_open_contact.episodes.jsonl",
+      "eval_open_contact-process.json"
+    ],
+    "valid": true,
+    "result_status": "EVALUATED",
+    "process_status": "EXITED_OK",
+    "exit_code": 0,
+    "policy": "open",
+    "stage": "contact",
+    "num_envs": 4,
+    "requested_episodes": 20,
+    "actual_denominator": 21,
+    "denominator_note": "All 21 completed episodes are retained; the final vectorized batch was not truncated.",
+    "success_count": 0,
+    "success_rate": 0.0,
+    "contact_fraction_mean": 0.0,
+    "max_unsupported_hold_s": 0.0,
+    "failure_reason_counts": {
+      "drop": 18,
+      "overload": 3
+    },
+    "raw_episode_audit": {
+      "episodes": 21,
+      "thumb_positive_rows": 0,
+      "required_contact_positive_rows": 0,
+      "unsupported_hold_positive_rows": 0,
+      "generic_any_contact_positive_rows": 13
+    },
+    "goal_success_count": 0,
+    "goal_success_observed": 21,
+    "video_recording": false,
+    "limited_acceptance": "Received as a valid open-policy negative contact-stage evaluation with all 21 episodes retained. The recorded task contact and hold metrics are zero; generic any-contact rows are preserved separately and are not required grasp contact."
+  },
+  "physics_smoke_08_pose_fix": {
+    "artifacts": [
+      "physics_smoke_08_pose_fix.json",
+      "physics_smoke_08_pose_fix-process.json",
+      "physics_smoke_08_pose_fix.log"
+    ],
+    "process_status": "FAILED",
+    "process_exit_code": 1,
+    "closure_amplitude": 0.15,
+    "gate_pass": false,
+    "real_contact_observed": false,
+    "required_checks": {
+      "finite_observations": true,
+      "action_effect_observed": true,
+      "real_contact_observed": false,
+      "self_collision_enabled": true,
+      "open_episode_completed": true,
+      "open_baseline_failed": true,
+      "no_hard_physical_faults": true,
+      "closure_reached_support_release": true
+    },
+    "episodes": {
+      "open": {
+        "steps": 42,
+        "reason": "drop",
+        "success": false,
+        "support_released": true,
+        "finger_contact_fraction": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "required_contact_fraction": 0.0,
+        "max_sampled_raw_penetration_depth_m": 0.0
+      },
+      "bounded_closure": {
+        "steps": 42,
+        "reason": "drop",
+        "success": false,
+        "support_released": true,
+        "finger_contact_fraction": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "required_contact_fraction": 0.0,
+        "max_sampled_raw_penetration_depth_m": 0.0
+      }
+    },
+    "limited_acceptance": "Not accepted as B/contact pass. Both episodes completed the bounded sequence, released support, and dropped the fruit. No finger or required contact was recorded; no listed hard fault or sampled raw penetration was recorded. The only failed required check was real_contact_observed.",
+    "penetration_scope_limit": "Zero sampled raw depth applies to the recorded policy-sample separation checks only; it is not a full physics-substep or mesh penetration audit.",
+    "process_failure": "The smoke exited nonzero because the explicit real_contact_observed gate was false; the other seven required checks passed."
+  },
+  "physics_smoke_09_pose_fix_closure": {
+    "artifacts": [
+      "physics_smoke_09_pose_fix_closure.json",
+      "physics_smoke_09_pose_fix_closure-process.json",
+      "physics_smoke_09_pose_fix_closure.log"
+    ],
+    "process_status": "FAILED",
+    "process_exit_code": 1,
+    "closure_amplitude": 0.65,
+    "gate_pass": false,
+    "real_contact_observed": false,
+    "required_checks": {
+      "finite_observations": true,
+      "action_effect_observed": true,
+      "real_contact_observed": false,
+      "self_collision_enabled": true,
+      "open_episode_completed": true,
+      "open_baseline_failed": true,
+      "no_hard_physical_faults": true,
+      "closure_reached_support_release": true
+    },
+    "episodes": {
+      "open": {
+        "steps": 42,
+        "reason": "drop",
+        "success": false,
+        "support_released": true,
+        "finger_contact_fraction": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "required_contact_fraction": 0.0,
+        "max_sampled_raw_penetration_depth_m": 0.0
+      },
+      "bounded_closure": {
+        "steps": 42,
+        "reason": "drop",
+        "success": false,
+        "support_released": true,
+        "finger_contact_fraction": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "required_contact_fraction": 0.0,
+        "max_sampled_raw_penetration_depth_m": 0.0
+      }
+    },
+    "limited_acceptance": "Not accepted as B/contact pass. Both episodes completed the bounded sequence, released support, and dropped the fruit. No finger or required contact was recorded; no listed hard fault or sampled raw penetration was recorded. The only failed required check was real_contact_observed.",
+    "penetration_scope_limit": "Zero sampled raw depth applies to the recorded policy-sample separation checks only; it is not a full physics-substep or mesh penetration audit.",
+    "process_failure": "The smoke exited nonzero because the explicit real_contact_observed gate was false; the other seven required checks passed."
+  },
+  "video_evidence": {
+    "status": "NOT_PRODUCED",
+    "record_video_process": {
+      "artifact": "video_trained_contact_02-process.json",
+      "status": "FAILED",
+      "exit_code": 1,
+      "log": "video_trained_contact_02.log"
+    },
+    "failure": "Warp/NVRTC reported that the temporary-files directory name was too long under evidence/.video_trained_contact_02.record-video-cache/tmp.",
+    "media_files_found_in_evidence_root": [],
+    "evaluation_video_recording_flags": {
+      "eval_trained_contact_02": false,
+      "eval_open_contact": false
+    },
+    "disposition": "No video artifact was available to archive or review; this is reported as a capture failure, not as an archived failure video."
+  },
+  "review_conclusion": {
+    "status": "FINAL_LIMITED_READ_ONLY_REVIEW",
+    "reviewed_source_findings": "No open source findings remain in the reviewed supervisor/smoke/run_utils/train/contract/evaluate/physical-contact scope; previously fixed evaluator goal-denominator and supervisor spawn-failure handling remain confirmed.",
+    "received_evidence": "Smoke07 wiring/safety checks only; valid initial contact 0/20; 17 finite PPO updates with changed actor and independent final.pt reload; valid checkpoint evaluation 0/20; valid open evaluation 0/21; pose-only smoke08/09 both failed the real-contact gate.",
+    "not_accepted": "No grasp/hold success, no lift evaluation, no B contact pass, and no final research acceptance.",
+    "stop_decision": "No further training or second targeted modification is represented or recommended by this review.",
+    "recording_limitation": "The video capture attempt failed and no video media artifact was found in the evidence directory."
+  }
+}

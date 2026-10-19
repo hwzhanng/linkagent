@@ -1,0 +1,191 @@
+{
+  "scope": "diagnostic, not acceptance changes",
+  "logic": "strict start<=60, peak<=120 means every eligible uninterrupted window ended by post-release179, before pulse180; failure therefore cannot be attributed solely to disturbance magnitude. G2 criteria unchanged.",
+  "counts": {
+    "SUCCESS": 3,
+    "OTHER_FAILURE_REQUIRES_TRACE": 7,
+    "EARLY_WINDOW_LOST_BEFORE_PULSE": 10
+  },
+  "cases": [
+    {
+      "case_id": 0,
+      "scenario": "quiet",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 0,
+      "max_three_PAD_hold_substeps": 584,
+      "classification": "OTHER_FAILURE_REQUIRES_TRACE"
+    },
+    {
+      "case_id": 1,
+      "scenario": "quiet",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 0,
+      "max_three_PAD_hold_substeps": 1317,
+      "classification": "OTHER_FAILURE_REQUIRES_TRACE"
+    },
+    {
+      "case_id": 2,
+      "scenario": "quiet",
+      "outcome": "SUCCESS",
+      "reason": "success",
+      "g2_peak_substeps": 360,
+      "max_three_PAD_hold_substeps": 360,
+      "classification": "SUCCESS"
+    },
+    {
+      "case_id": 3,
+      "scenario": "quiet",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 0,
+      "max_three_PAD_hold_substeps": 1192,
+      "classification": "OTHER_FAILURE_REQUIRES_TRACE"
+    },
+    {
+      "case_id": 4,
+      "scenario": "quiet",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 0,
+      "max_three_PAD_hold_substeps": 588,
+      "classification": "OTHER_FAILURE_REQUIRES_TRACE"
+    },
+    {
+      "case_id": 5,
+      "scenario": "quiet",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 17,
+      "max_three_PAD_hold_substeps": 759,
+      "classification": "OTHER_FAILURE_REQUIRES_TRACE"
+    },
+    {
+      "case_id": 6,
+      "scenario": "quiet",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 14,
+      "max_three_PAD_hold_substeps": 1365,
+      "classification": "OTHER_FAILURE_REQUIRES_TRACE"
+    },
+    {
+      "case_id": 7,
+      "scenario": "quiet",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 1,
+      "max_three_PAD_hold_substeps": 1363,
+      "classification": "OTHER_FAILURE_REQUIRES_TRACE"
+    },
+    {
+      "case_id": 8,
+      "scenario": "force",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 20,
+      "max_three_PAD_hold_substeps": 1367,
+      "classification": "EARLY_WINDOW_LOST_BEFORE_PULSE"
+    },
+    {
+      "case_id": 9,
+      "scenario": "force",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 4,
+      "max_three_PAD_hold_substeps": 1358,
+      "classification": "EARLY_WINDOW_LOST_BEFORE_PULSE"
+    },
+    {
+      "case_id": 10,
+      "scenario": "force",
+      "outcome": "SUCCESS",
+      "reason": "success",
+      "g2_peak_substeps": 363,
+      "max_three_PAD_hold_substeps": 363,
+      "classification": "SUCCESS"
+    },
+    {
+      "case_id": 11,
+      "scenario": "force",
+      "outcome": "SUCCESS",
+      "reason": "success",
+      "g2_peak_substeps": 364,
+      "max_three_PAD_hold_substeps": 364,
+      "classification": "SUCCESS"
+    },
+    {
+      "case_id": 12,
+      "scenario": "force",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 0,
+      "max_three_PAD_hold_substeps": 1338,
+      "classification": "EARLY_WINDOW_LOST_BEFORE_PULSE"
+    },
+    {
+      "case_id": 13,
+      "scenario": "force",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 6,
+      "max_three_PAD_hold_substeps": 508,
+      "classification": "EARLY_WINDOW_LOST_BEFORE_PULSE"
+    },
+    {
+      "case_id": 14,
+      "scenario": "torque",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 4,
+      "max_three_PAD_hold_substeps": 381,
+      "classification": "EARLY_WINDOW_LOST_BEFORE_PULSE"
+    },
+    {
+      "case_id": 15,
+      "scenario": "torque",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 14,
+      "max_three_PAD_hold_substeps": 1372,
+      "classification": "EARLY_WINDOW_LOST_BEFORE_PULSE"
+    },
+    {
+      "case_id": 16,
+      "scenario": "torque",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 4,
+      "max_three_PAD_hold_substeps": 1371,
+      "classification": "EARLY_WINDOW_LOST_BEFORE_PULSE"
+    },
+    {
+      "case_id": 17,
+      "scenario": "torque",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 2,
+      "max_three_PAD_hold_substeps": 1056,
+      "classification": "EARLY_WINDOW_LOST_BEFORE_PULSE"
+    },
+    {
+      "case_id": 18,
+      "scenario": "torque",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 1,
+      "max_three_PAD_hold_substeps": 256,
+      "classification": "EARLY_WINDOW_LOST_BEFORE_PULSE"
+    },
+    {
+      "case_id": 19,
+      "scenario": "torque",
+      "outcome": "FAILURE",
+      "reason": "timeout",
+      "g2_peak_substeps": 0,
+      "max_three_PAD_hold_substeps": 1295,
+      "classification": "EARLY_WINDOW_LOST_BEFORE_PULSE"
+    }
+  ]
+}

@@ -1,0 +1,4548 @@
+{
+  "schema_version": "f4_numeric_fullmesh_case_audit.v1",
+  "status": "ALL_RUNTIME_SUCCESS_CASES_VERIFIED",
+  "scope_note": "逐案核对 runtime SUCCESS 与数值 G2 窗口及原始 full-mesh 几何标签；不代表整体 F4 接受。",
+  "eval_output": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/evidence/R3_reload_C01_seed111",
+  "summary_status": "EVALUATION_COMPLETE",
+  "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+  "numeric_status": "PASS_G2_NUMERIC_WINDOW",
+  "numeric_exit_code": 0,
+  "counts": {
+    "cases": 20,
+    "runtime_success": 15,
+    "runtime_failure": 5,
+    "runtime_unknown": 0,
+    "verified_runtime_success": 15,
+    "unverified_runtime_success": 0,
+    "numeric_pass_candidates": 15,
+    "fullmesh_pass_files": 15
+  },
+  "unassigned_numeric_candidates": [],
+  "cases_detail": [
+    {
+      "matrix_case_id": 3,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 1,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 1,
+        "denominator_slot": 1,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 3,
+          "episode_id": 0,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 180,
+          "sim_time_s": 9.0,
+          "contact_fraction": 0.37222222222222223,
+          "finger_contact_fraction": [
+            0.8111111111111111,
+            0.6888888888888889,
+            0.8111111111111111,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.3611111111111111,
+          "unsupported_contact_fraction": 1.0,
+          "any_contact_fraction": 0.37222222222222223,
+          "mean_contact_fingers": 1.105555534362793,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 70,
+          "peak_finger_force_n": [
+            2.1073153018951416,
+            0.698180615901947,
+            1.8704071044921875,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.543996853298611,
+            0.18758646647135416,
+            0.757828352186415,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 360,
+          "final_physical_hold_streak_substeps": 360,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0006444156169891357,
+          "final_height_gain_m": -0.006605774164199829,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.0071144732646644115,
+          "max_relative_speed_m_s": 0.026461618021130562,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -3.800541162490845e-05,
+          "min_collider_distance_m": 0.0167399849742651,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.01676001586019993,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 360,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "quiet",
+            "disturbance_axis": null,
+            "disturbance_sign": null,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 0,
+          "case_id": 3,
+          "scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          },
+          "matrix_case_id": 3,
+          "matrix_scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 0,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 3,
+          "env_id": 3,
+          "combo_index": 0,
+          "sim_step_end": 1080
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 0,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 3,
+          "combo_index": 0,
+          "sim_step_end": 1080,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_03_env_03_end_1080.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 0,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 2,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 2,
+        "denominator_slot": 2,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 0,
+          "episode_id": 0,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 186,
+          "sim_time_s": 9.3,
+          "contact_fraction": 0.3763440860215054,
+          "finger_contact_fraction": [
+            0.8172043010752689,
+            0.6666666666666666,
+            0.8172043010752689,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.34946236559139787,
+          "unsupported_contact_fraction": 0.9848484848484849,
+          "any_contact_fraction": 0.3817204301075269,
+          "mean_contact_fingers": 1.1075268983840942,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 66,
+          "peak_finger_force_n": [
+            2.180309295654297,
+            0.6735604405403137,
+            1.9052709341049194,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.5640181674752185,
+            0.20749149527601016,
+            0.746980482532132,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 365,
+          "final_physical_hold_streak_substeps": 365,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0416666666666665,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0006444156169891357,
+          "final_height_gain_m": -0.006590679287910461,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007110808975994587,
+          "max_relative_speed_m_s": 0.03363768383860588,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -2.684493301785551e-05,
+          "min_collider_distance_m": 0.016754884272813797,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.01674511656165123,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            365,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            365,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 368,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "quiet",
+            "disturbance_axis": null,
+            "disturbance_sign": null,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            365,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            365,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 0,
+          "case_id": 0,
+          "scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          },
+          "matrix_case_id": 0,
+          "matrix_scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 1,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 0,
+          "env_id": 0,
+          "combo_index": 0,
+          "sim_step_end": 1111
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 1,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 0,
+          "combo_index": 0,
+          "sim_step_end": 1111,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_00_env_00_end_1111.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 2,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 3,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 3,
+        "denominator_slot": 3,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 2,
+          "episode_id": 0,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 187,
+          "sim_time_s": 9.35,
+          "contact_fraction": 0.37967914438502676,
+          "finger_contact_fraction": [
+            0.8181818181818182,
+            0.6310160427807486,
+            0.8181818181818182,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.34759358288770054,
+          "unsupported_contact_fraction": 0.9552238805970149,
+          "any_contact_fraction": 0.3850267379679144,
+          "mean_contact_fingers": 1.1122994422912598,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 70,
+          "peak_finger_force_n": [
+            2.1360018253326416,
+            0.5316126346588135,
+            1.901451826095581,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.5549520400756183,
+            0.16456148076184932,
+            0.7607255415482954,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 365,
+          "final_physical_hold_streak_substeps": 365,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0416666666666665,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0006444156169891357,
+          "final_height_gain_m": -0.006577476859092712,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007209772244095802,
+          "max_relative_speed_m_s": 0.02790941298007965,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -8.092482858046424e-06,
+          "min_collider_distance_m": 0.016783928498625755,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.01671607233583927,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            365,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            365,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 365,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "torque",
+            "disturbance_axis": 0,
+            "disturbance_sign": 1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            365,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            365,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 2,
+          "scenario": {
+            "mode": "torque",
+            "axis": 0,
+            "sign": 1.0
+          },
+          "matrix_case_id": 2,
+          "matrix_scenario": {
+            "mode": "torque",
+            "axis": 0,
+            "sign": 1.0
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 2,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 2,
+          "env_id": 2,
+          "combo_index": 0,
+          "sim_step_end": 1117
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 2,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 2,
+          "combo_index": 0,
+          "sim_step_end": 1117,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_02_env_02_end_1117.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 1,
+      "runtime_outcome": "FAILURE",
+      "source_line": 4,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 4,
+        "denominator_slot": 4,
+        "in_requested_denominator": true,
+        "outcome": "FAILURE",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 1,
+          "episode_id": 0,
+          "success": false,
+          "goal_success": false,
+          "goal_status": "NOT_REACHED",
+          "reason": "timeout",
+          "reason_code": 2,
+          "terminated": false,
+          "truncated": true,
+          "steps": 359,
+          "sim_time_s": 17.95,
+          "contact_fraction": 0.6657381615598886,
+          "finger_contact_fraction": [
+            0.9052924791086351,
+            0.83008356545961,
+            0.9080779944289693,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.6518105849582173,
+          "unsupported_contact_fraction": 0.9790794979079498,
+          "any_contact_fraction": 0.6657381615598886,
+          "mean_contact_fingers": 1.9832868576049805,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 248,
+          "peak_finger_force_n": [
+            2.1576993465423584,
+            0.38394781947135925,
+            2.0828440189361572,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.71777887795961,
+            0.18134849782109594,
+            0.5679404596100278,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 8.3,
+          "final_unsupported_hold_s": 8.3,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 996,
+          "final_physical_hold_streak_substeps": 996,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 8.3,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0006444156169891357,
+          "final_height_gain_m": -0.0067100077867507935,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.00710474606603384,
+          "max_relative_speed_m_s": 0.026010772213339806,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -1.0947474947897717e-05,
+          "min_collider_distance_m": 0.016929414123296738,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": "late",
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.01657058671116829,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            996,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            996,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 1429,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "force",
+            "disturbance_axis": 0,
+            "disturbance_sign": 1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            138,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 1,
+          "scenario": {
+            "mode": "force",
+            "axis": 0,
+            "sign": 1.0
+          },
+          "matrix_case_id": 1,
+          "matrix_scenario": {
+            "mode": "force",
+            "axis": 0,
+            "sign": 1.0
+          }
+        }
+      },
+      "numeric_candidates": [],
+      "mesh_files": [],
+      "verification_status": "RUNTIME_FAILURE_RETAINED"
+    },
+    {
+      "matrix_case_id": 6,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 5,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 5,
+        "denominator_slot": 5,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 2,
+          "episode_id": 1,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 182,
+          "sim_time_s": 9.1,
+          "contact_fraction": 0.3626373626373626,
+          "finger_contact_fraction": [
+            0.8131868131868132,
+            0.6703296703296703,
+            0.8186813186813187,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.34615384615384615,
+          "unsupported_contact_fraction": 1.0,
+          "any_contact_fraction": 0.3626373626373626,
+          "mean_contact_fingers": 1.071428656578064,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 67,
+          "peak_finger_force_n": [
+            3.380033016204834,
+            0.9842920303344727,
+            1.8677699565887451,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.5713631766183036,
+            0.2168789329109611,
+            0.7489862127618475,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 361,
+          "final_physical_hold_streak_substeps": 361,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0083333333333333,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006638094782829285,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007085964549332857,
+          "max_relative_speed_m_s": 0.02531771920621395,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -1.0966801710310392e-05,
+          "min_collider_distance_m": 0.01672782376408577,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.016772177070379257,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 364,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "quiet",
+            "disturbance_axis": null,
+            "disturbance_sign": null,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 0,
+          "case_id": 6,
+          "scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          },
+          "matrix_case_id": 6,
+          "matrix_scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 3,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 6,
+          "env_id": 2,
+          "combo_index": 0,
+          "sim_step_end": 2213
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 3,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 2,
+          "combo_index": 0,
+          "sim_step_end": 2213,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_06_env_02_end_2213.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 4,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 6,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 6,
+        "denominator_slot": 6,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 0,
+          "episode_id": 1,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 185,
+          "sim_time_s": 9.25,
+          "contact_fraction": 0.3783783783783784,
+          "finger_contact_fraction": [
+            0.8162162162162162,
+            0.6864864864864865,
+            0.8216216216216217,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.3621621621621622,
+          "unsupported_contact_fraction": 0.9846153846153847,
+          "any_contact_fraction": 0.3783783783783784,
+          "mean_contact_fingers": 1.1189188957214355,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 69,
+          "peak_finger_force_n": [
+            2.180103302001953,
+            0.5273948311805725,
+            1.916487216949463,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.564900661159206,
+            0.18791454418285472,
+            0.7660008610905827,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 364,
+          "final_physical_hold_streak_substeps": 364,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.033333333333333,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006559133529663086,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.0071791112422943115,
+          "max_relative_speed_m_s": 0.02800695411860943,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -2.0587101516866824e-06,
+          "min_collider_distance_m": 0.01675611175596714,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.016743889078497887,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            364,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            364,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 365,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "force",
+            "disturbance_axis": 1,
+            "disturbance_sign": -1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            364,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            364,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 4,
+          "scenario": {
+            "mode": "force",
+            "axis": 1,
+            "sign": -1.0
+          },
+          "matrix_case_id": 4,
+          "matrix_scenario": {
+            "mode": "force",
+            "axis": 1,
+            "sign": -1.0
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 4,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 4,
+          "env_id": 0,
+          "combo_index": 0,
+          "sim_step_end": 2222
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 4,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 0,
+          "combo_index": 0,
+          "sim_step_end": 2222,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_04_env_00_end_2222.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 5,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 7,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 7,
+        "denominator_slot": 7,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 1,
+          "episode_id": 1,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 180,
+          "sim_time_s": 9.0,
+          "contact_fraction": 0.3888888888888889,
+          "finger_contact_fraction": [
+            0.8111111111111111,
+            0.6833333333333333,
+            0.8166666666666667,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.37222222222222223,
+          "unsupported_contact_fraction": 1.0,
+          "any_contact_fraction": 0.3888888888888889,
+          "mean_contact_fingers": 1.149999976158142,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 70,
+          "peak_finger_force_n": [
+            2.731928825378418,
+            0.5531294941902161,
+            1.9511971473693848,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.5533460828993055,
+            0.18684463500976561,
+            0.7684155782063802,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 360,
+          "final_physical_hold_streak_substeps": 360,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006576135754585266,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007182959001511335,
+          "max_relative_speed_m_s": 0.02812197245657444,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -4.212940893921768e-06,
+          "min_collider_distance_m": 0.016765180975198746,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.01673481985926628,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 360,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "torque",
+            "disturbance_axis": 1,
+            "disturbance_sign": -1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 5,
+          "scenario": {
+            "mode": "torque",
+            "axis": 1,
+            "sign": -1.0
+          },
+          "matrix_case_id": 5,
+          "matrix_scenario": {
+            "mode": "torque",
+            "axis": 1,
+            "sign": -1.0
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 5,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 5,
+          "env_id": 1,
+          "combo_index": 0,
+          "sim_step_end": 3234
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 5,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 1,
+          "combo_index": 0,
+          "sim_step_end": 3234,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_05_env_01_end_3234.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 7,
+      "runtime_outcome": "FAILURE",
+      "source_line": 8,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 8,
+        "denominator_slot": 8,
+        "in_requested_denominator": true,
+        "outcome": "FAILURE",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 3,
+          "episode_id": 1,
+          "success": false,
+          "goal_success": false,
+          "goal_status": "NOT_REACHED",
+          "reason": "timeout",
+          "reason_code": 2,
+          "terminated": false,
+          "truncated": true,
+          "steps": 359,
+          "sim_time_s": 17.95,
+          "contact_fraction": 0.6601671309192201,
+          "finger_contact_fraction": [
+            0.9052924791086351,
+            0.8022284122562674,
+            0.9080779944289693,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.6518105849582173,
+          "unsupported_contact_fraction": 0.9790794979079498,
+          "any_contact_fraction": 0.6629526462395543,
+          "mean_contact_fingers": 1.9749302864074707,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 250,
+          "peak_finger_force_n": [
+            2.092622756958008,
+            0.38983991742134094,
+            2.0722687244415283,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.7280511457607939,
+            0.18227637245794526,
+            0.5788409729853978,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 10.200000000000001,
+          "final_unsupported_hold_s": 10.200000000000001,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 1225,
+          "final_physical_hold_streak_substeps": 1225,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 10.208333333333334,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006698235869407654,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007054811343550682,
+          "max_relative_speed_m_s": 0.026014411821961403,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -5.6303383644262794e-06,
+          "min_collider_distance_m": 0.016939952969551086,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": "late",
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.01656004786491394,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            1225,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            1225,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 1419,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "force",
+            "disturbance_axis": 2,
+            "disturbance_sign": 1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            164,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 7,
+          "scenario": {
+            "mode": "force",
+            "axis": 2,
+            "sign": 1.0
+          },
+          "matrix_case_id": 7,
+          "matrix_scenario": {
+            "mode": "force",
+            "axis": 2,
+            "sign": 1.0
+          }
+        }
+      },
+      "numeric_candidates": [],
+      "mesh_files": [],
+      "verification_status": "RUNTIME_FAILURE_RETAINED"
+    },
+    {
+      "matrix_case_id": 10,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 9,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 9,
+        "denominator_slot": 9,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 2,
+          "episode_id": 2,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 185,
+          "sim_time_s": 9.25,
+          "contact_fraction": 0.3621621621621622,
+          "finger_contact_fraction": [
+            0.8162162162162162,
+            0.6918918918918919,
+            0.8216216216216217,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.3567567567567568,
+          "unsupported_contact_fraction": 1.0,
+          "any_contact_fraction": 0.3621621621621622,
+          "mean_contact_fingers": 1.0810811519622803,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 77,
+          "peak_finger_force_n": [
+            2.6099870204925537,
+            0.6036438941955566,
+            2.036552906036377,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.5630176441089527,
+            0.1830809515875739,
+            0.7589217727248733,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 362,
+          "final_physical_hold_streak_substeps": 362,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0166666666666666,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006719022989273071,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007051639724522829,
+          "max_relative_speed_m_s": 0.02796533703804016,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -2.136325974788633e-06,
+          "min_collider_distance_m": 0.016897331923246384,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.016602668911218643,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            362,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            362,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 390,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "force",
+            "disturbance_axis": 0,
+            "disturbance_sign": -1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            362,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            362,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 10,
+          "scenario": {
+            "mode": "force",
+            "axis": 0,
+            "sign": -1.0
+          },
+          "matrix_case_id": 10,
+          "matrix_scenario": {
+            "mode": "force",
+            "axis": 0,
+            "sign": -1.0
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 6,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 10,
+          "env_id": 2,
+          "combo_index": 0,
+          "sim_step_end": 3322
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 6,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 2,
+          "combo_index": 0,
+          "sim_step_end": 3322,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_10_env_02_end_3322.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 8,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 10,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 10,
+        "denominator_slot": 10,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 0,
+          "episode_id": 2,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 187,
+          "sim_time_s": 9.35,
+          "contact_fraction": 0.37433155080213903,
+          "finger_contact_fraction": [
+            0.8181818181818182,
+            0.5775401069518716,
+            0.8128342245989305,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.36363636363636365,
+          "unsupported_contact_fraction": 0.9701492537313433,
+          "any_contact_fraction": 0.37967914438502676,
+          "mean_contact_fingers": 1.1176470518112183,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 72,
+          "peak_finger_force_n": [
+            2.3130381107330322,
+            0.6898608803749084,
+            1.988999605178833,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.5639499929499499,
+            0.16935189395027364,
+            0.7674080751796457,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 365,
+          "final_physical_hold_streak_substeps": 365,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0416666666666665,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006590500473976135,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007165506016463041,
+          "max_relative_speed_m_s": 0.02662091702222824,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -4.864222773903748e-06,
+          "min_collider_distance_m": 0.01672689989209175,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.016773100942373276,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            365,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            365,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 366,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "torque",
+            "disturbance_axis": 2,
+            "disturbance_sign": 1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            364,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            364,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 8,
+          "scenario": {
+            "mode": "torque",
+            "axis": 2,
+            "sign": 1.0
+          },
+          "matrix_case_id": 8,
+          "matrix_scenario": {
+            "mode": "torque",
+            "axis": 2,
+            "sign": 1.0
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 7,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 8,
+          "env_id": 0,
+          "combo_index": 0,
+          "sim_step_end": 3344
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 7,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 0,
+          "combo_index": 0,
+          "sim_step_end": 3344,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_08_env_00_end_3344.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 11,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 11,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 11,
+        "denominator_slot": 11,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 3,
+          "episode_id": 2,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 183,
+          "sim_time_s": 9.15,
+          "contact_fraction": 0.3879781420765027,
+          "finger_contact_fraction": [
+            0.8142076502732241,
+            0.6666666666666666,
+            0.8142076502732241,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.34972677595628415,
+          "unsupported_contact_fraction": 1.0,
+          "any_contact_fraction": 0.3879781420765027,
+          "mean_contact_fingers": 1.125683069229126,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 66,
+          "peak_finger_force_n": [
+            2.1327991485595703,
+            0.4014303386211395,
+            1.913845419883728,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.5586802998527152,
+            0.16432169096066002,
+            0.7797357944842896,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 361,
+          "final_physical_hold_streak_substeps": 361,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0083333333333333,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006509274244308472,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007137184962630272,
+          "max_relative_speed_m_s": 0.02909684367477894,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -4.819016339752125e-06,
+          "min_collider_distance_m": 0.01671542599797249,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.01678457483649254,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 362,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "torque",
+            "disturbance_axis": 0,
+            "disturbance_sign": -1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 11,
+          "scenario": {
+            "mode": "torque",
+            "axis": 0,
+            "sign": -1.0
+          },
+          "matrix_case_id": 11,
+          "matrix_scenario": {
+            "mode": "torque",
+            "axis": 0,
+            "sign": -1.0
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 8,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 11,
+          "env_id": 3,
+          "combo_index": 0,
+          "sim_step_end": 4331
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 8,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 3,
+          "combo_index": 0,
+          "sim_step_end": 4331,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_11_env_03_end_4331.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 9,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 12,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 12,
+        "denominator_slot": 12,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 1,
+          "episode_id": 2,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 187,
+          "sim_time_s": 9.35,
+          "contact_fraction": 0.40106951871657753,
+          "finger_contact_fraction": [
+            0.8181818181818182,
+            0.6310160427807486,
+            0.8181818181818182,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.33689839572192515,
+          "unsupported_contact_fraction": 0.9402985074626866,
+          "any_contact_fraction": 0.40106951871657753,
+          "mean_contact_fingers": 1.1390374898910522,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 67,
+          "peak_finger_force_n": [
+            2.138888359069824,
+            0.6408063173294067,
+            1.8692220449447632,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.5635333545705214,
+            0.2130924571644176,
+            0.7312498857630766,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 362,
+          "final_physical_hold_streak_substeps": 362,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0166666666666666,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006562396883964539,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.0071496847085654736,
+          "max_relative_speed_m_s": 0.02709904871881008,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -9.23994775803294e-06,
+          "min_collider_distance_m": 0.016724830493330956,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.01677517034113407,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            362,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            362,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 364,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "quiet",
+            "disturbance_axis": null,
+            "disturbance_sign": null,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 0,
+          "case_id": 9,
+          "scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          },
+          "matrix_case_id": 9,
+          "matrix_scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 9,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 9,
+          "env_id": 1,
+          "combo_index": 0,
+          "sim_step_end": 4355
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 9,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 1,
+          "combo_index": 0,
+          "sim_step_end": 4355,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_09_env_01_end_4355.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 13,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 13,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 13,
+        "denominator_slot": 13,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 1,
+          "episode_id": 3,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 186,
+          "sim_time_s": 9.3,
+          "contact_fraction": 0.34946236559139787,
+          "finger_contact_fraction": [
+            0.8172043010752689,
+            0.6505376344086021,
+            0.8225806451612904,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.34946236559139787,
+          "unsupported_contact_fraction": 0.9848484848484849,
+          "any_contact_fraction": 0.34946236559139787,
+          "mean_contact_fingers": 1.048387050628662,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 80,
+          "peak_finger_force_n": [
+            2.154724359512329,
+            0.4352452754974365,
+            2.0664801597595215,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.569954328639533,
+            0.18751041863554269,
+            0.7619289275138609,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 364,
+          "final_physical_hold_streak_substeps": 364,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.033333333333333,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006697177886962891,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007110233418643475,
+          "max_relative_speed_m_s": 0.02760837785899639,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -4.903369699604809e-05,
+          "min_collider_distance_m": 0.016875822097063065,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.016624178737401962,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            364,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            364,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 365,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "force",
+            "disturbance_axis": 1,
+            "disturbance_sign": 1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            363,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            363,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 13,
+          "scenario": {
+            "mode": "force",
+            "axis": 1,
+            "sign": 1.0
+          },
+          "matrix_case_id": 13,
+          "matrix_scenario": {
+            "mode": "force",
+            "axis": 1,
+            "sign": 1.0
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 10,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 13,
+          "env_id": 1,
+          "combo_index": 0,
+          "sim_step_end": 5469
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 10,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 1,
+          "combo_index": 0,
+          "sim_step_end": 5469,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_13_env_01_end_5469.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 14,
+      "runtime_outcome": "FAILURE",
+      "source_line": 14,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 14,
+        "denominator_slot": 14,
+        "in_requested_denominator": true,
+        "outcome": "FAILURE",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 2,
+          "episode_id": 3,
+          "success": false,
+          "goal_success": false,
+          "goal_status": "NOT_REACHED",
+          "reason": "timeout",
+          "reason_code": 2,
+          "terminated": false,
+          "truncated": true,
+          "steps": 359,
+          "sim_time_s": 17.95,
+          "contact_fraction": 0.6685236768802229,
+          "finger_contact_fraction": [
+            0.9052924791086351,
+            0.7938718662952646,
+            0.9025069637883009,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.6434540389972145,
+          "unsupported_contact_fraction": 0.9665271966527197,
+          "any_contact_fraction": 0.6740947075208914,
+          "mean_contact_fingers": 1.9860724210739136,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 240,
+          "peak_finger_force_n": [
+            2.4851694107055664,
+            0.7990330457687378,
+            1.8958654403686523,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.75835093548703,
+            0.21953421250027202,
+            0.5760174594549747,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 11.350000000000001,
+          "final_unsupported_hold_s": 11.350000000000001,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 1362,
+          "final_physical_hold_streak_substeps": 1362,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 11.35,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006540954113006592,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.00708874361589551,
+          "max_relative_speed_m_s": 0.02765098586678505,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -3.8236379623413086e-05,
+          "min_collider_distance_m": 0.01668628491461277,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": "late",
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.016813715919852257,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            1362,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            1362,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 1363,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "torque",
+            "disturbance_axis": 1,
+            "disturbance_sign": 1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            10,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 14,
+          "scenario": {
+            "mode": "torque",
+            "axis": 1,
+            "sign": 1.0
+          },
+          "matrix_case_id": 14,
+          "matrix_scenario": {
+            "mode": "torque",
+            "axis": 1,
+            "sign": 1.0
+          }
+        }
+      },
+      "numeric_candidates": [],
+      "mesh_files": [],
+      "verification_status": "RUNTIME_FAILURE_RETAINED"
+    },
+    {
+      "matrix_case_id": 12,
+      "runtime_outcome": "FAILURE",
+      "source_line": 15,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 15,
+        "denominator_slot": 15,
+        "in_requested_denominator": true,
+        "outcome": "FAILURE",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 0,
+          "episode_id": 3,
+          "success": false,
+          "goal_success": false,
+          "goal_status": "NOT_REACHED",
+          "reason": "timeout",
+          "reason_code": 2,
+          "terminated": false,
+          "truncated": true,
+          "steps": 359,
+          "sim_time_s": 17.95,
+          "contact_fraction": 0.6657381615598886,
+          "finger_contact_fraction": [
+            0.9052924791086351,
+            0.8328690807799443,
+            0.9052924791086351,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.6601671309192201,
+          "unsupported_contact_fraction": 0.9916317991631799,
+          "any_contact_fraction": 0.6685236768802229,
+          "mean_contact_fingers": 1.9944289922714233,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 207,
+          "peak_finger_force_n": [
+            2.282970666885376,
+            0.4348065257072449,
+            2.037358522415161,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.7261029511773154,
+            0.2050019585654596,
+            0.5604105659846144,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 9.35,
+          "final_unsupported_hold_s": 9.35,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 1126,
+          "final_physical_hold_streak_substeps": 1126,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 9.383333333333333,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006700992584228516,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007045657839626074,
+          "max_relative_speed_m_s": 0.027756117284297943,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -2.077687531709671e-05,
+          "min_collider_distance_m": 0.016909342259168625,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": "late",
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.016590658575296402,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            1126,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            1126,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 1434,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "quiet",
+            "disturbance_axis": null,
+            "disturbance_sign": null,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            287,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 0,
+          "case_id": 12,
+          "scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          },
+          "matrix_case_id": 12,
+          "matrix_scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          }
+        }
+      },
+      "numeric_candidates": [],
+      "mesh_files": [],
+      "verification_status": "RUNTIME_FAILURE_RETAINED"
+    },
+    {
+      "matrix_case_id": 15,
+      "runtime_outcome": "FAILURE",
+      "source_line": 16,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 16,
+        "denominator_slot": 16,
+        "in_requested_denominator": true,
+        "outcome": "FAILURE",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 3,
+          "episode_id": 3,
+          "success": false,
+          "goal_success": false,
+          "goal_status": "NOT_REACHED",
+          "reason": "timeout",
+          "reason_code": 2,
+          "terminated": false,
+          "truncated": true,
+          "steps": 359,
+          "sim_time_s": 17.95,
+          "contact_fraction": 0.6768802228412256,
+          "finger_contact_fraction": [
+            0.9052924791086351,
+            0.8217270194986073,
+            0.9080779944289693,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.6713091922005571,
+          "unsupported_contact_fraction": 1.0,
+          "any_contact_fraction": 0.6768802228412256,
+          "mean_contact_fingers": 2.0250697135925293,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 252,
+          "peak_finger_force_n": [
+            2.1991875171661377,
+            0.3675241470336914,
+            2.3928310871124268,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.7567012861246518,
+            0.20869048392208173,
+            0.5823631180362117,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 5.1000000000000005,
+          "final_unsupported_hold_s": 5.1000000000000005,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 615,
+          "final_physical_hold_streak_substeps": 615,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 5.125,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.00668296217918396,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.0071677411906421185,
+          "max_relative_speed_m_s": 0.032558999955654144,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -5.376919489208376e-06,
+          "min_collider_distance_m": 0.016911610960960388,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": "late",
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.01658838987350464,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            615,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            615,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 1434,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "quiet",
+            "disturbance_axis": null,
+            "disturbance_sign": null,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            235,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 0,
+          "case_id": 15,
+          "scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          },
+          "matrix_case_id": 15,
+          "matrix_scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          }
+        }
+      },
+      "numeric_candidates": [],
+      "mesh_files": [],
+      "verification_status": "RUNTIME_FAILURE_RETAINED"
+    },
+    {
+      "matrix_case_id": 18,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 17,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 17,
+        "denominator_slot": 17,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 2,
+          "episode_id": 4,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 185,
+          "sim_time_s": 9.25,
+          "contact_fraction": 0.3621621621621622,
+          "finger_contact_fraction": [
+            0.8162162162162162,
+            0.6378378378378379,
+            0.8216216216216217,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.35135135135135137,
+          "unsupported_contact_fraction": 0.9846153846153847,
+          "any_contact_fraction": 0.3621621621621622,
+          "mean_contact_fingers": 1.0756757259368896,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 67,
+          "peak_finger_force_n": [
+            3.0244460105895996,
+            1.0358139276504517,
+            1.9115267992019653,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.6034133498733107,
+            0.22351321658572634,
+            0.7756089494035051,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 361,
+          "final_physical_hold_streak_substeps": 361,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0083333333333333,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.00654110312461853,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007160084322094917,
+          "max_relative_speed_m_s": 0.03004918061196804,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -3.653734893305227e-06,
+          "min_collider_distance_m": 0.016653845086693764,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.016846155747771263,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 363,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "quiet",
+            "disturbance_axis": null,
+            "disturbance_sign": null,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 0,
+          "case_id": 18,
+          "scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          },
+          "matrix_case_id": 18,
+          "matrix_scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 11,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 18,
+          "env_id": 2,
+          "combo_index": 0,
+          "sim_step_end": 6588
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 11,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 2,
+          "combo_index": 0,
+          "sim_step_end": 6588,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_18_env_02_end_6588.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 17,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 18,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 18,
+        "denominator_slot": 18,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 1,
+          "episode_id": 4,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 188,
+          "sim_time_s": 9.4,
+          "contact_fraction": 0.34574468085106386,
+          "finger_contact_fraction": [
+            0.8191489361702128,
+            0.648936170212766,
+            0.824468085106383,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.3404255319148936,
+          "unsupported_contact_fraction": 0.9411764705882353,
+          "any_contact_fraction": 0.34574468085106386,
+          "mean_contact_fingers": 1.0319148302078247,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 76,
+          "peak_finger_force_n": [
+            2.2394986152648926,
+            0.5115367770195007,
+            2.104748487472534,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.5757456028715093,
+            0.18947783936845494,
+            0.7482503525754238,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 363,
+          "final_physical_hold_streak_substeps": 363,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.025,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006710946559906006,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007065929006785154,
+          "max_relative_speed_m_s": 0.026000408455729485,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -0.00015550851821899414,
+          "min_collider_distance_m": 0.016872161999344826,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.0166278388351202,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            363,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            363,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 364,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "torque",
+            "disturbance_axis": 2,
+            "disturbance_sign": -1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            362,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            362,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 17,
+          "scenario": {
+            "mode": "torque",
+            "axis": 2,
+            "sign": -1.0
+          },
+          "matrix_case_id": 17,
+          "matrix_scenario": {
+            "mode": "torque",
+            "axis": 2,
+            "sign": -1.0
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 12,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 17,
+          "env_id": 1,
+          "combo_index": 0,
+          "sim_step_end": 6598
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 12,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 1,
+          "combo_index": 0,
+          "sim_step_end": 6598,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_17_env_01_end_6598.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 16,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 19,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 19,
+        "denominator_slot": 19,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 0,
+          "episode_id": 4,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 184,
+          "sim_time_s": 9.200000000000001,
+          "contact_fraction": 0.358695652173913,
+          "finger_contact_fraction": [
+            0.8152173913043478,
+            0.6358695652173914,
+            0.8206521739130435,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.3423913043478261,
+          "unsupported_contact_fraction": 0.984375,
+          "any_contact_fraction": 0.358695652173913,
+          "mean_contact_fingers": 1.05978262424469,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 71,
+          "peak_finger_force_n": [
+            3.20821213722229,
+            0.8792369961738586,
+            2.0817649364471436,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.5801111304241677,
+            0.1932452450627866,
+            0.7710368114969005,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 361,
+          "final_physical_hold_streak_substeps": 361,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0083333333333333,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.0066812485456466675,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007012228947132826,
+          "max_relative_speed_m_s": 0.030896306037902832,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -2.4746446797507815e-05,
+          "min_collider_distance_m": 0.016842160373926163,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.016657840460538864,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            361,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 362,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "force",
+            "disturbance_axis": 2,
+            "disturbance_sign": -1.0,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 12,
+          "case_id": 16,
+          "scenario": {
+            "mode": "force",
+            "axis": 2,
+            "sign": -1.0
+          },
+          "matrix_case_id": 16,
+          "matrix_scenario": {
+            "mode": "force",
+            "axis": 2,
+            "sign": -1.0
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 13,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 16,
+          "env_id": 0,
+          "combo_index": 0,
+          "sim_step_end": 6606
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 13,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 0,
+          "combo_index": 0,
+          "sim_step_end": 6606,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_16_env_00_end_6606.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    },
+    {
+      "matrix_case_id": 19,
+      "runtime_outcome": "SUCCESS",
+      "source_line": 20,
+      "runtime_episode": {
+        "record_type": "episode",
+        "mode": "evaluate",
+        "policy": "fresh",
+        "episode_index": 20,
+        "denominator_slot": 20,
+        "in_requested_denominator": true,
+        "outcome": "SUCCESS",
+        "record_status": null,
+        "record": {
+          "schema_version": "firm_grasp_episode.v1",
+          "task_id": "FirmGrasp-v1",
+          "task_version": "firm_grasp_v2.3.0",
+          "stage": "contact",
+          "success_criterion": "G2_3s",
+          "env_id": 3,
+          "episode_id": 4,
+          "success": true,
+          "goal_success": true,
+          "goal_status": "G2_REACHED",
+          "reason": "success",
+          "reason_code": 1,
+          "terminated": true,
+          "truncated": false,
+          "steps": 183,
+          "sim_time_s": 9.15,
+          "contact_fraction": 0.37158469945355194,
+          "finger_contact_fraction": [
+            0.8142076502732241,
+            0.6666666666666666,
+            0.8142076502732241,
+            0.0,
+            0.0
+          ],
+          "required_contact_fraction": 0.36065573770491804,
+          "unsupported_contact_fraction": 0.9841269841269841,
+          "any_contact_fraction": 0.3770491803278688,
+          "mean_contact_fingers": 1.1092896461486816,
+          "max_contact_fingers": 3,
+          "palm_contact_fraction": 0.0,
+          "palm_only_fraction": 0.0,
+          "forbidden_contact_steps": 68,
+          "peak_finger_force_n": [
+            2.269549608230591,
+            0.4779314398765564,
+            1.9082475900650024,
+            0.0,
+            0.0
+          ],
+          "mean_finger_force_n": [
+            1.562648418822575,
+            0.19803125350201717,
+            0.7601192453519894,
+            0.0,
+            0.0
+          ],
+          "support_release_step": 120,
+          "support_release_time_s": 6.0,
+          "support_released": true,
+          "stem_fracture_before_release": false,
+          "max_unsupported_hold_s": 3.0,
+          "final_unsupported_hold_s": 3.0,
+          "hold_steps_required": 20,
+          "max_physical_hold_streak_substeps": 360,
+          "final_physical_hold_streak_substeps": 360,
+          "physical_hold_streak_required_substeps": 120,
+          "max_unsupported_hold_s_from_physical_substeps": 3.0,
+          "physical_hold_streak_semantics": "fixed_triplet_true_PAD_every120Hz_substep",
+          "physical_substep_hard_fault_flags": {
+            "overload": false,
+            "nonfinite": false,
+            "penetration": false,
+            "joint_limit": false,
+            "self_collision": false,
+            "instability": false,
+            "joint_effort": false
+          },
+          "max_height_gain_m": 0.0,
+          "final_height_gain_m": -0.006578847765922546,
+          "height_gain_sufficient": false,
+          "min_height_gain_m": 0.0,
+          "goal_min_height_gain_m": 0.0,
+          "stage_success_requires_height_gain": false,
+          "stage_requires_lift_program": false,
+          "stage_is_goal": true,
+          "max_center_drift_m": 0.007121991366147995,
+          "max_relative_speed_m_s": 0.04025748372077942,
+          "max_joint_limit_excursion_rad": 0.0,
+          "max_applied_effort_nm": 0.20000000298023224,
+          "min_self_collision_clearance_m": -2.248212695121765e-06,
+          "min_collider_distance_m": 0.01675429381430149,
+          "max_penetration_depth_m": 0.0,
+          "first_fault_step": -1,
+          "instability_step": -1,
+          "immediate_failure": false,
+          "failure_phase": null,
+          "action_effect_ok": true,
+          "open_hand_baseline": false,
+          "open_hand_fraction": 0.0,
+          "overload": false,
+          "nonfinite": false,
+          "penetration": false,
+          "joint_limit": false,
+          "self_collision": false,
+          "instability": false,
+          "joint_effort": false,
+          "stem_fracture": false,
+          "max_aabb_overlap_m": 0.016745707020163536,
+          "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples",
+          "action_mapping_mode": "independent",
+          "pad_runtime_config_sha256": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+          "firm_peak_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_final_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "firm_combinations": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              3
+            ],
+            [
+              0,
+              1,
+              4
+            ],
+            [
+              0,
+              2,
+              3
+            ],
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              0,
+              3,
+              4
+            ]
+          ],
+          "support_ramp_policy_steps": 40,
+          "legacy_two_finger_streak": 360,
+          "f3_protocol": {
+            "goal": "g2",
+            "hold_seconds": 3.0,
+            "disturbance_mode": "quiet",
+            "disturbance_axis": null,
+            "disturbance_sign": null,
+            "force_ratio": 0.1,
+            "torque_ratio": 0.01
+          },
+          "g2_peak_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "g2_final_streak_by_combo": [
+            360,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pulse_applied_substeps": 0,
+          "case_id": 19,
+          "scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          },
+          "matrix_case_id": 19,
+          "matrix_scenario": {
+            "mode": "quiet",
+            "axis": null,
+            "sign": null
+          }
+        }
+      },
+      "numeric_candidates": [
+        {
+          "candidate_index": 14,
+          "file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "status": "PASS_NUMERIC_G2_WINDOW",
+          "matrix_case_id": 19,
+          "env_id": 3,
+          "combo_index": 0,
+          "sim_step_end": 7584
+        }
+      ],
+      "mesh_files": [
+        {
+          "candidate_index": 14,
+          "numeric_report": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/numeric/report.json",
+          "numeric_status": "PASS_NUMERIC_G2_WINDOW",
+          "env_id": 3,
+          "combo_index": 0,
+          "sim_step_end": 7584,
+          "mesh_file": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/reports/R3_verification/mesh_case_19_env_03_end_7584.json",
+          "mesh_exit_code": 0,
+          "mesh_status": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS",
+          "identity_matches": true
+        }
+      ],
+      "verification_status": "VERIFIED_NUMERIC_AND_FULLMESH"
+    }
+  ]
+}

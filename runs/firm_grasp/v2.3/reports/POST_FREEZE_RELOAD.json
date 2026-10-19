@@ -1,0 +1,103 @@
+{
+  "schema": "firm_grasp.f3_f4_continuation.post_freeze_reload.v1",
+  "frozen_candidate": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/evidence/C01_train10/final.pt",
+  "frozen_candidate_sha256": "ffbf091722a8693676f28b5f4d8cce24e003016081a1ccf151b69560c29fa163",
+  "note": "本文件只记录冻结后的独立重载/负对照/录像结果；冻结后没有训练或调参。",
+  "independent_reload": {
+    "candidate": {
+      "run": "R3_reload_C01_seed111",
+      "total": "15/20",
+      "by_mode": {
+        "quiet": "6/8",
+        "force": "4/6",
+        "torque": "5/6"
+      },
+      "numeric_mesh": "15/15 PASS"
+    },
+    "initialization": {
+      "run": "R4_reload_init_seed111",
+      "total": "10/20",
+      "by_mode": {
+        "quiet": "4/8",
+        "force": "3/6",
+        "torque": "3/6"
+      },
+      "numeric_mesh": "10/10 PASS"
+    },
+    "case_outcomes_seed110_vs_seed111": "20/20 identical",
+    "interpretation": "repeatability only; not a distribution-out generalization test"
+  },
+  "negative_controls": {
+    "legacy_v16": {
+      "run": "R5_matrix_legacy_v16_interleaved",
+      "outcomes": {
+        "SUCCESS": 0,
+        "FAILURE": 20,
+        "UNKNOWN": 0
+      }
+    },
+    "open_hand": {
+      "run": "F4_open_quiet_c",
+      "outcomes": {
+        "SUCCESS": 0,
+        "FAILURE": 4,
+        "UNKNOWN": 0
+      }
+    }
+  },
+  "videos": {
+    "front": {
+      "run": "F4v_front_c",
+      "frames": 93,
+      "fps": 10,
+      "sha256": "91afafc087766a8f4a5d8f4df74a5ebd4c33c817455fa99c7613f1a83c3c39a9",
+      "outcomes": {
+        "SUCCESS": 4,
+        "FAILURE": 0,
+        "UNKNOWN": 0
+      },
+      "numeric": "4/4 PASS",
+      "viewed_env_mesh": "PASS"
+    },
+    "side": {
+      "run": "F4v_side_c",
+      "frames": 93,
+      "fps": 10,
+      "sha256": "6304aab071150a02fd9739170ba8ec5cdce7e55c0f58d64b1fb32b1944bc70dc",
+      "outcomes": {
+        "SUCCESS": 4,
+        "FAILURE": 0,
+        "UNKNOWN": 0
+      },
+      "numeric": "4/4 PASS",
+      "viewed_env_mesh": "PASS"
+    }
+  },
+  "training_after_freeze": false,
+  "strict_identity_reload": {
+    "note": "同一 actor_state_dict 逐字节复制，仅把 task_identity 重新签署为目标扰动身份后落盘；未训练、未改 actor。用于满足 force/torque 的 strict reload。",
+    "force": {
+      "artifact": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/evidence/C01_identity_artifacts/force_strict.pt",
+      "sha256": "dd683f7a782543b24b9493bb5e64bcd8854bc62887892d7c8b52145b98b66da6",
+      "outcomes": {
+        "SUCCESS": 3,
+        "FAILURE": 1,
+        "UNKNOWN": 0
+      },
+      "numeric": "3/3 PASS",
+      "mesh": "3/3 PASS"
+    },
+    "torque": {
+      "artifact": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/evidence/C01_identity_artifacts/torque_strict.pt",
+      "sha256": "890295f41788149b8084e46a28c9678d00d5221adabda208129bc98597ea5e6a",
+      "outcomes": {
+        "SUCCESS": 4,
+        "FAILURE": 0,
+        "UNKNOWN": 0
+      },
+      "numeric": "4/4 PASS",
+      "mesh": "4/4 PASS"
+    },
+    "actor_state_sha256": "b46c5cdb776967705f807636c2de9d5193c6a8c1f9b5f38d626d22577f86efc7"
+  }
+}

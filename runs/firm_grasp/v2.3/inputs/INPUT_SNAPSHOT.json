@@ -1,0 +1,306 @@
+{
+  "schema": "firm_grasp.external_single_agent_handoff.v1",
+  "client_date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "purpose": "manual_dispatch_material_only",
+  "external_conversation_created": false,
+  "gpu_started": false,
+  "local_goal_resumed": false,
+  "source": {
+    "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/source-f3-v2_2",
+    "commit": "f60b912ce85f1361cd02bc11da15a10e302b1cbe",
+    "status_porcelain": "",
+    "critical_source_sha256_from_frozen_receipt": "7460ecdec4fce9a0e258fbb667d8aa61f18dda155d32d4c080dd7b48f7398167"
+  },
+  "current_results": {
+    "initial": {
+      "quiet": [
+        2,
+        8
+      ],
+      "force": [
+        1,
+        6
+      ],
+      "torque": [
+        0,
+        6
+      ],
+      "total": [
+        3,
+        20
+      ]
+    },
+    "updated": {
+      "quiet": [
+        1,
+        8
+      ],
+      "force": [
+        2,
+        6
+      ],
+      "torque": [
+        0,
+        6
+      ],
+      "total": [
+        3,
+        20
+      ]
+    },
+    "legacy_adapted_new_condition": [
+      0,
+      20
+    ],
+    "open": [
+      0,
+      4
+    ],
+    "torque_independent_reload": [
+      1,
+      4
+    ],
+    "ppo_total_gain_demonstrated": false
+  },
+  "suggested_new_run_root": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019",
+  "external_routing": {
+    "parent_model": "user_selected_external_model_approximately_gpt_5_6_sol_capability",
+    "children_same_exact_model": true,
+    "children_same_reasoning_effort": true,
+    "max_existing_children": 2,
+    "children_leaf_only": true
+  },
+  "exploration_boundary": {
+    "default_max_effective_rounds": 8,
+    "conditional_total_max": 12,
+    "max_consecutive_rounds_without_physical_progress": 4,
+    "max_distinct_infrastructure_repair_cycles": 3,
+    "hard_gpu_hours_cap": null,
+    "one_update_per_round_required": false
+  },
+  "portable_installation": false,
+  "raw_evidence_copied": false,
+  "inputs": [
+    {
+      "role": "current_updated",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/evidence/F3_train_margin_bounded02/update_000001.pt",
+      "bytes": 6428465,
+      "sha256": "af961f8ea500943278de77bc2683eaa12ea49e4ce742e839b0182eee48a660d9",
+      "expected_sha256": "af961f8ea500943278de77bc2683eaa12ea49e4ce742e839b0182eee48a660d9",
+      "status": "MATCHED_READ_ONLY"
+    },
+    {
+      "role": "current_initial",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/evidence/F3_train_margin_bounded02/initial.pt",
+      "bytes": 2184877,
+      "sha256": "b5335e101993fa86d4a9fbad9b37b484f4e54db637f1b5a7b939d6a64af1b683",
+      "expected_sha256": "b5335e101993fa86d4a9fbad9b37b484f4e54db637f1b5a7b939d6a64af1b683",
+      "status": "MATCHED_READ_ONLY"
+    },
+    {
+      "role": "f2_updated",
+      "path": "/home/miobarnacle/linkbot/linkagent/.omo/evidence/ppo-firm-grasp-f2-takeover-20261018/received/evidence/F2_train_handover01/update_000001.pt",
+      "bytes": 6426143,
+      "sha256": "a5997ed42977b4cd66bcba021510a95445818153b6de5b0fcb219fa8c98154b7",
+      "expected_sha256": "a5997ed42977b4cd66bcba021510a95445818153b6de5b0fcb219fa8c98154b7",
+      "status": "MATCHED_READ_ONLY"
+    },
+    {
+      "role": "v16_retained",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/baselines/ppo-thumb-pad-v1_6-frozen-20261017/thumb_pad_ppo_v1_6_update1.pt",
+      "bytes": 6398561,
+      "sha256": "0650ac4b35e742430f910319492d8ada621ee1c25f954e8aba6bd8163e59ddf6",
+      "expected_sha256": "0650ac4b35e742430f910319492d8ada621ee1c25f954e8aba6bd8163e59ddf6",
+      "status": "MATCHED_READ_ONLY"
+    },
+    {
+      "role": "approved_pad",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/source-f3-v2_2/research/thumb_pad_grasp_v1/assets/pad_regions_v1.approved.json",
+      "bytes": 158961,
+      "sha256": "abd16607249509762ac07483f9542b6b460628beee5b13a464fca31217b04258",
+      "expected_sha256": "abd16607249509762ac07483f9542b6b460628beee5b13a464fca31217b04258",
+      "status": "MATCHED_READ_ONLY"
+    },
+    {
+      "role": "source_geometry",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/source-f3-v2_2/research/thumb_pad_grasp_v1/assets/source_geometry_v1.npz",
+      "bytes": 1218243,
+      "sha256": "76adf67d22ac05d6eb62723796181c14513d664816d348cbb1a5ac73e358fb4c",
+      "expected_sha256": "76adf67d22ac05d6eb62723796181c14513d664816d348cbb1a5ac73e358fb4c",
+      "status": "MATCHED_READ_ONLY"
+    },
+    {
+      "role": "full_mesh_classifier",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-thumb-pad-v1-20261016/delivery/ppo-thumb-pad-v1_6-20261017/verification/original_pad_geometry.py",
+      "bytes": 11005,
+      "sha256": "14d7412e72af348e04d56e3452c7f9b34a135a9f2777de623e8faf4d7eea58bd",
+      "expected_sha256": "14d7412e72af348e04d56e3452c7f9b34a135a9f2777de623e8faf4d7eea58bd",
+      "status": "MATCHED_READ_ONLY"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/delivery/ppo-firm-grasp-v2_2-20261018/reports/EXECUTION_REPORT.md",
+      "bytes": 5096,
+      "sha256": "314bf16d4b712a341af592bd770cae2fdf91d21269cc0364a9ebd6a6c7b7e551",
+      "copied_to": "references/EXECUTION_REPORT.md"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/delivery/ppo-firm-grasp-v2_2-20261018/reports/F4_FINAL_COMPARE/EVAL_TABLE.json",
+      "bytes": 510734,
+      "sha256": "5aaa21e60e58a753845d7ef6bcaba28071a4147d7e7643dacece117b1ded854d",
+      "copied_to": "references/EVAL_TABLE.json"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/delivery/ppo-firm-grasp-v2_2-20261018/reports/F4_FINAL_COMPARE/EVAL_TABLE.md",
+      "bytes": 11433,
+      "sha256": "ab0d9144b80d219f3bf840574ed425f4a9d18b7843bd0312088cc39ddb40328b",
+      "copied_to": "references/EVAL_TABLE.md"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/reports/NEXT_MINIMAL_STEPS_NOT_EXECUTED.md",
+      "bytes": 2046,
+      "sha256": "0381cfe9fcb84f586700501a8542fdcd82138567c4f6f65e6e2831500983ba34",
+      "copied_to": "references/NEXT_MINIMAL_STEPS_NOT_EXECUTED.md"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/reports/F4_UPDATED_FAILURE_DIAGNOSIS.json",
+      "bytes": 5222,
+      "sha256": "2c9f453277c0f3bbc05e1bed9ec4940dff4c7dbef5d5cf6a42bfc910df5af210",
+      "copied_to": "references/F4_UPDATED_FAILURE_DIAGNOSIS.json"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/reports/F4_REPEAT_RESET_DIAGNOSTIC.json",
+      "bytes": 4436,
+      "sha256": "4f96ee86735aa496cda9c836f2e18d21a19f93abf79662684bb4a90ca3cd5b40",
+      "copied_to": "references/F4_REPEAT_RESET_DIAGNOSTIC.json"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/reports/RESOURCE_LEDGER_CONTINUATION.json",
+      "bytes": 9756,
+      "sha256": "fdc758eae7590e3300538c698684bac8d612c7dd9816df9d04341bdcc2af638d",
+      "copied_to": "references/RESOURCE_LEDGER_CONTINUATION.json"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/reports/VIDEO_REVIEW.json",
+      "bytes": 2436,
+      "sha256": "d22a2ccd2e013e3778d255b1cd2b17380b7fa2e3a1e45223b1e2f87df7ad011d",
+      "copied_to": "references/VIDEO_REVIEW.json"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/F4_CANDIDATE_FREEZE.json",
+      "bytes": 1441,
+      "sha256": "867248dcd033b01e7c86805776de7fab2abe32b06fd02e44411a768851815d22",
+      "copied_to": "references/F4_CANDIDATE_FREEZE.json"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/SOURCE_FREEZE_LOAD_MARGIN.json",
+      "bytes": 595,
+      "sha256": "e3433858c46ac8a5bfce72aa2f96c175eb589f69d0c152f3bdbac691cc026567",
+      "copied_to": "references/SOURCE_FREEZE_LOAD_MARGIN.json"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/inputs/F4_CASES_FROZEN.json",
+      "bytes": 3884,
+      "sha256": "3114d54d0a6e82335ce153d817a239de034478ab52a6ae83154c052713df3135",
+      "copied_to": "references/F4_CASES_FROZEN.json"
+    },
+    {
+      "role": "reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/inputs/power4_index025_chosen.json",
+      "bytes": 335,
+      "sha256": "074d405f15136b716fc21519f95cdd696b61a56a5459f32dd4796025a6f4db5c",
+      "copied_to": "references/power4_index025_chosen.json"
+    },
+    {
+      "role": "reference",
+      "path": "/home/miobarnacle/linkbot/linkagent/.omo/evidence/ppo-firm-grasp-f2-takeover-20261018/ACCEPTANCE.json",
+      "bytes": 2590,
+      "sha256": "a5722571d4f7d6fa938403977aceecbd8255f5695333f6e93ba276c304668dee",
+      "copied_to": "references/F2_ACCEPTANCE.json"
+    },
+    {
+      "role": "reference",
+      "path": "/home/miobarnacle/linkbot/linkagent/.omo/evidence/ppo-firm-grasp-f2-takeover-20261018/TAKEOVER_REVIEW.md",
+      "bytes": 6846,
+      "sha256": "d67d27de0693ba4500e41a559c2a0869131fba11293844d3ede90cac2da169e6",
+      "copied_to": "references/F2_TAKEOVER_REVIEW.md"
+    },
+    {
+      "role": "existing_tool_reference_not_executed",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/execute.py",
+      "bytes": 1005,
+      "sha256": "0e2eac5ab6a2fb225c72f82d0b556b85bc789315a1f8e2cf057ec0b2f2730888"
+    },
+    {
+      "role": "existing_tool_reference_not_executed",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/verify_g2.py",
+      "bytes": 37008,
+      "sha256": "76a09af0ade49e3b6f1777401ae553384e56d00013e1453c36e33bfeaa26b4da"
+    },
+    {
+      "role": "existing_tool_reference_not_executed",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/verify_g2_mesh.py",
+      "bytes": 11627,
+      "sha256": "2bff9a65e2595448a926e9ecaed6bf85b67ded7e2d72bcedb2e551206f24c3a8"
+    },
+    {
+      "role": "existing_tool_reference_not_executed",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/verify_g2_mesh_selected.py",
+      "bytes": 13923,
+      "sha256": "6fcd1e58a0397e72e28a3fb041dbb28fee6135435fa8c8d7335559553a0c1f22"
+    },
+    {
+      "role": "existing_tool_reference_not_executed",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/verify_f4_all.py",
+      "bytes": 14975,
+      "sha256": "07f57106c84b9f055da8d0fb77a6ddfcbe9984b9e32e47eb4ec04b15b194f3e1"
+    },
+    {
+      "role": "existing_tool_reference_not_executed",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/summarize_evals.py",
+      "bytes": 22961,
+      "sha256": "ee3bb7d898bb45db29f7ef2bbc61dcbe96faa8ecc0e0221e05472070c877e5d4"
+    },
+    {
+      "role": "source_reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/source-f3-v2_2/research/firm_grasp_v1/launch.py",
+      "bytes": 7015,
+      "sha256": "a76f7a977264dff065368209e5239e7a74a64e35dc239354e326cf8bda1066c7"
+    },
+    {
+      "role": "source_reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/source-f3-v2_2/research/firm_grasp_v1/run.py",
+      "bytes": 72346,
+      "sha256": "358ecb07eccf0024e33c120265f80908075f0967d5b7bdfeac0ce861d4618095"
+    },
+    {
+      "role": "source_reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/source-f3-v2_2/research/firm_grasp_v1/matrix.py",
+      "bytes": 14710,
+      "sha256": "724a381347eccbde1b12bec520e9e7f8d28dd5953cd3bae198c19affa718a361"
+    },
+    {
+      "role": "source_reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/source-f3-v2_2/research/firm_grasp_v1/actor_seed.py",
+      "bytes": 14741,
+      "sha256": "749f4abb4e7a81b52b12d0bb983d56be9bf4b1bf384bac859473181bc965cfba"
+    },
+    {
+      "role": "source_reference",
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/source-f3-v2_2/research/firm_grasp_v1/record_video.py",
+      "bytes": 26015,
+      "sha256": "3a36db8c849f13c6fc50f684becfd92dbb1b0a1c12969fbdccf64a585715256e"
+    }
+  ]
+}

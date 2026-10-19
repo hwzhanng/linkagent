@@ -1,0 +1,177 @@
+{
+  "status": "F1_FROZEN_BEFORE_PPO",
+  "contract": {
+    "f_pad_min_n": 0.15,
+    "min_load_share": 0.05,
+    "f_nonpad_noise_max_n": 0.0,
+    "required_substeps": 120,
+    "schema_version": "firm_grasp_v1.7.0",
+    "task_version": "firm_grasp_v1.7.0"
+  },
+  "support_release_ramp": {
+    "status": "EXPLICIT_TASK_CONDITION_NOT_PPO_LEARNING_GAIN",
+    "default_policy_steps": 20,
+    "sharp_release_control_policy_steps": 0,
+    "release_step": 120,
+    "policy_dt_s": 0.05,
+    "ramp_window_s": 1.0,
+    "semantics": "linear scale 1->0 over the last ramp steps before release_step; exactly zero at and after release_step; strictly positive inside the ramp window so no ramp substep can qualify G1",
+    "scale_application": "support force and torque are scaled before the single PhysX permanent-wrench write; _last_stem_force_w and _last_stem_torque_w equal the applied values",
+    "unchanged": [
+      "fruit mass and inertia",
+      "gravity",
+      "friction and contact parameters",
+      "PD gains, joint limits and command warmup",
+      "PAD ROIs and runtime classifier thresholds",
+      "seven sticky physical faults",
+      "action14 keeps 14 dimensions and numeric 161/222 observation-prefix formulas, but action-history slots 8/9 now mean index/middle abduction and full legacy action semantics are not retained",
+      "G1 success denominator (same three PADs, 120 continuous real substeps, exact zero support)"
+    ],
+    "in_episode_fruit_joint_root_state_writes": false
+  },
+  "observation_clock": {
+    "position": {
+      "policy": 161,
+      "critic": 222
+    },
+    "dimensions": {
+      "policy": 162,
+      "critic": 223
+    },
+    "legacy_prefix_dimensions": {
+      "policy": 161,
+      "critic": 222
+    },
+    "physical_layout": {
+      "native_policy": {
+        "start": 0,
+        "stop": 114,
+        "previous_executed_actions": [
+          100,
+          114
+        ]
+      },
+      "native_privileged": {
+        "start": 114,
+        "stop": 175,
+        "executed_actions": [
+          142,
+          156
+        ],
+        "raw_actions": [
+          156,
+          170
+        ]
+      },
+      "pad_features": {
+        "actor": [
+          114,
+          161
+        ],
+        "critic": [
+          175,
+          222
+        ]
+      },
+      "release_clock": {
+        "actor": 161,
+        "critic": 222
+      },
+      "action_history_changed_columns": {
+        "actor_previous_executed_actions": [
+          108,
+          109
+        ],
+        "critic_policy_previous_executed_actions": [
+          108,
+          109
+        ],
+        "critic_privileged_executed_actions": [
+          150,
+          151
+        ],
+        "critic_privileged_raw_actions": [
+          164,
+          165
+        ]
+      }
+    },
+    "formula": "clamp(episode_length_buf.float() / support_release_step, 0, 3)",
+    "reset_value": 0.0,
+    "semantics": "known episode age relative to the fixed release step; not a future outcome, contact age replacement or support-release success signal",
+    "legacy_prefix_preserved": false,
+    "legacy_prefix_numeric_layout_preserved": true,
+    "legacy_prefix_full_actor_action_semantics_preserved": false,
+    "action_semantics_unchanged": false,
+    "action_history_semantics_changed": [
+      8,
+      9
+    ]
+  },
+  "abduction_action_semantics": {
+    "status": "S7_CANDIDATE_NOT_ENABLED_BY_THIS_CONTRACT_FILE",
+    "mapping_id": "firm_grasp_index_middle_abduction_14d_v1",
+    "action_indices": [
+      8,
+      9
+    ],
+    "action_names": [
+      "index_abduction",
+      "middle_abduction"
+    ],
+    "canonical16_q0_indices": [
+      6,
+      7
+    ],
+    "old_ring_little_residuals_frozen_zero_before_old_mapper": [
+      8,
+      9
+    ],
+    "other_actions_and_dimensions": "14D layout, global flexion/curl and distal actions preserved",
+    "q0_mapping": "piecewise linear about the old mapper zero-action q0 reference; zero is exactly the old reference; -1/+1 are exactly the original safe lower/upper endpoints",
+    "safe_endpoint_source": "frozen small_fruit left_hand_manifold LEFT_SAFE_LOWER_RAD/UPPER_RAD",
+    "all_targets_clipped_to_safe_endpoints": true,
+    "wider_usd_machine_limits_used_as_targets": false,
+    "fresh_exploration_normalized_sigma": {
+      "indices_8_9": 0.2,
+      "other_indices": 0.02,
+      "declared_cfg_init_std_remains": 0.02,
+      "runtime_distribution_override_applies_to_fresh_only": true,
+      "checkpoint_or_resume_reset": false
+    },
+    "actions_clamped_to": [
+      -1,
+      1
+    ]
+  },
+  "approved_PAD_sha256": "abd16607249509762ac07483f9542b6b460628beee5b13a464fca31217b04258",
+  "noise": {
+    "source": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-v1-20261017/evidence/F1_middle_probe05/physical_substeps.jsonl",
+    "source_sha256": "6f24e4fc5f94b26e77e9cd7cbee7b3dfa1270c41154413f7a58ab1afa5af2175",
+    "known_no_contact_selection": "No positive-force contact points in any recorded digit channel, no UNKNOWN, preparation stage; predictive zero-force manifolds may exist",
+    "scalar_count": 7840,
+    "env_substeps": 784,
+    "P99_n": 0.0,
+    "max_n": 0.0,
+    "min_force_rule": "max(0.15N,5*P99)=0.15N",
+    "NONPAD_limit_n": 0,
+    "limitation": "PhysX point-force output only; no real-hardware noise claim"
+  },
+  "success": "same fixed thumb+two nonthumb PADs, zero support,120 consecutive actual substeps; every physical substep also requires fruit_bottom_clearance_m > 0.005 above the unchanged z=0 ground plane",
+  "F3_F4": "NOT_AUTHORIZED",
+  "ground_support_exclusion": {
+    "plane_z_m": 0.0,
+    "minimum_fruit_bottom_clearance_m": 0.005,
+    "guard": "combination_qualified AND ground_free before accumulating each of120 substeps",
+    "independent_verifier": "recompute from raw fruit_pose_w z minus fixed radius0.0335; cross-check cached fields",
+    "physical_ground_collision_unchanged": true,
+    "note": "\u4ec5\u660e\u786e\u65e2\u6709S5\u8fd0\u884c\u65f6\u4e0e\u72ec\u7acb\u5ba1\u8ba1\u5df2\u6267\u884c\u7684\u6536\u7d27\u6761\u4ef6\uff0c\u65e0\u5730\u9762\u627f\u6258\u6210\u529f"
+  },
+  "temporal_filter": {
+    "integration": "four_internal_semi_implicit_steps_per_20Hz_filter_call",
+    "original_temporal_limits_preserved": true,
+    "original_parent_source_read_only": true,
+    "physical_substeps_added": 0,
+    "old_checkpoint_action_chain_compatible": false
+  }
+}

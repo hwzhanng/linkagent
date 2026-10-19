@@ -1,0 +1,120 @@
+{
+  "status": "PAUSED_AT_USER_REQUEST_NO_G1",
+  "objective_complete": false,
+  "F0": "PASS_BASELINE_PROTECTED_AND_ISOLATED",
+  "F1": "PASS_SUPPORTED_THREE_PAD_PREPARATION_ONLY",
+  "F2": "NOT_ACCEPTED_NO_PPO_UPDATED_G1",
+  "F3_F4": "NOT_STARTED_WAIT_USER_APPROVAL",
+  "training_runs": [
+    {
+      "name": "F2_train02",
+      "completed_updates": 6,
+      "actual_training_transitions": 4688,
+      "status": "INTERRUPTED_DIAGNOSTIC_WITH_FINAL_CHECKPOINT"
+    },
+    {
+      "name": "F2_train_ramp03",
+      "completed_updates": 20,
+      "actual_training_transitions": 15360,
+      "status": "TRAINING_COMPLETE"
+    },
+    {
+      "name": "F2_train_oriented04",
+      "completed_updates": 5,
+      "actual_training_transitions": 3840,
+      "status": "TRAINING_COMPLETE"
+    },
+    {
+      "name": "F2_train_clock_prior05",
+      "completed_updates": 10,
+      "actual_training_transitions": 7680,
+      "status": "TRAINING_COMPLETE"
+    }
+  ],
+  "total_full_updates_across_distinct_task_conditions": 41,
+  "total_actual_training_transitions_valid_runs_including_partial_rollout": 31568,
+  "latest_bounded_search": {
+    "status": "NO_G1_IN_32_CANDIDATES_INDEPENDENT_RAW_NEGATIVE_CHECK",
+    "batches": 8,
+    "candidates": 32,
+    "raw_vectorized_physical_substep_rows": 7680,
+    "eligible_first_episode_env_substeps": 25320,
+    "independently_recomputed_clean_released_triplet_frames": 0,
+    "max_recomputed_triplet_streak": 0,
+    "claimed_G1": false,
+    "success_original_full_mesh_audit_required": false,
+    "reason": "No qualified post-release triple frame exists under the frozen runtime PAD labels; no successful window to audit",
+    "limitations": "negative contract check using recorded runtime PAD classification; not proof of physical impossibility; drift need not be used to refute success when zero triple frames exist",
+    "trace_sha256": "603902e3bdf0bac63482f030070b7e82b92b5d539d4a47b84fbe4e185a3fb018",
+    "search_results_sha256": "5cde76a5b62ebbf655fd4ccd0726330230cf4e6316a694e1a977dfe8bc75047e",
+    "first_episode_trace_rows_by_candidate": {
+      "r00_e0": 960,
+      "r00_e1": 774,
+      "r00_e2": 960,
+      "r00_e3": 750,
+      "r01_e0": 768,
+      "r01_e1": 876,
+      "r01_e2": 756,
+      "r01_e3": 960,
+      "r02_e0": 756,
+      "r02_e1": 792,
+      "r02_e2": 960,
+      "r02_e3": 756,
+      "r03_e0": 756,
+      "r03_e1": 762,
+      "r03_e2": 762,
+      "r03_e3": 756,
+      "r04_e0": 762,
+      "r04_e1": 762,
+      "r04_e2": 768,
+      "r04_e3": 756,
+      "r05_e0": 762,
+      "r05_e1": 756,
+      "r05_e2": 756,
+      "r05_e3": 774,
+      "r06_e0": 762,
+      "r06_e1": 750,
+      "r06_e2": 774,
+      "r06_e3": 774,
+      "r07_e0": 762,
+      "r07_e1": 768,
+      "r07_e2": 768,
+      "r07_e3": 762
+    }
+  },
+  "all_GPU_jobs_terminal": true,
+  "resource_ledger": {
+    "jobs": 41,
+    "launcher_wall_seconds": 9935.30026936531,
+    "scope": "launcher wall seconds including startup/failures; not GPU kernel time or inferred physics steps"
+  },
+  "sources": {
+    "source": {
+      "head": "02e251017145a8f0aa586ee433d2d32b8a3b5f6c",
+      "status": ""
+    },
+    "source-f2-ramp-v1_2": {
+      "head": "caf7b658062c51b3719640c09248769300881f69",
+      "status": ""
+    },
+    "source-f2-oriented-reset-v1_4": {
+      "head": "6ebd4b079ba3a16e335fdeab34216c2ad0e451f5",
+      "status": ""
+    },
+    "source-f2-clock-v1_5": {
+      "head": "e45f45e872738b570a270e6c33322bc06c63b422",
+      "status": ""
+    },
+    "source-f2-abduction-v1_6": {
+      "head": "5669324b5f277695b62a692d6191036fb5467071",
+      "status": ""
+    },
+    "source-f2-stable-filter-v1_7": {
+      "head": "c372803f38173257705cb0cd6d7303879b5ddd55",
+      "status": ""
+    }
+  },
+  "unexecuted_candidate": "physical_trajectory_search_coupled_CPU_RECEIPT.json",
+  "future_work_requires_user_instruction": true,
+  "recorded_unix": 1792253826.6073167
+}

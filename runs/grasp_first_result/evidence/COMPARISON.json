@@ -1,0 +1,60 @@
+{
+  "valid_same_scene_comparison": true,
+  "rows": [
+    {
+      "artifact": "eval_initial_contact_v2.json",
+      "policy": "checkpoint",
+      "stage": "contact",
+      "actual_denominator": 20,
+      "success_count": 0,
+      "two_finger_contact_fraction_mean": 0.03748551084616659,
+      "required_opposition_fraction_mean": 0.0,
+      "thumb_contact_episode_count": 0,
+      "max_unsupported_hold_s": 0.0,
+      "failures": {
+        "drop": 12,
+        "overload": 8
+      },
+      "checkpoint_sha256": "3e5fb073dfd1829924feb539b122416bae4cdab1b6c895bd67a26679282b90b0",
+      "contract_sha256": "3d48553f1e7e60e71bec8957731d04a340baaea4e255c3a2a42ab5836f8b66a3",
+      "goal_evaluation_status": "NOT_IMPLEMENTED_NOT_EVALUATED"
+    },
+    {
+      "artifact": "eval_open_contact.json",
+      "policy": "open",
+      "stage": "contact",
+      "actual_denominator": 21,
+      "success_count": 0,
+      "two_finger_contact_fraction_mean": 0.0,
+      "required_opposition_fraction_mean": 0.0,
+      "thumb_contact_episode_count": 0,
+      "max_unsupported_hold_s": 0.0,
+      "failures": {
+        "drop": 18,
+        "overload": 3
+      },
+      "checkpoint_sha256": null,
+      "contract_sha256": "3d48553f1e7e60e71bec8957731d04a340baaea4e255c3a2a42ab5836f8b66a3",
+      "goal_evaluation_status": "NOT_IMPLEMENTED_NOT_EVALUATED"
+    },
+    {
+      "artifact": "eval_trained_contact_02.json",
+      "policy": "checkpoint",
+      "stage": "contact",
+      "actual_denominator": 20,
+      "success_count": 0,
+      "two_finger_contact_fraction_mean": 0.01353566681435534,
+      "required_opposition_fraction_mean": 0.0,
+      "thumb_contact_episode_count": 0,
+      "max_unsupported_hold_s": 0.0,
+      "failures": {
+        "drop": 9,
+        "overload": 11
+      },
+      "checkpoint_sha256": "4d3265cb1e6a17347af5ec477c6cba8ab90da5926a3339f5599ac9bc72f10895",
+      "contract_sha256": "3d48553f1e7e60e71bec8957731d04a340baaea4e255c3a2a42ab5836f8b66a3",
+      "goal_evaluation_status": "NOT_IMPLEMENTED_NOT_EVALUATED"
+    }
+  ],
+  "overshoot_note": "4并行环境终末batch导致开掌实际21回合；保留全部，分母21，不截断成20。"
+}

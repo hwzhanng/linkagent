@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "reviewer_agent_id": "01a13386-04b5-7671-87cd-4cb5bbaa1dd0",
+  "reviewer_role": "economy-gate-reviewer",
+  "artifact_exported_by": "parent agent from completed independent tool response; reviewer role is read-only and cannot itself write files",
+  "disposition": "APPROVE_LIMITED_NEGATIVE_RESULT",
+  "approved_scope": [
+    "17次有效PPO优化与非零actor变化",
+    "真实磁盘检查点独立重载与完整同条件负结果",
+    "零有效拇指对抗接触、一次pose修改失败后按计划止损",
+    "工作树状态保留、全部进程终态、资源账本",
+    "两段真实失败录像解码与hash"
+  ],
+  "not_approved": [
+    "抓握或保持改善",
+    "提举成功或提举失败的评估结论（未实现）",
+    "18/20完整目标达标",
+    "旧R2、泛化、真机验收"
+  ],
+  "evidence_checks": {
+    "valid_updates": 17,
+    "training_episodes": 869,
+    "independent_evaluation_denominators": [
+      20,
+      20,
+      21
+    ],
+    "cpu_qa_passed": 58,
+    "source_commit": "e7128f47f656eb62e5b9b936656775e993f8d445",
+    "source_worktree_clean": true,
+    "original_worktree_head_and_status_preserved": true,
+    "pose_fix_smoke08_09_contact_zero": true,
+    "main_training_started": false,
+    "decoded_video_frames": [
+      29,
+      31
+    ],
+    "all_processes_terminal": true,
+    "process_count": 21,
+    "process_wallclock_seconds": 826.4994034849979,
+    "training_process_wallclock_seconds": 215.03462167399994
+  },
+  "limitations": [
+    "视频5fps不保证包含精确终止帧",
+    "SHA256SUMS在独立复核之后由主agent生成及实际核验，不属于独立APPROVE范围"
+  ],
+  "exported_utc": "2026-10-13T04:35:49.268849+00:00"
+}

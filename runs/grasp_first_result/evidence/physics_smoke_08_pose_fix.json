@@ -1,0 +1,2994 @@
+{
+  "kind": "bounded_physics",
+  "formal_grasp_acceptance": false,
+  "closure_amplitude": 0.15,
+  "app_created": true,
+  "app_running": true,
+  "identity": {
+    "contract_id": "fixed_fruit_grasp_v1",
+    "task_id": "LinkAgent-FixedFruitGrasp-v1",
+    "task_version": "fixed_fruit_grasp_v1.0.0",
+    "record_schema_version": "fixed_fruit_grasp_episode_record.v1",
+    "run": {
+      "num_envs": 1,
+      "device": "cuda:0",
+      "configured_sim_device": "cuda:0",
+      "device_binding_note": "Isaac Lab 3.x DirectRLEnv 实际使用 cfg.sim.device；cfg.device 是镜像簿记字段，validate_cfg 强制两者一致",
+      "seed": 42
+    },
+    "stage": {
+      "stage": "hold",
+      "success_criterion": "unsupported_hold_3s_with_real_finger_contact",
+      "support_release_step": 40,
+      "support_release_time_s": 2.0,
+      "required_unsupported_hold_s": 3.0,
+      "required_unsupported_hold_steps": 60,
+      "min_height_gain_m": 0.0,
+      "requires_lift_program": false,
+      "counts_as_goal": false,
+      "success_requires_height_gain": false,
+      "goal_status": "GOAL_NOT_REACHED_LIFT_PROGRAM_NOT_IMPLEMENTED"
+    },
+    "physics": {
+      "policy_rate_hz": 20,
+      "policy_dt_s": 0.05,
+      "sim_dt_s": 0.008333333333333333,
+      "decimation": 6,
+      "episode_steps": 360,
+      "episode_length_s": 18.0,
+      "observation_dims": {
+        "actor": 114,
+        "critic": 175,
+        "action": 14
+      },
+      "support": {
+        "kind": "declared_stem_spring_released_at_fixed_step",
+        "release_step": 40,
+        "release_time_s": 2.0,
+        "declared_break_force_n": 60.0,
+        "maximum_stem_force_n": 100.0,
+        "maximum_stem_torque_nm": 0.3,
+        "linear_natural_frequency_rad_s": 45.0,
+        "linear_damping_ratio": 1.0,
+        "angular_natural_frequency_rad_s": 15.0,
+        "angular_damping_ratio": 1.0,
+        "release_is_success_triggered": false
+      }
+    },
+    "fruit": {
+      "shape": "sphere",
+      "equivalent_diameter_m": 0.067,
+      "axes_m": [
+        0.03350000083446503,
+        0.03350000083446503,
+        0.03350000083446503
+      ],
+      "density_kg_m3": 900.0,
+      "computed_mass_kg": 0.14173123240470886,
+      "expected_mass_kg": 0.14173122469074406,
+      "mass_tolerance_kg": 0.0005,
+      "mass_source": "parent_env computes 4/3*pi*a*b*c*rho from prestartup axes and density",
+      "mass_declared_in_cfg_tomato_mass": 0.1,
+      "mass_declared_source_note": "cfg.tomato.spawn.mass_props.mass 只是 USD 初始声明值，实际质量以 computed_mass_kg（父环境写回 PhysX）为准",
+      "friction": {
+        "static": 0.7,
+        "dynamic": 0.58,
+        "restitution": 0.01,
+        "combine_mode": "multiply",
+        "solver_default_static": 1.0,
+        "solver_default_dynamic": 1.0,
+        "source": "cfg.tomato.spawn.physics_material",
+        "hand_side_material_source": "USD 资产自带材质（本层不覆写）"
+      },
+      "sampling": "deterministic_fixed_no_randomization"
+    },
+    "actuation": {
+      "source": "cfg.robot.actuators（canonical 孤立左手 USD 驱动）+ wave2 最小修复",
+      "groups": {
+        "g20_independent": {
+          "effort_limit_sim": 0.2,
+          "velocity_limit_sim": 1.2,
+          "stiffness": 20.0,
+          "damping": 1.0,
+          "friction": 0.01,
+          "armature": 0.01,
+          "class_type": "ABCMeta"
+        },
+        "g20_followers": {
+          "effort_limit_sim": 0.2,
+          "velocity_limit_sim": 1.2,
+          "stiffness": 1.0,
+          "damping": 0.5,
+          "friction": 0.01,
+          "armature": 0.01,
+          "class_type": "ABCMeta"
+        }
+      },
+      "minimal_repair": {
+        "post_brake_effort_clip": true,
+        "armature_kg_m2": 0.01,
+        "source": "wave2 native_env 差异（brake 后逐轴 effort 裁剪 + armature 0.01）"
+      },
+      "mimic": {
+        "thumb_joint4": {
+          "driver": "thumb_joint3",
+          "multiplier": 1.11,
+          "offset_rad": -0.04545
+        },
+        "index_joint3": {
+          "driver": "index_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        },
+        "middle_joint3": {
+          "driver": "middle_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        },
+        "ring_joint3": {
+          "driver": "ring_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        },
+        "little_joint3": {
+          "driver": "little_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        }
+      },
+      "mimic_note": "保留 canonical 软件 mimic 关系；不继承派生 PPV1 资产的 NewtonMimicAPI/offset=0 被动零驱动路线（运行时支持未证实）",
+      "joint_hard_limits_rad": {
+        "index_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "little_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "middle_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "ring_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "thumb_joint0": [
+          -1.0499998331069946,
+          0.4899999797344208
+        ],
+        "index_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "little_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "middle_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "ring_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "thumb_joint1": [
+          0.0,
+          1.4500000476837158
+        ],
+        "index_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "little_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "middle_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "ring_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "thumb_joint2": [
+          0.0,
+          0.8399999737739563
+        ],
+        "index_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "little_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "middle_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "ring_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "thumb_joint3": [
+          0.0,
+          1.3199999332427979
+        ],
+        "thumb_joint4": [
+          0.0,
+          1.340000033378601
+        ]
+      },
+      "joint_hard_limits_source": "robot.data.joint_pos_limits（USD 关节限位）",
+      "joint_software_limits_source": "LeftHandDirectionalPDActuator._JOINT_LIMITS"
+    },
+    "contact": {
+      "force_threshold_n": 0.08,
+      "min_contact_fingers": 2,
+      "soft_low_n": [
+        0.2,
+        0.15,
+        0.12,
+        0.08,
+        0.05
+      ],
+      "soft_high_n": [
+        1.8,
+        1.5,
+        1.3,
+        1.2,
+        1.0
+      ],
+      "hard_high_n": [
+        4.0,
+        3.5,
+        3.5,
+        3.0,
+        3.0
+      ],
+      "palm_may_carry_load": true,
+      "palm_only_counts_as_success": false,
+      "palm_fruit_collision_filter_enabled": false,
+      "real_self_collisions_enabled": true,
+      "self_collision_status": "ENABLED_UNVALIDATED_ON_THIS_ASSET（静态姿态有自激记录，需 GPU 烟测止损复核）",
+      "declared_self_collision_pairs": [
+        [
+          "thumb_link4",
+          "index_link3"
+        ],
+        [
+          "thumb_link4",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "ring_link3"
+        ],
+        [
+          "middle_link3",
+          "ring_link3"
+        ]
+      ],
+      "effective_self_collision_pairs": [
+        [
+          "thumb_link4",
+          "index_link3"
+        ],
+        [
+          "thumb_link4",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "ring_link3"
+        ],
+        [
+          "middle_link3",
+          "ring_link3"
+        ]
+      ],
+      "skipped_self_collision_pairs": [],
+      "self_collision_penetration_limit_m": 0.01,
+      "legacy_thumb_index_proxy_is_sufficient": false,
+      "solver_self_collision_config": "cfg.robot.spawn.articulation_props.enabled_self_collisions=True（真实 PhysX 求解器自碰撞，不在运行时关闭）；运行时实际值由主线程 physics smoke 读取 PhysxSchema 记录",
+      "self_collision_diagnostic_scope": "仅对声明刚体对的局部碰撞 AABB 做 OBB-SAT 最小间距诊断（逐回合记录 min clearance）；这是诊断，不是完整穿透审计",
+      "penetration_guard_scope": "硬门读取全部27个手部刚体→果实的PhysX packed逐点separation，每策略步采样；AABB重叠与接触点质心深度仅诊断，不作为真实穿透深度。不是全部物理子步的完整审计",
+      "physical_penetration_method": "packed_separation_all_27_hand_bodies_policy_sample",
+      "claims_out_of_scope": [
+        "完整穿透/碰撞审计",
+        "26 场景或 110 对覆盖",
+        "实机触觉标定",
+        "真机可达性/集成完成"
+      ]
+    },
+    "criteria": {
+      "hold_max_drift_m": 0.01,
+      "hold_max_relative_speed_m_s": 0.05,
+      "drop_height_tolerance_m": 0.02,
+      "drop_max_drift_m": 0.04,
+      "penetration_limit_m": 0.005,
+      "collider_overlap_limit_m": 0.012,
+      "joint_limit_margin_rad": 0.01,
+      "instability_max_joint_velocity_rad_s": 4.0,
+      "instability_max_fruit_speed_m_s": 5.0,
+      "goal_min_height_gain_m": 0.03,
+      "goal_hold_s": 3.0
+    },
+    "goal": {
+      "status": "GOAL_NOT_REACHED_LIFT_PROGRAM_NOT_IMPLEMENTED",
+      "metric_this_delivery": "unsupported_hold_s",
+      "goal_requires_height_gain_m": 0.03,
+      "goal_requires_hold_s": 3.0,
+      "lift_available": false,
+      "lift_stage_status": "NOT_IMPLEMENTED_DECLARED_ONLY",
+      "lift_program": {
+        "axis": "world_z",
+        "travel_m": 0.035,
+        "speed_m_s": 0.01,
+        "duration_s": 3.5000000000000004,
+        "duration_steps": 70,
+        "min_height_gain_m": 0.03,
+        "hold_s": 3.0,
+        "executed": false
+      },
+      "note": "height_gain 与 goal_success 恒为诊断/False：需要声明的受驱动升降关节，禁止用逐帧传送手根/果实或给果实加力制造提举"
+    },
+    "randomization": {
+      "fruit_geometry": "fixed",
+      "fruit_density": "fixed",
+      "fruit_position": "fixed",
+      "measured_axes_noise": 0.0,
+      "target_position_noise_m": 0.0,
+      "tactile_gain": [
+        1.0,
+        1.0
+      ],
+      "tactile_bias_n": [
+        0.0,
+        0.0
+      ],
+      "action_delay_steps": [
+        0,
+        0
+      ],
+      "arm_joint_noise_deg": 0.0,
+      "pregrasp_distance_range_m": [
+        0.005,
+        0.005
+      ],
+      "pregrasp_lateral_offset_range_m": [
+        0.0,
+        0.0
+      ],
+      "pregrasp_axial_noise_m": 0.0,
+      "enforced_by": "validate_cfg（任何偏离一律 fail-closed）"
+    },
+    "open_control": {
+      "mechanism": "set_open_hand_baseline",
+      "open_hand_action_available": false,
+      "action_inverse_available": false,
+      "reason": "14D 流形写了 16 个关节（max()/区间夹紧 + 每指残差共享同一关节），像集不满秩，零动作不是 reset 的真实 neutral 张开姿态",
+      "manifold_zero_target_gap_rad": 1.1343600749969482,
+      "bounded_closure_reference": "closure_reference_action(closure=0..1)"
+    },
+    "action_effect": {
+      "ok": true,
+      "joint_limit_overhang_rad": 0.0,
+      "joint_limit_overhang_names": [],
+      "joint_limit_note": "可达范围越出 USD 声明限位时只记录：执行器软件限位与 PhysX 仍会拦截，但该关节在越界区间的动作无作用，需要显式复核",
+      "per_joint_span_rad": [
+        0.5928000807762146,
+        1.2901960611343384,
+        1.202733039855957,
+        0.7894650101661682,
+        0.6136173009872437,
+        1.3340001106262207,
+        0.028141170740127563,
+        0.0105060413479805,
+        0.0105060413479805,
+        0.015008628368377686,
+        1.2696000337600708,
+        1.2247059345245361,
+        1.0376471281051636,
+        1.0376471281051636,
+        1.0164705514907837,
+        1.0376471281051636
+      ],
+      "min_joint_span_rad": 0.0105060413479805,
+      "mean_joint_span_rad": 0.7819181680679321,
+      "manifold_zero_target_gap_rad": 1.1343600749969482,
+      "neutral_targets_rad": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "probe_targets_rad": [
+        [
+          0.7064000368118286,
+          0.027450980618596077,
+          0.09863355755805969,
+          0.34365659952163696,
+          0.4743748903274536,
+          -0.9419999718666077,
+          -0.1184784322977066,
+          -0.03655090183019638,
+          0.04062933102250099,
+          0.15869176387786865,
+          1.3248000144958496,
+          0.025294117629528046,
+          0.021176470443606377,
+          0.021176470443606377,
+          0.021176470443606377,
+          0.021176470443606377
+        ],
+        [
+          0.6611600518226624,
+          0.25710588693618774,
+          0.2668784260749817,
+          0.2668784260749817,
+          0.25710588693618774,
+          -0.7418999671936035,
+          -0.13254901766777039,
+          -0.04180392250418663,
+          0.04588235169649124,
+          0.1661960780620575,
+          1.1343600749969482,
+          0.24329176545143127,
+          0.2058776617050171,
+          0.2058776617050171,
+          0.202108234167099,
+          0.2058776617050171
+        ],
+        [
+          0.11359997093677521,
+          1.317647099494934,
+          1.3013665676116943,
+          1.05634343624115,
+          0.8707231879234314,
+          0.39200007915496826,
+          -0.14661960303783417,
+          -0.04705694317817688,
+          0.05113537237048149,
+          0.17370039224624634,
+          0.05519994720816612,
+          1.25,
+          1.058823585510254,
+          1.058823585510254,
+          1.037647008895874,
+          1.058823585510254
+        ]
+      ]
+    },
+    "assets": {
+      "root": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/research/small_fruit_pinch_v1/assets/left_hand_urdf",
+      "usd_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_l20_physx.usd",
+      "asset_config_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_physics.usd",
+      "selected": "canonical isolated left hand USD (16 active + 5 mimic followers + 27 bodies)",
+      "selection_note": "派生 PPV1 资产 physical_prior_v1/left_hand_ppv1.usda 要求 mimic offset=0 且依赖 NewtonMimicAPI；本任务不继承未证实的运行时后端，故不选它。",
+      "not_selected": {
+        "derived_ppv1_usda": "research/small_fruit_pinch_v1/assets/physical_prior_v1/left_hand_ppv1.usda",
+        "tip_pad_overlay_usda": "research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_tip_pad_collision.usda"
+      },
+      "files": {
+        ".asset_hash": "8ba484d5bbabd8e6b84a17ecd35c590ae5b10c6583fc96384feded85c4977cc8",
+        "configuration/left_hand_l20_physx_base.usd": "c78ed17edac5ac8bd06e5a5605b6fcd39449ef405e46a689e7dfc7121d70ea98",
+        "configuration/left_hand_l20_physx_physics.usd": "bc433c24664473d6d207e309cd456ef4246f9bd98bb219377ad861feff206e43",
+        "configuration/left_hand_l20_physx_sensor.usd": "e757e2045204d0f0664aad91d2b133a992fb73b9253d0536a227e54357950ff3",
+        "left_hand_l20_physx.usd": "b5ab656b3b58b2e19b349755158c9f11f84f9b48c2211c474fac6fd66b7ddb57",
+        "left_hand_tip_pad_collision.usda": "a8a9aac3250d9e85ff0ecba2b67732d4d93915b0139db389d03a7a41d235c35b"
+      },
+      "closure_sha256": "011de237f6e3db111671f0c3e6d282a14b6dcd9ef57aed9275b81ab8bcd8686a",
+      "closure_algorithm": "sha256 of sorted 'relative_path  sha256' manifest",
+      "closure_file_count": 6,
+      "closure_bytes": 17288506,
+      "missing_files": [],
+      "declared_asset_hash_file": "67f2ffca858670da9edc0792bb693ca4"
+    },
+    "source_dependencies": {
+      "pinch_native_env": {
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/research/small_fruit_pinch_v1/source/native_env.py",
+        "sha256": "ccad0362c475a5d0c3517d0dbbb269771b261b3dba16558b5a14b945ab2af087"
+      },
+      "isaac_env": {
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/simulation/tomato_pick/isaac/env.py",
+        "sha256": "191737c0644bf9c53621ee62e3794b190e07134183f6b8dcf08211c78569f99c"
+      },
+      "isaac_env_cfg": {
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/simulation/tomato_pick/isaac/env_cfg.py",
+        "sha256": "8dbd538bcdd40ce4e81e22c17e75ac50fed6a37bc5384aba11b8598f8a32592c"
+      },
+      "isaac_assets": {
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/simulation/tomato_pick/isaac/assets.py",
+        "sha256": "e4b24fc8e182521481bdd037f38eae01f33ab2f3bb41414854fbf0e6f7dc4a02"
+      },
+      "geometry_sampling": {
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/simulation/tomato_pick/isaac/geometry_sampling.py",
+        "sha256": "2781559090245a30a424975c090bde1f9f5ad98f352a0bd03415fb0f61d56d33"
+      },
+      "pinch_action_manifold": {
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/research/small_fruit_pinch_v1/source/pinch_action_manifold.py",
+        "sha256": "4c94c58516d50c7fd24eb2539ff99439fb302624049f16a994bbe029b0b5b40e"
+      },
+      "temporal_filter": {
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/research/small_fruit_pinch_v1/source/temporal.py",
+        "sha256": "d3552703a10d3aa6f3be1e864adc52f64c2379ba747c2a9aa068ab1c7127f6bb"
+      },
+      "vendor_hand_manifold": {
+        "source_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/research/small_fruit_pinch_v1/source/vendor/hand_manifold.py",
+        "sha256": "7782539e65b5a80e6a50647680292dd84c3a94e8767102a38fe0d614e6fb79bf"
+      }
+    },
+    "initial_pose": {
+      "deterministic": true,
+      "randomization": "none",
+      "closed_grasp_fruit_center_m": [
+        -0.0873,
+        -0.0425,
+        -0.16
+      ],
+      "pregrasp_distance_m": 0.005,
+      "pregrasp_lateral_offset_range_m": [
+        0.0,
+        0.0
+      ],
+      "pregrasp_axial_noise_m": 0.0,
+      "pinch_working_offset_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "minimum_initial_clearance_m": 0.002,
+      "selection_note": "预抓取距离是确定单值但不必为 65 mm：本任务不学习接近，固定场景选择由有限场景计划给出；实际 reset 姿态见 env.last_reset_poses / env.first_reset_poses，无接触由父环境 clearance 检查强制",
+      "recorded_by": "env.last_reset_poses / env.first_reset_poses / env.reset_pose_count"
+    },
+    "safety_guard": {
+      "guarded_joints": [
+        "thumb_joint2",
+        "index_joint1",
+        "middle_joint1",
+        "ring_joint1",
+        "little_joint1",
+        "thumb_joint0",
+        "index_joint0",
+        "middle_joint0",
+        "ring_joint0",
+        "little_joint0",
+        "thumb_joint1",
+        "thumb_joint3",
+        "index_joint2",
+        "middle_joint2",
+        "ring_joint2",
+        "little_joint2",
+        "thumb_joint4",
+        "index_joint3",
+        "middle_joint3",
+        "ring_joint3",
+        "little_joint3"
+      ],
+      "guarded_joint_count": 21,
+      "policy_observation_joints": 16,
+      "note": "关节硬限/速度/非有限/effort 守护覆盖 16 主动 + 5 跟随；策略观测仍为 16 维（114D 不变）",
+      "effort_limits_nm": {
+        "thumb_joint2": 0.20000000298023224,
+        "index_joint1": 0.20000000298023224,
+        "middle_joint1": 0.20000000298023224,
+        "ring_joint1": 0.20000000298023224,
+        "little_joint1": 0.20000000298023224,
+        "thumb_joint0": 0.20000000298023224,
+        "index_joint0": 0.20000000298023224,
+        "middle_joint0": 0.20000000298023224,
+        "ring_joint0": 0.20000000298023224,
+        "little_joint0": 0.20000000298023224,
+        "thumb_joint1": 0.20000000298023224,
+        "thumb_joint3": 0.20000000298023224,
+        "index_joint2": 0.20000000298023224,
+        "middle_joint2": 0.20000000298023224,
+        "ring_joint2": 0.20000000298023224,
+        "little_joint2": 0.20000000298023224,
+        "thumb_joint4": 0.20000000298023224,
+        "index_joint3": 0.20000000298023224,
+        "middle_joint3": 0.20000000298023224,
+        "ring_joint3": 0.20000000298023224,
+        "little_joint3": 0.20000000298023224
+      },
+      "effort_guard_tolerance": 0.05,
+      "joint_limit_margin_rad": 0.01,
+      "instability_max_joint_velocity_rad_s": 4.0
+    },
+    "episode_record_fields": [
+      "schema_version",
+      "task_id",
+      "task_version",
+      "stage",
+      "success_criterion",
+      "env_id",
+      "episode_id",
+      "success",
+      "goal_success",
+      "goal_status",
+      "reason",
+      "reason_code",
+      "terminated",
+      "truncated",
+      "steps",
+      "sim_time_s",
+      "contact_fraction",
+      "finger_contact_fraction",
+      "required_contact_fraction",
+      "unsupported_contact_fraction",
+      "any_contact_fraction",
+      "mean_contact_fingers",
+      "max_contact_fingers",
+      "palm_contact_fraction",
+      "palm_only_fraction",
+      "forbidden_contact_steps",
+      "peak_finger_force_n",
+      "mean_finger_force_n",
+      "support_release_step",
+      "support_release_time_s",
+      "support_released",
+      "stem_fracture_before_release",
+      "max_unsupported_hold_s",
+      "final_unsupported_hold_s",
+      "hold_steps_required",
+      "max_height_gain_m",
+      "final_height_gain_m",
+      "height_gain_sufficient",
+      "min_height_gain_m",
+      "goal_min_height_gain_m",
+      "stage_success_requires_height_gain",
+      "stage_requires_lift_program",
+      "stage_is_goal",
+      "max_center_drift_m",
+      "max_relative_speed_m_s",
+      "max_joint_limit_excursion_rad",
+      "max_applied_effort_nm",
+      "min_self_collision_clearance_m",
+      "min_collider_distance_m",
+      "max_penetration_depth_m",
+      "instability_step",
+      "first_fault_step",
+      "immediate_failure",
+      "failure_phase",
+      "stem_fracture",
+      "overload",
+      "nonfinite",
+      "penetration",
+      "joint_limit",
+      "self_collision",
+      "instability",
+      "joint_effort",
+      "action_effect_ok",
+      "open_hand_baseline",
+      "open_hand_fraction"
+    ],
+    "declared_limitations": [
+      "holding-only：30 mm+3 s 提举目标未实现（缺声明式受驱动升降关节）",
+      "自碰撞在 canonical 孤立左手 USD 上开启但未在本机 GPU 上验证，静态姿态有自激记录",
+      "粗穿透代理排除 base_link（导入掌心 AABB 远大于真实掌面形状）",
+      "掌心侧摩擦/材质来自 USD 资产，本层不覆写",
+      "接触力/阈值是仿真量，不是实机触觉标定",
+      "本包不启动 Kit/PhysX；物理与动态验证由主线程负责"
+    ],
+    "asset_config": {
+      "usd_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_l20_physx.usd",
+      "asset_config_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source/research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_physics.usd",
+      "asset_files": {
+        ".asset_hash": "8ba484d5bbabd8e6b84a17ecd35c590ae5b10c6583fc96384feded85c4977cc8",
+        "configuration/left_hand_l20_physx_base.usd": "c78ed17edac5ac8bd06e5a5605b6fcd39449ef405e46a689e7dfc7121d70ea98",
+        "configuration/left_hand_l20_physx_physics.usd": "bc433c24664473d6d207e309cd456ef4246f9bd98bb219377ad861feff206e43",
+        "configuration/left_hand_l20_physx_sensor.usd": "e757e2045204d0f0664aad91d2b133a992fb73b9253d0536a227e54357950ff3",
+        "left_hand_l20_physx.usd": "b5ab656b3b58b2e19b349755158c9f11f84f9b48c2211c474fac6fd66b7ddb57",
+        "left_hand_tip_pad_collision.usda": "a8a9aac3250d9e85ff0ecba2b67732d4d93915b0139db389d03a7a41d235c35b"
+      },
+      "fruit": {
+        "shape": "sphere",
+        "equivalent_diameter_m": 0.067,
+        "axes_m": [
+          0.03350000083446503,
+          0.03350000083446503,
+          0.03350000083446503
+        ],
+        "density_kg_m3": 900.0,
+        "computed_mass_kg": 0.14173123240470886,
+        "expected_mass_kg": 0.14173122469074406,
+        "mass_tolerance_kg": 0.0005,
+        "mass_source": "parent_env computes 4/3*pi*a*b*c*rho from prestartup axes and density",
+        "mass_declared_in_cfg_tomato_mass": 0.1,
+        "mass_declared_source_note": "cfg.tomato.spawn.mass_props.mass 只是 USD 初始声明值，实际质量以 computed_mass_kg（父环境写回 PhysX）为准",
+        "friction": {
+          "static": 0.7,
+          "dynamic": 0.58,
+          "restitution": 0.01,
+          "combine_mode": "multiply",
+          "solver_default_static": 1.0,
+          "solver_default_dynamic": 1.0,
+          "source": "cfg.tomato.spawn.physics_material",
+          "hand_side_material_source": "USD 资产自带材质（本层不覆写）"
+        },
+        "sampling": "deterministic_fixed_no_randomization"
+      },
+      "actuation": {
+        "source": "cfg.robot.actuators（canonical 孤立左手 USD 驱动）+ wave2 最小修复",
+        "groups": {
+          "g20_independent": {
+            "effort_limit_sim": 0.2,
+            "velocity_limit_sim": 1.2,
+            "stiffness": 20.0,
+            "damping": 1.0,
+            "friction": 0.01,
+            "armature": 0.01,
+            "class_type": "ABCMeta"
+          },
+          "g20_followers": {
+            "effort_limit_sim": 0.2,
+            "velocity_limit_sim": 1.2,
+            "stiffness": 1.0,
+            "damping": 0.5,
+            "friction": 0.01,
+            "armature": 0.01,
+            "class_type": "ABCMeta"
+          }
+        },
+        "minimal_repair": {
+          "post_brake_effort_clip": true,
+          "armature_kg_m2": 0.01,
+          "source": "wave2 native_env 差异（brake 后逐轴 effort 裁剪 + armature 0.01）"
+        },
+        "mimic": {
+          "thumb_joint4": {
+            "driver": "thumb_joint3",
+            "multiplier": 1.11,
+            "offset_rad": -0.04545
+          },
+          "index_joint3": {
+            "driver": "index_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          },
+          "middle_joint3": {
+            "driver": "middle_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          },
+          "ring_joint3": {
+            "driver": "ring_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          },
+          "little_joint3": {
+            "driver": "little_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          }
+        },
+        "mimic_note": "保留 canonical 软件 mimic 关系；不继承派生 PPV1 资产的 NewtonMimicAPI/offset=0 被动零驱动路线（运行时支持未证实）",
+        "joint_hard_limits_rad": {
+          "index_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "little_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "middle_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "ring_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "thumb_joint0": [
+            -1.0499998331069946,
+            0.4899999797344208
+          ],
+          "index_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "little_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "middle_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "ring_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "thumb_joint1": [
+            0.0,
+            1.4500000476837158
+          ],
+          "index_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "little_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "middle_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "ring_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "thumb_joint2": [
+            0.0,
+            0.8399999737739563
+          ],
+          "index_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "little_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "middle_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "ring_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "thumb_joint3": [
+            0.0,
+            1.3199999332427979
+          ],
+          "thumb_joint4": [
+            0.0,
+            1.340000033378601
+          ]
+        },
+        "joint_hard_limits_source": "robot.data.joint_pos_limits（USD 关节限位）",
+        "joint_software_limits_source": "LeftHandDirectionalPDActuator._JOINT_LIMITS"
+      },
+      "contact": {
+        "force_threshold_n": 0.08,
+        "min_contact_fingers": 2,
+        "soft_low_n": [
+          0.2,
+          0.15,
+          0.12,
+          0.08,
+          0.05
+        ],
+        "soft_high_n": [
+          1.8,
+          1.5,
+          1.3,
+          1.2,
+          1.0
+        ],
+        "hard_high_n": [
+          4.0,
+          3.5,
+          3.5,
+          3.0,
+          3.0
+        ],
+        "palm_may_carry_load": true,
+        "palm_only_counts_as_success": false,
+        "palm_fruit_collision_filter_enabled": false,
+        "real_self_collisions_enabled": true,
+        "self_collision_status": "ENABLED_UNVALIDATED_ON_THIS_ASSET（静态姿态有自激记录，需 GPU 烟测止损复核）",
+        "declared_self_collision_pairs": [
+          [
+            "thumb_link4",
+            "index_link3"
+          ],
+          [
+            "thumb_link4",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "ring_link3"
+          ],
+          [
+            "middle_link3",
+            "ring_link3"
+          ]
+        ],
+        "effective_self_collision_pairs": [
+          [
+            "thumb_link4",
+            "index_link3"
+          ],
+          [
+            "thumb_link4",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "ring_link3"
+          ],
+          [
+            "middle_link3",
+            "ring_link3"
+          ]
+        ],
+        "skipped_self_collision_pairs": [],
+        "self_collision_penetration_limit_m": 0.01,
+        "legacy_thumb_index_proxy_is_sufficient": false,
+        "solver_self_collision_config": "cfg.robot.spawn.articulation_props.enabled_self_collisions=True（真实 PhysX 求解器自碰撞，不在运行时关闭）；运行时实际值由主线程 physics smoke 读取 PhysxSchema 记录",
+        "self_collision_diagnostic_scope": "仅对声明刚体对的局部碰撞 AABB 做 OBB-SAT 最小间距诊断（逐回合记录 min clearance）；这是诊断，不是完整穿透审计",
+        "penetration_guard_scope": "硬门读取全部27个手部刚体→果实的PhysX packed逐点separation，每策略步采样；AABB重叠与接触点质心深度仅诊断，不作为真实穿透深度。不是全部物理子步的完整审计",
+        "physical_penetration_method": "packed_separation_all_27_hand_bodies_policy_sample",
+        "claims_out_of_scope": [
+          "完整穿透/碰撞审计",
+          "26 场景或 110 对覆盖",
+          "实机触觉标定",
+          "真机可达性/集成完成"
+        ]
+      },
+      "physics": {
+        "policy_rate_hz": 20,
+        "policy_dt_s": 0.05,
+        "sim_dt_s": 0.008333333333333333,
+        "decimation": 6,
+        "episode_steps": 360,
+        "episode_length_s": 18.0,
+        "observation_dims": {
+          "actor": 114,
+          "critic": 175,
+          "action": 14
+        },
+        "support": {
+          "kind": "declared_stem_spring_released_at_fixed_step",
+          "release_step": 40,
+          "release_time_s": 2.0,
+          "declared_break_force_n": 60.0,
+          "maximum_stem_force_n": 100.0,
+          "maximum_stem_torque_nm": 0.3,
+          "linear_natural_frequency_rad_s": 45.0,
+          "linear_damping_ratio": 1.0,
+          "angular_natural_frequency_rad_s": 15.0,
+          "angular_damping_ratio": 1.0,
+          "release_is_success_triggered": false
+        }
+      },
+      "criteria": {
+        "hold_max_drift_m": 0.01,
+        "hold_max_relative_speed_m_s": 0.05,
+        "drop_height_tolerance_m": 0.02,
+        "drop_max_drift_m": 0.04,
+        "penetration_limit_m": 0.005,
+        "collider_overlap_limit_m": 0.012,
+        "joint_limit_margin_rad": 0.01,
+        "instability_max_joint_velocity_rad_s": 4.0,
+        "instability_max_fruit_speed_m_s": 5.0,
+        "goal_min_height_gain_m": 0.03,
+        "goal_hold_s": 3.0
+      }
+    }
+  },
+  "initial_fruit_world": [
+    [
+      0.07506303489208221,
+      -0.05426860600709915,
+      0.15999993681907654
+    ]
+  ],
+  "initial_fingertip_world": [
+    [
+      [
+        0.031839847564697266,
+        -0.1135571300983429,
+        0.10834374278783798
+      ],
+      [
+        -0.014174913056194782,
+        -0.03165402263402939,
+        0.23583748936653137
+      ],
+      [
+        -0.01890891045331955,
+        -0.010054126381874084,
+        0.24032747745513916
+      ],
+      [
+        -0.01660390943288803,
+        0.011545968241989613,
+        0.23583747446537018
+      ],
+      [
+        -0.012980912812054157,
+        0.0331459678709507,
+        0.22683748602867126
+      ]
+    ]
+  ],
+  "initial_hand_base_world": [
+    [
+      9.313225746154785e-09,
+      -1.3969838619232178e-09,
+      -6.705522537231445e-08
+    ]
+  ],
+  "grasp_basis_world": [
+    [
+      [
+        -0.988876223564148,
+        0.1487407684326172,
+        0.0
+      ],
+      [
+        0.1487407684326172,
+        0.988876223564148,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    ]
+  ],
+  "reset_pose_records": [
+    {
+      "env_id": 0,
+      "episode_id": 0,
+      "fruit_world_xyz_m": [
+        0.07506303489208221,
+        -0.05426860600709915,
+        0.15999993681907654
+      ],
+      "fruit_world_quat_wxyz": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "reference_center_w_m": [
+        0.07506303489208221,
+        -0.05426860600709915,
+        0.15999993681907654
+      ],
+      "calibrated_center_w_m": [
+        0.08000741899013519,
+        -0.055012308061122894,
+        0.15999993681907654
+      ],
+      "actual_offset_from_calibrated_center_m": [
+        -0.0049443840980529785,
+        0.0007437020540237427,
+        0.0
+      ],
+      "actual_offset_norm_m": 0.005000002682209015,
+      "fingertip_frame_positions_w_m": [
+        [
+          0.031839847564697266,
+          -0.1135571300983429,
+          0.10834374278783798
+        ],
+        [
+          -0.014174913056194782,
+          -0.03165402263402939,
+          0.23583748936653137
+        ],
+        [
+          -0.01890891045331955,
+          -0.010054126381874084,
+          0.24032747745513916
+        ],
+        [
+          -0.01660390943288803,
+          0.011545968241989613,
+          0.23583747446537018
+        ],
+        [
+          -0.012980912812054157,
+          0.0331459678709507,
+          0.22683748602867126
+        ]
+      ],
+      "palm_position_w_m": [
+        9.313225746154785e-09,
+        -1.3969838619232178e-09,
+        -6.705522537231445e-08
+      ],
+      "closed_grasp_fruit_center_m": [
+        -0.0873,
+        -0.0425,
+        -0.16
+      ],
+      "requested_pregrasp_distance_m": 0.005,
+      "pinch_working_offset_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "support_release_step": 40
+    }
+  ],
+  "collider_aabb_centers_local": [
+    [
+      -0.0026967059820890427,
+      0.0023612603545188904,
+      0.08446931838989258
+    ],
+    [
+      0.009684903547167778,
+      5.802139639854431e-07,
+      0.0036651205737143755
+    ],
+    [
+      3.407243639230728e-05,
+      0.004725347273051739,
+      0.02161693572998047
+    ],
+    [
+      -0.00025660498067736626,
+      0.003750242991372943,
+      0.015594868920743465
+    ],
+    [
+      -0.009519582614302635,
+      0.004999870900064707,
+      0.010939434170722961
+    ],
+    [
+      3.6039273254573345e-07,
+      0.0010000000474974513,
+      -6.467744242399931e-07
+    ],
+    [
+      0.009684903547167778,
+      5.802139639854431e-07,
+      0.0036651205737143755
+    ],
+    [
+      3.407243639230728e-05,
+      0.004725347273051739,
+      0.02161693572998047
+    ],
+    [
+      -0.00025660498067736626,
+      0.003750242991372943,
+      0.015594868920743465
+    ],
+    [
+      -0.009519582614302635,
+      0.004999870900064707,
+      0.010939434170722961
+    ],
+    [
+      3.6039273254573345e-07,
+      0.0010000000474974513,
+      -6.467744242399931e-07
+    ],
+    [
+      0.009684903547167778,
+      5.802139639854431e-07,
+      0.0036651205737143755
+    ],
+    [
+      3.407243639230728e-05,
+      0.004725347273051739,
+      0.02161693572998047
+    ],
+    [
+      -0.00025660498067736626,
+      0.003750242991372943,
+      0.015594868920743465
+    ],
+    [
+      -0.009519582614302635,
+      0.004999871365725994,
+      0.010939434170722961
+    ],
+    [
+      3.6039273254573345e-07,
+      0.0010000000474974513,
+      -6.467744242399931e-07
+    ],
+    [
+      0.009684903547167778,
+      5.802139639854431e-07,
+      0.0036651205737143755
+    ],
+    [
+      3.407243639230728e-05,
+      0.004725347273051739,
+      0.02161693386733532
+    ],
+    [
+      -0.00025660498067736626,
+      0.003750242991372943,
+      0.015594868920743465
+    ],
+    [
+      -0.009519582614302635,
+      0.004999871365725994,
+      0.010939434170722961
+    ],
+    [
+      3.6039273254573345e-07,
+      0.0010000000474974513,
+      -6.467744242399931e-07
+    ],
+    [
+      0.014750828966498375,
+      -0.00459931418299675,
+      4.328787326812744e-06
+    ],
+    [
+      0.0007635718211531639,
+      -0.01139255240559578,
+      0.013265708461403847
+    ],
+    [
+      0.0110000129789114,
+      0.02821977809071541,
+      0.0014168517664074898
+    ],
+    [
+      0.009949954226613045,
+      0.013324541039764881,
+      -0.001282570417970419
+    ],
+    [
+      0.007999999448657036,
+      0.014640477485954762,
+      0.0023934906348586082
+    ],
+    [
+      0.0009999835165217519,
+      5.741167115047574e-06,
+      -6.145564839243889e-07
+    ]
+  ],
+  "collider_aabb_half_extents_local": [
+    [
+      0.03469672054052353,
+      0.053104545921087265,
+      0.08446933329105377
+    ],
+    [
+      0.009684903547167778,
+      0.008512439206242561,
+      0.0066817221231758595
+    ],
+    [
+      0.010901544243097305,
+      0.008550950326025486,
+      0.02639942802488804
+    ],
+    [
+      0.00964503176510334,
+      0.008228735066950321,
+      0.018369046971201897
+    ],
+    [
+      0.012059839442372322,
+      0.0077486843802034855,
+      0.022579556331038475
+    ],
+    [
+      0.000499432091601193,
+      0.0010009754914790392,
+      0.0005012428155168891
+    ],
+    [
+      0.009684903547167778,
+      0.008512439206242561,
+      0.0066817221231758595
+    ],
+    [
+      0.010901544243097305,
+      0.008550950326025486,
+      0.02639942802488804
+    ],
+    [
+      0.00964503176510334,
+      0.008228735066950321,
+      0.018369046971201897
+    ],
+    [
+      0.012059839442372322,
+      0.0077486843802034855,
+      0.022579556331038475
+    ],
+    [
+      0.000499432091601193,
+      0.0010009754914790392,
+      0.0005012428155168891
+    ],
+    [
+      0.009684903547167778,
+      0.008512439206242561,
+      0.0066817221231758595
+    ],
+    [
+      0.010901544243097305,
+      0.008550950326025486,
+      0.02639942802488804
+    ],
+    [
+      0.00964503176510334,
+      0.008228735066950321,
+      0.018369046971201897
+    ],
+    [
+      0.012059839442372322,
+      0.0077486843802034855,
+      0.022579556331038475
+    ],
+    [
+      0.000499432091601193,
+      0.0010009754914790392,
+      0.0005012428155168891
+    ],
+    [
+      0.009684903547167778,
+      0.008512439206242561,
+      0.0066817221231758595
+    ],
+    [
+      0.010901544243097305,
+      0.008550950326025486,
+      0.02639942802488804
+    ],
+    [
+      0.00964503176510334,
+      0.008228735066950321,
+      0.018369046971201897
+    ],
+    [
+      0.012059839442372322,
+      0.0077486843802034855,
+      0.022579556331038475
+    ],
+    [
+      0.000499432091601193,
+      0.0010009754914790392,
+      0.0005012428155168891
+    ],
+    [
+      0.014750830829143524,
+      0.024538792669773102,
+      0.029135752469301224
+    ],
+    [
+      0.011247992515563965,
+      0.021892443299293518,
+      0.013834502547979355
+    ],
+    [
+      0.01548134908080101,
+      0.05308515205979347,
+      0.05205406993627548
+    ],
+    [
+      0.009562449529767036,
+      0.031342603266239166,
+      0.029385237023234367
+    ],
+    [
+      0.00912034697830677,
+      0.027476927265524864,
+      0.021733766421675682
+    ],
+    [
+      0.001023933757096529,
+      0.0007905729580670595,
+      0.0008114887750707567
+    ]
+  ],
+  "collider_body_names": [
+    "base_link",
+    "index_link0",
+    "index_link1",
+    "index_link2",
+    "index_link3",
+    "index_link4",
+    "little_link0",
+    "little_link1",
+    "little_link2",
+    "little_link3",
+    "little_link4",
+    "middle_link0",
+    "middle_link1",
+    "middle_link2",
+    "middle_link3",
+    "middle_link4",
+    "ring_link0",
+    "ring_link1",
+    "ring_link2",
+    "ring_link3",
+    "ring_link4",
+    "thumb_link0",
+    "thumb_link1",
+    "thumb_link2",
+    "thumb_link3",
+    "thumb_link4",
+    "thumb_link5"
+  ],
+  "joint_names": [
+    "index_joint0",
+    "little_joint0",
+    "middle_joint0",
+    "ring_joint0",
+    "thumb_joint0",
+    "index_joint1",
+    "little_joint1",
+    "middle_joint1",
+    "ring_joint1",
+    "thumb_joint1",
+    "index_joint2",
+    "little_joint2",
+    "middle_joint2",
+    "ring_joint2",
+    "thumb_joint2",
+    "index_joint3",
+    "little_joint3",
+    "middle_joint3",
+    "ring_joint3",
+    "thumb_joint3",
+    "thumb_joint4"
+  ],
+  "runtime_self_collision_flags": [
+    {
+      "path": "/World/envs/env_0/Robot/root_joint",
+      "enabled_self_collisions": true
+    }
+  ],
+  "open": {
+    "max_force_n": 0.0,
+    "max_joint_displacement_rad": 0.6953177452087402,
+    "max_displacement_by_joint_rad": [
+      [
+        0.07789383083581924,
+        0.12186764925718307,
+        0.11283418536186218,
+        0.17161686718463898,
+        0.008276759646832943,
+        0.18143045902252197,
+        0.48227035999298096,
+        0.5403344035148621,
+        0.6953177452087402,
+        0.10978052020072937,
+        2.390262388018982e-08,
+        6.401259522448299e-09,
+        0.17105109989643097,
+        0.006791702006012201,
+        0.10797478258609772,
+        7.842701599258817e-09,
+        3.943863902122757e-08,
+        0.20439955592155457,
+        0.010192196816205978,
+        2.019695602939464e-05,
+        4.3097059254648684e-09
+      ]
+    ],
+    "episodes": [
+      {
+        "schema_version": "fixed_fruit_grasp_episode_record.v1",
+        "task_id": "LinkAgent-FixedFruitGrasp-v1",
+        "task_version": "fixed_fruit_grasp_v1.0.0",
+        "stage": "hold",
+        "success_criterion": "unsupported_hold_3s_with_real_finger_contact",
+        "env_id": 0,
+        "episode_id": 0,
+        "success": false,
+        "goal_success": false,
+        "goal_status": "GOAL_NOT_REACHED_LIFT_PROGRAM_NOT_IMPLEMENTED",
+        "reason": "drop",
+        "reason_code": 3,
+        "terminated": true,
+        "truncated": false,
+        "steps": 42,
+        "sim_time_s": 2.1,
+        "contact_fraction": 0.0,
+        "finger_contact_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "required_contact_fraction": 0.0,
+        "unsupported_contact_fraction": 0.0,
+        "any_contact_fraction": 0.0,
+        "mean_contact_fingers": 0.0,
+        "max_contact_fingers": 0,
+        "palm_contact_fraction": 0.0,
+        "palm_only_fraction": 0.0,
+        "forbidden_contact_steps": 0,
+        "peak_finger_force_n": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "mean_finger_force_n": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "support_release_step": 40,
+        "support_release_time_s": 2.0,
+        "support_released": true,
+        "stem_fracture_before_release": false,
+        "max_unsupported_hold_s": 0.0,
+        "final_unsupported_hold_s": 0.0,
+        "hold_steps_required": 60,
+        "max_height_gain_m": 0.0,
+        "final_height_gain_m": -0.052972473204135895,
+        "height_gain_sufficient": false,
+        "min_height_gain_m": 0.0,
+        "goal_min_height_gain_m": 0.03,
+        "stage_success_requires_height_gain": false,
+        "stage_requires_lift_program": false,
+        "stage_is_goal": false,
+        "max_center_drift_m": 0.052972473204135895,
+        "max_relative_speed_m_s": 0.9767594337463379,
+        "max_joint_limit_excursion_rad": 2.4414623567281524e-07,
+        "max_applied_effort_nm": 0.20000000298023224,
+        "min_self_collision_clearance_m": -0.001568038947880268,
+        "min_collider_distance_m": 0.02995898202061653,
+        "max_penetration_depth_m": 0.0,
+        "first_fault_step": -1,
+        "instability_step": -1,
+        "immediate_failure": false,
+        "failure_phase": "late",
+        "action_effect_ok": true,
+        "open_hand_baseline": true,
+        "open_hand_fraction": 1.0,
+        "overload": false,
+        "nonfinite": false,
+        "penetration": false,
+        "joint_limit": false,
+        "self_collision": false,
+        "instability": false,
+        "joint_effort": false,
+        "stem_fracture": false,
+        "max_aabb_overlap_m": 0.0035410188138484955,
+        "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples"
+      }
+    ]
+  },
+  "bounded_closure": {
+    "max_force_n": 0.0,
+    "max_joint_displacement_rad": 0.692654013633728,
+    "max_displacement_by_joint_rad": [
+      [
+        0.06944237649440765,
+        0.12405950576066971,
+        0.11455699056386948,
+        0.17068001627922058,
+        0.006812337785959244,
+        0.21114034950733185,
+        0.4894763231277466,
+        0.5670047402381897,
+        0.692654013633728,
+        0.10799382627010345,
+        0.33164021372795105,
+        0.3316400647163391,
+        0.33175861835479736,
+        0.3253025710582733,
+        0.10483312606811523,
+        0.25795236229896545,
+        0.2577880918979645,
+        0.27328214049339294,
+        0.244865283370018,
+        0.39166557788848877,
+        0.37735486030578613
+      ]
+    ],
+    "episodes": [
+      {
+        "schema_version": "fixed_fruit_grasp_episode_record.v1",
+        "task_id": "LinkAgent-FixedFruitGrasp-v1",
+        "task_version": "fixed_fruit_grasp_v1.0.0",
+        "stage": "hold",
+        "success_criterion": "unsupported_hold_3s_with_real_finger_contact",
+        "env_id": 0,
+        "episode_id": 1,
+        "success": false,
+        "goal_success": false,
+        "goal_status": "GOAL_NOT_REACHED_LIFT_PROGRAM_NOT_IMPLEMENTED",
+        "reason": "drop",
+        "reason_code": 3,
+        "terminated": true,
+        "truncated": false,
+        "steps": 42,
+        "sim_time_s": 2.1,
+        "contact_fraction": 0.0,
+        "finger_contact_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "required_contact_fraction": 0.0,
+        "unsupported_contact_fraction": 0.0,
+        "any_contact_fraction": 0.0,
+        "mean_contact_fingers": 0.0,
+        "max_contact_fingers": 0,
+        "palm_contact_fraction": 0.0,
+        "palm_only_fraction": 0.0,
+        "forbidden_contact_steps": 0,
+        "peak_finger_force_n": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "mean_finger_force_n": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "support_release_step": 40,
+        "support_release_time_s": 2.0,
+        "support_released": true,
+        "stem_fracture_before_release": false,
+        "max_unsupported_hold_s": 0.0,
+        "final_unsupported_hold_s": 0.0,
+        "hold_steps_required": 60,
+        "max_height_gain_m": 0.0,
+        "final_height_gain_m": -0.052972473204135895,
+        "height_gain_sufficient": false,
+        "min_height_gain_m": 0.0,
+        "goal_min_height_gain_m": 0.03,
+        "stage_success_requires_height_gain": false,
+        "stage_requires_lift_program": false,
+        "stage_is_goal": false,
+        "max_center_drift_m": 0.052972473204135895,
+        "max_relative_speed_m_s": 0.9767594337463379,
+        "max_joint_limit_excursion_rad": 8.756842930779385e-07,
+        "max_applied_effort_nm": 0.20000000298023224,
+        "min_self_collision_clearance_m": -0.0008950373157858849,
+        "min_collider_distance_m": 0.030242670327425003,
+        "max_penetration_depth_m": 0.0,
+        "first_fault_step": -1,
+        "instability_step": -1,
+        "immediate_failure": false,
+        "failure_phase": "late",
+        "action_effect_ok": true,
+        "open_hand_baseline": false,
+        "open_hand_fraction": 0.0,
+        "overload": false,
+        "nonfinite": false,
+        "penetration": false,
+        "joint_limit": false,
+        "self_collision": false,
+        "instability": false,
+        "joint_effort": false,
+        "stem_fracture": false,
+        "max_aabb_overlap_m": 0.003257330507040024,
+        "penetration_source": "PhysX packed per-point separation; all 27 hand bodies at policy samples"
+      }
+    ]
+  },
+  "trace": [
+    {
+      "mode": "open",
+      "step": 0,
+      "q": [
+        [
+          0.006375535391271114,
+          0.035982221364974976,
+          0.04385054484009743,
+          0.051399558782577515,
+          0.006603888235986233,
+          0.06002422422170639,
+          0.06004337966442108,
+          0.060096871107816696,
+          0.06008657440543175,
+          0.060002606362104416,
+          -1.2259810944215133e-09,
+          1.4807387538340322e-09,
+          3.6799692182398758e-09,
+          1.3414348520868202e-09,
+          0.019967546686530113,
+          4.768762273954508e-09,
+          2.0329198324731124e-09,
+          2.3318889041945567e-09,
+          5.30118948738334e-10,
+          2.019695602939464e-05,
+          -8.400148909792904e-10
+        ]
+      ],
+      "targets": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.15999993681907654
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.03822319209575653,
+            -0.11227770149707794,
+            0.10916221886873245
+          ],
+          [
+            -0.009581930004060268,
+            -0.03214152157306671,
+            0.23574931919574738
+          ],
+          [
+            -0.014310391619801521,
+            -0.01340167224407196,
+            0.23998144268989563
+          ],
+          [
+            -0.012006191536784172,
+            0.007623585872352123,
+            0.2354266345500946
+          ],
+          [
+            -0.008386475965380669,
+            0.030398113653063774,
+            0.22655460238456726
+          ]
+        ]
+      ],
+      "support_removed": [
+        false
+      ],
+      "done": [
+        false
+      ]
+    },
+    {
+      "mode": "open",
+      "step": 10,
+      "q": [
+        [
+          0.07481786608695984,
+          -0.12186343967914581,
+          0.028779353946447372,
+          0.07111763209104538,
+          -0.00708701042458415,
+          0.18116110563278198,
+          0.48226943612098694,
+          0.5392019152641296,
+          0.6601346135139465,
+          0.10933810472488403,
+          1.900521295894464e-09,
+          6.902772797801049e-10,
+          0.17105109989643097,
+          1.76328535106407e-10,
+          0.105068139731884,
+          3.5808676024373653e-09,
+          4.367442407726685e-09,
+          0.20439955592155457,
+          9.324237908003852e-06,
+          2.5146580373558436e-09,
+          3.2950406292364676e-10
+        ]
+      ],
+      "targets": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.15999993681907654
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.04295363277196884,
+            -0.10630181431770325,
+            0.11686081439256668
+          ],
+          [
+            -0.00036505796015262604,
+            -0.03728631138801575,
+            0.23425205051898956
+          ],
+          [
+            0.02469266764819622,
+            -0.011872241273522377,
+            0.22645705938339233
+          ],
+          [
+            0.030611678957939148,
+            0.007189189549535513,
+            0.22009886801242828
+          ],
+          [
+            0.02266712673008442,
+            0.04149511083960533,
+            0.2188454270362854
+          ]
+        ]
+      ],
+      "support_removed": [
+        false
+      ],
+      "done": [
+        false
+      ]
+    },
+    {
+      "mode": "open",
+      "step": 20,
+      "q": [
+        [
+          0.07481777667999268,
+          -0.12186332046985626,
+          0.028776543214917183,
+          0.06409987062215805,
+          -0.007086881436407566,
+          0.18116044998168945,
+          0.4822676181793213,
+          0.5392060279846191,
+          0.6928830146789551,
+          0.10933823138475418,
+          4.033394951363789e-09,
+          2.9522040367879754e-09,
+          0.0002290712873218581,
+          3.364296619068341e-09,
+          0.10506895184516907,
+          6.672447483424548e-09,
+          1.4693222638584302e-08,
+          0.07699563354253769,
+          9.331900400866289e-06,
+          2.2697115298342396e-09,
+          -3.772955003977785e-10
+        ]
+      ],
+      "targets": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.15999993681907654
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.04295362904667854,
+            -0.10630176961421967,
+            0.11686088144779205
+          ],
+          [
+            -0.00036511337384581566,
+            -0.03728631138801575,
+            0.23425205051898956
+          ],
+          [
+            0.020583854988217354,
+            -0.011970974504947662,
+            0.23000407218933105
+          ],
+          [
+            0.032593969255685806,
+            0.007712878752499819,
+            0.21863214671611786
+          ],
+          [
+            0.02266700379550457,
+            0.04149512201547623,
+            0.21884550154209137
+          ]
+        ]
+      ],
+      "support_removed": [
+        false
+      ],
+      "done": [
+        false
+      ]
+    },
+    {
+      "mode": "open",
+      "step": 30,
+      "q": [
+        [
+          0.07481759786605835,
+          -0.12186277657747269,
+          0.028776299208402634,
+          0.06410405039787292,
+          -0.007087165489792824,
+          0.18116053938865662,
+          0.48227009177207947,
+          0.539206326007843,
+          0.6929159164428711,
+          0.10933801531791687,
+          1.3938902476695603e-08,
+          5.484900533758719e-09,
+          0.0002290801639901474,
+          9.578468684878771e-09,
+          0.10506908595561981,
+          2.37381531098535e-10,
+          2.1183387488576955e-08,
+          0.027210291475057602,
+          9.332949957752135e-06,
+          2.4855284497249386e-10,
+          1.0184058041318167e-09
+        ]
+      ],
+      "targets": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.15999993681907654
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.04295358806848526,
+            -0.10630174726247787,
+            0.11686091125011444
+          ],
+          [
+            -0.00036511337384581566,
+            -0.03728631138801575,
+            0.23425205051898956
+          ],
+          [
+            0.02058388479053974,
+            -0.011970952153205872,
+            0.23000408709049225
+          ],
+          [
+            0.03259589895606041,
+            0.0077127134427428246,
+            0.21863055229187012
+          ],
+          [
+            0.02266717329621315,
+            0.04149508848786354,
+            0.2188454270362854
+          ]
+        ]
+      ],
+      "support_removed": [
+        false
+      ],
+      "done": [
+        false
+      ]
+    },
+    {
+      "mode": "open",
+      "step": 40,
+      "q": [
+        [
+          0.07481775432825089,
+          -0.12186284363269806,
+          0.02877720072865486,
+          0.06409377604722977,
+          -0.007087238132953644,
+          0.18116019666194916,
+          0.48226964473724365,
+          0.5392058491706848,
+          0.69301837682724,
+          0.10933827608823776,
+          2.390262388018982e-08,
+          2.3593160758395015e-09,
+          0.00022907843231223524,
+          9.921649279931444e-09,
+          0.10506819933652878,
+          1.5797617658463992e-09,
+          3.943863902122757e-08,
+          0.009486310184001923,
+          9.341782060801052e-06,
+          7.310066441057472e-10,
+          5.123571567011709e-10
+        ]
+      ],
+      "targets": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.14571911096572876
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.04295364022254944,
+            -0.10630179196596146,
+            0.11686084419488907
+          ],
+          [
+            -0.00036514364182949066,
+            -0.03728631138801575,
+            0.23425205051898956
+          ],
+          [
+            0.02058383822441101,
+            -0.01197102852165699,
+            0.23000410199165344
+          ],
+          [
+            0.03260204941034317,
+            0.007713647093623877,
+            0.2186257541179657
+          ],
+          [
+            0.022667139768600464,
+            0.04149509221315384,
+            0.2188454121351242
+          ]
+        ]
+      ],
+      "support_removed": [
+        true
+      ],
+      "done": [
+        false
+      ]
+    },
+    {
+      "mode": "open",
+      "step": 41,
+      "q": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "targets": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.15999993681907654
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.031839847564697266,
+            -0.1135571300983429,
+            0.10834374278783798
+          ],
+          [
+            -0.014174913056194782,
+            -0.03165402263402939,
+            0.23583748936653137
+          ],
+          [
+            -0.01890891045331955,
+            -0.010054126381874084,
+            0.24032747745513916
+          ],
+          [
+            -0.01660390943288803,
+            0.011545968241989613,
+            0.23583747446537018
+          ],
+          [
+            -0.012980912812054157,
+            0.0331459678709507,
+            0.22683748602867126
+          ]
+        ]
+      ],
+      "support_removed": [
+        false
+      ],
+      "done": [
+        true
+      ]
+    },
+    {
+      "mode": "bounded_closure",
+      "step": 0,
+      "q": [
+        [
+          0.00186405039858073,
+          0.03594642132520676,
+          0.044064465910196304,
+          0.05119911953806877,
+          0.006812337785959244,
+          0.06002475321292877,
+          0.060043592005968094,
+          0.06009618937969208,
+          0.06008656695485115,
+          0.06000431254506111,
+          0.028522517532110214,
+          0.028522644191980362,
+          0.02852262556552887,
+          0.028522629290819168,
+          0.03282455727458,
+          0.011597136035561562,
+          0.01159727107733488,
+          0.011635640636086464,
+          0.011320465244352818,
+          0.028550880029797554,
+          0.017006998881697655
+        ]
+      ],
+      "targets": [
+        [
+          -0.13254901766777039,
+          0.1661960780620575,
+          -0.04180392250418663,
+          0.04588235169649124,
+          -0.7305609583854675,
+          0.2671952247619629,
+          0.2671952247619629,
+          0.27739712595939636,
+          0.27739712595939636,
+          1.1235684156417847,
+          0.21399207413196564,
+          0.21399207413196564,
+          0.21399207413196564,
+          0.21005704998970032,
+          0.6550604104995728,
+          0.15570254623889923,
+          0.15570254623889923,
+          0.15570254623889923,
+          0.15200363099575043,
+          0.25286898016929626,
+          0.2352345585823059
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.15999993681907654
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.03815826028585434,
+            -0.11121656000614166,
+            0.11098163574934006
+          ],
+          [
+            -0.008686152286827564,
+            -0.03179648146033287,
+            0.23562690615653992
+          ],
+          [
+            -0.013414702378213406,
+            -0.01341165415942669,
+            0.23983359336853027
+          ],
+          [
+            -0.011110437102615833,
+            0.00764618581160903,
+            0.23528236150741577
+          ],
+          [
+            -0.007490695454180241,
+            0.03040594607591629,
+            0.22640877962112427
+          ]
+        ]
+      ],
+      "support_removed": [
+        false
+      ],
+      "done": [
+        false
+      ]
+    },
+    {
+      "mode": "bounded_closure",
+      "step": 10,
+      "q": [
+        [
+          0.06755703687667847,
+          -0.12339862436056137,
+          0.012408901937305927,
+          0.0702885240316391,
+          0.000332853029249236,
+          0.21114034950733185,
+          0.4894763231277466,
+          0.5631704926490784,
+          0.659247100353241,
+          0.10571069270372391,
+          0.3291298747062683,
+          0.32914474606513977,
+          0.20983988046646118,
+          8.363218451101773e-10,
+          0.09389474987983704,
+          0.16073940694332123,
+          0.15573391318321228,
+          0.26595747470855713,
+          1.0448876208712932e-09,
+          0.38859492540359497,
+          0.22886179387569427
+        ]
+      ],
+      "targets": [
+        [
+          -0.13254901766777039,
+          0.1661960780620575,
+          -0.04180392250418663,
+          0.04588235169649124,
+          -0.5689802169799805,
+          0.41096821427345276,
+          0.41096821427345276,
+          0.42728811502456665,
+          0.42728811502456665,
+          0.9697880148887634,
+          0.3296222686767578,
+          0.3296222686767578,
+          0.3296222686767578,
+          0.3233274221420288,
+          0.5681410431861877,
+          0.26439493894577026,
+          0.26439493894577026,
+          0.26439493894577026,
+          0.2584777772426605,
+          0.38934409618377686,
+          0.3867219388484955
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.15999993681907654
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.04172607138752937,
+            -0.09868931025266647,
+            0.12517878413200378
+          ],
+          [
+            0.011220685206353664,
+            -0.0364045575261116,
+            0.22927317023277283
+          ],
+          [
+            0.027008946985006332,
+            -0.010823234915733337,
+            0.22460977733135223
+          ],
+          [
+            0.030557256191968918,
+            0.007236781995743513,
+            0.22014711797237396
+          ],
+          [
+            0.030848471447825432,
+            0.040696389973163605,
+            0.2116052359342575
+          ]
+        ]
+      ],
+      "support_removed": [
+        false
+      ],
+      "done": [
+        false
+      ]
+    },
+    {
+      "mode": "bounded_closure",
+      "step": 20,
+      "q": [
+        [
+          0.06751516461372375,
+          -0.12339933961629868,
+          0.012415916658937931,
+          0.06666930019855499,
+          0.0004597250954248011,
+          0.21110691130161285,
+          0.48947444558143616,
+          0.563167154788971,
+          0.692581832408905,
+          0.10535940527915955,
+          0.33010607957839966,
+          0.3301060199737549,
+          0.33020833134651184,
+          0.3235529363155365,
+          0.09164219349622726,
+          0.22536742687225342,
+          0.22358374297618866,
+          0.2664414644241333,
+          0.161680206656456,
+          0.3898375928401947,
+          0.32757338881492615
+        ]
+      ],
+      "targets": [
+        [
+          -0.13254901766777039,
+          0.1661960780620575,
+          -0.04180392250418663,
+          0.04588235169649124,
+          -0.5652227401733398,
+          0.41431155800819397,
+          0.41431155800819397,
+          0.43077370524406433,
+          0.43077370524406433,
+          0.9662120342254639,
+          0.33231115341186523,
+          0.33231115341186523,
+          0.33231115341186523,
+          0.3259614408016205,
+          0.5661198496818542,
+          0.2669224739074707,
+          0.2669224739074707,
+          0.2669224739074707,
+          0.26095375418663025,
+          0.39251774549484253,
+          0.3902446925640106
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.15999993681907654
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.04170506075024605,
+            -0.09881353378295898,
+            0.12504984438419342
+          ],
+          [
+            0.011243464425206184,
+            -0.036400459706783295,
+            0.22925616800785065
+          ],
+          [
+            0.02932577393949032,
+            -0.010788580402731895,
+            0.221562922000885
+          ],
+          [
+            0.038606688380241394,
+            0.008104328997433186,
+            0.2103521227836609
+          ],
+          [
+            0.030867215245962143,
+            0.040693461894989014,
+            0.21158140897750854
+          ]
+        ]
+      ],
+      "support_removed": [
+        false
+      ],
+      "done": [
+        false
+      ]
+    },
+    {
+      "mode": "bounded_closure",
+      "step": 30,
+      "q": [
+        [
+          0.0675162672996521,
+          -0.12339920550584793,
+          0.012416060082614422,
+          0.06667467951774597,
+          0.000459716422483325,
+          0.21110983192920685,
+          0.48947423696517944,
+          0.5631656646728516,
+          0.6925439834594727,
+          0.10535887628793716,
+          0.32300785183906555,
+          0.32300737500190735,
+          0.32312247157096863,
+          0.3168461322784424,
+          0.09164123237133026,
+          0.24806417524814606,
+          0.24742825329303741,
+          0.26505544781684875,
+          0.22162900865077972,
+          0.3814752995967865,
+          0.36229392886161804
+        ]
+      ],
+      "targets": [
+        [
+          -0.13254901766777039,
+          0.1661960780620575,
+          -0.04180392250418663,
+          0.04588235169649124,
+          -0.5798563361167908,
+          0.40129077434539795,
+          0.40129077434539795,
+          0.4171988368034363,
+          0.4171988368034363,
+          0.9801390767097473,
+          0.3218391239643097,
+          0.3218391239643097,
+          0.3218391239643097,
+          0.3157031238079071,
+          0.5739916563034058,
+          0.25707876682281494,
+          0.25707876682281494,
+          0.25707876682281494,
+          0.25131094455718994,
+          0.38015785813331604,
+          0.37652522325515747
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.15999993681907654
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.04172884672880173,
+            -0.09903910756111145,
+            0.12487548589706421
+          ],
+          [
+            0.011060518212616444,
+            -0.036409325897693634,
+            0.22938795387744904
+          ],
+          [
+            0.02919958531856537,
+            -0.010790754109621048,
+            0.2217499017715454
+          ],
+          [
+            0.038507960736751556,
+            0.008091406896710396,
+            0.2105439156293869
+          ],
+          [
+            0.030727403238415718,
+            0.040715429931879044,
+            0.21175746619701385
+          ]
+        ]
+      ],
+      "support_removed": [
+        false
+      ],
+      "done": [
+        false
+      ]
+    },
+    {
+      "mode": "bounded_closure",
+      "step": 40,
+      "q": [
+        [
+          0.06751585006713867,
+          -0.12339939922094345,
+          0.012415951117873192,
+          0.06666839867830276,
+          0.00045977451372891665,
+          0.2111089825630188,
+          0.4894731640815735,
+          0.5631656646728516,
+          0.6925747394561768,
+          0.10535892844200134,
+          0.32841718196868896,
+          0.3284165561199188,
+          0.3285316824913025,
+          0.32214486598968506,
+          0.09164132177829742,
+          0.25795236229896545,
+          0.2577880918979645,
+          0.264658659696579,
+          0.244865283370018,
+          0.38786059617996216,
+          0.37735486030578613
+        ]
+      ],
+      "targets": [
+        [
+          -0.13254901766777039,
+          0.1661960780620575,
+          -0.04180392250418663,
+          0.04588235169649124,
+          -0.5726807117462158,
+          0.4076755940914154,
+          0.4076755940914154,
+          0.42385536432266235,
+          0.42385536432266235,
+          0.9733098745346069,
+          0.32697415351867676,
+          0.32697415351867676,
+          0.32697415351867676,
+          0.32073336839675903,
+          0.5701316595077515,
+          0.261905699968338,
+          0.261905699968338,
+          0.261905699968338,
+          0.2560393512248993,
+          0.3862186074256897,
+          0.38325265049934387
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.14571911096572876
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.04171064868569374,
+            -0.09886705130338669,
+            0.1250087469816208
+          ],
+          [
+            0.01120012067258358,
+            -0.03640260547399521,
+            0.22928756475448608
+          ],
+          [
+            0.029295962303876877,
+            -0.010789088904857635,
+            0.2216072827577591
+          ],
+          [
+            0.03858610615134239,
+            0.008101711049675941,
+            0.21039240062236786
+          ],
+          [
+            0.030833976343274117,
+            0.04069871827960014,
+            0.21162347495555878
+          ]
+        ]
+      ],
+      "support_removed": [
+        true
+      ],
+      "done": [
+        false
+      ]
+    },
+    {
+      "mode": "bounded_closure",
+      "step": 41,
+      "q": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "targets": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "forces_n": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "fruit_world": [
+        [
+          0.07506303489208221,
+          -0.05426860600709915,
+          0.15999993681907654
+        ]
+      ],
+      "fingertip_world": [
+        [
+          [
+            0.031839847564697266,
+            -0.1135571300983429,
+            0.10834374278783798
+          ],
+          [
+            -0.014174913056194782,
+            -0.03165402263402939,
+            0.23583748936653137
+          ],
+          [
+            -0.01890891045331955,
+            -0.010054126381874084,
+            0.24032747745513916
+          ],
+          [
+            -0.01660390943288803,
+            0.011545968241989613,
+            0.23583747446537018
+          ],
+          [
+            -0.012980912812054157,
+            0.0331459678709507,
+            0.22683748602867126
+          ]
+        ]
+      ],
+      "support_removed": [
+        false
+      ],
+      "done": [
+        true
+      ]
+    }
+  ],
+  "finite_observations": true,
+  "action_effect_observed": true,
+  "real_contact_observed": false,
+  "open_successes": 0,
+  "required_checks": {
+    "finite_observations": true,
+    "action_effect_observed": true,
+    "real_contact_observed": false,
+    "self_collision_enabled": true,
+    "open_episode_completed": true,
+    "open_baseline_failed": true,
+    "no_hard_physical_faults": true,
+    "closure_reached_support_release": true
+  },
+  "gate_pass": false,
+  "error": "RuntimeError('物理检查未通过：real_contact_observed')",
+  "elapsed_seconds": 16.90791751800043
+}

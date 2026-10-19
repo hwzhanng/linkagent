@@ -1,0 +1,236 @@
+{
+  "schema": "firm_grasp.f3_f4_continuation.compare.v1",
+  "note": "所有新条件结果均为ramp40、支撑第120策略步起严格为零；矩阵为新预登记交错清单。旧v2.2 3/20是继承条件(ramp20/旧顺序)，不可与新表混作同一分母。",
+  "rows": {
+    "v22_inherited_final_matrix_ramp20_old_order": {
+      "total": "3/20",
+      "quiet": "2/8",
+      "force": "1/6",
+      "torque": "0/6",
+      "source": "inherited EXECUTION_REPORT / EVAL_TABLE"
+    },
+    "v22_init_ramp20_quiet_4": {
+      "total": "1/4",
+      "source": "D01_quiet_updated_ramp20"
+    },
+    "v22_init_ramp40_quiet_4": {
+      "total": "3/4",
+      "source": "D02_quiet_updated_ramp40"
+    },
+    "v22_init_ramp40_force_axis0pos_4": {
+      "total": "2/4",
+      "source": "D03_force_updated_ramp40"
+    },
+    "v22_init_ramp40_torque_axis0pos_4": {
+      "total": "2/4",
+      "source": "D04_torque_updated_ramp40"
+    },
+    "v22_init_ramp40_old_order_20": {
+      "run": "R0_matrix_v22_ramp40",
+      "summary_status": "EVALUATION_COMPLETE",
+      "outcomes": {
+        "SUCCESS": 13,
+        "FAILURE": 7,
+        "UNKNOWN": 0
+      },
+      "by_mode": {
+        "quiet": {
+          "success": 6,
+          "denominator": 8
+        },
+        "force": {
+          "success": 4,
+          "denominator": 6
+        },
+        "torque": {
+          "success": 3,
+          "denominator": 6
+        }
+      },
+      "numeric_and_mesh_verification": {
+        "cases": 20,
+        "runtime_success": 13,
+        "runtime_failure": 7,
+        "runtime_unknown": 0,
+        "verified_runtime_success": 13,
+        "unverified_runtime_success": 0,
+        "numeric_pass_candidates": 13,
+        "fullmesh_pass_files": 13
+      }
+    },
+    "v22_init_new_order_20": {
+      "run": "R2_matrix_init_interleaved",
+      "summary_status": "EVALUATION_COMPLETE",
+      "outcomes": {
+        "SUCCESS": 10,
+        "FAILURE": 10,
+        "UNKNOWN": 0
+      },
+      "by_mode": {
+        "torque": {
+          "success": 3,
+          "denominator": 6
+        },
+        "quiet": {
+          "success": 4,
+          "denominator": 8
+        },
+        "force": {
+          "success": 3,
+          "denominator": 6
+        }
+      },
+      "numeric_and_mesh_verification": {
+        "cases": 20,
+        "runtime_success": 10,
+        "runtime_failure": 10,
+        "runtime_unknown": 0,
+        "verified_runtime_success": 10,
+        "unverified_runtime_success": 0,
+        "numeric_pass_candidates": 10,
+        "fullmesh_pass_files": 10
+      }
+    },
+    "v22_init_new_order_seed111_20": {
+      "run": "R4_reload_init_seed111",
+      "summary_status": "EVALUATION_COMPLETE",
+      "outcomes": {
+        "SUCCESS": 10,
+        "FAILURE": 10,
+        "UNKNOWN": 0
+      },
+      "by_mode": {
+        "torque": {
+          "success": 3,
+          "denominator": 6
+        },
+        "quiet": {
+          "success": 4,
+          "denominator": 8
+        },
+        "force": {
+          "success": 3,
+          "denominator": 6
+        }
+      },
+      "numeric_and_mesh_verification": {
+        "cases": 20,
+        "runtime_success": 10,
+        "runtime_failure": 10,
+        "runtime_unknown": 0,
+        "verified_runtime_success": 10,
+        "unverified_runtime_success": 0,
+        "numeric_pass_candidates": 10,
+        "fullmesh_pass_files": 10
+      }
+    },
+    "ppo_candidate_new_order_20": {
+      "run": "R1_matrix_C01_interleaved",
+      "summary_status": "EVALUATION_COMPLETE",
+      "outcomes": {
+        "SUCCESS": 15,
+        "FAILURE": 5,
+        "UNKNOWN": 0
+      },
+      "by_mode": {
+        "quiet": {
+          "success": 6,
+          "denominator": 8
+        },
+        "torque": {
+          "success": 5,
+          "denominator": 6
+        },
+        "force": {
+          "success": 4,
+          "denominator": 6
+        }
+      },
+      "numeric_and_mesh_verification": {
+        "cases": 20,
+        "runtime_success": 15,
+        "runtime_failure": 5,
+        "runtime_unknown": 0,
+        "verified_runtime_success": 15,
+        "unverified_runtime_success": 0,
+        "numeric_pass_candidates": 15,
+        "fullmesh_pass_files": 15
+      }
+    },
+    "ppo_candidate_new_order_seed111_20": {
+      "run": "R3_reload_C01_seed111",
+      "summary_status": "EVALUATION_COMPLETE",
+      "outcomes": {
+        "SUCCESS": 15,
+        "FAILURE": 5,
+        "UNKNOWN": 0
+      },
+      "by_mode": {
+        "quiet": {
+          "success": 6,
+          "denominator": 8
+        },
+        "torque": {
+          "success": 5,
+          "denominator": 6
+        },
+        "force": {
+          "success": 4,
+          "denominator": 6
+        }
+      },
+      "numeric_and_mesh_verification": {
+        "cases": 20,
+        "runtime_success": 15,
+        "runtime_failure": 5,
+        "runtime_unknown": 0,
+        "verified_runtime_success": 15,
+        "unverified_runtime_success": 0,
+        "numeric_pass_candidates": 15,
+        "fullmesh_pass_files": 15
+      }
+    },
+    "legacy_v16_new_order_20": {
+      "run": "R5_matrix_legacy_v16_interleaved",
+      "summary_status": "EVALUATION_COMPLETE",
+      "outcomes": {
+        "SUCCESS": 0,
+        "FAILURE": 20,
+        "UNKNOWN": 0
+      },
+      "by_mode": {
+        "force": {
+          "success": 0,
+          "denominator": 6
+        },
+        "torque": {
+          "success": 0,
+          "denominator": 6
+        },
+        "quiet": {
+          "success": 0,
+          "denominator": 8
+        }
+      },
+      "numeric_and_mesh_verification": null
+    },
+    "open_hand_4": {
+      "total": "0/4",
+      "failure": "4",
+      "unknown": "0",
+      "source": "F4_open_quiet_c"
+    },
+    "strict_identity_reload_quiet_4": {
+      "total": "4/4",
+      "source": "C01b_eval_quiet (strict checkpoint, C01-era source)"
+    },
+    "strict_identity_reload_force_axis0pos_4": {
+      "total": "3/4",
+      "source": "C01e_eval_force_strict (identity-only resave, no training)"
+    },
+    "strict_identity_reload_torque_axis0pos_4": {
+      "total": "4/4",
+      "source": "C01e_eval_torque_strict (identity-only resave, no training)"
+    }
+  }
+}

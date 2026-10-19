@@ -1,0 +1,1544 @@
+{
+  "task_id": "thumb_pad_grasp_v1",
+  "task_version": "thumb_pad_grasp_v1.6.0",
+  "mode": "train",
+  "policy": "fresh",
+  "checkpoint_path": null,
+  "checkpoint_sha256": null,
+  "task_identity": {
+    "contract_id": "thumb_pad_grasp_v1",
+    "task_id": "ThumbPadGrasp-v1",
+    "task_version": "thumb_pad_grasp_v1.6.0",
+    "record_schema_version": "thumb_pad_grasp_episode.v1",
+    "stage": {
+      "stage": "contact",
+      "success_criterion": "verified_thumb_PAD_plus_nonthumb_contact_unsupported_1s",
+      "support_release_step": 120,
+      "support_release_time_s": 6.0,
+      "required_unsupported_hold_s": 1.0,
+      "required_unsupported_hold_steps": 20,
+      "required_unsupported_hold_substeps": 120,
+      "min_height_gain_m": 0.0,
+      "requires_lift_program": false,
+      "counts_as_goal": true,
+      "success_requires_height_gain": false,
+      "goal_status": "GOAL_DEFINED_BY_VERIFIED_THUMB_PAD_HOLD"
+    },
+    "physics": {
+      "hand_collision_cooking": {
+        "approximation": "convexDecomposition",
+        "parameters": {
+          "hull_vertex_limit": 64,
+          "max_convex_hulls": 64,
+          "voxel_resolution": 1000000,
+          "error_percentage": 1.0,
+          "min_thickness": 0.0002,
+          "shrink_wrap": true
+        },
+        "bodies": [
+          "base_link",
+          "thumb_link0",
+          "thumb_link1",
+          "thumb_link2",
+          "thumb_link3",
+          "thumb_link4",
+          "thumb_link5",
+          "index_link0",
+          "index_link1",
+          "index_link2",
+          "index_link3",
+          "index_link4",
+          "middle_link0",
+          "middle_link1",
+          "middle_link2",
+          "middle_link3",
+          "middle_link4",
+          "ring_link0",
+          "ring_link1",
+          "ring_link2",
+          "ring_link3",
+          "ring_link4",
+          "little_link0",
+          "little_link1",
+          "little_link2",
+          "little_link3",
+          "little_link4"
+        ],
+        "authoring": "original_instanceable_collision_wrappers_before_PhysX_cooking",
+        "geometry_and_joint_frames_changed": false,
+        "added_filtered_pairs": [],
+        "source": "research.fixed_fruit_grasp_v1.collision_cooking"
+      },
+      "policy_rate_hz": 20,
+      "policy_dt_s": 0.05,
+      "sim_dt_s": 0.008333333333333333,
+      "decimation": 6,
+      "episode_steps": 360,
+      "episode_length_s": 18.0,
+      "observation_dims": {
+        "actor": 161,
+        "critic": 222,
+        "action": 14
+      },
+      "physical_hold_guard": {
+        "guard_frequency": "per_physics_substep",
+        "guard_frequency_unit": "1/120 s 物理子步",
+        "hold_streak_semantics": "per_120Hz_verified_PAD_contact_streak",
+        "hard_fault_persistence": "sticky_until_env_reset",
+        "anchor_semantics": "hand_frame_fruit_position_at_physical_streak_start",
+        "success_semantics": "actual thumb PAD plus nonthumb contact, no support, continuous 120 valid physical substeps",
+        "missing_data_policy": "fail_closed",
+        "required_hold_substeps": 120,
+        "expected_substeps_per_policy_step": 6,
+        "scene_update_hook": "wrap_scene_update_after_original; record only when _sim_step_counter advances and dt == physics_dt",
+        "dt_zero_reset_callbacks_recorded": false,
+        "duplicate_scene_update_not_counted": true,
+        "sim_step_counter_delta_required": 1,
+        "sim_step_counter_gap_policy": "fail_closed",
+        "support_release_signal": "只消费原有支撑掩码 _stem_detached（attached 取反）；guard 不重新测量支撑 wrench",
+        "support_wrench_zero_provenance": "释放后外力/力矩为零来自原 _apply_attachment_wrench 的 attached 掩码（fixture 撤支撑 F/T zero 代码未变），由外置 raw 采集物理证据核验；guard 不声称自己检测了 wrench 为零",
+        "diagnostic_aabb_obb_skipped_per_substep": true,
+        "effort_limits_source": "robot.data.joint_effort_limits[安全关节(21)]（共享向量，helper 校验长度并按行广播）",
+        "finger_hard_high_source": "C.FINGER_HARD_HIGH_N（5 指共享向量）",
+        "decimation_branch_required": "external_per_substep_decimation_false"
+      },
+      "support": {
+        "kind": "declared_compliant_support_physx_wrench_no_state_write",
+        "release_step": 120,
+        "release_time_s": 6.0,
+        "declared_break_force_n": 60.0,
+        "maximum_stem_force_n": 100.0,
+        "maximum_stem_torque_nm": 0.3,
+        "linear_natural_frequency_rad_s": 20.0,
+        "linear_damping_ratio": 1.0,
+        "angular_natural_frequency_rad_s": 15.0,
+        "angular_damping_ratio": 1.0,
+        "release_is_success_triggered": false
+      }
+    },
+    "fruit": {
+      "shape": "sphere",
+      "equivalent_diameter_m": 0.067,
+      "axes_m": [
+        0.03350000083446503,
+        0.03350000083446503,
+        0.03350000083446503
+      ],
+      "density_kg_m3": 900.0,
+      "computed_mass_kg": 0.14173123240470886,
+      "expected_mass_kg": 0.14173122469074406,
+      "mass_tolerance_kg": 0.0005,
+      "mass_source": "parent_env computes 4/3*pi*a*b*c*rho from prestartup axes and density",
+      "mass_declared_in_cfg_tomato_mass": 0.1,
+      "mass_declared_source_note": "cfg.tomato.spawn.mass_props.mass 只是 USD 初始声明值，实际质量以 computed_mass_kg（父环境写回 PhysX）为准",
+      "friction": {
+        "static": 0.7,
+        "dynamic": 0.58,
+        "restitution": 0.01,
+        "combine_mode": "multiply",
+        "solver_default_static": 1.0,
+        "solver_default_dynamic": 1.0,
+        "source": "cfg.tomato.spawn.physics_material",
+        "hand_side_material_source": "USD 未 author PhysicsMaterial，沿用模拟器默认物理材质；本层不覆写"
+      },
+      "sampling": "deterministic_fixed_no_randomization"
+    },
+    "actuation": {
+      "source": "cfg.robot.actuators（canonical 孤立左手 USD 驱动）+ wave2 最小修复",
+      "groups": {
+        "g20_independent": {
+          "effort_limit_sim": 0.2,
+          "velocity_limit_sim": 1.2,
+          "stiffness": 20.0,
+          "damping": 1.0,
+          "friction": 0.01,
+          "armature": 0.01,
+          "class_type": "ABCMeta"
+        },
+        "g20_followers": {
+          "effort_limit_sim": 0.2,
+          "velocity_limit_sim": 1.2,
+          "stiffness": 1.0,
+          "damping": 0.5,
+          "friction": 0.01,
+          "armature": 0.01,
+          "class_type": "ABCMeta"
+        }
+      },
+      "minimal_repair": {
+        "post_brake_effort_clip": true,
+        "armature_kg_m2": 0.01,
+        "source": "wave2 native_env 差异（brake 后逐轴 effort 裁剪 + armature 0.01）"
+      },
+      "mimic": {
+        "thumb_joint4": {
+          "driver": "thumb_joint3",
+          "multiplier": 1.11,
+          "offset_rad": -0.04545
+        },
+        "index_joint3": {
+          "driver": "index_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        },
+        "middle_joint3": {
+          "driver": "middle_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        },
+        "ring_joint3": {
+          "driver": "ring_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        },
+        "little_joint3": {
+          "driver": "little_joint2",
+          "multiplier": 0.94,
+          "offset_rad": -0.04545
+        }
+      },
+      "mimic_note": "保留 canonical 软件 mimic 关系；不继承派生 PPV1 资产的 NewtonMimicAPI/offset=0 被动零驱动路线（运行时支持未证实）",
+      "joint_hard_limits_rad": {
+        "index_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "little_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "middle_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "ring_joint0": [
+          -0.25999996066093445,
+          0.25999996066093445
+        ],
+        "thumb_joint0": [
+          -1.0499998331069946,
+          0.4899999797344208
+        ],
+        "index_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "little_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "middle_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "ring_joint1": [
+          0.0,
+          1.6599998474121094
+        ],
+        "thumb_joint1": [
+          0.0,
+          1.4500000476837158
+        ],
+        "index_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "little_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "middle_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "ring_joint2": [
+          0.0,
+          1.3599998950958252
+        ],
+        "thumb_joint2": [
+          0.0,
+          0.8399999737739563
+        ],
+        "index_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "little_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "middle_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "ring_joint3": [
+          0.0,
+          1.4800000190734863
+        ],
+        "thumb_joint3": [
+          0.0,
+          1.3199999332427979
+        ],
+        "thumb_joint4": [
+          0.0,
+          1.340000033378601
+        ]
+      },
+      "joint_hard_limits_source": "robot.data.joint_pos_limits（USD 关节限位）",
+      "joint_software_limits_source": "LeftHandDirectionalPDActuator._JOINT_LIMITS"
+    },
+    "contact": {
+      "force_threshold_n": 0.08,
+      "min_contact_fingers": 2,
+      "soft_low_n": [
+        0.2,
+        0.15,
+        0.12,
+        0.08,
+        0.05
+      ],
+      "soft_high_n": [
+        1.8,
+        1.5,
+        1.3,
+        1.2,
+        1.0
+      ],
+      "hard_high_n": [
+        15.0,
+        15.0,
+        15.0,
+        15.0,
+        15.0
+      ],
+      "palm_may_carry_load": true,
+      "palm_only_counts_as_success": false,
+      "palm_fruit_collision_filter_enabled": false,
+      "real_self_collisions_enabled": true,
+      "self_collision_status": "ENABLED_WITH_EXPLICIT_FINE_CONVEX_DECOMPOSITION（仍需同条件评估）",
+      "declared_self_collision_pairs": [
+        [
+          "thumb_link4",
+          "index_link3"
+        ],
+        [
+          "thumb_link4",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "ring_link3"
+        ],
+        [
+          "middle_link3",
+          "ring_link3"
+        ]
+      ],
+      "effective_self_collision_pairs": [
+        [
+          "thumb_link4",
+          "index_link3"
+        ],
+        [
+          "thumb_link4",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "middle_link3"
+        ],
+        [
+          "index_link3",
+          "ring_link3"
+        ],
+        [
+          "middle_link3",
+          "ring_link3"
+        ]
+      ],
+      "skipped_self_collision_pairs": [],
+      "self_collision_penetration_limit_m": 0.01,
+      "legacy_thumb_index_proxy_is_sufficient": false,
+      "self_collision_guard_source": "PhysX packed separation; 5 declared cross-digit pairs; every 1/120 s physics substep (v1.4.0)",
+      "solver_self_collision_config": "cfg.robot.spawn.articulation_props.enabled_self_collisions=True（真实 PhysX 求解器自碰撞，不在运行时关闭）；运行时实际值由主线程 physics smoke 读取 PhysxSchema 记录",
+      "self_collision_diagnostic_scope": "声明的5对跨指刚体以PhysX packed逐点separation作为硬守护，OBB-SAT只诊断；硬守护在每个真实1/120 s物理子步判定（v1.4.0），但仍不是全部手内刚体对的完整审计",
+      "penetration_guard_scope": "硬门读取全部27个手部刚体→果实的PhysX packed逐点separation，每个真实1/120 s物理子步判定（v1.4.0）；AABB重叠与接触点质心深度仅诊断，不作为真实穿透深度",
+      "physical_penetration_method": "packed_separation_all_27_hand_bodies_per_physics_substep",
+      "claims_out_of_scope": [
+        "完整穿透/碰撞审计",
+        "26 场景或 110 对覆盖",
+        "实机触觉标定",
+        "真机可达性/集成完成"
+      ]
+    },
+    "reward": {
+      "version": "pad_phase_focused_low_impact_v3",
+      "unsupported_signal": "actual stem_detached; no support schedule changes",
+      "dense_contact_is_not_success": true,
+      "terminal_failure_blocks_all_positive_terms": true,
+      "stability_speed_scale_m_s": 0.05,
+      "speed_excess_squared_cap": 25.0,
+      "weights": {
+        "thumb_surface_potential_delta": 2.0,
+        "normal_alignment_dense": 0.25,
+        "thumb_pad_supported": 0.3,
+        "thumb_pad_unsupported": 4.0,
+        "other_contact": 0.3,
+        "unsupported_pair": 2.0,
+        "unsupported_stability": 4.0,
+        "unsupported_speed_squared": -0.25,
+        "thumb_nonpad_load": -0.5,
+        "unknown": -0.2,
+        "hold_progress": 12.0,
+        "force_excess_squared": -0.03,
+        "force_growth": -0.03,
+        "action_delta": -0.02,
+        "hard_fault": -25.0,
+        "drop": -15.0,
+        "success": 100.0
+      }
+    },
+    "criteria": {
+      "approach_reward_source": "pad_center_distance_and_normal_alignment_potential_only_not_contact_truth",
+      "contact_source": "per_point_actual_normal_force_and_confirmed_surface",
+      "thumb_required": true,
+      "hold_drift_reference": "hand_frame_fruit_position_at_physical_substep_streak_start（v1.4.0：120 Hz 子步 streak 起点，策略刷新不重置）",
+      "hold_streak_gate": "per_120Hz_substep_verified_thumb_PAD_plus_nonthumb_real_contact",
+      "hold_hard_fault_gate": "seven_hard_faults_evaluated_every_physics_substep_sticky_until_env_reset",
+      "hold_max_drift_m": 0.01,
+      "hold_max_relative_speed_m_s": 0.05,
+      "drop_height_tolerance_m": 0.08,
+      "drop_max_drift_m": 0.12,
+      "penetration_limit_m": 0.005,
+      "collider_overlap_limit_m": 0.012,
+      "joint_limit_margin_rad": 0.01,
+      "instability_max_joint_velocity_rad_s": 4.0,
+      "instability_max_fruit_speed_m_s": 5.0,
+      "goal_min_height_gain_m": 0.0,
+      "goal_hold_s": 1.0,
+      "thumb_nonpad_bearing_allowed_n": 0.0,
+      "unknown_success_allowed": false,
+      "nonthumb_requirement": "at_least_one_real_contact_pad_or_nonpad",
+      "required_true_substeps": 120,
+      "unsupported_hold_s": 1.0
+    },
+    "goal": {
+      "deliverable": "new_PPO_weight_with_verified_thumb_PAD_unsupported_hold",
+      "success_rate": "report_complete_denominator_no_strict_rate_gate"
+    },
+    "randomization": {
+      "fruit_geometry": "fixed",
+      "fruit_density": "fixed",
+      "fruit_position": "fixed",
+      "measured_axes_noise": 0.0,
+      "target_position_noise_m": 0.0,
+      "tactile_gain": [
+        1.0,
+        1.0
+      ],
+      "tactile_bias_n": [
+        0.0,
+        0.0
+      ],
+      "action_delay_steps": [
+        0,
+        0
+      ],
+      "arm_joint_noise_deg": 0.0,
+      "pregrasp_distance_range_m": [
+        0.005,
+        0.005
+      ],
+      "pregrasp_lateral_offset_range_m": [
+        0.0,
+        0.0
+      ],
+      "pregrasp_axial_noise_m": 0.0,
+      "enforced_by": "validate_cfg（任何偏离一律 fail-closed）"
+    },
+    "open_control": {
+      "mechanism": "set_open_hand_baseline",
+      "open_hand_action_available": false,
+      "action_inverse_available": false,
+      "reason": "14D 流形写了 16 个关节（max()/区间夹紧 + 每指残差共享同一关节），像集不满秩，零动作不是 reset 的真实 neutral 张开姿态",
+      "manifold_zero_target_gap_rad": 0.2668784260749817,
+      "bounded_closure_reference": "closure_reference_action(closure=0..1)"
+    },
+    "action_effect": {
+      "ok": true,
+      "joint_limit_overhang_rad": 0.0,
+      "joint_limit_overhang_names": [],
+      "joint_limit_note": "可达范围越出 USD 声明限位时只记录：执行器软件限位与 PhysX 仍会拦截，但该关节在越界区间的动作无作用，需要显式复核",
+      "per_joint_span_rad": [
+        0.6000000238418579,
+        0.918619692325592,
+        0.9577098488807678,
+        0.9577098488807678,
+        0.918619692325592,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.39062535762786865,
+        0.7250972390174866,
+        1.0376471281051636,
+        1.0376471281051636,
+        1.0164705514907837,
+        1.0376471281051636
+      ],
+      "min_joint_span_rad": 0.0,
+      "mean_joint_span_rad": 0.6311120986938477,
+      "manifold_zero_target_gap_rad": 0.2668784260749817,
+      "neutral_targets_rad": [
+        0.4531112015247345,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.05549412965774536,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.3393746614456177,
+        0.10039140284061432,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "probe_targets_rad": [
+        [
+          0.15311118960380554,
+          0.21323923766613007,
+          0.22114509344100952,
+          0.22114509344100952,
+          0.21323923766613007,
+          -0.19450587034225464,
+          -0.13254901766777039,
+          -0.04180392250418663,
+          0.04588235169649124,
+          0.1661960780620575,
+          0.9893746376037598,
+          0.025294117629528046,
+          0.021176470443606377,
+          0.021176470443606377,
+          0.021176470443606377,
+          0.021176470443606377
+        ],
+        [
+          0.4531112015247345,
+          0.25710588693618774,
+          0.2668784260749817,
+          0.2668784260749817,
+          0.25710588693618774,
+          0.05549412965774536,
+          -0.13254901766777039,
+          -0.04180392250418663,
+          0.04588235169649124,
+          0.1661960780620575,
+          1.3393746614456177,
+          0.10039140284061432,
+          0.2058776617050171,
+          0.2058776617050171,
+          0.202108234167099,
+          0.2058776617050171
+        ],
+        [
+          0.7531112432479858,
+          1.1318589448928833,
+          1.1788549423217773,
+          1.1788549423217773,
+          1.1318589448928833,
+          0.30549412965774536,
+          -0.13254901766777039,
+          -0.04180392250418663,
+          0.04588235169649124,
+          0.1661960780620575,
+          1.3799999952316284,
+          0.7503913640975952,
+          1.058823585510254,
+          1.058823585510254,
+          1.037647008895874,
+          1.058823585510254
+        ]
+      ],
+      "mapping_id": "thumb_pad_upward_reference_residual_14d_v3"
+    },
+    "assets": {
+      "root": "$SOURCE/research/small_fruit_pinch_v1/assets/left_hand_urdf",
+      "usd_path": "$SOURCE/research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_l20_physx.usd",
+      "asset_config_path": "$SOURCE/research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_physics.usd",
+      "selected": "canonical isolated left hand USD (16 active + 5 mimic followers + 27 bodies)",
+      "selection_note": "派生 PPV1 资产 physical_prior_v1/left_hand_ppv1.usda 要求 mimic offset=0 且依赖 NewtonMimicAPI；本任务不继承未证实的运行时后端，故不选它。",
+      "not_selected": {
+        "derived_ppv1_usda": "research/small_fruit_pinch_v1/assets/physical_prior_v1/left_hand_ppv1.usda",
+        "tip_pad_overlay_usda": "research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_tip_pad_collision.usda"
+      },
+      "files": {
+        ".asset_hash": "8ba484d5bbabd8e6b84a17ecd35c590ae5b10c6583fc96384feded85c4977cc8",
+        "configuration/left_hand_l20_physx_base.usd": "c78ed17edac5ac8bd06e5a5605b6fcd39449ef405e46a689e7dfc7121d70ea98",
+        "configuration/left_hand_l20_physx_physics.usd": "bc433c24664473d6d207e309cd456ef4246f9bd98bb219377ad861feff206e43",
+        "configuration/left_hand_l20_physx_sensor.usd": "e757e2045204d0f0664aad91d2b133a992fb73b9253d0536a227e54357950ff3",
+        "left_hand_l20_physx.usd": "b5ab656b3b58b2e19b349755158c9f11f84f9b48c2211c474fac6fd66b7ddb57",
+        "left_hand_tip_pad_collision.usda": "a8a9aac3250d9e85ff0ecba2b67732d4d93915b0139db389d03a7a41d235c35b"
+      },
+      "closure_sha256": "011de237f6e3db111671f0c3e6d282a14b6dcd9ef57aed9275b81ab8bcd8686a",
+      "closure_algorithm": "sha256 of sorted 'relative_path  sha256' manifest",
+      "closure_file_count": 6,
+      "closure_bytes": 17288506,
+      "missing_files": [],
+      "declared_asset_hash_file": "67f2ffca858670da9edc0792bb693ca4"
+    },
+    "source_dependencies": {
+      "pinch_native_env": {
+        "source_path": "$SOURCE/research/small_fruit_pinch_v1/source/native_env.py",
+        "sha256": "ccad0362c475a5d0c3517d0dbbb269771b261b3dba16558b5a14b945ab2af087"
+      },
+      "isaac_env": {
+        "source_path": "$SOURCE/simulation/tomato_pick/isaac/env.py",
+        "sha256": "191737c0644bf9c53621ee62e3794b190e07134183f6b8dcf08211c78569f99c"
+      },
+      "isaac_env_cfg": {
+        "source_path": "$SOURCE/simulation/tomato_pick/isaac/env_cfg.py",
+        "sha256": "8dbd538bcdd40ce4e81e22c17e75ac50fed6a37bc5384aba11b8598f8a32592c"
+      },
+      "isaac_assets": {
+        "source_path": "$SOURCE/simulation/tomato_pick/isaac/assets.py",
+        "sha256": "5bd90863593004ceecdbe4bcba4272caf1ffd74d4bd9ffc9bb9e66d725a459b3"
+      },
+      "geometry_sampling": {
+        "source_path": "$SOURCE/simulation/tomato_pick/isaac/geometry_sampling.py",
+        "sha256": "2781559090245a30a424975c090bde1f9f5ad98f352a0bd03415fb0f61d56d33"
+      },
+      "pinch_action_manifold": {
+        "source_path": "$SOURCE/research/small_fruit_pinch_v1/source/pinch_action_manifold.py",
+        "sha256": "4c94c58516d50c7fd24eb2539ff99439fb302624049f16a994bbe029b0b5b40e"
+      },
+      "temporal_filter": {
+        "source_path": "$SOURCE/research/small_fruit_pinch_v1/source/temporal.py",
+        "sha256": "d3552703a10d3aa6f3be1e864adc52f64c2379ba747c2a9aa068ab1c7127f6bb"
+      },
+      "vendor_hand_manifold": {
+        "source_path": "$SOURCE/research/small_fruit_pinch_v1/source/vendor/hand_manifold.py",
+        "sha256": "7782539e65b5a80e6a50647680292dd84c3a94e8767102a38fe0d614e6fb79bf"
+      }
+    },
+    "initial_pose": {
+      "deterministic": true,
+      "randomization": "none",
+      "closed_grasp_fruit_center_m": [
+        -0.08876065266544135,
+        -0.011325082731003074,
+        -0.1935340228574738
+      ],
+      "pregrasp_distance_m": 0.005,
+      "pregrasp_lateral_offset_range_m": [
+        0.0,
+        0.0
+      ],
+      "pregrasp_axial_noise_m": 0.0,
+      "pinch_working_offset_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "minimum_initial_clearance_m": 0.002,
+      "selection_note": "预抓取距离是确定单值但不必为 65 mm：本任务不学习接近，固定场景选择由有限场景计划给出；实际 reset 姿态见 env.last_reset_poses / env.first_reset_poses，无接触由父环境 clearance 检查强制",
+      "recorded_by": "env.last_reset_poses / env.first_reset_poses / env.reset_pose_count",
+      "thumb_reference_q_rad": [
+        0.05549413117585235,
+        1.3393746570587945,
+        0.4531111979189145,
+        0.10039140509741924
+      ],
+      "thumb_reference_policy": "reset only; actual initial no-contact and original clearance guard required"
+    },
+    "safety_guard": {
+      "guarded_joints": [
+        "thumb_joint2",
+        "index_joint1",
+        "middle_joint1",
+        "ring_joint1",
+        "little_joint1",
+        "thumb_joint0",
+        "index_joint0",
+        "middle_joint0",
+        "ring_joint0",
+        "little_joint0",
+        "thumb_joint1",
+        "thumb_joint3",
+        "index_joint2",
+        "middle_joint2",
+        "ring_joint2",
+        "little_joint2",
+        "thumb_joint4",
+        "index_joint3",
+        "middle_joint3",
+        "ring_joint3",
+        "little_joint3"
+      ],
+      "guarded_joint_count": 21,
+      "policy_observation_joints": 16,
+      "note": "关节硬限/速度/非有限/effort 守护覆盖 16 主动 + 5 跟随；策略观测仍为 16 维（114D 不变）",
+      "effort_limits_nm": {
+        "thumb_joint2": 0.20000000298023224,
+        "index_joint1": 0.20000000298023224,
+        "middle_joint1": 0.20000000298023224,
+        "ring_joint1": 0.20000000298023224,
+        "little_joint1": 0.20000000298023224,
+        "thumb_joint0": 0.20000000298023224,
+        "index_joint0": 0.20000000298023224,
+        "middle_joint0": 0.20000000298023224,
+        "ring_joint0": 0.20000000298023224,
+        "little_joint0": 0.20000000298023224,
+        "thumb_joint1": 0.20000000298023224,
+        "thumb_joint3": 0.20000000298023224,
+        "index_joint2": 0.20000000298023224,
+        "middle_joint2": 0.20000000298023224,
+        "ring_joint2": 0.20000000298023224,
+        "little_joint2": 0.20000000298023224,
+        "thumb_joint4": 0.20000000298023224,
+        "index_joint3": 0.20000000298023224,
+        "middle_joint3": 0.20000000298023224,
+        "ring_joint3": 0.20000000298023224,
+        "little_joint3": 0.20000000298023224
+      },
+      "effort_guard_tolerance": 0.05,
+      "joint_limit_margin_rad": 0.01,
+      "instability_max_joint_velocity_rad_s": 4.0
+    },
+    "episode_record_fields": [
+      "schema_version",
+      "task_id",
+      "task_version",
+      "stage",
+      "success_criterion",
+      "env_id",
+      "episode_id",
+      "success",
+      "goal_success",
+      "goal_status",
+      "reason",
+      "reason_code",
+      "terminated",
+      "truncated",
+      "steps",
+      "sim_time_s",
+      "contact_fraction",
+      "finger_contact_fraction",
+      "required_contact_fraction",
+      "unsupported_contact_fraction",
+      "any_contact_fraction",
+      "mean_contact_fingers",
+      "max_contact_fingers",
+      "palm_contact_fraction",
+      "palm_only_fraction",
+      "forbidden_contact_steps",
+      "peak_finger_force_n",
+      "mean_finger_force_n",
+      "support_release_step",
+      "support_release_time_s",
+      "support_released",
+      "stem_fracture_before_release",
+      "max_unsupported_hold_s",
+      "final_unsupported_hold_s",
+      "hold_steps_required",
+      "max_physical_hold_streak_substeps",
+      "final_physical_hold_streak_substeps",
+      "physical_hold_streak_required_substeps",
+      "max_unsupported_hold_s_from_physical_substeps",
+      "physical_hold_streak_semantics",
+      "physical_substep_hard_fault_flags",
+      "max_height_gain_m",
+      "final_height_gain_m",
+      "height_gain_sufficient",
+      "min_height_gain_m",
+      "goal_min_height_gain_m",
+      "stage_success_requires_height_gain",
+      "stage_requires_lift_program",
+      "stage_is_goal",
+      "max_center_drift_m",
+      "max_relative_speed_m_s",
+      "max_joint_limit_excursion_rad",
+      "max_applied_effort_nm",
+      "min_self_collision_clearance_m",
+      "min_collider_distance_m",
+      "max_penetration_depth_m",
+      "instability_step",
+      "first_fault_step",
+      "immediate_failure",
+      "failure_phase",
+      "stem_fracture",
+      "overload",
+      "nonfinite",
+      "penetration",
+      "joint_limit",
+      "self_collision",
+      "instability",
+      "joint_effort",
+      "action_effect_ok",
+      "open_hand_baseline",
+      "open_hand_fraction"
+    ],
+    "declared_limitations": [
+      "holding-only：30 mm+3 s 提举目标未实现（缺声明式受驱动升降关节）",
+      "自碰撞在 canonical 孤立左手 USD 上开启但未在本机 GPU 上验证，静态姿态有自激记录",
+      "粗穿透代理排除 base_link（导入掌心 AABB 远大于真实掌面形状）",
+      "掌心侧摩擦/材质来自 USD 资产，本层不覆写",
+      "接触力/阈值是仿真量，不是实机触觉标定",
+      "本包不启动 Kit/PhysX；物理与动态验证由主线程负责"
+    ],
+    "asset_config": {
+      "usd_path": "$SOURCE/research/small_fruit_pinch_v1/assets/left_hand_urdf/left_hand_l20_physx.usd",
+      "asset_config_path": "$SOURCE/research/small_fruit_pinch_v1/assets/left_hand_urdf/configuration/left_hand_l20_physx_physics.usd",
+      "asset_files": {
+        ".asset_hash": "8ba484d5bbabd8e6b84a17ecd35c590ae5b10c6583fc96384feded85c4977cc8",
+        "configuration/left_hand_l20_physx_base.usd": "c78ed17edac5ac8bd06e5a5605b6fcd39449ef405e46a689e7dfc7121d70ea98",
+        "configuration/left_hand_l20_physx_physics.usd": "bc433c24664473d6d207e309cd456ef4246f9bd98bb219377ad861feff206e43",
+        "configuration/left_hand_l20_physx_sensor.usd": "e757e2045204d0f0664aad91d2b133a992fb73b9253d0536a227e54357950ff3",
+        "left_hand_l20_physx.usd": "b5ab656b3b58b2e19b349755158c9f11f84f9b48c2211c474fac6fd66b7ddb57",
+        "left_hand_tip_pad_collision.usda": "a8a9aac3250d9e85ff0ecba2b67732d4d93915b0139db389d03a7a41d235c35b"
+      },
+      "fruit": {
+        "shape": "sphere",
+        "equivalent_diameter_m": 0.067,
+        "axes_m": [
+          0.03350000083446503,
+          0.03350000083446503,
+          0.03350000083446503
+        ],
+        "density_kg_m3": 900.0,
+        "computed_mass_kg": 0.14173123240470886,
+        "expected_mass_kg": 0.14173122469074406,
+        "mass_tolerance_kg": 0.0005,
+        "mass_source": "parent_env computes 4/3*pi*a*b*c*rho from prestartup axes and density",
+        "mass_declared_in_cfg_tomato_mass": 0.1,
+        "mass_declared_source_note": "cfg.tomato.spawn.mass_props.mass 只是 USD 初始声明值，实际质量以 computed_mass_kg（父环境写回 PhysX）为准",
+        "friction": {
+          "static": 0.7,
+          "dynamic": 0.58,
+          "restitution": 0.01,
+          "combine_mode": "multiply",
+          "solver_default_static": 1.0,
+          "solver_default_dynamic": 1.0,
+          "source": "cfg.tomato.spawn.physics_material",
+          "hand_side_material_source": "USD 未 author PhysicsMaterial，沿用模拟器默认物理材质；本层不覆写"
+        },
+        "sampling": "deterministic_fixed_no_randomization"
+      },
+      "actuation": {
+        "source": "cfg.robot.actuators（canonical 孤立左手 USD 驱动）+ wave2 最小修复",
+        "groups": {
+          "g20_independent": {
+            "effort_limit_sim": 0.2,
+            "velocity_limit_sim": 1.2,
+            "stiffness": 20.0,
+            "damping": 1.0,
+            "friction": 0.01,
+            "armature": 0.01,
+            "class_type": "ABCMeta"
+          },
+          "g20_followers": {
+            "effort_limit_sim": 0.2,
+            "velocity_limit_sim": 1.2,
+            "stiffness": 1.0,
+            "damping": 0.5,
+            "friction": 0.01,
+            "armature": 0.01,
+            "class_type": "ABCMeta"
+          }
+        },
+        "minimal_repair": {
+          "post_brake_effort_clip": true,
+          "armature_kg_m2": 0.01,
+          "source": "wave2 native_env 差异（brake 后逐轴 effort 裁剪 + armature 0.01）"
+        },
+        "mimic": {
+          "thumb_joint4": {
+            "driver": "thumb_joint3",
+            "multiplier": 1.11,
+            "offset_rad": -0.04545
+          },
+          "index_joint3": {
+            "driver": "index_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          },
+          "middle_joint3": {
+            "driver": "middle_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          },
+          "ring_joint3": {
+            "driver": "ring_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          },
+          "little_joint3": {
+            "driver": "little_joint2",
+            "multiplier": 0.94,
+            "offset_rad": -0.04545
+          }
+        },
+        "mimic_note": "保留 canonical 软件 mimic 关系；不继承派生 PPV1 资产的 NewtonMimicAPI/offset=0 被动零驱动路线（运行时支持未证实）",
+        "joint_hard_limits_rad": {
+          "index_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "little_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "middle_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "ring_joint0": [
+            -0.25999996066093445,
+            0.25999996066093445
+          ],
+          "thumb_joint0": [
+            -1.0499998331069946,
+            0.4899999797344208
+          ],
+          "index_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "little_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "middle_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "ring_joint1": [
+            0.0,
+            1.6599998474121094
+          ],
+          "thumb_joint1": [
+            0.0,
+            1.4500000476837158
+          ],
+          "index_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "little_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "middle_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "ring_joint2": [
+            0.0,
+            1.3599998950958252
+          ],
+          "thumb_joint2": [
+            0.0,
+            0.8399999737739563
+          ],
+          "index_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "little_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "middle_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "ring_joint3": [
+            0.0,
+            1.4800000190734863
+          ],
+          "thumb_joint3": [
+            0.0,
+            1.3199999332427979
+          ],
+          "thumb_joint4": [
+            0.0,
+            1.340000033378601
+          ]
+        },
+        "joint_hard_limits_source": "robot.data.joint_pos_limits（USD 关节限位）",
+        "joint_software_limits_source": "LeftHandDirectionalPDActuator._JOINT_LIMITS"
+      },
+      "contact": {
+        "force_threshold_n": 0.08,
+        "min_contact_fingers": 2,
+        "soft_low_n": [
+          0.2,
+          0.15,
+          0.12,
+          0.08,
+          0.05
+        ],
+        "soft_high_n": [
+          1.8,
+          1.5,
+          1.3,
+          1.2,
+          1.0
+        ],
+        "hard_high_n": [
+          15.0,
+          15.0,
+          15.0,
+          15.0,
+          15.0
+        ],
+        "palm_may_carry_load": true,
+        "palm_only_counts_as_success": false,
+        "palm_fruit_collision_filter_enabled": false,
+        "real_self_collisions_enabled": true,
+        "self_collision_status": "ENABLED_WITH_EXPLICIT_FINE_CONVEX_DECOMPOSITION（仍需同条件评估）",
+        "declared_self_collision_pairs": [
+          [
+            "thumb_link4",
+            "index_link3"
+          ],
+          [
+            "thumb_link4",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "ring_link3"
+          ],
+          [
+            "middle_link3",
+            "ring_link3"
+          ]
+        ],
+        "effective_self_collision_pairs": [
+          [
+            "thumb_link4",
+            "index_link3"
+          ],
+          [
+            "thumb_link4",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "middle_link3"
+          ],
+          [
+            "index_link3",
+            "ring_link3"
+          ],
+          [
+            "middle_link3",
+            "ring_link3"
+          ]
+        ],
+        "skipped_self_collision_pairs": [],
+        "self_collision_penetration_limit_m": 0.01,
+        "legacy_thumb_index_proxy_is_sufficient": false,
+        "self_collision_guard_source": "PhysX packed separation; 5 declared cross-digit pairs; every 1/120 s physics substep (v1.4.0)",
+        "solver_self_collision_config": "cfg.robot.spawn.articulation_props.enabled_self_collisions=True（真实 PhysX 求解器自碰撞，不在运行时关闭）；运行时实际值由主线程 physics smoke 读取 PhysxSchema 记录",
+        "self_collision_diagnostic_scope": "声明的5对跨指刚体以PhysX packed逐点separation作为硬守护，OBB-SAT只诊断；硬守护在每个真实1/120 s物理子步判定（v1.4.0），但仍不是全部手内刚体对的完整审计",
+        "penetration_guard_scope": "硬门读取全部27个手部刚体→果实的PhysX packed逐点separation，每个真实1/120 s物理子步判定（v1.4.0）；AABB重叠与接触点质心深度仅诊断，不作为真实穿透深度",
+        "physical_penetration_method": "packed_separation_all_27_hand_bodies_per_physics_substep",
+        "claims_out_of_scope": [
+          "完整穿透/碰撞审计",
+          "26 场景或 110 对覆盖",
+          "实机触觉标定",
+          "真机可达性/集成完成"
+        ]
+      },
+      "physics": {
+        "hand_collision_cooking": {
+          "approximation": "convexDecomposition",
+          "parameters": {
+            "hull_vertex_limit": 64,
+            "max_convex_hulls": 64,
+            "voxel_resolution": 1000000,
+            "error_percentage": 1.0,
+            "min_thickness": 0.0002,
+            "shrink_wrap": true
+          },
+          "bodies": [
+            "base_link",
+            "thumb_link0",
+            "thumb_link1",
+            "thumb_link2",
+            "thumb_link3",
+            "thumb_link4",
+            "thumb_link5",
+            "index_link0",
+            "index_link1",
+            "index_link2",
+            "index_link3",
+            "index_link4",
+            "middle_link0",
+            "middle_link1",
+            "middle_link2",
+            "middle_link3",
+            "middle_link4",
+            "ring_link0",
+            "ring_link1",
+            "ring_link2",
+            "ring_link3",
+            "ring_link4",
+            "little_link0",
+            "little_link1",
+            "little_link2",
+            "little_link3",
+            "little_link4"
+          ],
+          "authoring": "original_instanceable_collision_wrappers_before_PhysX_cooking",
+          "geometry_and_joint_frames_changed": false,
+          "added_filtered_pairs": [],
+          "source": "research.fixed_fruit_grasp_v1.collision_cooking"
+        },
+        "policy_rate_hz": 20,
+        "policy_dt_s": 0.05,
+        "sim_dt_s": 0.008333333333333333,
+        "decimation": 6,
+        "episode_steps": 360,
+        "episode_length_s": 18.0,
+        "observation_dims": {
+          "actor": 114,
+          "critic": 175,
+          "action": 14
+        },
+        "physical_hold_guard": {
+          "guard_frequency": "per_physics_substep",
+          "guard_frequency_unit": "1/120 s 物理子步",
+          "hold_streak_semantics": "continuous_physical_substeps_zeroed_on_any_violation",
+          "hard_fault_persistence": "sticky_until_env_reset",
+          "anchor_semantics": "hand_frame_fruit_position_at_physical_streak_start",
+          "success_semantics": "success_requires_physical_streak_ge_required_policy_steps_times_decimation",
+          "missing_data_policy": "fail_closed",
+          "required_hold_substeps": 120,
+          "expected_substeps_per_policy_step": 6,
+          "scene_update_hook": "wrap_scene_update_after_original; record only when _sim_step_counter advances and dt == physics_dt",
+          "dt_zero_reset_callbacks_recorded": false,
+          "duplicate_scene_update_not_counted": true,
+          "sim_step_counter_delta_required": 1,
+          "sim_step_counter_gap_policy": "fail_closed",
+          "support_release_signal": "只消费原有支撑掩码 _stem_detached（attached 取反）；guard 不重新测量支撑 wrench",
+          "support_wrench_zero_provenance": "释放后外力/力矩为零来自原 _apply_attachment_wrench 的 attached 掩码（fixture 撤支撑 F/T zero 代码未变），由外置 raw 采集物理证据核验；guard 不声称自己检测了 wrench 为零",
+          "diagnostic_aabb_obb_skipped_per_substep": true,
+          "effort_limits_source": "robot.data.joint_effort_limits[安全关节(21)]（共享向量，helper 校验长度并按行广播）",
+          "finger_hard_high_source": "C.FINGER_HARD_HIGH_N（5 指共享向量）",
+          "decimation_branch_required": "external_per_substep_decimation_false"
+        },
+        "support": {
+          "kind": "declared_compliant_support_physx_wrench_no_state_write",
+          "release_step": 120,
+          "release_time_s": 3.0,
+          "declared_break_force_n": 60.0,
+          "maximum_stem_force_n": 100.0,
+          "maximum_stem_torque_nm": 0.3,
+          "linear_natural_frequency_rad_s": 20.0,
+          "linear_damping_ratio": 1.0,
+          "angular_natural_frequency_rad_s": 15.0,
+          "angular_damping_ratio": 1.0,
+          "release_is_success_triggered": false
+        }
+      },
+      "criteria": {
+        "approach_reward_source": "pad_center_distance_and_normal_alignment_potential_only_not_contact_truth",
+        "contact_source": "per_point_actual_normal_force_and_confirmed_surface",
+        "thumb_required": true,
+        "hold_drift_reference": "hand_frame_fruit_position_at_physical_substep_streak_start（v1.4.0：120 Hz 子步 streak 起点，策略刷新不重置）",
+        "hold_streak_gate": "per_120Hz_substep_verified_thumb_PAD_plus_nonthumb_real_contact",
+        "hold_hard_fault_gate": "seven_hard_faults_evaluated_every_physics_substep_sticky_until_env_reset",
+        "hold_max_drift_m": 0.01,
+        "hold_max_relative_speed_m_s": 0.05,
+        "drop_height_tolerance_m": 0.08,
+        "drop_max_drift_m": 0.12,
+        "penetration_limit_m": 0.005,
+        "collider_overlap_limit_m": 0.012,
+        "joint_limit_margin_rad": 0.01,
+        "instability_max_joint_velocity_rad_s": 4.0,
+        "instability_max_fruit_speed_m_s": 5.0,
+        "goal_min_height_gain_m": 0.0,
+        "goal_hold_s": 1.0,
+        "thumb_nonpad_bearing_allowed_n": 0.0,
+        "unknown_success_allowed": false,
+        "nonthumb_requirement": "at_least_one_real_contact_pad_or_nonpad",
+        "required_true_substeps": 120,
+        "unsupported_hold_s": 1.0
+      }
+    },
+    "pad_contact": {
+      "runtime_config": {
+        "schema": "thumb_pad_runtime_contact_v1",
+        "version": "multi_point_surface_conservative_v2",
+        "physics_dt_s": 0.008333333333333333,
+        "point_model": "raw_contact_point_nearest_original_triangle_no_assumed_projection",
+        "normal_model": "negative_raw_normal_is_hand_outward",
+        "thumb_position_tolerance_m": 0.0005,
+        "other_position_tolerance_m": 0.0005,
+        "thumb_normal_tolerance_deg": 25.0,
+        "other_normal_tolerance_deg": 45.0,
+        "boundary_uncertainty_m": 0.0005,
+        "f_pad_min_n": 0.08,
+        "f_nonpad_noise_max_n": 0.0,
+        "f_other_contact_min_n": 0.08,
+        "scope": "Original-source per-point recognition checked at three known central thumb locations, one boundary fixture and a side negative. Original approved boundaries unchanged; boundary remains UNKNOWN. Not full cooked hull reconstruction or damage calibration.",
+        "evidence": {
+          "thumb_pad_probe": "probe_known_thumb_pad_02",
+          "thumb_pad_loaded_points": 117,
+          "thumb_pad_max_source_distance_m": 0.00022619239092993082,
+          "thumb_pad_max_normal_error_deg": 3.963684448177556,
+          "thumb_side_probe": "probe_known_thumb_side_01",
+          "thumb_side_loaded_points": 30,
+          "other_pad_probes": [
+            "probe_known_index_pad_01",
+            "probe_known_middle_pad_01",
+            "probe_known_ring_pad_01",
+            "probe_known_little_pad_01"
+          ],
+          "other_observed_source_pad_max_normal_error_deg_approx": 42.63,
+          "force_sum_vs_matrix_max_error_n": 6.211375048369787e-07,
+          "noise_policy": "no nonpad positive force exempted; observed no-contact entries exactly zero",
+          "force_min_policy": "0.08N operational detection threshold; real thumb pad fixture sustained 0.121-0.195N; not a fruit damage threshold",
+          "calibration_file_sha256": {
+            "probe_known_thumb_pad_02/metadata.json": "2cf7d722ce026ae7c60db6a51bb3115a80a28dc2101481f93d1cefe2e8863dc6",
+            "probe_known_thumb_side_01/metadata.json": "bc9e485be24f3f1f18dd60d45a2108c8565487b8d3671ac6c4e4b40e58f8bffe",
+            "new_task_known_thumb_pad_01/metadata.json": "9ecf1b08b2e7a98a0f26ce57e29744f28c13bee22f502aba2e6d2796ca6c24c4",
+            "new_task_known_thumb_pad_01/channel_frames.jsonl": "a530b7ea8e4450a32beca44822da2d3c494f6f7b848eab288f8b246a546fa396",
+            "new_task_known_thumb_side_02/metadata.json": "30171cb63e4199ad007bafc3ecbc6d89fd18528ac3a057393cc31a132a898502",
+            "new_task_known_thumb_side_02/channel_frames.jsonl": "c3ac59a1dcecd9a341cf3e21489e84ab39c9aa68bd1c195ae46e14f58d595535",
+            "probe_four_env_mapping_01/metadata.json": "3a8fb40463ef2468970d8a4c98e4271828d09b82adb9d5ac36e0ae73ff73f669",
+            "probe_four_env_mapping_01/channel_frames.jsonl": "0aa3ed7e243908bd1f8cdc5b3f2cf16fa36cb7645bd66d9883e093c34f91398e"
+          },
+          "multipoint_calibration": {
+            "probe_known_thumb_pad_02": {
+              "loaded_points": 117,
+              "nearest_original_PAD": 117,
+              "PAD": 117,
+              "NON_PAD": 0,
+              "UNKNOWN": 0,
+              "max_source_distance_m": 0.00022619239092993082,
+              "max_normal_error_on_nearest_PAD_deg": 3.963684448177556,
+              "metadata_sha256": "2cf7d722ce026ae7c60db6a51bb3115a80a28dc2101481f93d1cefe2e8863dc6",
+              "contacts_sha256": "38ab66c1e054aced15b83ad260a6295ff5a8ef5ab651646d4cce625af754b775"
+            },
+            "thumb_pad_surface_calibration_01": {
+              "loaded_points": 117,
+              "nearest_original_PAD": 117,
+              "PAD": 117,
+              "NON_PAD": 0,
+              "UNKNOWN": 0,
+              "max_source_distance_m": 0.0003763147652161871,
+              "max_normal_error_on_nearest_PAD_deg": 2.141915222725822,
+              "metadata_sha256": "63e5563e9ac3fe36e015289daa9bd3a1de91a93709f9b1b3107abef5632704c8",
+              "contacts_sha256": "52ba51c144a447f6e497338c6901de8cf09b80e02224ae7645065ebdbfffcf03"
+            },
+            "thumb_pad_surface_calibration_02": {
+              "loaded_points": 117,
+              "nearest_original_PAD": 114,
+              "PAD": 114,
+              "NON_PAD": 3,
+              "UNKNOWN": 0,
+              "max_source_distance_m": 0.00011608333070367672,
+              "max_normal_error_on_nearest_PAD_deg": 19.911927713152224,
+              "metadata_sha256": "12da4e970080a71c7b7aa588516bfabcdeca43ccfae8a2bb75a243078f287f03",
+              "contacts_sha256": "eef3de481227370aab2405d51ec4e3838e4bcf909a0f4ca5f51a7570a6e56db0"
+            },
+            "thumb_pad_surface_calibration_03": {
+              "loaded_points": 99,
+              "nearest_original_PAD": 99,
+              "PAD": 0,
+              "NON_PAD": 0,
+              "UNKNOWN": 99,
+              "max_source_distance_m": 0.00013475601601757627,
+              "max_normal_error_on_nearest_PAD_deg": 6.933420291274961,
+              "metadata_sha256": "74e1085b7e8bf9bcb9af85bc711ff4c743aa4c345ae0c2aeb4144bd29401c614",
+              "contacts_sha256": "5e96332ff4d3692d538c18ea8aebbd863ae3fa170ba1752da465c78a5b28f67d"
+            },
+            "probe_known_thumb_side_01": {
+              "loaded_points": 30,
+              "nearest_original_PAD": 2,
+              "PAD": 0,
+              "NON_PAD": 14,
+              "UNKNOWN": 16,
+              "max_source_distance_m": 0.003376990118754457,
+              "max_normal_error_on_nearest_PAD_deg": 110.81907061297079,
+              "metadata_sha256": "bc9e485be24f3f1f18dd60d45a2108c8565487b8d3671ac6c4e4b40e58f8bffe",
+              "contacts_sha256": "d98fb6e8dbd08d65b7da11e523e0197ecc1347409f1c65ccf87bf3ee3a5c06a0"
+            }
+          },
+          "threshold_rationale": "Known approved central PAD contacts include source distance 0.3764mm and normal mismatch 19.912deg; 0.5mm/25deg bounds these empirical correspondences. Same 0.5mm boundary-uncertainty exclusion retained: fixture03 is 99/99 UNKNOWN, not accepted as a positive. Known side remains zero PAD. No nonpad positive load exemption. Hold/support/fault criteria unchanged."
+        },
+        "usable_for_training": true,
+        "status": "EMPIRICALLY_CHECKED_CONSERVATIVE_SURFACE_CLASSIFIER",
+        "geometry_approval_source": "pad_regions_v1.approved.json",
+        "geometry_approval_sha256": "abd16607249509762ac07483f9542b6b460628beee5b13a464fca31217b04258",
+        "geometry_approval_status_note": "Original approval JSON is an immutable historical geometry-only receipt. Its NOT_RUN/usable_for_training=false described the approval date, not this later runtime calibration. Geometry and boundaries remain byte-identical; only this separately versioned runtime contract permits calibrated use.",
+        "full_cooked_hull_export": "UNAVAILABLE_MERGED_XFORM_WRAPPER",
+        "invalid_packed_point_policy": "mark all digit channels UNKNOWN only for the affected named environment; forbid success; retain raw force repr; no abs or numeric-noise exemption"
+      },
+      "asset_sha256": {
+        "pad_regions_v1.approved.json": "abd16607249509762ac07483f9542b6b460628beee5b13a464fca31217b04258",
+        "runtime_contact_v1.json": "50f7298a4ed3b031725efa0af222c9d355315cc16b671f7e931856b158cff922",
+        "runtime_contact_v2.json": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+        "source_geometry_v1.npz": "76adf67d22ac05d6eb62723796181c14513d664816d348cbb1a5ac73e358fb4c"
+      }
+    },
+    "observations": {
+      "policy_dim": 161,
+      "critic_dim": 222,
+      "base_policy_prefix_dim": 114,
+      "new_features": "five_pad_local_fruit_offset15,direction_alignment5,pad_load5,nonpad_load5,unknown5,states5,thumb_gap1,stage1,thumb_qualified1,required1,physical_streak1,thumb_normal_error1,valid1"
+    },
+    "action_mapping": {
+      "mode": "independent",
+      "mapping_id": "thumb_pad_upward_reference_residual_14d_v3",
+      "action_order": [
+        "finger_flexion",
+        "finger_curl_shape",
+        "thumb_joint0",
+        "thumb_joint1",
+        "thumb_joint2",
+        "thumb_joint3",
+        "index_residual",
+        "middle_residual",
+        "ring_residual",
+        "little_residual",
+        "index_distal",
+        "middle_distal",
+        "ring_distal",
+        "little_distal"
+      ],
+      "source_sha256": "ba4ebbc1e85361d316c9c556bd978a8f3f52fcaef699aa75944aa89ee1c0c8ff",
+      "thumb_active_joints": "0/1/2/3 independent; joint4 retains asset mimic",
+      "safety": "original safe joint intervals, original physical faults, no vendor global changes",
+      "thumb_local_residual_span_rad": [
+        0.25,
+        0.35,
+        0.3,
+        0.65
+      ],
+      "command_warmup": {
+        "kind": "episode_age_gain_before_original_action_filter",
+        "policy_steps": 35,
+        "duration_s": 1.75,
+        "gain": "clip(episode_policy_step/35,0,1)",
+        "PPO_buffer_actions": "original policy commands before environment warmup",
+        "environment_raw_actions": "warmup-scaled commands; executed actions retain original filter",
+        "object_force_or_state_write": false
+      }
+    },
+    "goal_status_semantics": "thumb_PAD_unsupported_hold_1s; lift is deferred"
+  },
+  "identity_sha256": "f0835907be4b751af7c702b86ad7359aedd577d8b047f39f8ff2a1e37e7e334d",
+  "critical_source_sha256": "4e7b7df5c4dbf5802c076c024a16f690f096afa708b36045ae97fae72b5299d3",
+  "critical_source_files": {
+    "thumb_pad_grasp_v1/__init__.py": "bde241b06389a8ad568edb224c821bc155342d5a46ecf648539fc4a458711b46",
+    "thumb_pad_grasp_v1/action_mapping.py": "ba4ebbc1e85361d316c9c556bd978a8f3f52fcaef699aa75944aa89ee1c0c8ff",
+    "thumb_pad_grasp_v1/assets/pad_regions_v1.approved.json": "abd16607249509762ac07483f9542b6b460628beee5b13a464fca31217b04258",
+    "thumb_pad_grasp_v1/assets/runtime_contact_v1.json": "50f7298a4ed3b031725efa0af222c9d355315cc16b671f7e931856b158cff922",
+    "thumb_pad_grasp_v1/assets/runtime_contact_v2.json": "252757dd90b188c75951327d0b790e71bf512f3ae5ab47662e12f51d0e003619",
+    "thumb_pad_grasp_v1/assets/source_geometry_v1.npz": "76adf67d22ac05d6eb62723796181c14513d664816d348cbb1a5ac73e358fb4c",
+    "thumb_pad_grasp_v1/command_warmup.py": "e199dc81da587ec4bd23652d0f5624d3605cd2217ea3bfcc335fd028dd719063",
+    "thumb_pad_grasp_v1/env.py": "f275178b1a7a8a0ead3e6d1d373f5da7d3fa34c5585122801d7c89a41f4c45e0",
+    "thumb_pad_grasp_v1/observer.py": "909f8b928d9270e26f92705d377c76acc7be32e3fb60a670d690389ead5f4445",
+    "thumb_pad_grasp_v1/packed_contacts.py": "a7263073ad965b7fbcdb8ba87bfabf1f4094f3944572b80f86f42353285dbc98",
+    "thumb_pad_grasp_v1/pad_contacts.py": "2685d577462eb59062907b02e84312a487cf9481c5dcccf0b210e6b128c832ec",
+    "thumb_pad_grasp_v1/pad_geometry.py": "5e9ec17656f7943c8e2e2318719ea0a6b7e7285c4f74938321fe356b0b9f8164",
+    "thumb_pad_grasp_v1/phase_rewards.py": "ef5c80b80bb883cc7e4e262c06d552d560c11d6035cabd7534156278ff6d3999",
+    "thumb_pad_grasp_v1/run.py": "aaa525415b24b9f2fe75c6302885576c0f7bf902f91b8896b4121cb92264d471",
+    "research/fixed_fruit_grasp_v1/env.py": "b176eac5ce3651501c4ef5b023b42634efd8b26970863fadbae9af5f04afab06",
+    "research/fixed_fruit_grasp_v1/contract.py": "025900c67655e44a6b1b3146ccf8d8293d5fd96e619f1131f48bc1d5ff917914",
+    "research/fixed_fruit_grasp_v1/physical_contacts.py": "b97b9812877b7dcf28b0d791e3546c97518ef1287d43ed70ea04e148d16ebcf8",
+    "research/fixed_fruit_grasp_v1/physical_hold.py": "8a7740ad56fdc6a557e64ec3ef6cc8de64b0c35debca68871cf3e5932c7c3879",
+    "research/fixed_fruit_grasp_v1/collision_cooking.py": "c83d9f67f97731c61f831f437d7f869198a471c694e648ad49573fb6240323fb",
+    "research/fixed_fruit_grasp_v1/run_utils.py": "6a02210746408c9111c9c4c02294df6001914f84b31ee74d03d047e0df1fa5f7",
+    "research/small_fruit_pinch_v1/source/agents.py": "94f4f914c40ca0354dbbbedd2a60b4453eb445a5dbad24b54bdb24ece52316c9",
+    "environment_dependency/geometry_sampling": "2781559090245a30a424975c090bde1f9f5ad98f352a0bd03415fb0f61d56d33",
+    "environment_dependency/isaac_assets": "5bd90863593004ceecdbe4bcba4272caf1ffd74d4bd9ffc9bb9e66d725a459b3",
+    "environment_dependency/isaac_env": "191737c0644bf9c53621ee62e3794b190e07134183f6b8dcf08211c78569f99c",
+    "environment_dependency/isaac_env_cfg": "8dbd538bcdd40ce4e81e22c17e75ac50fed6a37bc5384aba11b8598f8a32592c",
+    "environment_dependency/pinch_action_manifold": "4c94c58516d50c7fd24eb2539ff99439fb302624049f16a994bbe029b0b5b40e",
+    "environment_dependency/pinch_native_env": "ccad0362c475a5d0c3517d0dbbb269771b261b3dba16558b5a14b945ab2af087",
+    "environment_dependency/temporal_filter": "d3552703a10d3aa6f3be1e864adc52f64c2379ba747c2a9aa068ab1c7127f6bb",
+    "environment_dependency/vendor_hand_manifold": "7782539e65b5a80e6a50647680292dd84c3a94e8767102a38fe0d614e6fb79bf"
+  },
+  "observation_dimensions": {
+    "actor_dim": 161,
+    "critic_dim": 222,
+    "action_dim": 14
+  },
+  "observation_shapes": {
+    "policy": [
+      4,
+      161
+    ],
+    "critic": [
+      4,
+      222
+    ]
+  },
+  "runtime_identity": {
+    "num_envs": 4,
+    "device": "cuda:0",
+    "configured_sim_device": "cuda:0",
+    "device_binding_note": "Isaac Lab 3.x DirectRLEnv 实际使用 cfg.sim.device；cfg.device 是镜像簿记字段，validate_cfg 强制两者一致",
+    "seed": 110
+  },
+  "num_envs": 4,
+  "seed": 110,
+  "device": "cuda:0",
+  "requested_pose_mm": {
+    "center_local_mm": [
+      -88.76065266544136,
+      -11.325082731003075,
+      -193.5340228574738
+    ],
+    "pregrasp_distance_mm": 5.0
+  },
+  "agent_config": {
+    "seed": 42,
+    "device": "cuda:0",
+    "num_steps_per_env": 192,
+    "max_iterations": 2400,
+    "empirical_normalization": {},
+    "obs_groups": {
+      "actor": [
+        "policy"
+      ],
+      "critic": [
+        "critic"
+      ]
+    },
+    "clip_actions": 1.0,
+    "check_for_nan": true,
+    "save_interval": 50,
+    "experiment_name": "small_fruit_pinch_v1",
+    "run_name": "thumb_pad_grasp_v1",
+    "logger": "tensorboard",
+    "neptune_project": "isaaclab",
+    "wandb_project": "linkagent-small-fruit-pinch",
+    "resume": false,
+    "load_run": ".*",
+    "load_checkpoint": "model_.*.pt",
+    "class_name": "OnPolicyRunner",
+    "actor": {
+      "hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "activation": "elu",
+      "obs_normalization": true,
+      "distribution_cfg": {
+        "init_std": 0.02,
+        "std_type": "log"
+      }
+    },
+    "critic": {
+      "hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "activation": "elu",
+      "obs_normalization": true,
+      "distribution_cfg": null
+    },
+    "algorithm": {
+      "num_learning_epochs": 4,
+      "num_mini_batches": 8,
+      "learning_rate": 2e-05,
+      "schedule": "fixed",
+      "gamma": 0.995,
+      "lam": 0.95,
+      "entropy_coef": 0.003,
+      "desired_kl": 0.01,
+      "max_grad_norm": 0.75,
+      "optimizer": "adam",
+      "value_loss_coef": 1.0,
+      "use_clipped_value_loss": true,
+      "clip_param": 0.2,
+      "normalize_advantage_per_mini_batch": false,
+      "rnd_cfg": null,
+      "symmetry_cfg": null
+    },
+    "policy": {},
+    "multi_gpu": null
+  },
+  "agent_config_sha256": "1d2e1e4e87c9824c0ed984d3ca65607c3494e5f1b628b604fb16cf9593b39e84",
+  "rsl_rl_version": "5.0.1",
+  "initialization": {
+    "kind": "zero_output_weight_declared_action_bias_prior",
+    "classification": "declared_initialization_prior_not_learned_success",
+    "bias": [
+      0.43116165292000025,
+      0.193433788076279,
+      -0.04478002490162736,
+      0.0025961911302571244,
+      0.28408886015079765,
+      0.05576175655382348,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      -0.18191298991496457,
+      -0.18191298991496457,
+      -0.18191298991496457,
+      -0.18191298991496457
+    ],
+    "changed": true,
+    "actor_output_layer": "mlp.6",
+    "weight_sha256_before": "5d3389302b6914db58a9acf420a7cb6677ea2ebf784e94539d44b69126a1adac",
+    "weight_sha256_after": "1aae2dda4016febd2765e64d20dd992319d388cc8a8690f1ae5f7984a4734dd3",
+    "bias_sha256_before": "e13b5ca04954fb24098590c634aa3eebe4e3cb9f9095823b1fdcce2464b8afab",
+    "bias_sha256_after": "af4fe722c780e71a85b43efcdb90411eb096a17b5af63087fda3aaa7346c2662"
+  },
+  "open_policy": null,
+  "wrapper_reset": "RslRlVecEnvWrapper 构造时执行 env.reset；后续读取 get_observations TensorDict",
+  "created_at_utc": "2026-10-16T03:41:44.127948+00:00",
+  "command": [
+    "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-thumb-pad-v1-20261016/source-low-noise-v1_6/research/thumb_pad_grasp_v1/run.py",
+    "--headless",
+    "--device",
+    "cuda:0",
+    "--num-envs",
+    "4",
+    "--mode",
+    "train",
+    "--policy",
+    "fresh",
+    "--iterations",
+    "1",
+    "--initial-action-bias-json",
+    "[0.43116165292000025,0.193433788076279,-0.04478002490162736,0.0025961911302571244,0.28408886015079765,0.05576175655382348,0,0,0,0,-0.18191298991496457,-0.18191298991496457,-0.18191298991496457,-0.18191298991496457]",
+    "--seed",
+    "110",
+    "--thumb-mapping",
+    "independent",
+    "--center-local-mm",
+    "-88.76065266544136",
+    "-11.325082731003075",
+    "-193.5340228574738",
+    "--pregrasp-distance-mm",
+    "5",
+    "--output",
+    "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-thumb-pad-v1-20261016/evidence/train_low_noise_v1_6_one_update_01",
+    "--kit_args",
+    "--portable --portable-root=/tmp/linkbot-ppo-thumb-pad-v1-20261016/cache/kit --/log/file=/tmp/linkbot-ppo-thumb-pad-v1-20261016/evidence/train_low_noise_v1_6_one_update_01-kit.log"
+  ]
+}

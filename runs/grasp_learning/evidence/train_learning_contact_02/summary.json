@@ -1,0 +1,47 @@
+{
+  "contract_id": "fixed_fruit_grasp_v1",
+  "failure": {
+    "contract_id": "fixed_fruit_grasp_v1",
+    "details": {
+      "checkpoints": [
+        {
+          "bytes": 1962318,
+          "kind": "initial",
+          "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/evidence/train_learning_contact_02/initial.pt",
+          "sha256": "06ec11b3779a9dbd1e805b2b9bfa693a8041f1754bcad8aaea7fd8ff7a4f39a6"
+        },
+        {
+          "bytes": 1962320,
+          "kind": "failure_final",
+          "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/evidence/train_learning_contact_02/final.pt",
+          "sha256": "edb6dcde9047dd8a6bbbb0f848fd30f40cb293dab1b6ac97411b638cbbb39a5d"
+        }
+      ],
+      "initialized": true,
+      "optimizer_update_calls": 0,
+      "resume": {
+        "mode": "fresh_actor",
+        "source_checkpoint": null
+      },
+      "stage_updates_completed": 0,
+      "stop_reason": "iterations_completed",
+      "valid_update_count": 0
+    },
+    "error": "接触缓冲越界或达到容量上限，不能判为无穿透: prim=/World/envs/env_.*/Robot/little_link1, capacity=128, max_count=128, separation_slots=4096, starts=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128]",
+    "error_type": "RuntimeError",
+    "phase": "training",
+    "traceback": "Traceback (most recent call last):\n  File \"/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v2/research/fixed_fruit_grasp_v1/train.py\", line 824, in _run\n    runner.learn(\n  File \"/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/rsl_rl/runners/on_policy_runner.py\", line 87, in learn\n    obs, rewards, dones, extras = self.env.step(actions.to(self.env.device))\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v2/research/fixed_fruit_grasp_v1/train.py\", line 817, in bounded_step\n    result = original_step(actions)\n             ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_rl/isaaclab_rl/rsl_rl/vecenv_wrapper.py\", line 185, in step\n    obs_dict, rew, terminated, truncated, extras = self.env.step(actions)\n                                                   ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/envs/direct_rl_env.py\", line 467, in step\n    self.reset_terminated[:], self.reset_time_outs[:] = self._get_dones()\n                                                        ^^^^^^^^^^^^^^^^^\n  File \"/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v2/research/fixed_fruit_grasp_v1/env.py\", line 1610, in _get_dones\n    self._refresh_task_state()\n  File \"/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v2/research/fixed_fruit_grasp_v1/env.py\", line 1533, in _refresh_task_state\n    actual_depth, actual_count = penetration_from_sensors(self._raw_penetration_sensors, self.num_envs, self.device)\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/source-v2/research/fixed_fruit_grasp_v1/physical_contacts.py\", line 32, in penetration_from_sensors\n    raise RuntimeError(f'接触缓冲越界或达到容量上限，不能判为无穿透: prim={sensor.cfg.prim_path if hasattr(sensor.cfg, \"prim_path\") else \"unknown\"}, capacity={capacity}, max_count={int(counts.max())}, separation_slots={separations.numel()}, starts={starts.tolist()}')\nRuntimeError: 接触缓冲越界或达到容量上限，不能判为无穿透: prim=/World/envs/env_.*/Robot/little_link1, capacity=128, max_count=128, separation_slots=4096, starts=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128]\n",
+    "written_before_simulation_close": true
+  },
+  "failure_path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/evidence/train_learning_contact_02/failure.json",
+  "initial_checkpoint": {
+    "bytes": 1962318,
+    "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-learning-20261013/evidence/train_learning_contact_02/initial.pt",
+    "sha256": "06ec11b3779a9dbd1e805b2b9bfa693a8041f1754bcad8aaea7fd8ff7a4f39a6"
+  },
+  "learning_status": "RUNNING",
+  "result_status": "FAILED",
+  "stage": "contact",
+  "valid": false,
+  "written_before_simulation_close": true
+}

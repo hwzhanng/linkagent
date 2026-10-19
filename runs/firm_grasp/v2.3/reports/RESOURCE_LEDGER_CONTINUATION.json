@@ -1,0 +1,457 @@
+{
+  "schema": "firm_grasp.f3_f4_continuation.resource_ledger.v1",
+  "created_utc": "2026-10-18T21:11:13.391745+00:00",
+  "scope": "本次续作新根内全部真实GPU/PhysX启动回执；含失败与重试；不含更早旧根历史。",
+  "measurement_note": "process_wall_s 含Kit启动/关闭与Python退出；不是GPU利用率或能耗。单GPU进程串行；CPU核验未单独计量。",
+  "gpu_processes_max_concurrent": 1,
+  "gpu_lock": "/tmp/linkagent-phase-b-cuda0.lock",
+  "run_count_total": 27,
+  "run_count_exit0": 20,
+  "run_count_failed": 7,
+  "wall_seconds_exit0_sum": 9256.842,
+  "wall_seconds_failed_fast_sum": 56.716,
+  "transitions_sum": 59636,
+  "ppo_updates_sum": 12,
+  "failed_runs": [
+    {
+      "run": "C01_eval_force",
+      "exit_code": 2,
+      "process_wall_s": 2.386620283126831,
+      "summary_status": null
+    },
+    {
+      "run": "C01_eval_quiet",
+      "exit_code": 2,
+      "process_wall_s": 2.669511318206787,
+      "summary_status": null
+    },
+    {
+      "run": "C01_eval_torque",
+      "exit_code": 2,
+      "process_wall_s": 2.1762430667877197,
+      "summary_status": null
+    },
+    {
+      "run": "C01b_eval_force",
+      "exit_code": 2,
+      "process_wall_s": 12.47755742073059,
+      "summary_status": null
+    },
+    {
+      "run": "C01b_eval_torque",
+      "exit_code": 2,
+      "process_wall_s": 12.615862369537354,
+      "summary_status": null
+    },
+    {
+      "run": "C01c_eval_force",
+      "exit_code": 2,
+      "process_wall_s": 12.020427465438843,
+      "summary_status": null
+    },
+    {
+      "run": "C01c_eval_torque",
+      "exit_code": 2,
+      "process_wall_s": 12.369686126708984,
+      "summary_status": null
+    }
+  ],
+  "runs": [
+    {
+      "run": "C00_smoke_constrained",
+      "kind": "train",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 293.3089818954468,
+      "run_loop_wall_s": 283.2566061990001,
+      "summary_status": "TRAINING_COMPLETE",
+      "evaluation": null,
+      "updates": 2,
+      "transitions": 2048
+    },
+    {
+      "run": "C01_eval_force",
+      "kind": "evaluate",
+      "process_status": "FAILED",
+      "exit_code": 2,
+      "process_wall_s": 2.386620283126831,
+      "run_loop_wall_s": null,
+      "summary_status": null,
+      "evaluation": null,
+      "updates": null,
+      "transitions": null
+    },
+    {
+      "run": "C01_eval_quiet",
+      "kind": "evaluate",
+      "process_status": "FAILED",
+      "exit_code": 2,
+      "process_wall_s": 2.669511318206787,
+      "run_loop_wall_s": null,
+      "summary_status": null,
+      "evaluation": null,
+      "updates": null,
+      "transitions": null
+    },
+    {
+      "run": "C01_eval_torque",
+      "kind": "evaluate",
+      "process_status": "FAILED",
+      "exit_code": 2,
+      "process_wall_s": 2.1762430667877197,
+      "run_loop_wall_s": null,
+      "summary_status": null,
+      "evaluation": null,
+      "updates": null,
+      "transitions": null
+    },
+    {
+      "run": "C01_train10",
+      "kind": "train",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 1424.6207196712494,
+      "run_loop_wall_s": 1414.5212388979999,
+      "summary_status": "TRAINING_COMPLETE",
+      "evaluation": null,
+      "updates": 10,
+      "transitions": 10240
+    },
+    {
+      "run": "C01b_eval_force",
+      "kind": "evaluate",
+      "process_status": "FAILED",
+      "exit_code": 2,
+      "process_wall_s": 12.47755742073059,
+      "run_loop_wall_s": null,
+      "summary_status": null,
+      "evaluation": null,
+      "updates": null,
+      "transitions": null
+    },
+    {
+      "run": "C01b_eval_quiet",
+      "kind": "evaluate",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 120.69320249557495,
+      "run_loop_wall_s": 110.15554694900038,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 4,
+        "FAILURE": 0,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 752
+    },
+    {
+      "run": "C01b_eval_torque",
+      "kind": "evaluate",
+      "process_status": "FAILED",
+      "exit_code": 2,
+      "process_wall_s": 12.615862369537354,
+      "run_loop_wall_s": null,
+      "summary_status": null,
+      "evaluation": null,
+      "updates": null,
+      "transitions": null
+    },
+    {
+      "run": "C01c_eval_force",
+      "kind": "evaluate",
+      "process_status": "FAILED",
+      "exit_code": 2,
+      "process_wall_s": 12.020427465438843,
+      "run_loop_wall_s": null,
+      "summary_status": null,
+      "evaluation": null,
+      "updates": null,
+      "transitions": null
+    },
+    {
+      "run": "C01c_eval_torque",
+      "kind": "evaluate",
+      "process_status": "FAILED",
+      "exit_code": 2,
+      "process_wall_s": 12.369686126708984,
+      "run_loop_wall_s": null,
+      "summary_status": null,
+      "evaluation": null,
+      "updates": null,
+      "transitions": null
+    },
+    {
+      "run": "C01d_eval_force",
+      "kind": "evaluate",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 214.26324009895325,
+      "run_loop_wall_s": 203.76658958999997,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 3,
+        "FAILURE": 1,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 1436
+    },
+    {
+      "run": "C01d_eval_torque",
+      "kind": "evaluate",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 115.70017647743225,
+      "run_loop_wall_s": 106.9657403379997,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 4,
+        "FAILURE": 0,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 752
+    },
+    {
+      "run": "C01e_eval_force_strict",
+      "kind": "evaluate",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 221.9590528011322,
+      "run_loop_wall_s": 207.82942254699992,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 3,
+        "FAILURE": 1,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 1436
+    },
+    {
+      "run": "C01e_eval_torque_strict",
+      "kind": "evaluate",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 116.27116203308105,
+      "run_loop_wall_s": 106.96272723900074,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 4,
+        "FAILURE": 0,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 752
+    },
+    {
+      "run": "D01_quiet_updated_ramp20",
+      "kind": "evaluate",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 381.8257722854614,
+      "run_loop_wall_s": 369.033119233,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 1,
+        "FAILURE": 3,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 1436
+    },
+    {
+      "run": "D02_quiet_updated_ramp40",
+      "kind": "evaluate",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 217.45052289962769,
+      "run_loop_wall_s": 203.95411538899998,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 3,
+        "FAILURE": 1,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 1436
+    },
+    {
+      "run": "D03_force_updated_ramp40",
+      "kind": "evaluate",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 218.29418087005615,
+      "run_loop_wall_s": 205.9836798340002,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 2,
+        "FAILURE": 2,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 1436
+    },
+    {
+      "run": "D04_torque_updated_ramp40",
+      "kind": "evaluate",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 212.68873596191406,
+      "run_loop_wall_s": 203.0537302910002,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 2,
+        "FAILURE": 2,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 1436
+    },
+    {
+      "run": "F4_open_quiet_c",
+      "kind": "evaluate",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 70.94520473480225,
+      "run_loop_wall_s": 62.16666551600065,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 0,
+        "FAILURE": 4,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 484
+    },
+    {
+      "run": "F4v_front_c",
+      "kind": "video",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 353.9906129837036,
+      "run_loop_wall_s": 121.8811988109992,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 4,
+        "FAILURE": 0,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 752
+    },
+    {
+      "run": "F4v_side_c",
+      "kind": "video",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 362.82261514663696,
+      "run_loop_wall_s": 119.9665246279983,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 4,
+        "FAILURE": 0,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 752
+    },
+    {
+      "run": "R0_matrix_v22_ramp40",
+      "kind": "matrix",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 841.687258720398,
+      "run_loop_wall_s": 831.0500883619998,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 13,
+        "FAILURE": 7,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 5792
+    },
+    {
+      "run": "R1_matrix_C01_interleaved",
+      "kind": "matrix",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 736.0023775100708,
+      "run_loop_wall_s": 724.799050093,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 15,
+        "FAILURE": 5,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 5056
+    },
+    {
+      "run": "R2_matrix_init_interleaved",
+      "kind": "matrix",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 839.9353206157684,
+      "run_loop_wall_s": 828.1202649279985,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 10,
+        "FAILURE": 10,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 5792
+    },
+    {
+      "run": "R3_reload_C01_seed111",
+      "kind": "matrix",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 736.4383807182312,
+      "run_loop_wall_s": 725.8403057239993,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 15,
+        "FAILURE": 5,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 5056
+    },
+    {
+      "run": "R4_reload_init_seed111",
+      "kind": "matrix",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 816.4517631530762,
+      "run_loop_wall_s": 807.3844452449994,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 10,
+        "FAILURE": 10,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 5792
+    },
+    {
+      "run": "R5_matrix_legacy_v16_interleaved",
+      "kind": "matrix",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "process_wall_s": 961.4925577640533,
+      "run_loop_wall_s": 950.431056817999,
+      "summary_status": "EVALUATION_COMPLETE",
+      "evaluation": {
+        "SUCCESS": 0,
+        "FAILURE": 20,
+        "UNKNOWN": 0
+      },
+      "updates": null,
+      "transitions": 7000
+    }
+  ]
+}

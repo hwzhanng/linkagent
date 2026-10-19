@@ -1,0 +1,58 @@
+{
+  "schema": "firm_grasp.f3_f4_continuation.candidate_freeze.v1",
+  "status": "FROZEN_BEFORE_INDEPENDENT_RELOAD",
+  "frozen_local": "2026-10-19T04:00:00+08:00",
+  "candidate": {
+    "role": "v2.3_ppo_candidate",
+    "checkpoint": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/evidence/C01_train10/final.pt",
+    "sha256": "ffbf091722a8693676f28b5f4d8cce24e003016081a1ccf151b69560c29fa163",
+    "initial_checkpoint_same_run": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/evidence/C01_train10/initial.pt",
+    "initial_sha256": "c5dccdbee477d36c98d97957de722415b67cbb0cb0ba3fbafb04f70470267b07",
+    "training_run": "C01_train10",
+    "training_command_summary": "fresh actor+near-identity normalizer from v2.2 update_000001; 10 PPO updates; 4 env x 256 steps = 10240 transitions; LR 2e-5; std 5e-4; support ramp 40; goal g2 3 s; quiet; freeze actor normalizer; freeze log_std; mean-shift max 0.002",
+    "source_commit_at_training": "04444652423ab9f440ed049e0633ad7ad7a7ff48",
+    "training_source_copy": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/source-v2.3.0-c01",
+    "actor_constraint": {
+      "freeze_actor_normalizer": true,
+      "freeze_actor_log_std": true,
+      "actor_mean_shift_max": 0.002,
+      "projection_count": 0,
+      "min_mean_abs_shift": 0.00020010465232189745,
+      "max_mean_abs_shift": 0.0009618088370189071
+    },
+    "parameter_change": {
+      "actor_trainable_changed": true,
+      "critic_trainable_changed": true,
+      "mlp6_weight_norm_before": 0.0004519367648754269,
+      "mlp6_weight_norm_after": 0.011509,
+      "obs_normalizer_frozen": true,
+      "log_std_frozen": true
+    }
+  },
+  "initialization_reference": {
+    "role": "v2.2_updated_actor_before_new_training",
+    "checkpoint": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-20261018/evidence/F3_train_margin_bounded02/update_000001.pt",
+    "sha256": "af961f8ea500943278de77bc2683eaa12ea49e4ce742e839b0182eee48a660d9"
+  },
+  "condition": {
+    "support_ramp_policy_steps": 40,
+    "support_release_step": 120,
+    "support_after_release": "exact_zero",
+    "goal": "g2",
+    "hold_seconds": 3.0,
+    "f4_case_manifest": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/inputs/F4_CASES_CONTINUATION.json",
+    "f4_case_manifest_sha256": "a6a3546f1fefb24bbe1b5466aeaae8f78af7c9c151e110c459ca0dd6f9e7c6f8",
+    "case_order_id": "continuation_interleaved_v1"
+  },
+  "development_same_condition": {
+    "initialization": {"quiet": "3/4", "force_axis0_pos": "2/4", "torque_axis0_pos": "2/4"},
+    "candidate": {"quiet": "4/4", "force_axis0_pos": "3/4", "torque_axis0_pos": "4/4"},
+    "candidate_verification": "11/11 success windows numeric PASS and original full-mesh PAD PASS"
+  },
+  "new_20_case_matrix": {
+    "initialization": {"total": "10/20", "quiet": "4/8", "force": "3/6", "torque": "3/6"},
+    "candidate": {"total": "15/20", "quiet": "6/8", "force": "4/6", "torque": "5/6"},
+    "verification": {"initialization": "10/10 runtime success verified", "candidate": "15/15 runtime success verified"}
+  },
+  "freeze_policy": "本次冻结后不再训练、调参或挑选同一最终清单；下一项为独立重载复测、两视角录像、报告和manifest。"
+}

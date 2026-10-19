@@ -1,0 +1,52 @@
+{
+  "schema": "firm_grasp.f3_f4_continuation.receipt.v1",
+  "created_local": "2026-10-19",
+  "new_root": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019",
+  "new_source": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-firm-grasp-f3-f4-continuation-20261019/source",
+  "source_branch": "codex/firm-grasp-f3-f4-continuation-20261019",
+  "source_base_commit": "f60b912ce85f1361cd02bc11da15a10e302b1cbe",
+  "inherited_task_version": "firm_grasp_v2.2.0",
+  "inherited_critical_source_sha256": "7460ecdec4fce9a0e258fbb667d8aa61f18dda155d32d4c080dd7b48f7398167",
+  "critical_source_recomputed_on_copy": "7460ecdec4fce9a0e258fbb667d8aa61f18dda155d32d4c080dd7b48f7398167",
+  "critical_source_match": true,
+  "launcher_adaptation": {
+    "execute_default_source": "source",
+    "short_symlink": "/tmp/linkbot-ppo-firm-grasp-f3-f4-continuation-20261019",
+    "old_short_symlink_untouched": true,
+    "gpu_lock": "/tmp/linkagent-phase-b-cuda0.lock",
+    "max_concurrent_gpu_processes": 1
+  },
+  "verified_inputs": {
+    "v22_updated": {"sha256": "af961f8ea500943278de77bc2683eaa12ea49e4ce742e839b0182eee48a660d9", "status": "MATCHED_READ_ONLY"},
+    "v22_initial": {"sha256": "b5335e101993fa86d4a9fbad9b37b484f4e54db637f1b5a7b939d6a64af1b683", "status": "MATCHED_READ_ONLY"},
+    "f2_updated": {"sha256": "a5997ed42977b4cd66bcba021510a95445818153b6de5b0fcb219fa8c98154b7", "status": "MATCHED_READ_ONLY"},
+    "v16_retained": {"sha256": "0650ac4b35e742430f910319492d8ada621ee1c25f954e8aba6bd8163e59ddf6", "status": "MATCHED_READ_ONLY"},
+    "approved_pad": {"sha256": "abd16607249509762ac07483f9542b6b460628beee5b13a464fca31217b04258", "status": "MATCHED_READ_ONLY"},
+    "source_geometry": {"sha256": "76adf67d22ac05d6eb62723796181c14513d664816d348cbb1a5ac73e358fb4c", "status": "MATCHED_READ_ONLY"},
+    "full_mesh_classifier": {"sha256": "14d7412e72af348e04d56e3452c7f9b34a135a9f2777de623e8faf4d7eea58bd", "status": "MATCHED_READ_ONLY"}
+  },
+  "baseline_reproduction": {
+    "run": "D01_quiet_updated_ramp20",
+    "policy": "strict checkpoint v2.2 update_000001",
+    "identity_sha256": "2620b17d6ec3cc0b311200698ccc46516ce3a9b5e8aceb6fe8f5036bd317db8d",
+    "identity_matches_inherited_training_identity": true,
+    "outcomes": {"SUCCESS": 1, "FAILURE": 3, "UNKNOWN": 0},
+    "note": "与旧v2.2 quiet开发1/4一致，证明新根没有改变继承条件"
+  },
+  "first_finding": {
+    "run": "D02_quiet_updated_ramp40",
+    "change": "support ramp 20 -> 40 policy steps, still exactly zero from step 120",
+    "outcomes": {"SUCCESS": 3, "FAILURE": 1, "UNKNOWN": 0},
+    "numeric_verification": "PASS_G2_NUMERIC_WINDOW (3 candidates)",
+    "mesh_verification": "PASS_G2_WINDOW_ORIGINAL_FULL_MESH_LABELS (3 selected windows)",
+    "classification": "preparation_condition_gain_not_PPO_learning"
+  },
+  "isolation": {
+    "old_root_read_only": true,
+    "v16_f2_v22_read_only": true,
+    "can_enabled": false,
+    "real_hardware_enabled": false,
+    "upstream_isaaclab_modified": false,
+    "existing_dirty_workspace_cleaned": false
+  }
+}

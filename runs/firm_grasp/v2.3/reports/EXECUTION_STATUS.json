@@ -1,0 +1,95 @@
+{
+  "schema": "firm_grasp.f3_f4_continuation.status.v1",
+  "started_local": "2026-10-19",
+  "phase": "E_COMPLETE_FROZEN",
+  "phase_plan": [
+    "A: 输入核对、独立新根/源码、启动器与保护、RECEIPT",
+    "B: 4env重复reset与撤支撑前后最弱指/几何/窗诊断",
+    "C: 受约束PPO真实多update训练与同条件开发对照",
+    "D: quiet/force/torque课程与独立重载",
+    "E: 预登记新F4 20项、两视角录像、数值与完整网格核验、统一报告"
+  ],
+  "effective_round": 1,
+  "max_effective_rounds": 8,
+  "conditional_max_rounds": 12,
+  "consecutive_rounds_without_physical_progress": 0,
+  "infrastructure_repair_cycles": 2,
+  "gpu_processes_allowed": 1,
+  "gpu_lock": "/tmp/linkagent-phase-b-cuda0.lock",
+  "legacy_v16_f2_v22_read_only": true,
+  "can_enabled": false,
+  "real_hardware_enabled": false,
+  "final_results": {
+    "condition": "ramp40; support exactly zero from policy step 120; new interleaved F4 list",
+    "development_initialization": {
+      "quiet": "3/4",
+      "force_axis0_pos": "2/4",
+      "torque_axis0_pos": "2/4"
+    },
+    "development_candidate": {
+      "quiet": "4/4",
+      "force_axis0_pos": "3/4",
+      "torque_axis0_pos": "4/4"
+    },
+    "new_f4_initialization": {
+      "total": "10/20",
+      "quiet": "4/8",
+      "force": "3/6",
+      "torque": "3/6"
+    },
+    "new_f4_candidate": {
+      "total": "15/20",
+      "quiet": "6/8",
+      "force": "4/6",
+      "torque": "5/6"
+    },
+    "independent_reload": {
+      "candidate": "15/20",
+      "initialization": "10/20",
+      "case_outcomes_identical": "20/20"
+    },
+    "legacy_v16": "0/20",
+    "open_hand": "0/4",
+    "candidate_verification": "15/15 runtime success numeric+full mesh PASS",
+    "videos": "front/side 93 frames each, 4/4 quiet success, numeric 4/4 PASS, env2 mesh PASS",
+    "strict_identity_reload": {
+      "quiet": "4/4",
+      "force": "3/4",
+      "torque": "4/4",
+      "note": "same actor bytes; identity-only resave; no training"
+    },
+    "resource": {
+      "launches": 27,
+      "exit0": 20,
+      "failed_fast": 7,
+      "successful_wall_hours": 2.57,
+      "transitions": 59636,
+      "ppo_updates": 12
+    }
+  },
+  "stop_reason": "Ideal boundary reached; candidate frozen; no further training or tuning.",
+  "key_paths": {
+    "unified_report": "reports/UNIFIED_REPORT.md",
+    "completion_audit": "reports/FINAL_COMPLETION_AUDIT.json",
+    "resource_ledger": "reports/RESOURCE_LEDGER_CONTINUATION.json",
+    "candidate": "evidence/C01_train10/final.pt",
+    "candidate_freeze": "CANDIDATE_FREEZE.json",
+    "delivery": "delivery/DELIVERY_MANIFEST.json",
+    "raw_evidence": "RAW_EVIDENCE_INDEX.json",
+    "read_me_first": "READ_ME_FIRST.md",
+    "post_freeze_reload": "POST_FREEZE_RELOAD.json",
+    "failure_evidence": "reports/FAILURE_EVIDENCE.json",
+    "protected_inputs_final": "reports/PROTECTED_INPUTS_FINAL.json",
+    "strict_identity_provenance": "evidence/C01_identity_artifacts/PROVENANCE.json"
+  },
+  "final_audit_status": "IDEAL_BOUNDARY_REACHED_FROZEN",
+  "subagents": {
+    "used": false,
+    "reason": "工具不能显式指定并核实同一模型标识与同一思考强度；按用户授权由主Agent执行并记录限制。",
+    "economy_route_used": false
+  },
+  "infrastructure_repair_cycles_detail": [
+    "cycle 1: shell path splitting / output-name collision on eval retries; fixed with arrays and new suffixes",
+    "cycle 2: actor_seed allowlist missing v2.3.0; fixed by adding v2.3.0 and freezing C01-era source before the fix"
+  ]
+}

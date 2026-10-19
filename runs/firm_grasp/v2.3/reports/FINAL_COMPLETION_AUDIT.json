@@ -1,0 +1,136 @@
+{
+  "schema": "firm_grasp.f3_f4_continuation.completion_audit.v1",
+  "created_local": "2026-10-19",
+  "status": "IDEAL_BOUNDARY_REACHED_FROZEN",
+  "effective_rounds_used": 1,
+  "infrastructure_repair_cycles_used": 2,
+  "requirements": [
+    {
+      "id": "R1_isolation",
+      "requirement": "独立新根和新源码分支，从v2.2建立；旧v1.6/F2/v2.2只读；新结果只写新根",
+      "status": "PASS",
+      "evidence": [
+        "RECEIPT.json",
+        "BASELINE_LINK.json",
+        "reports/PROTECTED_INPUTS_AFTER.json",
+        "source commit 04444652423ab9f440ed049e0633ad7ad7a7ff48",
+        "source-v2.3.0-c01 frozen copy"
+      ]
+    },
+    {
+      "id": "R2_real_contact",
+      "requirement": "真实拇指指肚+至少两个非拇指指肚；固定67mm果；120Hz真实接触；零实际支撑；不扩PAD/不弱化判据",
+      "status": "PASS",
+      "evidence": [
+        "reports/R1_verification/WINDOW_AUDIT.json (15/15 verified)",
+        "reports/R1_verification/numeric/report.json",
+        "reports/C01_verify/{quiet,force,torque}",
+        "approved_pad SHA256 abd16607...4258 unchanged",
+        "full mesh classifier SHA256 14d7412e...8bd unchanged"
+      ]
+    },
+    {
+      "id": "R3_grasp_establishment",
+      "requirement": "优先改善建抓和重复reset一致性",
+      "status": "PASS_WITH_LIMITS",
+      "evidence": [
+        "D01 ramp20 quiet 1/4 vs D02 ramp40 quiet 3/4",
+        "C01 development quiet 4/4 vs init 3/4",
+        "R1 candidate quiet 6/8 vs R2 init quiet 4/8",
+        "limits: force axis0+/axis2+ and torque axis1+ still fail; quiet 2/8 fail"
+      ]
+    },
+    {
+      "id": "R4_real_ppo",
+      "requirement": "通过真实PPO更新提高保持/抗扰能力；更新前对照",
+      "status": "PASS",
+      "evidence": [
+        "C01_train10: 10 updates, 10240 transitions, actor/critic trainable hashes changed",
+        "reports/F4_CONTINUATION_COMPARE.json: init 10/20 vs candidate 15/20 on identical new list",
+        "R3/R4 seed111 reload: candidate 15/20 vs init 10/20",
+        "C01 actor output layer norm 0.000452 -> 0.011509; normalizer/log_std frozen; 0 trust-region projections"
+      ]
+    },
+    {
+      "id": "R5_f3_three_modes",
+      "requirement": "F3 quiet/force/torque三种模式真实3秒三指窗且可重载复现",
+      "status": "PASS",
+      "evidence": [
+        "C01 development quiet 4/4, force(axis0+) 3/4, torque(axis0+) 4/4",
+        "C01b_eval_quiet strict reload under source-v2.3.0-c01: 4/4",
+        "11/11 development windows numeric+mesh PASS",
+        "R1 matrix torque 5/6, force 4/6, quiet 6/8",
+        "strict identity reload: force_strict.pt 3/4 and torque_strict.pt 4/4, 7/7 windows numeric+mesh PASS; actor state bytes unchanged (b46c5cdb...)"
+      ]
+    },
+    {
+      "id": "R6_new_f4",
+      "requirement": "新同条件F4完整20项分母；候选相对本线初始化有实际改善；相对当前v2.2无总体退步；正式力矩出现成功",
+      "status": "PASS",
+      "evidence": [
+        "F4 case manifest SHA256 a6a3546f...6f8",
+        "R1 candidate 15/20 vs R2 init 10/20",
+        "R0 v2.2 under ramp40 old order 13/20; R2 under new order 10/20; candidate 15/20 higher in both",
+        "R1 torque 5/6",
+        "R1 verification 15/15 runtime successes numeric+full mesh PASS"
+      ]
+    },
+    {
+      "id": "R7_independent_reload",
+      "requirement": "独立重载确认改善方向复现",
+      "status": "PASS_REPEATABILITY_ONLY",
+      "evidence": [
+        "R3 candidate seed111 15/20; R4 init seed111 10/20",
+        "20/20 case outcomes identical between seed110 and seed111",
+        "explicitly not a distribution-out generalization test"
+      ]
+    },
+    {
+      "id": "R8_negative_controls",
+      "requirement": "开掌负对照与旧v1.6历史参考同条件",
+      "status": "PASS",
+      "evidence": [
+        "F4_open_quiet_c: 0/4 SUCCESS, 4 FAILURE, 0 UNKNOWN",
+        "R5 legacy v1.6 adapted: 0/20 SUCCESS, 20 FAILURE, 0 UNKNOWN"
+      ]
+    },
+    {
+      "id": "R9_videos_and_evidence",
+      "requirement": "两视角录像、逐窗数值复算、原始完整网格PAD重分类、可重载权重/源码",
+      "status": "PASS",
+      "evidence": [
+        "F4v_front_c: 93 frames, 4/4 quiet success, numeric 4/4 PASS, env2 mesh PASS",
+        "F4v_side_c: 93 frames, 4/4 quiet success, numeric 4/4 PASS, env2 mesh PASS",
+        "delivery/weights/C01_final.pt SHA256 ffbf0917...a163",
+        "delivery/DELIVERY_MANIFEST.json",
+        "RAW_EVIDENCE_INDEX.json"
+      ]
+    },
+    {
+      "id": "R10_resource_ledger",
+      "requirement": "资源账、失败/中断保留",
+      "status": "PASS",
+      "evidence": [
+        "reports/RESOURCE_LEDGER_CONTINUATION.json",
+        "27 launches: 20 exit0, 7 fast failures; ~2.57h successful wall; 59,636 transitions; 12 updates"
+      ]
+    },
+    {
+      "id": "R11_stop_boundary",
+      "requirement": "达到理想边界后封存；不开启F5/提举/机械臂/泛化/真机",
+      "status": "PASS",
+      "evidence": [
+        "CANDIDATE_FREEZE.json status FROZEN_BEFORE_INDEPENDENT_RELOAD",
+        "no training after freeze",
+        "CAN/real hardware never enabled"
+      ]
+    }
+  ],
+  "unfinished": [
+    "Higher success rate (15/20 is small-sample, low-rate).",
+    "Force axis0+/axis2+ and torque axis1+ failures remain.",
+    "No disturbance-randomized training curriculum, F2-actor start, or reset randomization.",
+    "No lift/arm motion/fruit-position/shape generalization/real hardware."
+  ],
+  "stop_reason": "Ideal boundary reached: F3 three modes with reloadable success, new F4 candidate 15/20 vs init 10/20, torque 5/6, independent reload direction reproduced. Frozen without further tuning."
+}

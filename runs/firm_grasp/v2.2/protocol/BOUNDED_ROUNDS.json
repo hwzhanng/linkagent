@@ -1,0 +1,56 @@
+{
+  "bounded_rounds_limit": 3,
+  "rounds": [
+    {
+      "round": 1,
+      "source": "source-f3-v2_1",
+      "training": "F3_train_power4_bounded01",
+      "quiet_evaluation": "F3_bounded01_quiet_eval01",
+      "updates": 1,
+      "transitions": 1024,
+      "std": 5e-05,
+      "learning_rate": 2e-07,
+      "outcomes": {
+        "SUCCESS": 0,
+        "FAILURE": 4,
+        "UNKNOWN": 0
+      },
+      "note": "Smaller PPO update did not recover strict quiet; no disturbance or F4 attempt for rejected candidate."
+    },
+    {
+      "round": 2,
+      "source": "source-f3-v2_2",
+      "training": "F3_train_margin_bounded02",
+      "quiet_evaluation": "F3_bounded02_quiet_eval01",
+      "updates": 1,
+      "transitions": 1024,
+      "std": 0.0005,
+      "learning_rate": 2e-06,
+      "source_sha256": "7460ecdec4fce9a0e258fbb667d8aa61f18dda155d32d4c080dd7b48f7398167",
+      "updated_checkpoint_sha256": "af961f8ea500943278de77bc2683eaa12ea49e4ce742e839b0182eee48a660d9",
+      "outcomes": {
+        "SUCCESS": 1,
+        "FAILURE": 3,
+        "UNKNOWN": 0
+      },
+      "state": "G2_QUIET_FORCE_TORQUE_INDEPENDENT_WINDOWS_PASS_F4_RUNNING",
+      "disturbances": {
+        "force": {
+          "SUCCESS": 1,
+          "FAILURE": 3,
+          "UNKNOWN": 0
+        },
+        "torque": {
+          "SUCCESS": 1,
+          "FAILURE": 3,
+          "UNKNOWN": 0
+        }
+      }
+    }
+  ],
+  "next_round": {
+    "round": 3,
+    "status": "NOT_NEEDED",
+    "reason": "R2 yielded quiet/force/torque G2 candidate; frozen before final matrix. No additional model tuning."
+  }
+}

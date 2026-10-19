@@ -1,0 +1,51 @@
+{
+  "schema": "thumb_pad_runtime_contact_v1",
+  "version": "central_surface_conservative_v1",
+  "physics_dt_s": 0.008333333333333333,
+  "point_model": "raw_contact_point_nearest_original_triangle_no_assumed_projection",
+  "normal_model": "negative_raw_normal_is_hand_outward",
+  "thumb_position_tolerance_m": 0.0003,
+  "other_position_tolerance_m": 0.0005,
+  "thumb_normal_tolerance_deg": 10.0,
+  "other_normal_tolerance_deg": 45.0,
+  "boundary_uncertainty_m": 0.0005,
+  "f_pad_min_n": 0.08,
+  "f_nonpad_noise_max_n": 0.0,
+  "f_other_contact_min_n": 0.08,
+  "scope": "conservative recognition of observed central surfaces; outside tolerance is UNKNOWN; not a full cooked hull reconstruction or damage threshold",
+  "evidence": {
+    "thumb_pad_probe": "probe_known_thumb_pad_02",
+    "thumb_pad_loaded_points": 117,
+    "thumb_pad_max_source_distance_m": 0.00022619239092993082,
+    "thumb_pad_max_normal_error_deg": 3.963684448177556,
+    "thumb_side_probe": "probe_known_thumb_side_01",
+    "thumb_side_loaded_points": 30,
+    "other_pad_probes": [
+      "probe_known_index_pad_01",
+      "probe_known_middle_pad_01",
+      "probe_known_ring_pad_01",
+      "probe_known_little_pad_01"
+    ],
+    "other_observed_source_pad_max_normal_error_deg_approx": 42.63,
+    "force_sum_vs_matrix_max_error_n": 6.211375048369787e-07,
+    "noise_policy": "no nonpad positive force exempted; observed no-contact entries exactly zero",
+    "force_min_policy": "0.08N operational detection threshold; real thumb pad fixture sustained 0.121-0.195N; not a fruit damage threshold",
+    "calibration_file_sha256": {
+      "probe_known_thumb_pad_02/metadata.json": "2cf7d722ce026ae7c60db6a51bb3115a80a28dc2101481f93d1cefe2e8863dc6",
+      "probe_known_thumb_side_01/metadata.json": "bc9e485be24f3f1f18dd60d45a2108c8565487b8d3671ac6c4e4b40e58f8bffe",
+      "new_task_known_thumb_pad_01/metadata.json": "9ecf1b08b2e7a98a0f26ce57e29744f28c13bee22f502aba2e6d2796ca6c24c4",
+      "new_task_known_thumb_pad_01/channel_frames.jsonl": "a530b7ea8e4450a32beca44822da2d3c494f6f7b848eab288f8b246a546fa396",
+      "new_task_known_thumb_side_02/metadata.json": "30171cb63e4199ad007bafc3ecbc6d89fd18528ac3a057393cc31a132a898502",
+      "new_task_known_thumb_side_02/channel_frames.jsonl": "c3ac59a1dcecd9a341cf3e21489e84ab39c9aa68bd1c195ae46e14f58d595535",
+      "probe_four_env_mapping_01/metadata.json": "3a8fb40463ef2468970d8a4c98e4271828d09b82adb9d5ac36e0ae73ff73f669",
+      "probe_four_env_mapping_01/channel_frames.jsonl": "0aa3ed7e243908bd1f8cdc5b3f2cf16fa36cb7645bd66d9883e093c34f91398e"
+    }
+  },
+  "usable_for_training": true,
+  "status": "EMPIRICALLY_CHECKED_CONSERVATIVE_SURFACE_CLASSIFIER",
+  "geometry_approval_source": "pad_regions_v1.approved.json",
+  "geometry_approval_sha256": "abd16607249509762ac07483f9542b6b460628beee5b13a464fca31217b04258",
+  "geometry_approval_status_note": "Original approval JSON is an immutable historical geometry-only receipt. Its NOT_RUN/usable_for_training=false described the approval date, not this later runtime calibration. Geometry and boundaries remain byte-identical; only this separately versioned runtime contract permits calibrated use.",
+  "full_cooked_hull_export": "UNAVAILABLE_MERGED_XFORM_WRAPPER",
+  "invalid_packed_point_policy": "mark all digit channels UNKNOWN only for the affected named environment; forbid success; retain raw force repr; no abs or numeric-noise exemption"
+}

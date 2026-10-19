@@ -1,0 +1,184 @@
+{
+  "kind": "cpu_qa_final",
+  "generated_utc": "2026-10-13T04:16:00.111525+00:00",
+  "scope": "one consolidated CPU QA pass; no Kit/PhysX/GPU/hardware; no source edits; no full-repo tests",
+  "run_root": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013",
+  "source_root": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source",
+  "package": "research/fixed_fruit_grasp_v1",
+  "interpreter": "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python",
+  "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TMPDIR": "/tmp/linkbot-ppo-grasp-20261013/tmp",
+    "XDG_CACHE_HOME": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/cache/cpu_qa",
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "commands": [
+    {
+      "step": "package_cpu_tests",
+      "cwd": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/source",
+      "argv": [
+        "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "research/fixed_fruit_grasp_v1/tests"
+      ]
+    }
+  ],
+  "checks": {
+    "package_cpu_tests": {
+      "argv": [
+        "/home/miobarnacle/linkbot/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "research/fixed_fruit_grasp_v1/tests"
+      ],
+      "exit_code": 0,
+      "passed": 58,
+      "failed": 0,
+      "skipped": 0,
+      "wall_seconds": 5.32,
+      "result": "PASS"
+    },
+    "initial_contact_v2_checkpoint": {
+      "path": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/initial_contact_v2/initial.pt",
+      "sha256": "3e5fb073dfd1829924feb539b122416bae4cdab1b6c895bd67a26679282b90b0",
+      "torch_load_ok": true,
+      "top_keys": [
+        "actor_state_dict",
+        "critic_state_dict",
+        "optimizer_state_dict",
+        "iter",
+        "infos"
+      ],
+      "action_dim": 14,
+      "actor_obs_dim": 114,
+      "actor_nonfinite_tensors": {},
+      "iter": 0,
+      "progress": {
+        "stage_updates_completed": 0,
+        "total_updates_completed": 0,
+        "next_iteration": 0,
+        "current_learning_iteration_semantics": "zero-based label; not an update count"
+      },
+      "result": "PASS",
+      "v1_v2_actor_state_identical": true
+    },
+    "physics_smoke_07": {
+      "json": "/media/miobarnacle/Seagate Expansion Drive/linkbot-runs/ppo-grasp-first-result-20261013/evidence/physics_smoke_07_gentle_closure.json",
+      "sha256": "8554f24b149f7ce25185c3ef04d64e5539a0b64f9689b3eafa4651bd422981d5",
+      "process_status": "EXITED_OK",
+      "exit_code": 0,
+      "closure_amplitude": 0.15,
+      "gate_pass": true,
+      "required_checks": {
+        "finite_observations": true,
+        "action_effect_observed": true,
+        "real_contact_observed": true,
+        "self_collision_enabled": true,
+        "open_episode_completed": true,
+        "open_baseline_failed": true,
+        "no_hard_physical_faults": true,
+        "closure_reached_support_release": true
+      },
+      "all_required_checks_true": true,
+      "open_successes": 0,
+      "bounded_closure_successes": 0,
+      "total_successes": 0,
+      "result": "PASS"
+    },
+    "evaluate_90pct_separation": {
+      "stage_key": true,
+      "goal_key": true,
+      "stage_expr": true,
+      "goal_expr": true,
+      "existing_eval_stage": "contact",
+      "existing_eval_meets_stage_90_percent_target": false,
+      "existing_eval_meets_90_percent_target": false,
+      "result": "PASS"
+    },
+    "supervisor_settlement": {
+      "statuses": {
+        "eval_initial_contact": {
+          "status": "EXITED_OK",
+          "exit_code": 0
+        },
+        "eval_initial_contact_v2": {
+          "status": "EXITED_OK",
+          "exit_code": 0
+        },
+        "initial_contact": {
+          "status": "EXITED_OK",
+          "exit_code": 0
+        },
+        "initial_contact_v2": {
+          "status": "EXITED_OK",
+          "exit_code": 0
+        },
+        "native_boot": {
+          "status": "EXITED_OK",
+          "exit_code": 0
+        },
+        "native_boot_receipt": {
+          "status": "EXITED_OK",
+          "exit_code": 0
+        },
+        "physics_smoke_01": {
+          "status": "FAILED",
+          "exit_code": 1
+        },
+        "physics_smoke_02": {
+          "status": "FAILED",
+          "exit_code": 1
+        },
+        "physics_smoke_03": {
+          "status": "FAILED",
+          "exit_code": 1
+        },
+        "physics_smoke_04_close_candidate": {
+          "status": "FAILED",
+          "exit_code": 1
+        },
+        "physics_smoke_05_height_candidate": {
+          "status": "EXITED_OK",
+          "exit_code": 0
+        },
+        "physics_smoke_06_raw_distance": {
+          "status": "FAILED",
+          "exit_code": 1
+        },
+        "physics_smoke_07_gentle_closure": {
+          "status": "EXITED_OK",
+          "exit_code": 0
+        },
+        "short_contact_01": {
+          "status": "FAILED",
+          "exit_code": 1
+        },
+        "short_contact_02": {
+          "status": "RUNNING",
+          "exit_code": null
+        }
+      },
+      "unsettled_records": [
+        "short_contact_02"
+      ],
+      "has_spawn_failed_record": false
+    }
+  },
+  "defects": [],
+  "unable_to_check": [],
+  "python_version": "3.12.3",
+  "torch_version": "2.10.0+cu128",
+  "source_git_head": "ed9cd84a858adde2c35217f95a5fd1b422e5e745",
+  "source_git_porcelain_lines": 1,
+  "overall": "PASS",
+  "summary": {
+    "host_crash_or_reboot_trace": null
+  }
+}
