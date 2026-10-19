@@ -180,7 +180,7 @@ def rotation_reward(
         "speed_tracking": 0.13 * follow * supported,
         "stable_support": 0.025 * supported,
         "unsecured_motion": -0.075 * (1.0 - supported),
-        "pressure_risk": -0.15 * risk,
+        # Pressure risk is now optimized as a separate primal-dual PPO constraint.
         "centering": -0.04 * (translation_error / 0.05).square().clamp(max=9),
         "tilt": -0.06 * tilt_error.square(),
         "slip": -0.03 * slip_speed.clamp(0.0, 1.0),
