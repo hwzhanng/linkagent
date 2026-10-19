@@ -131,6 +131,8 @@ def main(argv=None):
     parser.add_argument("--smoke", action="store_true",
                         help="Run 20 actual PhysX steps before spending GPU time")
     parser.add_argument("--enable-wandb", action="store_true")
+    parser.add_argument("--evaluate-checkpoint", type=Path, default=None)
+    parser.add_argument("--evaluation-output", type=Path, default=None)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args(argv)
     if args.num_envs < 2:
@@ -207,6 +209,16 @@ def main(argv=None):
         writer = Writer(agent_cfg)
         wrapped, trainer = build_roto2_training(env, cfg, agent_cfg, writer)
         env = wrapped
+        if args.evaluate_checkpoint is not None:
+            from simulation.roto2_pressure.evaluate import evaluate_checkpoint
+            if not args.evaluate_checkpoint.is_file():
+                raise FileNotFoundError(args.evaluate_checkpoint)
+            output = args.evaluation_output or (
+                ROOT / "logs/roto2_pressure_fruit"
+                / f"eval_{args.pressure_variant}_seed{args.seed}.json"
+            )
+            evaluate_checkpoint(trainer, wrapped, args.evaluate_checkpoint, output)
+            return 0
         trainer.train()
         return 0
     finally:
