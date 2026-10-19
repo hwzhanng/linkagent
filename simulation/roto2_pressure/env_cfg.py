@@ -46,6 +46,16 @@ class FruitRotationEnvCfg(DirectRLEnvCfg):
     episode_length_s = 24.0
     is_finite_horizon = True
     decimation = 6
+    # Direct task follows RoTO 2.0's proprioception+tactile dictionary contract.
+    obs_list = ("prop", "tactile")
+    obs_stack = 4
+    tactile_cfg = {"binary_tactile": False, "binary_threshold": 0.01}
+    pixel_cfg = None
+    num_eval_envs = 16
+    num_actions = 16
+    debug = False
+    pressure_variant = "jacobian"  # "plain" | "scalar" | "jacobian"
+    pressure_relief_weight = 0.25
     action_space = ACTION_DIM
     observation_space = POLICY_DIM
     state_space = CRITIC_DIM
