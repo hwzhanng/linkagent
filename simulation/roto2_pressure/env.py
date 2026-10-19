@@ -23,6 +23,7 @@ from .core import (
     fingertip_taxels, pressure_risk, rotation_reward,
     quat_inv_rotate, quat_rotate,
 )
+from .pressure_track import PressureJacobianTrack, hotspot_cost
 from .env_cfg import FruitRotationEnvCfg
 
 CONTACT_BODIES = {
@@ -68,6 +69,19 @@ class FruitRotationEnv(DirectRLEnv):
         )
         self._center_reference_w = torch.zeros((self.num_envs, 3), device=self.device)
         self._contact_centroid_prev = torch.zeros((self.num_envs, 3), device=self.device)
+        self._track = PressureJacobianTrack(
+            self.num_envs, self.device,
+            enabled=(cfg.pressure_variant == "jacobian"),
+        )
+        self._previous_risk = torch.zeros(self.num_envs, device=self.device)
+        self._pressure_relief = torch.zeros(self.num_envs, device=self.device)
+        self._executed = torch.zeros((self.num_envs, 16), device=self.device)
+        # Source 2026 multimodal_rl expects the task to expose this contract.
+        self.obs_stack = cfg.obs_stack
+        self.num_actions = cfg.num_actions
+        self.num_eval_envs = cfg.num_eval_envs
+        self.debug = cfg.debug
+
         self._axes_m = torch.as_tensor(
             self._prestartup_fruit_axes_m, device=self.device, dtype=torch.float32
         )
@@ -159,15 +173,28 @@ class FruitRotationEnv(DirectRLEnv):
 
     def _pre_physics_step(self, actions: torch.Tensor) -> None:
         if actions.shape != self._action.shape:
-            raise ValueError(f"Expected {self._action.shape} action tensor")
+            raise ValueError(f"Expected {self._action.shape} normalized actions")
+        proposed = actions.clamp(-1.0, 1.0)
         self._previous_action.copy_(self._action)
-        self._action.copy_(actions.clamp(-1.0, 1.0))
+        valid = self._panel_valid.repeat_interleave(4, dim=-1)
+        grip_ok = (
+            (self._forces[:, 0] > self.cfg.minimum_support_force_n)
+            & ((self._forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2)
+        )
+        applied = self._track.correct(
+            proposed, (self._sparse / PRESSURE_REF_PA).clamp(0, 4),
+            valid, grip_ok
+        )
+        self._action.copy_(applied)
+        self._executed.copy_(applied)
         q = self._robot.data.joint_pos.torch[:, self._active_ids]
         bounds = self._robot.data.joint_pos_limits.torch[:, self._active_ids]
-        proposal = self._q_target + self._action * self.cfg.maximum_joint_target_delta_rad
         lead = self.cfg.maximum_joint_target_lead_rad
+        proposal = self._q_target + applied * self.cfg.maximum_joint_target_delta_rad
         proposal = torch.maximum(q - lead, torch.minimum(q + lead, proposal))
-        self._q_target = torch.maximum(bounds[..., 0], torch.minimum(bounds[..., 1], proposal))
+        self._q_target = torch.maximum(
+            bounds[..., 0], torch.minimum(bounds[..., 1], proposal)
+        )
 
     def _apply_action(self) -> None:
         self._robot.set_joint_position_target_index(
@@ -191,6 +218,12 @@ class FruitRotationEnv(DirectRLEnv):
 
     def _get_dones(self):
         self._measure()
+        self._track.observe(
+            self._executed,
+            (self._sparse / PRESSURE_REF_PA).clamp(0, 4),
+            self._panel_valid.repeat_interleave(4, dim=-1),
+            (self._fruit.data.root_ang_vel_w.torch[:, 2] / 6.0).clamp(-2, 2),
+        )
         pressure_peak = self._dense.amax(-1)
         self._overpressure_streak = torch.where(
             pressure_peak > self.cfg.maximum_pressure_proxy_pa,
@@ -237,6 +270,26 @@ class FruitRotationEnv(DirectRLEnv):
             (center_error > self.cfg.maximum_fruit_center_displacement_m)
             | (self._overpressure_streak >= self.cfg.overpressure_termination_steps)
         )
+        # One additional pressure-vector signal, not another PPO architecture:
+        # local hotspot potential relief = <dD/dp, p_old - p_now>.
+        # It has no positive reward when pressure drops due to losing contact.
+        valid = self._panel_valid.repeat_interleave(4, dim=-1)
+        measured_risk = hotspot_cost(
+            (self._sparse / PRESSURE_REF_PA).clamp(0, 4), valid
+        )
+        relief = (self._previous_risk - measured_risk).clamp(-1, 1)
+        secure_grasp = (
+            (self._forces[:, 0] > self.cfg.minimum_support_force_n)
+            & ((self._forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2)
+        )
+        forward_progress = signed_omega * self._goal > 0.0
+        bonus = relief * (secure_grasp & forward_progress).float()
+        self._pressure_relief.copy_(bonus.detach())
+        self._previous_risk.copy_(measured_risk.detach())
+        if self.cfg.pressure_variant == "scalar":
+            reward = reward - 0.15 * measured_risk
+        elif self.cfg.pressure_variant == "jacobian":
+            reward = reward + self.cfg.pressure_relief_weight * bonus
         reward = reward - 8.0 * terminated.float()
         secure_support = ((self._forces[:, 0] > self.cfg.minimum_support_force_n)
                           & ((self._forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2))
@@ -247,6 +300,14 @@ class FruitRotationEnv(DirectRLEnv):
             "unwrapped_rotation_rad": self._angle.detach().clone(),
             "secure_support": secure_support.detach().clone(),
             "slip_speed": (self._slip_speed() / 0.25).detach().clone(),
+        }
+        self.extras["log"] = {
+            "rotation/signed_speed_rad_s": (signed_omega * self._goal.sign()).mean().detach(),
+            "rotation/secure_grasp": secure_grasp.float().mean().detach(),
+            "pressure/sparse_hotspot_risk": measured_risk.mean().detach(),
+            "pressure/peak_pressure_proxy_pa": self._dense.amax(-1).mean().detach(),
+            "pressure/relief_bonus": bonus.mean().detach(),
+            "pressure/gradient_track_acceptance": self._track.last_accepted.float().mean().detach(),
         }
         return reward
 
@@ -325,7 +386,22 @@ class FruitRotationEnv(DirectRLEnv):
         critic = torch.cat((policy, privileged), dim=1)
         if critic.shape[-1] != CRITIC_DIM:
             raise RuntimeError(f"Critic layout drift: {critic.shape[-1]}")
-        return {"policy": policy, "critic": critic}
+        # 2026 RoTO 2.0 data contract: 4-frame tactile and proprioception.
+        # The policy never gets privileged exact fruit state or dense oracle.
+        return {"policy": {
+            "tactile": policy[:, :432],
+            "prop": policy[:, 432:],
+        }}
+
+    def get_observations(self):
+        return self._get_observations()
+
+    def set_spaces(self, single_obs, obs, single_action, action):
+        # Used by RoTO 2.0 common_utils.make_env without copying PPO code.
+        self.single_observation_space = single_obs
+        self.observation_space = obs
+        self.single_action_space = single_action
+        self.action_space = action
 
     def _reset_idx(self, env_ids):
         if env_ids is None:
@@ -398,6 +474,10 @@ class FruitRotationEnv(DirectRLEnv):
         self._center_reference_w[env_ids] = initial
         self._contact_centroid_prev[env_ids] = tips.mean(dim=1)
         self._overpressure_streak[env_ids] = 0
+        self._track.reset(env_ids)
+        self._previous_risk[env_ids] = 0
+        self._pressure_relief[env_ids] = 0
+        self._executed[env_ids] = 0
         self._panel_valid[env_ids] = (
             torch.rand((n, 6), device=self.device)
             > self.cfg.sparse_panel_dropout_probability
