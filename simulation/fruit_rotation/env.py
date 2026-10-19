@@ -245,6 +245,7 @@ class FruitRotationEnv(DirectRLEnv):
             "peak_pressure_pa": self._dense.amax(-1).detach().clone(),
             "unwrapped_rotation_rad": self._angle.detach().clone(),
             "secure_support": secure_support.detach().clone(),
+            "slip_speed": (self._slip_speed() / 0.25).detach().clone(),
         }
         return reward
 
