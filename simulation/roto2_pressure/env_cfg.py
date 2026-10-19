@@ -15,7 +15,7 @@ from isaaclab.terrains import TerrainImporterCfg
 from isaaclab.utils.configclass import configclass
 
 from simulation.tomato_pick.isaac.assets import randomize_correlated_ellipsoid_geometry
-from .core import ACTION_DIM, CRITIC_DIM, POLICY_DIM
+from .core import ACTION_DIM, POLICY_DIM
 
 ASSET_USD = os.environ.get("LINKAGENT_ROTATION_USD")
 if not ASSET_USD or not Path(ASSET_USD).is_file():
@@ -58,7 +58,7 @@ class FruitRotationEnvCfg(DirectRLEnvCfg):
     pressure_relief_weight = 0.25
     action_space = ACTION_DIM
     observation_space = POLICY_DIM
-    state_space = CRITIC_DIM
+    state_space = 0
     debug_vis = False
     viewer = ViewerCfg(
         eye=(0.60, -0.58, 1.18), lookat=(0.0, 0.0, 0.89),
