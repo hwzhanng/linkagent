@@ -87,6 +87,7 @@ class FruitRotationEnv(DirectRLEnv):
         )
         self._dense_sites, self._sparse_sites = surface_sites(self.device)
         self._forces = torch.zeros((self.num_envs, 6), device=self.device)
+        self._force_vectors = torch.zeros((self.num_envs, 6, 3), device=self.device)
         self._contact_positions = torch.zeros((self.num_envs, 6, 3), device=self.device)
         self._dense = torch.zeros((self.num_envs, 96), device=self.device)
         self._sparse = torch.zeros((self.num_envs, 24), device=self.device)
@@ -146,14 +147,29 @@ class FruitRotationEnv(DirectRLEnv):
             location = data.contact_pos_w
             if matrix is None or location is None:
                 raise RuntimeError("Missing filtered physical contacts; never substitute fake sensor readings")
-            self._forces[:, i] = torch.linalg.vector_norm(
-                matrix.torch[:, 0, 0], dim=-1
-            ).clamp(0.0, 25.0)
+            self._force_vectors[:, i] = matrix.torch[:, 0, 0]
             self._contact_positions[:, i, :] = location.torch[:, 0, 0]
         pose = self._fruit.data.root_pose_w.torch
         quat = self._wxyz(pose[:, 3:7])
-        # For one-body contact reporting this is an effective normal load
-        # approximation. All other contact points are NOT recovered.
+        # Project measured contact resultant onto the local ellipsoid normal.
+        # Force magnitude alone conflates normal compression with tangential
+        # friction and overestimates film pressure during rotation.
+        contact_local = quat_inv_rotate(
+            quat[:, None, :].expand(-1, 6, -1),
+            self._contact_positions - pose[:, None, :3],
+        )
+        ellipsoid_normal_local = torch.nn.functional.normalize(
+            contact_local / self._axes_m[:, None, :].square().clamp_min(1e-7),
+            dim=-1, eps=1e-6,
+        )
+        normal_w = quat_rotate(
+            quat[:, None, :].expand(-1, 6, -1), ellipsoid_normal_local
+        )
+        self._forces.copy_(
+            (self._force_vectors * normal_w).sum(-1).abs().clamp(0, 25)
+        )
+        # Remaining approximation: one effective contact location per link;
+        # multiple simultaneous contact patches and fruit tissue are not solved.
         self._dense = pressure_from_contacts(
             self._forces, self._contact_positions, pose[:, :3],
             quat, self._axes_m, self._dense_sites
