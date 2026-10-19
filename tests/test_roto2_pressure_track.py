@@ -25,7 +25,10 @@ def test_writes_no_new_ppo_trainer():
     project = ROOT / "simulation/roto2_pressure"
     assert not (project / "ppo.py").exists()
     train_source = (ROOT / "script/train_roto2_pressure.py").read_text()
-    assert "from common_utils import make_env, train_one_seed" in train_source
+    # Keep the upstream 2026 PPO implementation completely unmodified.
+    assert "from multimodal_rl.rl.ppo import PPO, PPO_DEFAULT_CONFIG" in train_source
+    assert "from multimodal_rl.rl.trainer import Trainer" in train_source
+    assert "from multimodal_rl.models.encoder import Encoder" in train_source
     assert "from multimodal_rl.tools.writer import Writer" in train_source
     tree = ast.parse(train_source)
     assert not any(isinstance(x, ast.ClassDef) for x in tree.body)
