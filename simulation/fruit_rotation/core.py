@@ -29,8 +29,8 @@ POLICY_PARTS = (
     ("sparse_pressure_delta", 24),
     ("sparse_valid", 24),         # per panel dropout and invalidity
     ("joint_pos", 16), ("joint_vel", 16),
-    ("fruit_rel_pos", 3), ("fruit_rotation6d", 6),
-    ("fruit_lin_vel", 3), ("fruit_ang_vel", 3),
+    ("contact_centroid_hand", 3), ("face_pressure_moments", 6),
+    ("contact_centroid_velocity", 3), ("face_pressure_flux", 3),
     ("gravity_hand", 3), ("rotation_axis_hand", 3),
     ("desired_speed", 1), ("previous_action", 16),
 )
