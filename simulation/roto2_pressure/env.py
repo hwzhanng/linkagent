@@ -18,7 +18,7 @@ from module.skills.tomato_pick.hand_synergy import (
 )
 from simulation.tomato_pick.isaac.assets import activate_nested_contact_reporters
 from .core import (
-    ACTIVE_JOINTS, MIMICS, FINGERS, POLICY_DIM, CRITIC_DIM,
+    ACTIVE_JOINTS, MIMICS, FINGERS, POLICY_DIM,
     PRESSURE_REF_PA, surface_sites, pressure_from_contacts,
     fingertip_taxels, pressure_risk, rotation_reward,
     quat_inv_rotate, quat_rotate,
@@ -392,17 +392,6 @@ class FruitRotationEnv(DirectRLEnv):
         policy = torch.cat(parts, dim=1)
         if policy.shape[-1] != POLICY_DIM:
             raise RuntimeError(f"Policy layout drift: {policy.shape[-1]}")
-        privileged = torch.cat((
-            (self._dense / PRESSURE_REF_PA).clamp(0, 4),
-            pose, self._fruit.data.root_lin_vel_w.torch / 0.5,
-            self._fruit.data.root_ang_vel_w.torch / 6.0,
-            self._forces / 8.0,
-            torch.full((self.num_envs, 1), 0.12, device=self.device),
-            self._axes_m / 0.05, (self._angle / 10.0)[:, None],
-        ), dim=1)
-        critic = torch.cat((policy, privileged), dim=1)
-        if critic.shape[-1] != CRITIC_DIM:
-            raise RuntimeError(f"Critic layout drift: {critic.shape[-1]}")
         # 2026 RoTO 2.0 data contract: 4-frame tactile and proprioception.
         # The policy never gets privileged exact fruit state or dense oracle.
         return {"policy": {
