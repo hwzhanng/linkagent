@@ -176,9 +176,10 @@ def rotation_reward(
     risk = pressure_risk(dense_pressure)
     # Detached metrics; PPO updates from advantage. Auxiliary gradient uses model.
     terms = {
-        "rotation": 8.0 * progress,
+        "rotation": 8.0 * progress * supported,
         "speed_tracking": 0.13 * follow * supported,
         "stable_support": 0.025 * supported,
+        "unsecured_motion": -0.075 * (1.0 - supported),
         "pressure_risk": -0.15 * risk,
         "centering": -0.04 * (translation_error / 0.05).square().clamp(max=9),
         "tilt": -0.06 * tilt_error.square(),
