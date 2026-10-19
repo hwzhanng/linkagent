@@ -67,6 +67,7 @@ class FruitRotationEnv(DirectRLEnv):
             self.num_envs, device=self.device, dtype=torch.long
         )
         self._center_reference_w = torch.zeros((self.num_envs, 3), device=self.device)
+        self._contact_centroid_prev = torch.zeros((self.num_envs, 3), device=self.device)
         self._axes_m = torch.as_tensor(
             self._prestartup_fruit_axes_m, device=self.device, dtype=torch.float32
         )
@@ -256,24 +257,18 @@ class FruitRotationEnv(DirectRLEnv):
         limits = self._robot.data.joint_pos_limits.torch[:, self._active_ids]
         qnorm = (2 * (q - limits[..., 0]) / (
             limits[..., 1] - limits[..., 0]).clamp_min(1e-5) - 1).clamp(-1, 1)
+        # Actor observations are intentionally computed ONLY from fingertip
+        # taxels, attached sparse pressure panels, FK and encoder velocity.
+        # Ground-truth fruit pose / angular velocity stay privileged for critic.
         pose = self._fruit.data.root_pose_w.torch
-        qfruit = self._wxyz(pose[:, 3:7])
-        qbase = self._wxyz(
-            self._robot.data.root_pose_w.torch[:, 3:7]
-        )
-        basis_x = torch.tensor((1., 0., 0.), device=self.device).expand(self.num_envs, -1)
-        basis_y = torch.tensor((0., 1., 0.), device=self.device).expand(self.num_envs, -1)
-        ex = quat_inv_rotate(qbase, quat_rotate(qfruit, basis_x))
-        ey = quat_inv_rotate(qbase, quat_rotate(qfruit, basis_y))
+        qbase = self._wxyz(self._robot.data.root_pose_w.torch[:, 3:7])
         base_pos = self._robot.data.root_pos_w.torch
-        rel = quat_inv_rotate(qbase, pose[:, :3] - base_pos)
-        obj_v = quat_inv_rotate(qbase, self._fruit.data.root_lin_vel_w.torch)
-        obj_w = quat_inv_rotate(qbase, self._fruit.data.root_ang_vel_w.torch)
-        gravity = quat_inv_rotate(
-            qbase, torch.tensor((0., 0., -1.), device=self.device).expand_as(rel)
-        )
-        axis = quat_inv_rotate(qbase, basis_x * 0 + torch.tensor(
-            (0., 0., 1.), device=self.device).expand_as(rel))
+        gravity_world = torch.tensor(
+            (0., 0., -1.), device=self.device
+        ).expand(self.num_envs, -1)
+        rotation_axis_world = -gravity_world
+        gravity = quat_inv_rotate(qbase, gravity_world)
+        axis = quat_inv_rotate(qbase, rotation_axis_world)
         valid = self._panel_valid.repeat_interleave(4, dim=1)
         sparse = (self._sparse / PRESSURE_REF_PA).clamp(0., 4.)
         sparse_noisy = (
@@ -283,12 +278,37 @@ class FruitRotationEnv(DirectRLEnv):
         self._pressure_prev.copy_(sparse.detach())
         tactile = (self._taxels + torch.randn_like(self._taxels) *
                    self.cfg.tactile_noise_std_fraction).clamp(0., 4.)
+        finger_weights = tactile.reshape(self.num_envs, 5, 72).sum(-1)
+        tips = self._robot.data.body_pos_w.torch[
+            :, self._contact_body_ids[:5]
+        ]
+        weighted_center = (
+            (tips * finger_weights[..., None]).sum(dim=1)
+            / finger_weights.sum(dim=1, keepdim=True).clamp_min(1e-6)
+        )
+        centroid = torch.where(
+            (finger_weights.sum(dim=1) > 1e-5)[:, None],
+            weighted_center, tips.mean(dim=1),
+        )
+        relative_center = quat_inv_rotate(qbase, centroid - base_pos)
+        centroid_velocity = quat_inv_rotate(
+            qbase, (centroid - self._contact_centroid_prev)
+            / (self.cfg.sim.dt * self.cfg.decimation)
+        )
+        self._contact_centroid_prev.copy_(centroid.detach())
+        face_moments = sparse_noisy.reshape(self.num_envs, 6, 4).mean(-1)
+        delta_faces = delta.reshape(self.num_envs, 6, 4).mean(-1)
+        face_flux = torch.stack((
+            delta_faces[:, 1] - delta_faces[:, 0],
+            delta_faces[:, 3] - delta_faces[:, 2],
+            delta_faces[:, 5] - delta_faces[:, 4],
+        ), dim=-1)
         parts = (
             tactile.reshape(self.num_envs, -1), sparse_noisy, delta, valid,
-            qnorm, (qd / 4.0).clamp(-3, 3), (rel / 0.20).clamp(-3, 3),
-            torch.cat((ex, ey), -1),
-            (obj_v / 0.5).clamp(-3, 3),
-            (obj_w / 6.0).clamp(-3, 3),
+            qnorm, (qd / 4.0).clamp(-3, 3),
+            (relative_center / 0.20).clamp(-3, 3), face_moments,
+            (centroid_velocity / 0.5).clamp(-3, 3),
+            face_flux.clamp(-3, 3),
             gravity, axis, self._goal[:, None], self._action,
         )
         policy = torch.cat(parts, dim=1)
@@ -376,6 +396,7 @@ class FruitRotationEnv(DirectRLEnv):
         self._angle[env_ids] = 0
         self._pressure_prev[env_ids] = 0
         self._center_reference_w[env_ids] = initial
+        self._contact_centroid_prev[env_ids] = tips.mean(dim=1)
         self._overpressure_streak[env_ids] = 0
         self._panel_valid[env_ids] = (
             torch.rand((n, 6), device=self.device)
