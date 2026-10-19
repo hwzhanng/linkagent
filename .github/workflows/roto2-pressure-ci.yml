@@ -1,0 +1,30 @@
+name: RoTO2 Pressure Track (CPU)
+
+on:
+  push:
+    branches:
+      - research/roto2-object-pressure-track
+  pull_request:
+    paths:
+      - "simulation/roto2_pressure/**"
+      - "script/train_roto2_pressure.py"
+      - "tests/test_roto2_pressure_track.py"
+      - ".github/workflows/roto2-pressure-ci.yml"
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install minimal CPU test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+          python -m pip install pytest PyYAML
+      - name: Compile ONLY thin 2026 RoTO adaptation
+        run: |
+          python -m compileall -q simulation/roto2_pressure script/train_roto2_pressure.py tests/test_roto2_pressure_track.py
+      - name: Verify pressure-to-action physical gradient and L20
+        run: |
+          python -m pytest tests/test_roto2_pressure_track.py -q
