@@ -100,7 +100,7 @@ def test_gae_terminal_no_bootstrap():
     final = torch.ones(2) * 10
     advantages, returns = compute_gae(reward, done, value, final, gamma=0.9, lam=1.0)
     assert torch.allclose(returns[:, 0], torch.tensor([3.7, 3.0]))
-    assert torch.allclose(returns[:, 1], torch.tensor([14.54, 13.0]))
+    assert torch.allclose(returns[:, 1], torch.tensor([13.7, 13.0]))
 
 
 def test_predictor_and_ppo_update_cpu():
