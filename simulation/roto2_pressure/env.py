@@ -250,6 +250,7 @@ class FruitRotationEnv(DirectRLEnv):
         displacement = torch.linalg.vector_norm(obj_pos - self._center_reference_w, dim=-1)
         failure = (
             (displacement > self.cfg.maximum_fruit_center_displacement_m)
+            | (self._forces[:, :5].amax(-1) > self.cfg.maximum_contact_force_n)
             | (self._overpressure_streak >= self.cfg.overpressure_termination_steps)
             | (obj_pos[:, 2] < 0.78)
             | ~torch.isfinite(obj_pos).all(-1)
