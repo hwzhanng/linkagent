@@ -90,7 +90,9 @@ def ensure_single_hand_usd(force: bool = False) -> Path:
         fix_base=True,
         merge_fixed_joints=False,
         force_usd_conversion=True,
-        make_instanceable=True,
+        # We must author native passive mimics and filter same-finger
+        # self contacts: instance proxies are read-only in composed USD.
+        make_instanceable=False,
         collision_from_visuals=False,
         collision_type="Convex Decomposition",
         self_collision=True,
