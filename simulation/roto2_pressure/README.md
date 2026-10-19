@@ -54,6 +54,17 @@ jacobian: applies local action-pressure Jacobian descent with task-tangent proje
 
 Checkpoint: logs/roto2_pressure_fruit/<variant>_seed42/<date>/checkpoints/best_agent.pt. Metrics: TensorBoard scalars and independent post-training evaluation.
 
+Evaluate a **trained** RoTO2 checkpoint using the exact same Actor/Encoder and 64 fresh episodes (one independent episode per environment):
+
+```bash
+"$PY" -m script.train_roto2_pressure --headless --num-envs 64 --seed 2026 \
+  --pressure-variant jacobian \
+  --evaluate-checkpoint /absolute/path/to/best_agent.pt \
+  --evaluation-output logs/roto2_pressure_fruit/eval_jacobian_seed2026.json
+```
+
+The JSON includes directional rotation, successful 360-degree rotation rate, secure-grip fraction, first-done failure rate, mean/peak full-object pressure proxy and fraction of pressure-gradient corrections accepted. Run the equivalent command with the proper variant for plain/scalar baselines.
+
 ## Exact actor input and action contract
 
 Single policy step (4 frames are stacked by RoTO 2.0 wrapper):
