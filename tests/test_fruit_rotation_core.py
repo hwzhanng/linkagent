@@ -9,7 +9,7 @@ from simulation.fruit_rotation.core import (
     tangent_project, fingertip_taxels,
 )
 from simulation.fruit_rotation.ppo import (
-    ActorCritic, ContactDynamics, PPOSettings, auxiliary_loss, compute_gae,
+    ActorCritic, ContactDynamics, PPOSettings, DualState, compute_gae,
     ppo_update,
 )
 
@@ -75,22 +75,28 @@ def test_reward_rotation_exceeds_stillness():
     assert torch.all(spinning > steady)
 
 
-def test_actor_predictor_and_aux_gradients():
+def test_actor_predictor_and_sparse_belief():
     torch.manual_seed(7)
     actor = ActorCritic()
     dynamics = ContactDynamics()
     obs = torch.randn(4, POLICY_DIM) * .2
     critic = torch.randn(4, CRITIC_DIM) * .2
-    action, latent, logp, value = actor.act(obs, critic)
+    action, latent, logp, value, cost_value = actor.act(obs, critic)
     assert action.shape == (4, 16) and latent.shape == (4, 16)
-    assert logp.shape == (4,) and value.shape == (4,)
-    pred, spin = dynamics(obs, action)
-    assert pred.shape == (4, 96) and spin.shape == (4,)
-    loss, _ = auxiliary_loss(actor, dynamics, obs, PPOSettings())
-    assert torch.isfinite(loss)
-    loss.backward()
+    assert logp.shape == (4,) and value.shape == cost_value.shape == (4,)
+    pred, spin, support, slip = dynamics(obs, action)
+    assert pred.shape == (4, 96) and spin.shape == support.shape == slip.shape == (4,)
+    belief = actor.dense_belief(obs)
+    assert belief.shape == (4, 96)
+    (belief.square().mean() + actor.mean(obs).square().mean()).backward()
     assert torch.isfinite(actor.actor_mean.weight.grad).all()
-    assert dynamics.network[0].weight.grad is None
+    # The actor must reject privileged 622D observations.
+    try:
+        actor.mean(critic)
+        assert False, "Privileged sensor leakage to the Actor"
+    except ValueError:
+        pass
+
 
 
 def test_gae_terminal_no_bootstrap():
@@ -105,7 +111,7 @@ def test_gae_terminal_no_bootstrap():
 
 def test_predictor_and_ppo_update_cpu():
     torch.manual_seed(3)
-    settings = PPOSettings(epochs=1, minibatches=2, minimum_samples_for_aux=999999)
+    settings = PPOSettings(epochs=1, minibatches=2, minimum_samples_for_guidance=999999)
     actor = ActorCritic()
     predictor = ContactDynamics()
     optim = torch.optim.Adam(actor.parameters(), lr=settings.learning_rate)
@@ -114,21 +120,32 @@ def test_predictor_and_ppo_update_cpu():
     policy = torch.randn(2, batch, POLICY_DIM) * 0.1
     critic = torch.randn(2, batch, CRITIC_DIM) * 0.1
     with torch.no_grad():
-        action, latent, lp, value = actor.act(policy.reshape(-1, POLICY_DIM), critic.reshape(-1, CRITIC_DIM))
+        action, latent, lp, value, cost_value = actor.act(policy.reshape(-1, POLICY_DIM), critic.reshape(-1, CRITIC_DIM))
     data = {
         "policy": policy, "critic": critic,
         "latent": latent.reshape(2, batch, ACTION_DIM),
         "logp": lp.reshape(2, batch),
         "value": value.reshape(2, batch),
+        "cost_value": cost_value.reshape(2, batch),
         "reward": torch.ones(2, batch) * .1,
+        "cost": torch.ones(2, batch) * .04,
         "done": torch.zeros(2, batch, dtype=torch.bool),
         "next_pressure": torch.ones(2, batch, 96) * .3,
         "next_omega": torch.ones(2, batch) * .1,
+        "next_support": torch.ones(2, batch) * .8,
+        "next_slip": torch.zeros(2, batch),
         "predictor_mask": torch.ones(2, batch, dtype=torch.bool),
         "advantages": torch.randn(2, batch),
+        "cost_advantages": torch.randn(2, batch),
         "returns": torch.randn(2, batch),
+        "cost_returns": torch.randn(2, batch),
     }
-    stats = ppo_update(actor, predictor, optim, model_optim, data, settings, prior_samples=0)
+    dual = DualState(settings.dual_initial)
+    stats = ppo_update(actor, predictor, optim, model_optim, data, settings, prior_samples=0, dual=dual)
     assert stats["ppo_minibatch_updates"] >= 1
     assert math.isfinite(stats["predictor_loss"])
-    assert not stats["aux_enabled"]
+    assert not stats["guidance_ready"]
+    assert math.isfinite(stats["dense_belief_loss"])
+    old_dual = dual.multiplier
+    dual.update(settings.pressure_cost_budget + 0.4, settings)
+    assert dual.multiplier > old_dual
