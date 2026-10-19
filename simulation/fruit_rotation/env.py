@@ -237,11 +237,14 @@ class FruitRotationEnv(DirectRLEnv):
             | (self._overpressure_streak >= self.cfg.overpressure_termination_steps)
         )
         reward = reward - 8.0 * terminated.float()
+        secure_support = ((self._forces[:, 0] > self.cfg.minimum_support_force_n)
+                          & ((self._forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2))
         self.extras["step"] = {
-            "rotation_rate": signed_omega.detach(),
-            "pressure_risk": pressure_risk((self._dense / PRESSURE_REF_PA).clamp(0, 4)).detach(),
-            "peak_pressure_pa": self._dense.amax(-1).detach(),
-            "unwrapped_rotation_rad": self._angle.detach(),
+            "rotation_rate": signed_omega.detach().clone(),
+            "pressure_risk": pressure_risk((self._dense / PRESSURE_REF_PA).clamp(0, 4)).detach().clone(),
+            "peak_pressure_pa": self._dense.amax(-1).detach().clone(),
+            "unwrapped_rotation_rad": self._angle.detach().clone(),
+            "secure_support": secure_support.detach().clone(),
         }
         return reward
 
