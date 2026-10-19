@@ -32,8 +32,9 @@ fetch_verified elle-miller/roto roto 0fa344e6e224f141cb6ab3ed4c2fbbbd86cf1cc2
 
 "$PY" -m pip install -e "$DEPS/multimodal_rl"
 "$PY" -m pip install -e "$DEPS/roto"
-"$PY" -m pip install PyYAML tensorboard
+"$PY" -m pip install PyYAML tensorboard "skrl>=2.1.0,<3"
 
+"$PY" -c "import multimodal_rl.rl.ppo; import multimodal_rl.rl.trainer; import multimodal_rl.wrappers.isaaclab_wrapper; print('2026 RoTO PPO backend imports OK')"
 echo "Pinned RoTO 2.0 backend installed. Verify real PhysX before long training:"
 echo "  \"$PY\" -m script.train_roto2_pressure --headless --smoke --num-envs 8"
 echo "  \"$PY\" -m script.train_roto2_pressure --headless --num-envs 256 --million-steps 100"
