@@ -1,0 +1,94 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+Loading user config located at: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-20T11:26:32Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers' or '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers/config'
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792495592.757773 1840978 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792495592.757805 1840978 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+2026-10-20T11:26:32Z [197ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+2026-10-20T11:26:32Z [241ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
+[ISAACLAB] AppLauncher initialization complete
+2026-10-20T11:26:35Z [2,865ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 2090
+	Physics step-size     : 0.008333333333333333
+	Rendering step-size   : 0.05
+	Environment step-size : 0.05
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Registered backend 'physx' for factory RigidObject.
+[INFO]: Registered backend 'physx' for factory ContactSensor.
+[INFO]: Physics scene prim path: /physicsScene
+[INFO]: Time taken for scene creation Last: 6.392886 s, Mean: 6.392886 s, Std: 0.000000 s, N: 1
+[INFO]: Scene manager:  <class InteractiveScene>
+	Number of environments: 4096
+	Environment spacing   : 1.0
+	Source prim name      : /World/envs/env_0
+	Global prim paths     : ['/World/ground']
+	Replicate physics     : False
+[INFO]: Starting the simulation. This may take a few seconds. Please wait...
+2026-10-20T11:26:57Z [25,156ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?
+[INFO]: Simulation parameters for joints in /World/envs/env_.*/Robot:
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                 Simulation Joint Information (Prim path: /World/envs/env_.*/Robot)                                                 |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+| Index | Name          | Stiffness | Damping | Armature | Static Friction | Dynamic Friction | Viscous Friction | Position Limits | Velocity Limits | Effort Limits |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+|   0   | thumb_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.490, 1.050] |      1.000      |     0.450     |
+|   1   | index_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   2   | middle_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   3   | ring_joint0   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   4   | little_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   5   | thumb_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-1.450, 0.000] |      1.000      |     0.450     |
+|   6   | index_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   7   | middle_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   8   | ring_joint1   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   9   | little_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   10  | thumb_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 0.840] |      1.000      |     0.450     |
+|   11  | index_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   12  | middle_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   13  | ring_joint2   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   14  | little_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   15  | thumb_joint3  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.320] |      1.000      |     0.450     |
+|   16  | index_joint3  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   17  | middle_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   18  | ring_joint3   |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   19  | little_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   20  | thumb_joint4  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.340] |      1.000      |     0.010     |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+[INFO]: Time taken for simulation start Last: 26.614825 s, Mean: 26.614825 s, Std: 0.000000 s, N: 1
+2026-10-20T11:27:08Z [36,082ms] [Warning] [isaaclab.envs.direct_rl_env] DirectRLEnvCfg.num_actions is deprecated. Use DirectRLEnvCfg.action_space instead.
+[INFO] Event Manager:  <EventManager> contains 1 active terms.
++------------------------------------+
+| Active Event Terms in Mode: 'prestartup' |
++--------------+---------------------+
+|    Index     | Name                |
++--------------+---------------------+
+|      0       | geometry            |
++--------------+---------------------+
+
+[INFO]: Completed setting up the environment...
+{"stage": "proposal_search", "round": 1, "rounds": 24, "search_region": "palm", "candidate_count": 240, "evaluated_proposals": 4096, "best_score": 57.520606994628906, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 6, "elapsed_seconds": 14.991434026043862, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 2, "rounds": 24, "search_region": "palm", "candidate_count": 441, "evaluated_proposals": 8192, "best_score": 57.52141571044922, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 10, "elapsed_seconds": 32.10396184818819, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 3, "rounds": 24, "search_region": "palm", "candidate_count": 627, "evaluated_proposals": 12288, "best_score": 57.52309799194336, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 18, "elapsed_seconds": 52.72626660205424, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 4, "rounds": 24, "search_region": "palm", "candidate_count": 755, "evaluated_proposals": 16384, "best_score": 57.546634674072266, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 27, "elapsed_seconds": 73.27554792817682, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 5, "rounds": 24, "search_region": "palm", "candidate_count": 838, "evaluated_proposals": 20480, "best_score": 57.546634674072266, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 38, "elapsed_seconds": 93.81432343786582, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 6, "rounds": 24, "search_region": "palm", "candidate_count": 889, "evaluated_proposals": 24576, "best_score": 57.546634674072266, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 52, "elapsed_seconds": 110.97920872503892, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 7, "rounds": 24, "search_region": "palm", "candidate_count": 914, "evaluated_proposals": 28672, "best_score": 57.547882080078125, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 75, "elapsed_seconds": 125.56248166691512, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 8, "rounds": 24, "search_region": "palm", "candidate_count": 924, "evaluated_proposals": 32768, "best_score": 57.547882080078125, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 96, "elapsed_seconds": 140.2053754501976, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 9, "rounds": 24, "search_region": "palm", "candidate_count": 925, "evaluated_proposals": 36864, "best_score": 57.54853439331055, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 120, "elapsed_seconds": 154.76112515991554, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 10, "rounds": 24, "search_region": "palm", "candidate_count": 911, "evaluated_proposals": 40960, "best_score": 57.54853439331055, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 127, "elapsed_seconds": 169.3002372267656, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 11, "rounds": 24, "search_region": "palm", "candidate_count": 895, "evaluated_proposals": 45056, "best_score": 57.55126190185547, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 137, "elapsed_seconds": 183.7186703342013, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 12, "rounds": 24, "search_region": "palm", "candidate_count": 867, "evaluated_proposals": 49152, "best_score": 57.55126190185547, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 125, "elapsed_seconds": 198.1082591470331, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 13, "rounds": 24, "search_region": "palm", "candidate_count": 849, "evaluated_proposals": 53248, "best_score": 57.55126190185547, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 118, "elapsed_seconds": 212.47100645396858, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 14, "rounds": 24, "search_region": "palm", "candidate_count": 838, "evaluated_proposals": 57344, "best_score": 57.55260467529297, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 112, "elapsed_seconds": 226.88607975514606, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 15, "rounds": 24, "search_region": "palm", "candidate_count": 829, "evaluated_proposals": 61440, "best_score": 57.55260467529297, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 111, "elapsed_seconds": 241.21594745106995, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 16, "rounds": 24, "search_region": "palm", "candidate_count": 817, "evaluated_proposals": 65536, "best_score": 57.56520462036133, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 103, "elapsed_seconds": 255.50410038698465, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 17, "rounds": 24, "search_region": "palm", "candidate_count": 806, "evaluated_proposals": 69632, "best_score": 57.56520462036133, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 95, "elapsed_seconds": 269.8569827750325, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 18, "rounds": 24, "search_region": "palm", "candidate_count": 801, "evaluated_proposals": 73728, "best_score": 57.56520462036133, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 91, "elapsed_seconds": 284.25568616902456, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 19, "rounds": 24, "search_region": "palm", "candidate_count": 793, "evaluated_proposals": 77824, "best_score": 57.56520462036133, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 84, "elapsed_seconds": 300.32485530199483, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 20, "rounds": 24, "search_region": "palm", "candidate_count": 787, "evaluated_proposals": 81920, "best_score": 57.56520462036133, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 82, "elapsed_seconds": 320.38305011810735, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 21, "rounds": 24, "search_region": "palm", "candidate_count": 785, "evaluated_proposals": 86016, "best_score": 57.56520462036133, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 81, "elapsed_seconds": 340.2566468510777, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 22, "rounds": 24, "search_region": "palm", "candidate_count": 785, "evaluated_proposals": 90112, "best_score": 57.56520462036133, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 81, "elapsed_seconds": 360.06874108174816, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 23, "rounds": 24, "search_region": "palm", "candidate_count": 783, "evaluated_proposals": 94208, "best_score": 57.568992614746094, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 79, "elapsed_seconds": 380.1894360440783, "training_started": false, "stage0_passed": false, "search_completed": false}
+{"stage": "proposal_search", "round": 24, "rounds": 24, "search_region": "palm", "candidate_count": 778, "evaluated_proposals": 98304, "best_score": 57.57487869262695, "best_four_pad_fraction": 1.0, "best_per_finger": [1.0, 0.0, 1.0, 1.0, 1.0], "four_pad_80pct_candidates": 75, "elapsed_seconds": 395.0669969911687, "training_started": false, "stage0_passed": false, "search_completed": true}
+[INFO]: SimulationContext cleared
