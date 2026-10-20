@@ -1,0 +1,56 @@
+{
+  "stage0_library_gate_passed": true,
+  "training_started": false,
+  "candidate_pool": [
+    {
+      "input": "robust_neighborhood_intersection.json",
+      "input_count": 141,
+      "stable_30s_count": 141
+    },
+    {
+      "input": "expanded_robust_intersection.json",
+      "input_count": 196,
+      "stable_30s_count": 196
+    }
+  ],
+  "distinct_verified_pool": 337,
+  "frozen_count": 256,
+  "library": "simulation/roto2_pressure/reset_grasps_v8_validated256.json",
+  "library_sha256": "d667c5bb3d8442133460886ce35e086b53bfe73d89c8dabb08f3b015890243c8",
+  "selection": "Farthest-point sampling over loaded-joint positions/targets normalized by legal ranges and fruit center; no duplicated rows.",
+  "nearest_neighbor_distance_quantiles": [
+    0.00943746142432454,
+    0.010122579128896032,
+    0.013557438322751655,
+    0.024485948040224994,
+    0.046679825846844575
+  ],
+  "nominal_sphere_diameter_m": 0.064,
+  "n1_densities_kg_m3": [
+    850,
+    950,
+    1050
+  ],
+  "long_hold_seconds": 30,
+  "long_hold_acceptance": "Stable object and no physical failure; perpetual four-pad occupancy is separately reported, not required by the N-1 task.",
+  "one_ancestral_grasp_family": true,
+  "limitations": "Does not establish continuous rotation, different object shapes, a learned gait, or pressure-gradient benefit.",
+  "evidence_sha256": {
+    "robust_neighborhood_intersection.json": "fb20e0c5569c051e2209a659b21c74c59aa7df1e549d8f020238b6d33dc3023a",
+    "robust141_hold30s_seed2114.json": "1bc4a8cbf04f8dcee9e12f4b3758ad56358bb431e3c0cd51d4e53f02d484c38f",
+    "anchor_neighborhood_n1_seed2110.json": "9e579e249d8d8871cf9db173b39dbf92c6331dfab5626b7d6f26173dfcb35f35",
+    "anchor_neighborhood_n1_seed2110_protocol.json": "8699ed06226068096f1650c7563b511380039b83cccc6bb780df53527a69619d",
+    "neighborhood_density850_seed2111.json": "72e98296fc328420855ee8066667c4a703ae4c27507d523755bdaa332b73c97d",
+    "neighborhood_density850_seed2111_protocol.json": "a29c6560f8afec61b86ae4a2e8f684a9621c301a1a2f59fe1856030c72cce4b0",
+    "neighborhood_density1050_seed2112.json": "17a7e06acc68d4bd6cad87b279ec8752bd3a821c1eaa25604c8c4c5109e6b561",
+    "neighborhood_density1050_seed2112_protocol.json": "74d92381867532d9f407b6f8ef7300e408222e7432cc3c79ac1fa7fc8b40acfd",
+    "expanded_robust_intersection.json": "a0d482e1ddde8489f290b12cdede8129efb54d9ca3576b433353e84ddd64d325",
+    "robust196_hold30s_seed2118.json": "4b113c85ed4d685619a04c8c5434808ada7de428e3796bd402224208af9f64ba",
+    "expanded_neighborhood_n1_seed2115.json": "00e793230f2ada09f86e1af99f98c325a4b2011dbb1457ca8a86f0424a408df0",
+    "expanded_neighborhood_n1_seed2115_protocol.json": "8699ed06226068096f1650c7563b511380039b83cccc6bb780df53527a69619d",
+    "expanded_density850_seed2116.json": "2486044ed51ae647263de12c92310f5154570103c5e06f5faa6582af7db1709e",
+    "expanded_density850_seed2116_protocol.json": "a29c6560f8afec61b86ae4a2e8f684a9621c301a1a2f59fe1856030c72cce4b0",
+    "expanded_density1050_seed2117.json": "8feff285262317b1591f528decae99827966f33639c4c55b75286e3cf11ca5a0",
+    "expanded_density1050_seed2117_protocol.json": "74d92381867532d9f407b6f8ef7300e408222e7432cc3c79ac1fa7fc8b40acfd"
+  }
+}

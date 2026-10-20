@@ -1,0 +1,35 @@
+{
+  "runs": [
+    {
+      "density": 850,
+      "seed": 2098,
+      "tested": 24,
+      "baseline_eligible": 0,
+      "accepted": 0,
+      "source": "artifacts/simulation/rotation_v8/stage0/clearance_density850_seed2098.json",
+      "sha256": "ef0228e3909868fe817639b3922e6ce3179d0b4704dc1ce04cc92ccb3afc6f98"
+    },
+    {
+      "density": 950,
+      "seed": 2099,
+      "tested": 24,
+      "baseline_eligible": 0,
+      "accepted": 0,
+      "source": "artifacts/simulation/rotation_v8/stage0/clearance_density950_seed2099.json",
+      "sha256": "d85ee77871ef6bff959c06d1176c442d1ea9eec73afe631991b11b8da327fd76"
+    },
+    {
+      "density": 1050,
+      "seed": 2100,
+      "tested": 24,
+      "baseline_eligible": 0,
+      "accepted": 0,
+      "source": "artifacts/simulation/rotation_v8/stage0/clearance_density1050_seed2100.json",
+      "sha256": "a89253fa7435852418b206ff8218e9d4e8200df7f69c6461c217973fc0b80606"
+    }
+  ],
+  "stage0_passed": false,
+  "inference": "The six original-batch passing configurations are not a reproducible reset library. All three independent combinations failed the initial common-four-pad criterion. Do not interpret their zero final pass as failure of the release trajectory alone.",
+  "limitations": "Density and seed vary together; this is robustness screening, not a causal estimate of density.",
+  "next": "Distribute replicas across grid regions and shuffle each round to reduce selection of layout-sensitive contacts."
+}

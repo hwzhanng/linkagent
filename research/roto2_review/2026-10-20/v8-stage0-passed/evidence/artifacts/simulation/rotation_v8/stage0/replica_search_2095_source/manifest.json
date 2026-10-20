@@ -1,0 +1,63 @@
+{
+  "saved_utc": "2026-10-20T11:53:31.597996+00:00",
+  "process_id": 1874722,
+  "argv": [
+    "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python",
+    "-m",
+    "script.train_roto2_pressure",
+    "--headless",
+    "--num-envs",
+    "64",
+    "--seed",
+    "2026",
+    "--pressure-variant",
+    "jacobian",
+    "--num-envs",
+    "4096",
+    "--seed",
+    "2095",
+    "--pressure-variant",
+    "plain",
+    "--domain-profile",
+    "nominal",
+    "--hand-posture",
+    "palm_up",
+    "--reset-grasps",
+    "artifacts/simulation/rotation_v8/stage0/palm_settled_2090_candidates.json",
+    "--search-redundant-reset",
+    "--calibration-rounds",
+    "32",
+    "--calibration-horizon",
+    "160",
+    "--calibration-spread",
+    "0.025",
+    "--calibration-region",
+    "palm",
+    "--calibration-replicas",
+    "4",
+    "--probe-output",
+    "artifacts/simulation/rotation_v8/stage0/replica_search_2095.json"
+  ],
+  "source_base_commit": "a17b8cf",
+  "files": [
+    {
+      "path": "script/train_roto2_pressure.py",
+      "sha256": "ec8b5dadcd6102e9edb1ca4a3acf85a36031972e787dbe528a7888770fa246db"
+    },
+    {
+      "path": "simulation/roto2_pressure/calibrate_redundancy.py",
+      "sha256": "fb25382ee396a90a083b5b559bf2fb7f133ecfdc0753c1f9c71d7c4f42a16161"
+    },
+    {
+      "path": "simulation/roto2_pressure/env.py",
+      "sha256": "bbdf289783a006acfbe89e43c0c017d6b4dd9ced51ed5ca3e27420a9989a0e66"
+    },
+    {
+      "path": "simulation/roto2_pressure/env_cfg.py",
+      "sha256": "4dcf51a185c19c43876a2e13e9eb321ed57a9958d372f3e5f7f4031c8b051f10"
+    }
+  ],
+  "input": "artifacts/simulation/rotation_v8/stage0/palm_settled_2090_candidates.json",
+  "input_sha256": "aaa85d7281e19b4ddf0c80ce3115cb33c6122c1f36e5a7cc49c95f22ddf33ced",
+  "note": "Captured during run; earlier launcher source restored from git for 2095; task core unchanged."
+}

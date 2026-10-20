@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-20T11:59:10.703946+00:00",
+  "matched_trial": "seed2097, same1116env, same186inputs",
+  "before": {
+    "configurations": 186,
+    "baseline_eligible": 28,
+    "accepted": 0
+  },
+  "diagnosis": "On initial zero-force frames, old adaptive controller replaced requested opening target with lagging measured joint position, which could move the command back toward contact. Traces show repeated little-finger contact chatter and no full 0.5s unload.",
+  "change": "Keep farther-open commanded/measured position, add0.02rad clearance on newly free frames, continue monotonic target increments on contact. Same actuator bounds/delta/lead, release duration, 120Hz force threshold and stability gates.",
+  "validation": "Matched A/B integration running; no claim of success until completion.",
+  "core_architecture_changed": false
+}
