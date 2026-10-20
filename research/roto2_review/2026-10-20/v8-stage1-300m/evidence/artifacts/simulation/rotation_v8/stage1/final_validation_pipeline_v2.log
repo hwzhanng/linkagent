@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/descfly/linkagent-ppo/script/validate_roto2_stage1_run.py", line 139, in <module>
+    main()
+    ~~~~^^
+  File "/home/descfly/linkagent-ppo/script/validate_roto2_stage1_run.py", line 53, in main
+    result = json.loads((run / "training_result.json").read_text())
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/descfly/miniconda3/lib/python3.14/pathlib/__init__.py", line 787, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/descfly/miniconda3/lib/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/plain_seed49/2026-10-20_20-53-18/training_result.json'

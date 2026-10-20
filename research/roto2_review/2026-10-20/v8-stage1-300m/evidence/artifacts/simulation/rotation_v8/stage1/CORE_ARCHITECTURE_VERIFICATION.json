@@ -1,0 +1,32 @@
+{
+  "checked_utc": "2026-10-20T14:21:30.139453+00:00",
+  "reference_commit": "21ad060",
+  "scope": "Network/PPO builder, action mapping, actuator application, physical failures and observations. Diagnostic and logging source additions only.",
+  "checks": [
+    {
+      "file": "script/train_roto2_pressure.py",
+      "function": "build_roto2_training",
+      "ast_unchanged": true
+    },
+    {
+      "file": "simulation/roto2_pressure/env.py",
+      "function": "_pre_physics_step",
+      "ast_unchanged": true
+    },
+    {
+      "file": "simulation/roto2_pressure/env.py",
+      "function": "_apply_action",
+      "ast_unchanged": true
+    },
+    {
+      "file": "simulation/roto2_pressure/env.py",
+      "function": "_get_dones",
+      "ast_unchanged": true
+    },
+    {
+      "file": "simulation/roto2_pressure/env.py",
+      "function": "_get_observations",
+      "ast_unchanged": true
+    }
+  ]
+}

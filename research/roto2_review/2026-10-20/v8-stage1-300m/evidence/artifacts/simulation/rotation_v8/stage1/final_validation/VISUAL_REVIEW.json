@@ -1,0 +1,33 @@
+{
+  "reviewed_utc": "2026-10-20T14:34:35.309422+00:00",
+  "inspection": "Actual extracted video frames at0.05,5.05,10.05,23.55s viewed for both median and best late-progress episodes; full video decoded by validation pipeline; every pose matched independent evaluation.",
+  "checks": [
+    {
+      "video": "final_seed6101_median_env14.mp4",
+      "env": 14,
+      "pose_trace_max_difference_from_independent_evaluation": 0.0,
+      "directed_turns": 0.5963001103638456,
+      "inspected_frame_indices": [
+        0,
+        100,
+        200,
+        470
+      ]
+    },
+    {
+      "video": "final_seed6101_best_env11.mp4",
+      "env": 11,
+      "pose_trace_max_difference_from_independent_evaluation": 0.0,
+      "directed_turns": 0.7493244681671305,
+      "inspected_frame_indices": [
+        0,
+        100,
+        200,
+        470
+      ]
+    }
+  ],
+  "finding": "Visible sphere markings establish real early rotation. By10s fingers occupy a markedly opened/near-limit posture; later marking displacement is modest. Best episode has some continued slow rotation but no full revolution; median mostly stalls. These sampled frames do not establish a repeatable regrasp gait.",
+  "stage1_accepted": false,
+  "quantitative_gate": "0/128 full safe turns; mean late progress20.868/18.259deg, below90deg."
+}

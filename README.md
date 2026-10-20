@@ -1,6 +1,6 @@
 # RealAgent
 
-> **本研究分支的老师审阅入口（2026-10-20更新）**：[最新：256个可松指初态验收通过，新的3亿样本PPO已启动](research/roto2_review/2026-10-20/v8-stage0-passed/README.md) · [v8早期失败实验](research/roto2_review/2026-10-20/v8/README.md) · [v1–v7全部PPO训练历史](research/roto2_review/2026-10-20/README.md)。包含训练配置、原始日志、评估轨迹、真实仿真视频、检查点下载、文件哈希和复现步骤。v7完整一圈0/128；v8阶段0形成337个跨质量松指及30秒稳定性通过者，冻结256个，持续旋转仍待策略验收。早期失真指标已撤回。
+> **本研究分支的老师审阅入口（2026-10-20更新）**：[最新：首轮约3亿样本完成，持续旋转0/128，完整数据与分析](research/roto2_review/2026-10-20/v8-stage1-300m/README.md) · [阶段0：256个可松指初态验收通过](research/roto2_review/2026-10-20/v8-stage0-passed/README.md) · [v8早期失败实验](research/roto2_review/2026-10-20/v8/README.md) · [v1–v7训练历史](research/roto2_review/2026-10-20/README.md)。本轮299,993,792样本、2293次PPO更新；最终两组10秒后平均净转角20.87°/18.26°，阶段1未通过。下一轮仅加强归一化抓姿恢复代价，从头训练；网络与PPO架构不变。训练完成不等于目标完成，早期失真指标已撤回。
 
 RealAgent 是一个可运行的单 `TopAgent` 系统：外层 Runtime 管理观测、控制步和资源生命
 周期，内层 Agent 管理有界的模型/工具往返。默认配置完全离线；第二阶段已经加入
