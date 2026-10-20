@@ -122,11 +122,12 @@ def main():
         finish = directory / "training_result.json"
         progress = directory / "progress.json"
         metadata = json.loads((finish if finish.exists() else progress).read_text()) if finish.exists() or progress.exists() else {}
-        training_rows.append(dict(run=str(directory.relative_to(ROOT)),
-                                  seed=cfg["seed"], resumed_from=cfg["resumed_from"],
-                                  status="completed_segment" if metadata.get("training_completed") else
-                                  "partial_saved_training" if progress.exists() else "evaluation_or_diagnostic",
-                                  **metadata))
+        training_rows.append({
+            **metadata, "run": str(directory.relative_to(ROOT)),
+            "seed": cfg["seed"], "resumed_from": cfg["resumed_from"],
+            "status": "completed_segment" if metadata.get("training_completed") else
+            "partial_saved_training" if progress.exists() else "evaluation_or_diagnostic",
+        })
         if list(directory.glob("events.out*")):
             e = EventAccumulator(str(directory), size_guidance={"scalars": 0}).Reload()
             for tag in e.Tags()["scalars"]:
