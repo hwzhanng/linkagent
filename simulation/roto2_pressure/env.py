@@ -6,6 +6,8 @@ pressure leakage to the actor. Simulation-only dense load is a critic target.
 from __future__ import annotations
 
 import torch
+import json
+from pathlib import Path
 
 import isaaclab.sim as sim_utils
 from isaaclab.assets import Articulation, RigidObject
@@ -25,6 +27,7 @@ from .core import (
 )
 from .pressure_track import PressureJacobianTrack, hotspot_cost
 from .env_cfg import FruitRotationEnvCfg
+from .reward_geometry import pose_heading, heading_delta, pad_contact, reward_v2, REWARD_VERSION, pad_approach_quality, valid_rotation_step, staged_rotation_reward, continuous_rotation_reward
 
 CONTACT_BODIES = {
     "thumb": "thumb_link4",
@@ -53,15 +56,33 @@ class FruitRotationEnv(DirectRLEnv):
         if len(self._follower_ids) != 5:
             raise RuntimeError(f"Expected five passive follower joints: {follower_names}")
         self._all_joint_ids = list(range(self._robot.num_joints))
+        self._active_limits = self._robot.data.joint_pos_limits.torch[:, self._active_ids].clone()
+        for follower, (driver, ratio) in MIMICS.items():
+            fid = self._robot.find_joints(follower)[0][0]
+            did = ACTIVE_JOINTS.index(driver)
+            limits = self._robot.data.joint_pos_limits.torch[:, fid] / ratio
+            self._active_limits[:, did, 0] = torch.maximum(self._active_limits[:, did, 0], limits[:, 0])
+            self._active_limits[:, did, 1] = torch.minimum(self._active_limits[:, did, 1], limits[:, 1])
         self._contact_body_ids = [
             self._robot.find_bodies(CONTACT_BODIES[name])[0][0]
             for name in (*FINGERS, "palm")
         ]
         self._q_target = self._robot.data.default_joint_pos.torch[:, self._active_ids].clone()
+        self._grasp_reference = self._q_target.clone()
         self._action = torch.zeros((self.num_envs, 16), device=self.device)
         self._previous_action = self._action.clone()
         self._goal = torch.ones(self.num_envs, device=self.device) * 0.6
         self._angle = torch.zeros(self.num_envs, device=self.device)
+        self._heading_prev = self._angle.clone()
+        self._pose_delta = self._angle.clone()
+        self._rotation_highwater = self._angle.clone()
+        self._curriculum_angle = self._angle.clone()
+        self._support_average = self._angle.clone()
+        self._milestones_paid = torch.zeros(self.num_envs, device=self.device, dtype=torch.long)
+        self._reward_path_valid = torch.ones(self.num_envs, device=self.device, dtype=torch.bool)
+        self._new_rotation_progress = self._angle.clone()
+        self._previous_upright = torch.ones(self.num_envs, device=self.device, dtype=torch.bool)
+        self._previous_pad_support = torch.zeros(self.num_envs, device=self.device, dtype=torch.bool)
         self._pressure_prev = torch.zeros((self.num_envs, 24), device=self.device)
         self._panel_valid = torch.ones((self.num_envs, 6), device=self.device)
         self._overpressure_streak = torch.zeros(
@@ -87,6 +108,9 @@ class FruitRotationEnv(DirectRLEnv):
         )
         self._dense_sites, self._sparse_sites = surface_sites(self.device)
         self._forces = torch.zeros((self.num_envs, 6), device=self.device)
+        self._pad_forces = torch.zeros((self.num_envs, 5), device=self.device)
+        self._pad_quality = self._pad_forces.clone()
+        self._pad_valid = self._pad_forces.bool()
         self._force_vectors = torch.zeros((self.num_envs, 6, 3), device=self.device)
         self._contact_positions = torch.zeros((self.num_envs, 6, 3), device=self.device)
         self._dense = torch.zeros((self.num_envs, 96), device=self.device)
@@ -96,6 +120,14 @@ class FruitRotationEnv(DirectRLEnv):
         # below also supports a wxyz default pose; order is fixed at reset.
         q0 = self._fruit.data.default_root_pose.torch[0, 3:7]
         self._native_xyzw = bool(q0[3].abs() > q0[0].abs())
+        if cfg.hand_posture == "palm_up":
+            qbase = self._wxyz(self._robot.data.root_pose_w.torch[:, 3:7])
+            normal = quat_rotate(qbase, qbase.new_tensor((1., 0., 0.)).expand(self.num_envs, -1))
+            if not bool((normal[:, 2] > .999).all()):
+                raise RuntimeError("Palm-up mount validation failed: local +X must point world +Z")
+        self._reset_grasps = None
+        if cfg.reset_grasps_file:
+            self._reset_grasps = json.loads(Path(cfg.reset_grasps_file).read_text())
 
     def _wxyz(self, native_quat: torch.Tensor) -> torch.Tensor:
         return torch.cat((native_quat[..., 3:], native_quat[..., :3]), -1) if self._native_xyzw else native_quat
@@ -141,15 +173,27 @@ class FruitRotationEnv(DirectRLEnv):
         light.func("/World/Light", light)
 
     def _measure(self) -> None:
+        pose = self._fruit.data.root_pose_w.torch
         for i, name in enumerate((*FINGERS, "palm")):
             data = self._sensors[name].data
             matrix = data.force_matrix_w
             location = data.contact_pos_w
             if matrix is None or location is None:
                 raise RuntimeError("Missing filtered physical contacts; never substitute fake sensor readings")
-            self._force_vectors[:, i] = matrix.torch[:, 0, 0]
-            self._contact_positions[:, i, :] = location.torch[:, 0, 0]
-        pose = self._fruit.data.root_pose_w.torch
+            force = matrix.torch[:, 0, 0]
+            position = location.torch[:, 0, 0]
+            # PhysX explicitly uses NaN for an absent contact point. A zero
+            # resultant has no pressure contribution; its position is unused.
+            # Reject nonfinite measurements if an actual force is present.
+            has_force = torch.linalg.vector_norm(force, dim=-1) > 0
+            if not torch.isfinite(force).all() or (
+                has_force & ~torch.isfinite(position).all(-1)
+            ).any():
+                raise RuntimeError(f"Invalid physical contact measurement: {name}")
+            self._force_vectors[:, i] = force
+            self._contact_positions[:, i, :] = torch.where(
+                has_force[:, None], position, pose[:, :3]
+            )
         quat = self._wxyz(pose[:, 3:7])
         # Project measured contact resultant onto the local ellipsoid normal.
         # Force magnitude alone conflates normal compression with tangential
@@ -182,10 +226,12 @@ class FruitRotationEnv(DirectRLEnv):
         tip_body_quat = self._wxyz(
             self._robot.data.body_quat_w.torch[:, self._contact_body_ids[:5]]
         )
-        contact_xy = quat_inv_rotate(
+        contact_local = quat_inv_rotate(
             tip_body_quat, self._contact_positions[:, :5] - tip_body_pos
-        )[..., :2].clamp(-0.0048, 0.0048)
-        self._taxels = fingertip_taxels(self._forces[:, :5], contact_xy)
+        )
+        contact_xy, self._pad_forces, self._pad_quality, self._pad_valid = pad_contact(
+            contact_local, self._forces[:, :5])
+        self._taxels = fingertip_taxels(self._pad_forces, contact_xy)
 
     def _pre_physics_step(self, actions: torch.Tensor) -> None:
         if actions.shape != self._action.shape:
@@ -194,8 +240,8 @@ class FruitRotationEnv(DirectRLEnv):
         self._previous_action.copy_(self._action)
         valid = self._panel_valid.repeat_interleave(4, dim=-1)
         grip_ok = (
-            (self._forces[:, 0] > self.cfg.minimum_support_force_n)
-            & ((self._forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2)
+            (self._pad_forces[:, 0] > self.cfg.minimum_support_force_n)
+            & ((self._pad_forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2)
         )
         applied = self._track.correct(
             proposed, (self._sparse / PRESSURE_REF_PA).clamp(0, 4),
@@ -204,7 +250,7 @@ class FruitRotationEnv(DirectRLEnv):
         self._action.copy_(applied)
         self._executed.copy_(applied)
         q = self._robot.data.joint_pos.torch[:, self._active_ids]
-        bounds = self._robot.data.joint_pos_limits.torch[:, self._active_ids]
+        bounds = self._active_limits
         lead = self.cfg.maximum_joint_target_lead_rad
         proposal = self._q_target + applied * self.cfg.maximum_joint_target_delta_rad
         proposal = torch.maximum(q - lead, torch.minimum(q + lead, proposal))
@@ -234,11 +280,18 @@ class FruitRotationEnv(DirectRLEnv):
 
     def _get_dones(self):
         self._measure()
+        current_heading = pose_heading(self._wxyz(self._fruit.data.root_pose_w.torch[:, 3:7]))
+        self._pose_delta.copy_(heading_delta(self._heading_prev, current_heading))
+        self._heading_prev.copy_(current_heading)
+        self._angle += self._pose_delta
+        directed = self._angle * self._goal.sign()
+        self._new_rotation_progress.copy_((directed - self._rotation_highwater).clamp_min(0))
+        self._rotation_highwater.copy_(torch.maximum(directed, self._rotation_highwater))
         self._track.observe(
             self._executed,
             (self._sparse / PRESSURE_REF_PA).clamp(0, 4),
             self._panel_valid.repeat_interleave(4, dim=-1),
-            (self._fruit.data.root_ang_vel_w.torch[:, 2] / 6.0).clamp(-2, 2),
+            (self._pose_delta / (self.step_dt * 6.0)).clamp(-2, 2),
         )
         pressure_peak = self._dense.amax(-1)
         self._overpressure_streak = torch.where(
@@ -259,10 +312,8 @@ class FruitRotationEnv(DirectRLEnv):
         return failure, timeout
 
     def _get_rewards(self):
-        w = self._fruit.data.root_ang_vel_w.torch
-        signed_omega = w[:, 2]
         dt = self.cfg.sim.dt * self.cfg.decimation
-        self._angle += signed_omega.clamp(-12.0, 12.0) * dt
+        signed_omega = self._pose_delta / dt
         fruit_pose = self._fruit.data.root_pose_w.torch
         quat = self._wxyz(fruit_pose[:, 3:7])
         z_axis = torch.tensor((0.0, 0.0, 1.0), device=self.device).expand(self.num_envs, -1)
@@ -271,60 +322,86 @@ class FruitRotationEnv(DirectRLEnv):
         center_error = torch.linalg.vector_norm(
             fruit_pose[:, :3] - self._center_reference_w, dim=-1
         )
-        reward, terms = rotation_reward(
-            signed_omega=signed_omega,
-            desired_speed=self._goal,
-            force_n=self._forces,
-            dense_pressure=(self._dense / PRESSURE_REF_PA).clamp(0, 4),
-            translation_error=center_error,
-            tilt_error=tilt,
-            slip_speed=self._slip_speed() / 0.25,
-            actions=self._action,
-            previous_actions=self._previous_action,
-            dt=dt,
-        )
-        terminated = (
-            (center_error > self.cfg.maximum_fruit_center_displacement_m)
-            | (self._overpressure_streak >= self.cfg.overpressure_termination_steps)
-        )
-        # One additional pressure-vector signal, not another PPO architecture:
-        # local hotspot potential relief = <dD/dp, p_old - p_now>.
-        # It has no positive reward when pressure drops due to losing contact.
+        approach = pad_approach_quality(
+            self._robot.data.body_pos_w.torch[:, self._contact_body_ids[:5]],
+            self._wxyz(self._robot.data.body_quat_w.torch[:, self._contact_body_ids[:5]]),
+            fruit_pose[:, :3], quat, self._axes_m)
+        pose_step_valid = valid_rotation_step(self._previous_upright, tilt, self._pose_delta)
+        self._previous_upright.copy_(tilt < .5)
+        if self.cfg.reward_stage == "continuous":
+            ready = self.episode_length_buf > round(1.0 / dt)
+            self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))
+            safe_path = self._reward_path_valid & ~self.reset_terminated
+            reward, terms, secure_support = continuous_rotation_reward(
+                self._pose_delta, self._goal, self._pad_forces, self._pad_quality,
+                self._forces[:, :5], center_error, tilt, self._action,
+                self._previous_action, approach,
+                self._robot.data.joint_pos.torch[:, self._active_ids],
+                self._grasp_reference, safe_path, ready, dt)
+        elif self.cfg.reward_stage in ("regrasp", "spin"):
+            # Exclude the first second's settling from curriculum progress.
+            # Evaluation still uses the full unmodified pose trajectory.
+            ready = self.episode_length_buf > round(1.0 / dt)
+            full = (self._pad_forces[:, 0] > .15) & ((self._pad_forces[:, 1:] > .15).sum(-1) >= 2) & (tilt < .5)
+            self._support_average.lerp_(full.float(), .05)
+            self._curriculum_angle += self._goal.sign()*self._pose_delta*ready.float()
+            self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))
+            safe_path = self._reward_path_valid & ~self.reset_terminated & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa)
+            reward, terms, secure_support, paid = staged_rotation_reward(
+                self._pose_delta, self._goal, self._pad_forces, self._pad_quality,
+                center_error, tilt, self._action, self._previous_action, approach,
+                self._support_average, self._curriculum_angle, self._milestones_paid,
+                safe_path, ready, dt, self.cfg.reward_stage)
+            self._milestones_paid.copy_(paid)
+        else:
+            reward, terms, secure_support = reward_v2(
+                self._pose_delta, self._goal, self._pad_forces, self._pad_quality,
+                self._new_rotation_progress * pose_step_valid, center_error, tilt,
+                self._action, self._previous_action, self._previous_pad_support, dt, approach, self.cfg.reward_stage)
+        self._previous_pad_support.copy_(secure_support)
+        # DirectRLEnv computes this exact failure mask before rewards. Keep
+        # over-force / low-height failures subject to the same -60 penalty;
+        # time-limit truncation is not a physical failure.
+        terminated = self.reset_terminated
+        # Pressure reduction is never itself a positive reward. This closes
+        # the release/regrasp cycle loophole while keeping the Jacobian intact.
         valid = self._panel_valid.repeat_interleave(4, dim=-1)
-        measured_risk = hotspot_cost(
-            (self._sparse / PRESSURE_REF_PA).clamp(0, 4), valid
-        )
-        relief = (self._previous_risk - measured_risk).clamp(-1, 1)
-        secure_grasp = (
-            (self._forces[:, 0] > self.cfg.minimum_support_force_n)
-            & ((self._forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2)
-        )
-        forward_progress = signed_omega * self._goal > 0.0
-        bonus = relief * (secure_grasp & forward_progress).float()
-        self._pressure_relief.copy_(bonus.detach())
+        measured_risk = hotspot_cost((self._sparse / PRESSURE_REF_PA).clamp(0, 4), valid)
+        self._pressure_relief.zero_()
         self._previous_risk.copy_(measured_risk.detach())
-        if self.cfg.pressure_variant == "scalar":
-            reward = reward - 0.15 * measured_risk
-        elif self.cfg.pressure_variant == "jacobian":
-            reward = reward + self.cfg.pressure_relief_weight * bonus
-        reward = reward - 8.0 * terminated.float()
-        secure_support = ((self._forces[:, 0] > self.cfg.minimum_support_force_n)
-                          & ((self._forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2))
+        if self.cfg.pressure_variant != "plain":
+            reward -= 0.05 * measured_risk
+        reward -= (40.0 if self.cfg.reward_stage == "contact" else 60.0) * terminated.float()
         self.extras["step"] = {
             "rotation_rate": signed_omega.detach().clone(),
+            "pose_delta_rad": self._pose_delta.detach().clone(),
+            "pose_step_valid": pose_step_valid.detach().clone(),
+            "fruit_pose_native": fruit_pose.detach().clone(),
+            "reported_angular_velocity_z": self._fruit.data.root_ang_vel_w.torch[:, 2].detach().clone(),
+            "pad_contact": (self._pad_forces > .15).detach().clone(),
+            "pad_quality": self._pad_quality.detach().clone(),
+            "pad_approach_quality": approach.detach().clone(),
+            "reward_rotation": terms["rotation"].detach().clone(),
+            "reward_terms": {k:v.detach().clone() for k,v in terms.items()},
+            "curriculum_angle_rad": self._curriculum_angle.detach().clone(),
+            "curriculum_milestones_paid": self._milestones_paid.detach().clone(),
             "pressure_risk": pressure_risk((self._dense / PRESSURE_REF_PA).clamp(0, 4)).detach().clone(),
             "peak_pressure_pa": self._dense.amax(-1).detach().clone(),
             "unwrapped_rotation_rad": self._angle.detach().clone(),
             "secure_support": secure_support.detach().clone(),
+            "jacobian_accepted": self._track.last_accepted.detach().clone(),
             "slip_speed": (self._slip_speed() / 0.25).detach().clone(),
         }
         self.extras["log"] = {
-            "rotation/signed_speed_rad_s": (signed_omega * self._goal.sign()).mean().detach(),
-            "rotation/secure_grasp": secure_grasp.float().mean().detach(),
-            "pressure/sparse_hotspot_risk": measured_risk.mean().detach(),
-            "pressure/peak_pressure_proxy_pa": self._dense.amax(-1).mean().detach(),
-            "pressure/relief_bonus": bonus.mean().detach(),
-            "pressure/gradient_track_acceptance": self._track.last_accepted.float().mean().detach(),
+            "rotation/signed_speed_rad_s": (signed_omega * self._goal.sign()).detach().clone(),
+            "rotation/secure_grasp": secure_support.float().detach().clone(),
+            "pressure/sparse_hotspot_risk": measured_risk.detach().clone(),
+            "pressure/peak_pressure_proxy_pa": self._dense.amax(-1).detach().clone(),
+            "reward/rotation": terms["rotation"].detach().clone(),
+            "contact/pad_approach": approach.mean(-1).detach().clone(),
+            "contact/pad_quality": self._pad_quality.mean(-1).detach().clone(),
+            "contact/pad_count": (self._pad_forces > .15).sum(-1).float().detach().clone(),
+            "pressure/gradient_track_acceptance": self._track.last_accepted.float().detach().clone(),
         }
         return reward
 
@@ -394,13 +471,28 @@ class FruitRotationEnv(DirectRLEnv):
             raise RuntimeError(f"Policy layout drift: {policy.shape[-1]}")
         # 2026 RoTO 2.0 data contract: 4-frame tactile and proprioception.
         # The policy never gets privileged exact fruit state or dense oracle.
-        return {"policy": {
+        self._last_observations = {"policy": {
             "tactile": policy[:, :432],
             "prop": policy[:, 432:],
         }}
+        return self._last_observations
 
-    def get_observations(self):
-        return self._get_observations()
+    def get_observations(self, env_ids=None):
+        if env_ids is None:
+            return self._last_observations
+        # Evaluation resets must not consume another temporal delta/noise
+        # sample or replace the already-stacked training observation.
+        previous = self._last_observations
+        pressure = self._pressure_prev.clone()
+        centroid = self._contact_centroid_prev.clone()
+        fresh = self._get_observations()
+        keep = torch.ones(self.num_envs, device=self.device, dtype=torch.bool)
+        keep[env_ids] = False
+        self._pressure_prev[keep] = pressure[keep]
+        self._contact_centroid_prev[keep] = centroid[keep]
+        for key in fresh["policy"]:
+            fresh["policy"][key][keep] = previous["policy"][key][keep]
+        return fresh
 
     def set_spaces(self, single_obs, obs, single_action, action):
         # Used by RoTO 2.0 common_utils.make_env without copying PPO code.
@@ -414,6 +506,10 @@ class FruitRotationEnv(DirectRLEnv):
             env_ids = self._ids if hasattr(self, "_ids") else torch.arange(
                 self.num_envs, device=self.device
             )
+        # Keep full per-environment metrics for the upstream train/eval split.
+        self.extras["counters"] = {
+            "episode_rotation_abs_turns": self._angle.abs().clone() / (2 * torch.pi)
+        }
         super()._reset_idx(env_ids)
         n = len(env_ids)
         joint_pos = self._robot.data.default_joint_pos.torch[env_ids].clone()
@@ -424,13 +520,17 @@ class FruitRotationEnv(DirectRLEnv):
         if pregrasp.numel() != 16:
             raise RuntimeError("Unexpected LinkAgent calibrated pregrasp manifold")
         active_ids = self._active_ids
-        active_limits = self._robot.data.joint_pos_limits.torch[
-            env_ids[:, None], active_ids
-        ]
-        noise = torch.randn((n, 16), device=self.device) * 0.018
+        active_limits = self._active_limits[env_ids]
+        noise = torch.randn((n, 16), device=self.device) * self.cfg.reset_joint_noise_rad
         active = (pregrasp + noise).clamp(
             min=active_limits[..., 0], max=active_limits[..., 1]
         )
+        if self._reset_grasps is not None:
+            candidates = self._reset_grasps
+            chosen = [candidates[int(i) % len(candidates)] for i in env_ids.cpu()]
+            active = torch.tensor([c["joint_positions"] for c in chosen],
+                                  device=self.device, dtype=joint_pos.dtype)
+            active = (active + noise).clamp(min=active_limits[..., 0], max=active_limits[..., 1])
         joint_pos[:, active_ids] = active
         for follower_name, (driver_name, ratio) in MIMICS.items():
             fid = self._robot.find_joints(follower_name)[0][0]
@@ -457,7 +557,12 @@ class FruitRotationEnv(DirectRLEnv):
             finger_mean - palm, dim=-1, eps=1e-6
         )
         initial = finger_mean + direction * 0.034
-        initial += torch.randn_like(initial) * 0.002
+        if self._reset_grasps is not None:
+            local = torch.tensor([c["fruit_position_hand"] for c in chosen],
+                                 device=self.device, dtype=joint_pos.dtype)
+            base = self._robot.data.root_pose_w.torch[env_ids]
+            initial = base[:, :3] + quat_rotate(self._wxyz(base[:, 3:]), local)
+        initial += torch.randn_like(initial) * self.cfg.reset_position_noise_m
         root_pose = self._fruit.data.default_root_pose.torch[env_ids].clone()
         root_pose[:, :3] = initial
         self._fruit.write_root_pose_to_sim_index(
@@ -467,6 +572,7 @@ class FruitRotationEnv(DirectRLEnv):
             root_velocity=torch.zeros((n, 6), device=self.device), env_ids=env_ids
         )
         self._q_target[env_ids] = active
+        self._grasp_reference[env_ids] = active
         self._action[env_ids] = 0
         self._previous_action[env_ids] = 0
         self._goal[env_ids] = (
@@ -475,7 +581,22 @@ class FruitRotationEnv(DirectRLEnv):
                 *self.cfg.target_angular_speed_rad_s
             )
         )
+        if self.cfg.goal_direction != "both":
+            self._goal[env_ids] = self._goal[env_ids].abs() * (1 if self.cfg.goal_direction == "positive" else -1)
         self._angle[env_ids] = 0
+        self._heading_prev[env_ids] = pose_heading(self._wxyz(root_pose[:, 3:7]))
+        self._pose_delta[env_ids] = 0
+        self._rotation_highwater[env_ids] = 0
+        self._curriculum_angle[env_ids] = 0
+        self._support_average[env_ids] = 0
+        self._milestones_paid[env_ids] = 0
+        self._reward_path_valid[env_ids] = True
+        self._new_rotation_progress[env_ids] = 0
+        self._previous_pad_support[env_ids] = False
+        self._previous_upright[env_ids] = True
+        self._pad_forces[env_ids] = 0
+        self._pad_quality[env_ids] = 0
+        self._pad_valid[env_ids] = False
         self._pressure_prev[env_ids] = 0
         self._center_reference_w[env_ids] = initial
         self._contact_centroid_prev[env_ids] = tips.mean(dim=1)
@@ -484,12 +605,10 @@ class FruitRotationEnv(DirectRLEnv):
         self._previous_risk[env_ids] = 0
         self._pressure_relief[env_ids] = 0
         self._executed[env_ids] = 0
+        self._forces[env_ids] = 0
+        self._sparse[env_ids] = 0
+        self._dense[env_ids] = 0
         self._panel_valid[env_ids] = (
             torch.rand((n, 6), device=self.device)
             > self.cfg.sparse_panel_dropout_probability
         ).float()
-        self.extras["log"] = {
-            "episode_rotation_abs_turns": (
-                self._angle[env_ids].abs().mean() / (2.0 * torch.pi)
-            ).detach(),
-        }

@@ -1,0 +1,34 @@
+{
+  "checks": {
+    "pressure_jacobian_algorithm_unchanged": true,
+    "network_ppo_builder_unchanged": true,
+    "base_physics_actuator_constants_unchanged": true,
+    "upstream_source_clean": true,
+    "base_agent_yaml_unchanged": true
+  },
+  "intentional_changes": [
+    "Reward and acceptance criteria",
+    "Pad contact validity and taxel mapping",
+    "Validated reset grasp",
+    "Launch-time object size and reset-noise curriculum",
+    "Diagnostics, recording and metadata",
+    "Exploration standard deviation and entropy weight CLI overrides"
+  ],
+  "effective_hyperparameter_changes": {
+    "initial_action_std": [
+      1.0,
+      0.25
+    ],
+    "entropy_loss_scale": [
+      0.05,
+      0.005
+    ]
+  },
+  "updated_at": "2026-10-20T01:41:37.710588+08:00",
+  "actor_input_dims": {
+    "prop": 70,
+    "tactile": 432,
+    "stack": 4,
+    "actions": 16
+  }
+}

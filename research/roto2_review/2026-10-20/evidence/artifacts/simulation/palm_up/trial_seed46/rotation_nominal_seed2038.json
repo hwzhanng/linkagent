@@ -1,0 +1,627 @@
+{
+  "baseline": "RoTO2_2026_multimodal_rl_unchanged",
+  "variant": "jacobian",
+  "checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed46/2026-10-20_08-32-50/checkpoints/final_agent.pt",
+  "episodes": 64,
+  "reward_version": "pose_pad_v5",
+  "evaluation_reward_stage": "rotation",
+  "domain_profile": "nominal",
+  "hand_posture": "palm_up",
+  "rotation_source": "independently reconstructed unwrapped material-axis heading from actual quaternion poses",
+  "success_definition": ">=1 net directed pose turn AND >=1 new turn with thumb+2 active pads; >=65% pad support; >=95% upright; no physical failure; below pressure limit",
+  "pose_metric_max_error_turns": 2.339203979129234e-08,
+  "maximum_pose_heading_step_rad": 0.2923372415729459,
+  "mean_supported_new_turns": 0.028416062226132514,
+  "mean_per_finger_pad_quality": [
+    0.9863393306732178,
+    0.568859875202179,
+    0.9478079676628113,
+    0.014031327329576015,
+    0.0
+  ],
+  "mean_per_finger_approach_quality": [
+    0.8152528405189514,
+    0.5451648235321045,
+    0.7552622556686401,
+    -0.18370866775512695,
+    -0.528599739074707
+  ],
+  "mean_per_finger_pad_contact_fraction": [
+    0.8756442070007324,
+    0.4992508590221405,
+    0.8967045545578003,
+    0.0,
+    0.0
+  ],
+  "per_episode": [
+    {
+      "env": 0,
+      "directed_pose_turns": -0.015184772406242577,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.9478079080581665,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 1,
+      "directed_pose_turns": 0.09519971176645647,
+      "supported_new_turns": 0.0434118917673443,
+      "pad_support_fraction": 0.07724425941705704,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 2,
+      "directed_pose_turns": -0.036271843605730485,
+      "supported_new_turns": 0.000762621971731224,
+      "pad_support_fraction": 0.4801670014858246,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 3,
+      "directed_pose_turns": -0.04680505569774927,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.48851773142814636,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 4,
+      "directed_pose_turns": -0.032792997939953376,
+      "supported_new_turns": 0.0009541217390612192,
+      "pad_support_fraction": 0.519832968711853,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 5,
+      "directed_pose_turns": 0.043116958438180863,
+      "supported_new_turns": 0.07264595393502195,
+      "pad_support_fraction": 0.3402922749519348,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 6,
+      "directed_pose_turns": 0.09696471415434654,
+      "supported_new_turns": 0.0647990669510234,
+      "pad_support_fraction": 0.31315240263938904,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 7,
+      "directed_pose_turns": -0.04270656303518643,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.48225468397140503,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 8,
+      "directed_pose_turns": -0.02161360040434088,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.736952006816864,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 9,
+      "directed_pose_turns": 0.1243569373294686,
+      "supported_new_turns": 0.052814026289569285,
+      "pad_support_fraction": 0.21085594594478607,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 10,
+      "directed_pose_turns": 0.11168282599134709,
+      "supported_new_turns": 0.06344886655790628,
+      "pad_support_fraction": 0.23382045328617096,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 11,
+      "directed_pose_turns": 0.06979670959423999,
+      "supported_new_turns": 0.06725178991274806,
+      "pad_support_fraction": 0.32359081506729126,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 12,
+      "directed_pose_turns": -0.03829237565633882,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.5114822387695312,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 13,
+      "directed_pose_turns": 0.043321534564547425,
+      "supported_new_turns": 0.05968250292413834,
+      "pad_support_fraction": 0.21294362843036652,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 14,
+      "directed_pose_turns": 0.06938515739435773,
+      "supported_new_turns": 0.05662863157088934,
+      "pad_support_fraction": 0.27139875292778015,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 15,
+      "directed_pose_turns": -0.04620572219308938,
+      "supported_new_turns": 0.002396257189586794,
+      "pad_support_fraction": 0.5741127133369446,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 16,
+      "directed_pose_turns": -0.08709490566579618,
+      "supported_new_turns": 0.0017482530786026964,
+      "pad_support_fraction": 0.18162839114665985,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 17,
+      "directed_pose_turns": 0.07801462068875457,
+      "supported_new_turns": 0.048404825879004854,
+      "pad_support_fraction": 0.29436326026916504,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 18,
+      "directed_pose_turns": -0.02485149281146625,
+      "supported_new_turns": 0.00048444923525832375,
+      "pad_support_fraction": 0.743215024471283,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 19,
+      "directed_pose_turns": -0.03322801973578178,
+      "supported_new_turns": 5.808594020405256e-05,
+      "pad_support_fraction": 0.6617953777313232,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 20,
+      "directed_pose_turns": -0.05232674419929778,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.7139874696731567,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 21,
+      "directed_pose_turns": 0.09582780712321738,
+      "supported_new_turns": 0.05745730232386963,
+      "pad_support_fraction": 0.2546972930431366,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 22,
+      "directed_pose_turns": 0.07042221525945282,
+      "supported_new_turns": 0.05399059741347826,
+      "pad_support_fraction": 0.41753652691841125,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 23,
+      "directed_pose_turns": -0.02038391667903276,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.5093945860862732,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 24,
+      "directed_pose_turns": -0.050486394544561046,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.6555323600769043,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 25,
+      "directed_pose_turns": -0.011973779614366738,
+      "supported_new_turns": 0.0011796294851062943,
+      "pad_support_fraction": 0.4112734794616699,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 26,
+      "directed_pose_turns": 0.08701610737657793,
+      "supported_new_turns": 0.06796845833036216,
+      "pad_support_fraction": 0.3549060523509979,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 27,
+      "directed_pose_turns": -0.03561225192364976,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.7494781017303467,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 28,
+      "directed_pose_turns": 0.10017549934557402,
+      "supported_new_turns": 0.04909478477275875,
+      "pad_support_fraction": 0.16910229623317719,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 29,
+      "directed_pose_turns": -0.008059683987944925,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.5052192211151123,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 30,
+      "directed_pose_turns": -0.024830851150365783,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.6513569951057434,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 31,
+      "directed_pose_turns": 0.09252493013464128,
+      "supported_new_turns": 0.05179571956526649,
+      "pad_support_fraction": 0.19624216854572296,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 32,
+      "directed_pose_turns": -0.043479857478284555,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.4676409065723419,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 33,
+      "directed_pose_turns": 0.05726644389398912,
+      "supported_new_turns": 0.05101358899782694,
+      "pad_support_fraction": 0.12943632900714874,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 34,
+      "directed_pose_turns": -0.03001510914443676,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.8977035284042358,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 35,
+      "directed_pose_turns": 0.12269095832357976,
+      "supported_new_turns": 0.06001288977091575,
+      "pad_support_fraction": 0.23799581825733185,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 36,
+      "directed_pose_turns": 0.0900951358543739,
+      "supported_new_turns": 0.0488317237314548,
+      "pad_support_fraction": 0.11899790912866592,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 37,
+      "directed_pose_turns": 0.12378349595118464,
+      "supported_new_turns": 0.06375115453475225,
+      "pad_support_fraction": 0.2212943583726883,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 38,
+      "directed_pose_turns": 0.10393927413763761,
+      "supported_new_turns": 0.05715016201328161,
+      "pad_support_fraction": 0.3027139902114868,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 39,
+      "directed_pose_turns": 0.08377717244996996,
+      "supported_new_turns": 0.06082227143343082,
+      "pad_support_fraction": 0.4718162715435028,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 40,
+      "directed_pose_turns": -0.00033691398826277087,
+      "supported_new_turns": 0.00040292746195394415,
+      "pad_support_fraction": 0.962421715259552,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 41,
+      "directed_pose_turns": -0.025565696303631667,
+      "supported_new_turns": 0.001837788458400277,
+      "pad_support_fraction": 0.6951983571052551,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 42,
+      "directed_pose_turns": 0.06885949304924122,
+      "supported_new_turns": 0.06870323859704519,
+      "pad_support_fraction": 0.21920667588710785,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 43,
+      "directed_pose_turns": 0.11638393857891098,
+      "supported_new_turns": 0.06716866530800496,
+      "pad_support_fraction": 0.2693110704421997,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 44,
+      "directed_pose_turns": -0.011960840462136583,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.8517745137214661,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 45,
+      "directed_pose_turns": -0.04586802840985443,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.6576200127601624,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 46,
+      "directed_pose_turns": -0.0402549261087929,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.3152400851249695,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 47,
+      "directed_pose_turns": -0.03417549572412696,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.6242170929908752,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 48,
+      "directed_pose_turns": 0.05387530389072712,
+      "supported_new_turns": 0.05171361085088831,
+      "pad_support_fraction": 0.1085594967007637,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 49,
+      "directed_pose_turns": 0.09895340822686975,
+      "supported_new_turns": 0.06890758558309545,
+      "pad_support_fraction": 0.2839248478412628,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 50,
+      "directed_pose_turns": -0.056762922831576794,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.7891440391540527,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 51,
+      "directed_pose_turns": 0.0932987952955203,
+      "supported_new_turns": 0.06602830398736385,
+      "pad_support_fraction": 0.19415448606014252,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 52,
+      "directed_pose_turns": -0.028251118115774618,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.7849686741828918,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 53,
+      "directed_pose_turns": 0.07243408509174078,
+      "supported_new_turns": 0.06256726295937991,
+      "pad_support_fraction": 0.4300626218318939,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 54,
+      "directed_pose_turns": -0.05612404537096667,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.6597077250480652,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 55,
+      "directed_pose_turns": -0.04157025559823186,
+      "supported_new_turns": 0.0003015672120705181,
+      "pad_support_fraction": 0.5699373483657837,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 56,
+      "directed_pose_turns": 0.06512331393115695,
+      "supported_new_turns": 0.07102175325179201,
+      "pad_support_fraction": 0.8392484188079834,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 57,
+      "directed_pose_turns": -0.011867786786651034,
+      "supported_new_turns": 0.04361960013515722,
+      "pad_support_fraction": 0.1315240114927292,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 58,
+      "directed_pose_turns": -0.05073416264554291,
+      "supported_new_turns": 0.0017673407317936214,
+      "pad_support_fraction": 0.7974947690963745,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 59,
+      "directed_pose_turns": -0.019395293125924768,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.5344467759132385,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 60,
+      "directed_pose_turns": 0.06122829360522185,
+      "supported_new_turns": 0.04938508006963913,
+      "pad_support_fraction": 0.11064717918634415,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 61,
+      "directed_pose_turns": -0.03285532676225895,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.6638830900192261,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 62,
+      "directed_pose_turns": 0.09770449048055149,
+      "supported_new_turns": 0.05938947061728431,
+      "pad_support_fraction": 0.13987474143505096,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 63,
+      "directed_pose_turns": 0.09206842363177507,
+      "supported_new_turns": 0.04725415993401831,
+      "pad_support_fraction": 0.18138425052165985,
+      "failed": true,
+      "success": false,
+      "steps": 419
+    }
+  ],
+  "success_fraction": 0.0,
+  "mean_directed_rotation_radians": 0.13954061269760132,
+  "mean_directed_rotations": 0.022208577021956444,
+  "mean_secure_support_fraction": 0.4508703947067261,
+  "mean_peak_pressure_proxy_pa": 4322.9345703125,
+  "worst_peak_pressure_proxy_pa": 8479.1142578125,
+  "mean_per_step_peak_pressure_proxy_pa": 2288.53271484375,
+  "failure_fraction": 0.015625,
+  "mean_jacobian_acceptance_fraction": 3.262004247517325e-05,
+  "mean_episode_steps": 478.0625,
+  "simulation_physx_rollout_completed": true,
+  "measured_real_fruit_damage": false,
+  "pressure_source": "Gaussian contact-normal-force synthetic surface proxy"
+}

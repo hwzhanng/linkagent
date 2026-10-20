@@ -1,0 +1,505 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+Loading user config located at: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-19T14:17:13Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers' or '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers/config'
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792419433.040499  639346 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792419433.040529  639346 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+2026-10-19T14:17:13Z [210ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+[ISAACLAB] AppLauncher initialization complete
+2026-10-19T14:17:16Z [3,051ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 42
+	Physics step-size     : 0.008333333333333333
+	Rendering step-size   : 0.05
+	Environment step-size : 0.05
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Registered backend 'physx' for factory RigidObject.
+[INFO]: Registered backend 'physx' for factory ContactSensor.
+[INFO]: Physics scene prim path: /physicsScene
+[INFO]: Time taken for scene creation Last: 1.110481 s, Mean: 1.110481 s, Std: 0.000000 s, N: 1
+[INFO]: Scene manager:  <class InteractiveScene>
+	Number of environments: 16
+	Environment spacing   : 1.0
+	Source prim name      : /World/envs/env_0
+	Global prim paths     : ['/World/ground']
+	Replicate physics     : False
+[INFO]: Starting the simulation. This may take a few seconds. Please wait...
+2026-10-19T14:17:17Z [4,671ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?
+[INFO]: Simulation parameters for joints in /World/envs/env_.*/Robot:
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                 Simulation Joint Information (Prim path: /World/envs/env_.*/Robot)                                                 |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+| Index | Name          | Stiffness | Damping | Armature | Static Friction | Dynamic Friction | Viscous Friction | Position Limits | Velocity Limits | Effort Limits |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+|   0   | thumb_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.490, 1.050] |      1.000      |     0.450     |
+|   1   | index_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   2   | middle_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   3   | ring_joint0   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   4   | little_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   5   | thumb_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-1.450, 0.000] |      1.000      |     0.450     |
+|   6   | index_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   7   | middle_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   8   | ring_joint1   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   9   | little_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   10  | thumb_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 0.840] |      1.000      |     0.450     |
+|   11  | index_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   12  | middle_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   13  | ring_joint2   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   14  | little_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   15  | thumb_joint3  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.320] |      1.000      |     0.450     |
+|   16  | index_joint3  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   17  | middle_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   18  | ring_joint3   |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   19  | little_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   20  | thumb_joint4  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.340] |      1.000      |     0.010     |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+[INFO]: Time taken for simulation start Last: 0.664452 s, Mean: 0.664452 s, Std: 0.000000 s, N: 1
+2026-10-19T14:17:17Z [4,829ms] [Warning] [isaaclab.envs.direct_rl_env] DirectRLEnvCfg.num_actions is deprecated. Use DirectRLEnvCfg.action_space instead.
+[INFO] Event Manager:  <EventManager> contains 1 active terms.
++------------------------------------+
+| Active Event Terms in Mode: 'prestartup' |
++--------------+---------------------+
+|    Index     | Name                |
++--------------+---------------------+
+|      0       | geometry            |
++--------------+---------------------+
+
+[INFO]: Completed setting up the environment...
+{
+  "hold": {
+    "secure_support_fraction": 0.0,
+    "mean_peak_pressure_pa": 2505.430419921875,
+    "mean_abs_spin_rad_s": 3.002873182296753,
+    "mean_reward": -1.4641830921173096,
+    "track_ready_fraction": 0.0,
+    "track_acceptance_fraction": 0.0,
+    "mean_max_contact_force_n": 1.041496992111206,
+    "steps_per_env": 200,
+    "num_envs": 16,
+    "completed_episodes": 651,
+    "mean_completed_episode_steps": 4.869431643625192,
+    "longest_completed_episode_steps": 14.0,
+    "longest_ongoing_episode_steps": 4.0,
+    "initial": {
+      "fruit": [
+        [
+          1.5130192041397095,
+          -1.5031768083572388,
+          1.013588309288025
+        ]
+      ],
+      "contact_bodies": [
+        [
+          [
+            1.594460129737854,
+            -1.50957453250885,
+            0.901810348033905
+          ],
+          [
+            1.5147316455841064,
+            -1.486814260482788,
+            0.9783192276954651
+          ],
+          [
+            1.5078625679016113,
+            -1.501914381980896,
+            0.9845255613327026
+          ],
+          [
+            1.5107308626174927,
+            -1.5190142393112183,
+            0.9803484082221985
+          ],
+          [
+            1.5116479396820068,
+            -1.5296844244003296,
+            0.971375584602356
+          ],
+          [
+            1.5,
+            -1.5,
+            0.75
+          ]
+        ]
+      ],
+      "active_joints": [
+        [
+          0.06937506794929504,
+          0.3009243309497833,
+          0.2686873972415924,
+          0.28706738352775574,
+          0.2273804247379303,
+          1.0375968217849731,
+          0.1208590716123581,
+          0.027088556438684464,
+          -0.03637963905930519,
+          -0.1891523003578186,
+          -0.6899182796478271,
+          0.15630479156970978,
+          0.22100064158439636,
+          0.22625316679477692,
+          0.19849920272827148,
+          0.2561047673225403
+        ]
+      ]
+    },
+    "snapshots": [
+      {
+        "step": 0,
+        "forces_env0": [
+          0.0,
+          1.9363468885421753,
+          1.1013931035995483,
+          0.665417492389679,
+          0.5626200437545776,
+          0.0
+        ],
+        "fruit_env0": [
+          1.5065337419509888,
+          -1.5008761882781982,
+          1.01670503616333
+        ],
+        "failed_count": 1
+      },
+      {
+        "step": 1,
+        "forces_env0": [
+          0.0,
+          1.1224831342697144,
+          4.859434127807617,
+          3.9132351875305176,
+          0.11476229876279831,
+          0.0
+        ],
+        "fruit_env0": [
+          1.5008184909820557,
+          -1.5069941282272339,
+          1.0174713134765625
+        ],
+        "failed_count": 2
+      },
+      {
+        "step": 4,
+        "forces_env0": [
+          0.0,
+          0.0,
+          0.0,
+          0.8338505625724792,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.485255241394043,
+          -1.4918222427368164,
+          1.0166105031967163
+        ],
+        "failed_count": 4
+      },
+      {
+        "step": 9,
+        "forces_env0": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.5089932680130005,
+          -1.5407644510269165,
+          1.0501835346221924
+        ],
+        "failed_count": 2
+      },
+      {
+        "step": 19,
+        "forces_env0": [
+          0.0,
+          0.020193185657262802,
+          1.3881912231445312,
+          2.295253276824951,
+          0.7970266342163086,
+          0.0
+        ],
+        "fruit_env0": [
+          1.499679684638977,
+          -1.508279800415039,
+          1.0154638290405273
+        ],
+        "failed_count": 4
+      },
+      {
+        "step": 49,
+        "forces_env0": [
+          0.0,
+          0.0,
+          1.0507866144180298,
+          0.6004326939582825,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.4947351217269897,
+          -1.498714804649353,
+          1.018412709236145
+        ],
+        "failed_count": 4
+      },
+      {
+        "step": 99,
+        "forces_env0": [
+          0.0,
+          0.0,
+          2.391112804412842,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.5022976398468018,
+          -1.498024344444275,
+          1.026570439338684
+        ],
+        "failed_count": 1
+      },
+      {
+        "step": 199,
+        "forces_env0": [
+          0.0,
+          0.3431357443332672,
+          0.18048939108848572,
+          4.12894344329834,
+          1.5738223791122437,
+          0.0
+        ],
+        "fruit_env0": [
+          1.5120875835418701,
+          -1.5051130056381226,
+          1.0142631530761719
+        ],
+        "failed_count": 3
+      }
+    ]
+  }
+}
+{
+  "random": {
+    "secure_support_fraction": 0.0,
+    "mean_peak_pressure_pa": 2543.385986328125,
+    "mean_abs_spin_rad_s": 3.170219659805298,
+    "mean_reward": -1.473464846611023,
+    "track_ready_fraction": 0.006874999962747097,
+    "track_acceptance_fraction": 0.0,
+    "mean_max_contact_force_n": 1.0786291360855103,
+    "steps_per_env": 200,
+    "num_envs": 16,
+    "completed_episodes": 655,
+    "mean_completed_episode_steps": 4.806106870229008,
+    "longest_completed_episode_steps": 14.0,
+    "longest_ongoing_episode_steps": 10.0,
+    "initial": {
+      "fruit": [
+        [
+          1.513452172279358,
+          -1.5029292106628418,
+          1.0182223320007324
+        ]
+      ],
+      "contact_bodies": [
+        [
+          [
+            1.5928807258605957,
+            -1.505488634109497,
+            0.9039585590362549
+          ],
+          [
+            1.5118712186813354,
+            -1.4891021251678467,
+            0.9788698554039001
+          ],
+          [
+            1.5073405504226685,
+            -1.5018423795700073,
+            0.9847689270973206
+          ],
+          [
+            1.5103799104690552,
+            -1.5187283754348755,
+            0.9803377985954285
+          ],
+          [
+            1.5122021436691284,
+            -1.5319147109985352,
+            0.971733570098877
+          ],
+          [
+            1.5,
+            -1.5,
+            0.75
+          ]
+        ]
+      ],
+      "active_joints": [
+        [
+          0.046018071472644806,
+          0.2584744691848755,
+          0.2637574076652527,
+          0.2748490571975708,
+          0.24958162009716034,
+          1.0328223705291748,
+          0.15187400579452515,
+          0.025982115417718887,
+          -0.040412817150354385,
+          -0.15753938257694244,
+          -0.6555327773094177,
+          0.14195115864276886,
+          0.22626058757305145,
+          0.21980439126491547,
+          0.21781180799007416,
+          0.21774913370609283
+        ]
+      ]
+    },
+    "snapshots": [
+      {
+        "step": 0,
+        "forces_env0": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.5144846439361572,
+          -1.5184226036071777,
+          1.0456876754760742
+        ],
+        "failed_count": 1
+      },
+      {
+        "step": 1,
+        "forces_env0": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.512529730796814,
+          -1.5317528247833252,
+          1.0480597019195557
+        ],
+        "failed_count": 0
+      },
+      {
+        "step": 4,
+        "forces_env0": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.503207802772522,
+          -1.5809513330459595,
+          1.0039727687835693
+        ],
+        "failed_count": 10
+      },
+      {
+        "step": 9,
+        "forces_env0": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.445003628730774,
+          -1.4914132356643677,
+          0.9971939921379089
+        ],
+        "failed_count": 8
+      },
+      {
+        "step": 19,
+        "forces_env0": [
+          0.0,
+          4.965394973754883,
+          0.030477356165647507,
+          5.995492935180664,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.5177216529846191,
+          -1.500705599784851,
+          1.0136650800704956
+        ],
+        "failed_count": 1
+      },
+      {
+        "step": 49,
+        "forces_env0": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.511548399925232,
+          -1.5057272911071777,
+          1.0133657455444336
+        ],
+        "failed_count": 5
+      },
+      {
+        "step": 99,
+        "forces_env0": [
+          0.0,
+          0.0,
+          0.3781440854072571,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fruit_env0": [
+          1.4900022745132446,
+          -1.5310238599777222,
+          1.0176141262054443
+        ],
+        "failed_count": 4
+      },
+      {
+        "step": 199,
+        "forces_env0": [
+          0.0,
+          0.0,
+          2.7519359588623047,
+          0.4276028275489807,
+          4.040801048278809,
+          0.0
+        ],
+        "fruit_env0": [
+          1.528079628944397,
+          -1.5201622247695923,
+          1.0122674703598022
+        ],
+        "failed_count": 2
+      }
+    ]
+  }
+}
+[INFO]: SimulationContext cleared

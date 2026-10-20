@@ -1,0 +1,44 @@
+{
+  "reviewed_at": "2026-10-20T09:58:57.234349+08:00",
+  "training_completed": true,
+  "additional_training_transitions": 127997760,
+  "ppo_updates": 244,
+  "all_parameters_finite": true,
+  "task_acceptance_passed": false,
+  "core_architecture_changed": false,
+  "evaluation_groups": {
+    "contact_nominal": {
+      "episodes": 128,
+      "successes": 0,
+      "physical_failures": 0,
+      "mean_secure_support_fraction": 0.8861886858940125,
+      "mean_directed_pose_turns": -0.0014137426624074578
+    },
+    "rotation_nominal": {
+      "episodes": 128,
+      "successes": 0,
+      "physical_failures": 1,
+      "mean_secure_support_fraction": 0.43570399284362793,
+      "mean_directed_pose_turns": 0.024069834500551224
+    },
+    "rotation_gentle": {
+      "episodes": 64,
+      "successes": 0,
+      "physical_failures": 2,
+      "mean_secure_support_fraction": 0.378353476524353,
+      "mean_directed_pose_turns": 0.0357513464987278
+    },
+    "rotation_full": {
+      "episodes": 64,
+      "successes": 0,
+      "physical_failures": 7,
+      "mean_secure_support_fraction": 0.1285698413848877,
+      "mean_directed_pose_turns": 0.03738074004650116
+    }
+  },
+  "video_frames_reviewed": [
+    100,
+    478
+  ],
+  "conclusion": "Contact curriculum passed, but complete rotation success is 0/256 across final nominal/gentle/full tests. Palm-up posture alone has not solved rotation."
+}

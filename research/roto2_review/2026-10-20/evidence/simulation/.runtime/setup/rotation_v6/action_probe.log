@@ -1,0 +1,417 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+Loading user config located at: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-20T02:03:13Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers' or '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers/config'
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792461793.935882 1258134 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792461793.935934 1258134 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+2026-10-20T02:03:14Z [215ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+[ISAACLAB] AppLauncher initialization complete
+2026-10-20T02:03:16Z [2,920ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 2060
+	Physics step-size     : 0.008333333333333333
+	Rendering step-size   : 0.05
+	Environment step-size : 0.05
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Registered backend 'physx' for factory RigidObject.
+[INFO]: Registered backend 'physx' for factory ContactSensor.
+[INFO]: Physics scene prim path: /physicsScene
+[INFO]: Time taken for scene creation Last: 1.773236 s, Mean: 1.773236 s, Std: 0.000000 s, N: 1
+[INFO]: Scene manager:  <class InteractiveScene>
+	Number of environments: 264
+	Environment spacing   : 1.0
+	Source prim name      : /World/envs/env_0
+	Global prim paths     : ['/World/ground']
+	Replicate physics     : False
+[INFO]: Starting the simulation. This may take a few seconds. Please wait...
+2026-10-20T02:03:19Z [6,033ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?
+[INFO]: Simulation parameters for joints in /World/envs/env_.*/Robot:
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                 Simulation Joint Information (Prim path: /World/envs/env_.*/Robot)                                                 |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+| Index | Name          | Stiffness | Damping | Armature | Static Friction | Dynamic Friction | Viscous Friction | Position Limits | Velocity Limits | Effort Limits |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+|   0   | thumb_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.490, 1.050] |      1.000      |     0.450     |
+|   1   | index_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   2   | middle_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   3   | ring_joint0   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   4   | little_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   5   | thumb_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-1.450, 0.000] |      1.000      |     0.450     |
+|   6   | index_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   7   | middle_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   8   | ring_joint1   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   9   | little_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   10  | thumb_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 0.840] |      1.000      |     0.450     |
+|   11  | index_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   12  | middle_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   13  | ring_joint2   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   14  | little_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   15  | thumb_joint3  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.320] |      1.000      |     0.450     |
+|   16  | index_joint3  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   17  | middle_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   18  | ring_joint3   |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   19  | little_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   20  | thumb_joint4  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.340] |      1.000      |     0.010     |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+[INFO]: Time taken for simulation start Last: 1.897367 s, Mean: 1.897367 s, Std: 0.000000 s, N: 1
+2026-10-20T02:03:20Z [6,607ms] [Warning] [isaaclab.envs.direct_rl_env] DirectRLEnvCfg.num_actions is deprecated. Use DirectRLEnvCfg.action_space instead.
+[INFO] Event Manager:  <EventManager> contains 1 active terms.
++------------------------------------+
+| Active Event Terms in Mode: 'prestartup' |
++--------------+---------------------+
+|    Index     | Name                |
++--------------+---------------------+
+|      0       | geometry            |
++--------------+---------------------+
+
+[INFO]: Completed setting up the environment...
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+***USING FRAME STACK: 4
+Registering standard scaler with input size 280
+Registering standard scaler with input size 1728
+Registering standard scaler with input size 1
+[Hard reset] : Duplicating frames
+{
+  "checkpoint": "logs/roto2_pressure_fruit/jacobian_seed46/2026-10-20_08-13-16/checkpoints/final_agent.pt",
+  "hand_posture": "palm_up",
+  "probe_only": true,
+  "warmup_control_steps": 80,
+  "pulse_control_steps": 20,
+  "results": [
+    {
+      "group": 0,
+      "joint": "thumb_joint2",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.1610474586486816,
+      "mean_full_pad_support": 0.66875,
+      "mean_two_pad_support": 0.9375,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 1,
+      "joint": "thumb_joint2",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": -22.405698776245117,
+      "mean_full_pad_support": 0.88125,
+      "mean_two_pad_support": 0.93125,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 2,
+      "joint": "index_joint1",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 3.2799758911132812,
+      "mean_full_pad_support": 0.7125,
+      "mean_two_pad_support": 0.98125,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 3,
+      "joint": "index_joint1",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 0.11289939284324646,
+      "mean_full_pad_support": 0.89375,
+      "mean_two_pad_support": 0.99375,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 4,
+      "joint": "middle_joint1",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.527342438697815,
+      "mean_full_pad_support": 0.7875,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 5,
+      "joint": "middle_joint1",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": -0.22221070528030396,
+      "mean_full_pad_support": 0.75625,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 6,
+      "joint": "ring_joint1",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 2.8054018020629883,
+      "mean_full_pad_support": 0.9625,
+      "mean_two_pad_support": 0.9875,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 7,
+      "joint": "ring_joint1",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": -1.9046170711517334,
+      "mean_full_pad_support": 0.99375,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 8,
+      "joint": "little_joint1",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.1563173532485962,
+      "mean_full_pad_support": 0.98125,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 9,
+      "joint": "little_joint1",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.6796631813049316,
+      "mean_full_pad_support": 0.98125,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 10,
+      "joint": "thumb_joint0",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": -0.45797818899154663,
+      "mean_full_pad_support": 0.55,
+      "mean_two_pad_support": 0.95,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 11,
+      "joint": "thumb_joint0",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 3.4797563552856445,
+      "mean_full_pad_support": 0.9,
+      "mean_two_pad_support": 0.99375,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 12,
+      "joint": "index_joint0",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 3.3967809677124023,
+      "mean_full_pad_support": 1.0,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 13,
+      "joint": "index_joint0",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": -2.0211737155914307,
+      "mean_full_pad_support": 0.96875,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 14,
+      "joint": "middle_joint0",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 0.42759591341018677,
+      "mean_full_pad_support": 1.0,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 15,
+      "joint": "middle_joint0",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 0.014521509408950806,
+      "mean_full_pad_support": 0.93125,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 16,
+      "joint": "ring_joint0",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.1897470951080322,
+      "mean_full_pad_support": 0.9875,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 17,
+      "joint": "ring_joint0",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": -0.29800480604171753,
+      "mean_full_pad_support": 0.9375,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 18,
+      "joint": "little_joint0",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.5259791612625122,
+      "mean_full_pad_support": 1.0,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 19,
+      "joint": "little_joint0",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.194568395614624,
+      "mean_full_pad_support": 0.975,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 20,
+      "joint": "thumb_joint1",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 6.624749183654785,
+      "mean_full_pad_support": 0.875,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 21,
+      "joint": "thumb_joint1",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": -2.841426372528076,
+      "mean_full_pad_support": 0.925,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 22,
+      "joint": "thumb_joint3",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.5338444709777832,
+      "mean_full_pad_support": 0.94375,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 23,
+      "joint": "thumb_joint3",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.6843676567077637,
+      "mean_full_pad_support": 0.625,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 24,
+      "joint": "index_joint2",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.0449986457824707,
+      "mean_full_pad_support": 0.6,
+      "mean_two_pad_support": 0.95625,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 25,
+      "joint": "index_joint2",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.8576102256774902,
+      "mean_full_pad_support": 0.86875,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 26,
+      "joint": "middle_joint2",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.0797078609466553,
+      "mean_full_pad_support": 0.525,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 27,
+      "joint": "middle_joint2",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": -0.8710683584213257,
+      "mean_full_pad_support": 0.64375,
+      "mean_two_pad_support": 0.89375,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 28,
+      "joint": "ring_joint2",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 2.5369186401367188,
+      "mean_full_pad_support": 0.95,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 29,
+      "joint": "ring_joint2",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": -3.2232558727264404,
+      "mean_full_pad_support": 0.9375,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 30,
+      "joint": "little_joint2",
+      "pulse": 0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.4071097373962402,
+      "mean_full_pad_support": 0.9875,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 31,
+      "joint": "little_joint2",
+      "pulse": -0.35,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 1.6717342138290405,
+      "mean_full_pad_support": 0.99375,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    },
+    {
+      "group": 32,
+      "joint": "control",
+      "pulse": 0.0,
+      "eligible_environments": 8,
+      "mean_pulse_world_z_degrees": 0.7836116552352905,
+      "mean_full_pad_support": 0.98125,
+      "mean_two_pad_support": 1.0,
+      "alive_after_pulse": 8
+    }
+  ]
+}
+[INFO]: SimulationContext cleared

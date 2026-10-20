@@ -1,0 +1,705 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+Loading user config located at: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-20T00:48:10Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers' or '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers/config'
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792457290.935384 1194080 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792457290.935414 1194080 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+2026-10-20T00:48:11Z [208ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+[ISAACLAB] AppLauncher initialization complete
+2026-10-20T00:48:13Z [2,853ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 2041
+	Physics step-size     : 0.008333333333333333
+	Rendering step-size   : 0.05
+	Environment step-size : 0.05
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Registered backend 'physx' for factory RigidObject.
+[INFO]: Registered backend 'physx' for factory ContactSensor.
+[INFO]: Physics scene prim path: /physicsScene
+[INFO]: Time taken for scene creation Last: 3.401895 s, Mean: 3.401895 s, Std: 0.000000 s, N: 1
+[INFO]: Scene manager:  <class InteractiveScene>
+	Number of environments: 64
+	Environment spacing   : 1.0
+	Source prim name      : /World/envs/env_0
+	Global prim paths     : ['/World/ground']
+	Replicate physics     : False
+[INFO]: Starting the simulation. This may take a few seconds. Please wait...
+2026-10-20T00:48:17Z [6,932ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?
+[INFO]: Simulation parameters for joints in /World/envs/env_.*/Robot:
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                 Simulation Joint Information (Prim path: /World/envs/env_.*/Robot)                                                 |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+| Index | Name          | Stiffness | Damping | Armature | Static Friction | Dynamic Friction | Viscous Friction | Position Limits | Velocity Limits | Effort Limits |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+|   0   | thumb_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.490, 1.050] |      1.000      |     0.450     |
+|   1   | index_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   2   | middle_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   3   | ring_joint0   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   4   | little_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   5   | thumb_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-1.450, 0.000] |      1.000      |     0.450     |
+|   6   | index_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   7   | middle_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   8   | ring_joint1   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   9   | little_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   10  | thumb_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 0.840] |      1.000      |     0.450     |
+|   11  | index_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   12  | middle_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   13  | ring_joint2   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   14  | little_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   15  | thumb_joint3  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.320] |      1.000      |     0.450     |
+|   16  | index_joint3  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   17  | middle_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   18  | ring_joint3   |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   19  | little_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   20  | thumb_joint4  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.340] |      1.000      |     0.010     |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+[INFO]: Time taken for simulation start Last: 0.890236 s, Mean: 0.890236 s, Std: 0.000000 s, N: 1
+2026-10-20T00:48:18Z [7,151ms] [Warning] [isaaclab.envs.direct_rl_env] DirectRLEnvCfg.num_actions is deprecated. Use DirectRLEnvCfg.action_space instead.
+[INFO] Event Manager:  <EventManager> contains 1 active terms.
++------------------------------------+
+| Active Event Terms in Mode: 'prestartup' |
++--------------+---------------------+
+|    Index     | Name                |
++--------------+---------------------+
+|      0       | geometry            |
++--------------+---------------------+
+
+[INFO]: Completed setting up the environment...
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+***USING FRAME STACK: 4
+Registering standard scaler with input size 280
+Registering standard scaler with input size 1728
+Registering standard scaler with input size 1
+[Hard reset] : Duplicating frames
+{
+  "baseline": "RoTO2_2026_multimodal_rl_unchanged",
+  "variant": "jacobian",
+  "checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed46/2026-10-20_08-32-50/checkpoints/final_agent.pt",
+  "episodes": 64,
+  "reward_version": "pose_pad_v5",
+  "evaluation_reward_stage": "rotation",
+  "domain_profile": "full",
+  "hand_posture": "palm_up",
+  "rotation_source": "independently reconstructed unwrapped material-axis heading from actual quaternion poses",
+  "success_definition": ">=1 net directed pose turn AND >=1 new turn with thumb+2 active pads; >=65% pad support; >=95% upright; no physical failure; below pressure limit",
+  "pose_metric_max_error_turns": 5.51295757045267e-07,
+  "maximum_pose_heading_step_rad": 2.6825825103045515,
+  "mean_supported_new_turns": 0.011962514402078009,
+  "mean_per_finger_pad_quality": [
+    0.7812525629997253,
+    0.23570851981639862,
+    0.6662431955337524,
+    0.05290159955620766,
+    3.9193218981381506e-06
+  ],
+  "mean_per_finger_approach_quality": [
+    0.651618242263794,
+    0.2137323021888733,
+    0.5861895084381104,
+    -0.12580621242523193,
+    -0.345641553401947
+  ],
+  "mean_per_finger_pad_contact_fraction": [
+    0.6460427045822144,
+    0.1681647002696991,
+    0.5864162445068359,
+    0.0003588204563129693,
+    0.0
+  ],
+  "per_episode": [
+    {
+      "env": 0,
+      "directed_pose_turns": 0.061022418007121826,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": true,
+      "success": false,
+      "steps": 301
+    },
+    {
+      "env": 1,
+      "directed_pose_turns": 0.08748365730332,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.004175365436822176,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 2,
+      "directed_pose_turns": 0.049554299234308895,
+      "supported_new_turns": 0.02318859285926575,
+      "pad_support_fraction": 0.42171189188957214,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 3,
+      "directed_pose_turns": 0.062060722375747356,
+      "supported_new_turns": 0.031067762258407374,
+      "pad_support_fraction": 0.11064717918634415,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 4,
+      "directed_pose_turns": -0.06061000714433683,
+      "supported_new_turns": 0.011204184039586508,
+      "pad_support_fraction": 0.03340292349457741,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 5,
+      "directed_pose_turns": 0.28511654746484794,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 6,
+      "directed_pose_turns": 0.1274144112452045,
+      "supported_new_turns": 0.013436486486684844,
+      "pad_support_fraction": 0.04384133592247963,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 7,
+      "directed_pose_turns": -0.0047668336637274305,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.4572024941444397,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 8,
+      "directed_pose_turns": -0.043366905773561545,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": true,
+      "success": false,
+      "steps": 250
+    },
+    {
+      "env": 9,
+      "directed_pose_turns": -0.10323255377789985,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.26722338795661926,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 10,
+      "directed_pose_turns": 0.2217808816795559,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 11,
+      "directed_pose_turns": -0.015515577028727842,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.24444444477558136,
+      "failed": true,
+      "success": false,
+      "steps": 180
+    },
+    {
+      "env": 12,
+      "directed_pose_turns": 0.05784025997726907,
+      "supported_new_turns": 0.02840023663750009,
+      "pad_support_fraction": 0.07306889444589615,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 13,
+      "directed_pose_turns": -0.008761768250403066,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 14,
+      "directed_pose_turns": -0.10523536873883255,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.004175365436822176,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 15,
+      "directed_pose_turns": -0.06727931127005311,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 16,
+      "directed_pose_turns": 0.07159085039146602,
+      "supported_new_turns": 0.04519951971789495,
+      "pad_support_fraction": 0.1649269312620163,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 17,
+      "directed_pose_turns": -0.020193455748523242,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 18,
+      "directed_pose_turns": 0.09078815760043152,
+      "supported_new_turns": 0.01565128294179547,
+      "pad_support_fraction": 0.1315240114927292,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 19,
+      "directed_pose_turns": -1.1746379881625173,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 20,
+      "directed_pose_turns": 0.09230601117768512,
+      "supported_new_turns": 0.053782827959257894,
+      "pad_support_fraction": 0.3027139902114868,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 21,
+      "directed_pose_turns": 0.06888523014181576,
+      "supported_new_turns": 0.04426832453929637,
+      "pad_support_fraction": 0.1085594967007637,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 22,
+      "directed_pose_turns": 0.11130868233651389,
+      "supported_new_turns": 0.01603746748473288,
+      "pad_support_fraction": 0.03340292349457741,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 23,
+      "directed_pose_turns": 0.8119238677291801,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 24,
+      "directed_pose_turns": 0.21680335568016437,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 25,
+      "directed_pose_turns": -0.2893926806679842,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 26,
+      "directed_pose_turns": 0.06883485887718974,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 27,
+      "directed_pose_turns": -0.012615456675882626,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.5031315088272095,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 28,
+      "directed_pose_turns": 0.02682242735317623,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.1419624239206314,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 29,
+      "directed_pose_turns": -0.036063803178944,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.33820459246635437,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 30,
+      "directed_pose_turns": -0.05864989645674438,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": true,
+      "success": false,
+      "steps": 322
+    },
+    {
+      "env": 31,
+      "directed_pose_turns": 0.08818543247629261,
+      "supported_new_turns": 0.0479969826246089,
+      "pad_support_fraction": 0.16910229623317719,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 32,
+      "directed_pose_turns": 0.04362085010422467,
+      "supported_new_turns": 0.050645192854727426,
+      "pad_support_fraction": 0.5991649031639099,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 33,
+      "directed_pose_turns": 0.1650127473934464,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 34,
+      "directed_pose_turns": -0.026654670678302874,
+      "supported_new_turns": 0.035491972684903554,
+      "pad_support_fraction": 0.45093944668769836,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 35,
+      "directed_pose_turns": -0.12721317114552055,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.037578288465738297,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 36,
+      "directed_pose_turns": 0.13722001815178017,
+      "supported_new_turns": 0.013936208838501888,
+      "pad_support_fraction": 0.060542795807123184,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 37,
+      "directed_pose_turns": 0.107917140620272,
+      "supported_new_turns": 0.05422834084147211,
+      "pad_support_fraction": 0.14405010640621185,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 38,
+      "directed_pose_turns": 0.26927068681038596,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 39,
+      "directed_pose_turns": -0.026959532022905557,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.2212943583726883,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 40,
+      "directed_pose_turns": 0.07606517313707434,
+      "supported_new_turns": 0.06114319046847521,
+      "pad_support_fraction": 0.2400835007429123,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 41,
+      "directed_pose_turns": 0.28392582934412963,
+      "supported_new_turns": 2.993798197561664e-05,
+      "pad_support_fraction": 0.6538461446762085,
+      "failed": true,
+      "success": false,
+      "steps": 104
+    },
+    {
+      "env": 42,
+      "directed_pose_turns": 0.052189864107610354,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 43,
+      "directed_pose_turns": 0.04413353787756607,
+      "supported_new_turns": 0.020502704086278318,
+      "pad_support_fraction": 0.1461377888917923,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 44,
+      "directed_pose_turns": 0.02411243172611799,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 45,
+      "directed_pose_turns": 0.0720102178179917,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 46,
+      "directed_pose_turns": -0.08963508012308453,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 47,
+      "directed_pose_turns": -0.056323518187300005,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 48,
+      "directed_pose_turns": -0.05281218227194756,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.018789144232869148,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 49,
+      "directed_pose_turns": 0.3934250264584838,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 50,
+      "directed_pose_turns": 0.6261099693881719,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 51,
+      "directed_pose_turns": -0.0019130694628801982,
+      "supported_new_turns": 0.04203363097854076,
+      "pad_support_fraction": 0.17745302617549896,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 52,
+      "directed_pose_turns": -0.06819725369972313,
+      "supported_new_turns": 0.009881987313806257,
+      "pad_support_fraction": 0.09276018291711807,
+      "failed": true,
+      "success": false,
+      "steps": 442
+    },
+    {
+      "env": 53,
+      "directed_pose_turns": 0.09324803211134003,
+      "supported_new_turns": 0.04104126614678758,
+      "pad_support_fraction": 0.10438413172960281,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 54,
+      "directed_pose_turns": 0.05537347980988278,
+      "supported_new_turns": 0.03220030332950602,
+      "pad_support_fraction": 0.1419624239206314,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 55,
+      "directed_pose_turns": -0.01330485442196304,
+      "supported_new_turns": 0.0009369199502069585,
+      "pad_support_fraction": 0.43215030431747437,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 56,
+      "directed_pose_turns": 0.04428241481359866,
+      "supported_new_turns": 0.0508974979034348,
+      "pad_support_fraction": 0.13778705894947052,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 57,
+      "directed_pose_turns": 0.02318344564681381,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.002087682718411088,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 58,
+      "directed_pose_turns": -0.023062170059252672,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 59,
+      "directed_pose_turns": -0.07532842638457585,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0897703543305397,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 60,
+      "directed_pose_turns": 0.06410554490242279,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.0,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 61,
+      "directed_pose_turns": -0.2601770530129008,
+      "supported_new_turns": 0.0009306595514513243,
+      "pad_support_fraction": 0.024475524201989174,
+      "failed": true,
+      "success": false,
+      "steps": 286
+    },
+    {
+      "env": 62,
+      "directed_pose_turns": -0.01595309553402567,
+      "supported_new_turns": 0.0,
+      "pad_support_fraction": 0.8475991487503052,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    },
+    {
+      "env": 63,
+      "directed_pose_turns": 0.05529481885349885,
+      "supported_new_turns": 0.021467441253893712,
+      "pad_support_fraction": 0.05219206586480141,
+      "failed": false,
+      "success": false,
+      "steps": 479
+    }
+  ],
+  "success_fraction": 0.0,
+  "mean_directed_rotation_radians": 0.23487013578414917,
+  "mean_directed_rotations": 0.03738074004650116,
+  "mean_secure_support_fraction": 0.1285698413848877,
+  "mean_peak_pressure_proxy_pa": 5714.03662109375,
+  "worst_peak_pressure_proxy_pa": 13978.9033203125,
+  "mean_per_step_peak_pressure_proxy_pa": 2558.05615234375,
+  "failure_fraction": 0.109375,
+  "mean_jacobian_acceptance_fraction": 0.0,
+  "mean_episode_steps": 456.0625,
+  "simulation_physx_rollout_completed": true,
+  "measured_real_fruit_damage": false,
+  "pressure_source": "Gaussian contact-normal-force synthetic surface proxy"
+}
+[INFO]: SimulationContext cleared

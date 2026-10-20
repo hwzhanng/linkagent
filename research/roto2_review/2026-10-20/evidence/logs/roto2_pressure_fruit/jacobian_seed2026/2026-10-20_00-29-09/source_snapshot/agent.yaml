@@ -1,0 +1,55 @@
+# Adapted from RoTO 2.0 (2026) well-tuned Allegro blind Baoding PPO.
+# Its Encoder / PPO / GAE / rollout memory / trainer remain 100% upstream.
+# Only LinkAgent L20 environment and local pressure-gradient residual change.
+seed: 42
+observations:
+  obs_list: [prop, tactile]
+  obs_stack: 4
+  tactile_cfg:
+    binary_tactile: false
+    binary_threshold: 0.01
+encoder:
+  method: early
+  hiddens: [512, 256]
+  activations: [elu, elu]
+  layernorm: true
+  state_preprocessor: true
+policy:
+  clip_log_std: true
+  initial_log_std: 0.0
+  min_log_std: -20.0
+  max_log_std: 2.0
+  hiddens: [128, 64]
+  activations: [elu, elu, identity]
+value:
+  hiddens: [128, 64]
+  activations: [elu, elu, identity]
+agent:
+  rollouts: 32
+  learning_epochs: 8
+  mini_batches: 4
+  discount_factor: 0.99
+  lambda: 0.95
+  learning_rate: 0.000202
+  grad_norm_clip: 1.0
+  ratio_clip: 0.2
+  value_clip: 0.2
+  value_loss_scale: 1.0
+  entropy_loss_scale: 0.05
+  kl_threshold: 0
+experiment:
+  directory: roto2_pressure_fruit
+  experiment_name: jacobian
+  debug: false
+  upload_videos: false
+  save_checkpoints: 1
+  tb_log: true
+  wandb: false
+  wandb_kwargs:
+    project: linkagent_fruit_pressure
+    entity: null
+    group: roto2_pressure
+    name: seed42
+trainer:
+  num_eval_envs: 16
+  max_global_timesteps_M: 100

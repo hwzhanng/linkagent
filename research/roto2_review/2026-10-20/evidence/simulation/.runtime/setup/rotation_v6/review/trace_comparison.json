@@ -1,0 +1,646 @@
+{
+  "baseline": {
+    "checkpoint": "logs/roto2_pressure_fruit/jacobian_seed46/2026-10-20_08-13-16/checkpoints/final_agent.pt",
+    "episodes": 64,
+    "dt": 0.05,
+    "discount": 0.99,
+    "mean_undiscounted_return": -17.23965835571289,
+    "mean_discounted_return": -0.14522331035587593,
+    "near_limit_fraction_by_joint": {
+      "thumb_joint2": 0.0,
+      "index_joint1": 0.0027727035490605428,
+      "middle_joint1": 0.0025443632567849687,
+      "ring_joint1": 0.0,
+      "little_joint1": 0.6176278705636743,
+      "thumb_joint0": 0.0,
+      "index_joint0": 0.1079723382045929,
+      "middle_joint0": 0.6895550626304802,
+      "ring_joint0": 0.058389874739039664,
+      "little_joint0": 0.41182802713987476,
+      "thumb_joint1": 0.001174321503131524,
+      "thumb_joint3": 0.121705375782881,
+      "index_joint2": 0.0068828288100208765,
+      "middle_joint2": 0.0,
+      "ring_joint2": 0.008252870563674321,
+      "little_joint2": 0.7398225469728601
+    },
+    "policy_std": 0.16445563733577728,
+    "windows": [
+      {
+        "seconds": [
+          0,
+          1
+        ],
+        "pad_contact_fraction": [
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "full_contact": 1.0,
+        "index_no_force_fraction": 0.0,
+        "index_force_but_invalid_pad_fraction": 0.0,
+        "reward_terms_total_per_episode": {
+          "rotation": 0.0,
+          "regrasp_milestone": 0.0,
+          "pad_guidance": -0.00011508647003211081,
+          "pad_approach": -0.11617688089609146,
+          "missing_driving_contacts": 0.0,
+          "support_duty_deficit": -0.3295799791812897,
+          "centering": -0.0013728081248700619,
+          "tilt": -2.6987127057509497e-05,
+          "action_smoothness": -0.00259793852455914,
+          "time": -0.5000000596046448,
+          "invalid_rotation_path": 0.0
+        },
+        "joints": {
+          "index_joint1": {
+            "limits": [
+              0.0,
+              1.659999966621399
+            ],
+            "q_mean": 0.7598183751106262,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.765849232673645,
+            "action_mean": -0.0020256577990949154,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          },
+          "index_joint0": {
+            "limits": [
+              -0.25999999046325684,
+              0.25999999046325684
+            ],
+            "q_mean": -0.01204986684024334,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": -0.002933794166892767,
+            "action_mean": 0.14987942576408386,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          },
+          "index_joint2": {
+            "limits": [
+              0.0,
+              1.3599998950958252
+            ],
+            "q_mean": 0.3500407636165619,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.35302069783210754,
+            "action_mean": -0.025048982352018356,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          }
+        }
+      },
+      {
+        "seconds": [
+          1,
+          5
+        ],
+        "pad_contact_fraction": [
+          0.9986328125,
+          1.0,
+          0.9974609375,
+          0.0,
+          0.0
+        ],
+        "full_contact": 0.99609375,
+        "index_no_force_fraction": 0.0,
+        "index_force_but_invalid_pad_fraction": 0.0,
+        "reward_terms_total_per_episode": {
+          "rotation": 3.5084357261657715,
+          "regrasp_milestone": 3.125,
+          "pad_guidance": -0.0013845011126250029,
+          "pad_approach": -0.536380410194397,
+          "missing_driving_contacts": 0.0,
+          "support_duty_deficit": 0.0,
+          "centering": -0.035859428346157074,
+          "tilt": -0.00018568255472928286,
+          "action_smoothness": -0.008222567848861217,
+          "time": -1.9999988079071045,
+          "invalid_rotation_path": 0.0
+        },
+        "joints": {
+          "index_joint1": {
+            "limits": [
+              0.0,
+              1.659999966621399
+            ],
+            "q_mean": 0.79804527759552,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.8079209327697754,
+            "action_mean": 0.030099835246801376,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          },
+          "index_joint0": {
+            "limits": [
+              -0.25999999046325684,
+              0.25999999046325684
+            ],
+            "q_mean": 0.13959257304668427,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0412109375,
+            "target_mean": 0.144367977976799,
+            "action_mean": 0.04919074848294258,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.025
+          },
+          "index_joint2": {
+            "limits": [
+              0.0,
+              1.3599998950958252
+            ],
+            "q_mean": 0.3118576407432556,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.3162950277328491,
+            "action_mean": -0.015031722374260426,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          }
+        }
+      },
+      {
+        "seconds": [
+          5,
+          10
+        ],
+        "pad_contact_fraction": [
+          0.98921875,
+          0.9990625,
+          0.9803125,
+          0.0,
+          0.0
+        ],
+        "full_contact": 0.97078125,
+        "index_no_force_fraction": 0.0,
+        "index_force_but_invalid_pad_fraction": 0.0009375,
+        "reward_terms_total_per_episode": {
+          "rotation": -0.7999041080474854,
+          "regrasp_milestone": 0.125,
+          "pad_guidance": -0.010154861025512218,
+          "pad_approach": -0.7929256558418274,
+          "missing_driving_contacts": -0.02187499962747097,
+          "support_duty_deficit": -0.00041516771307215095,
+          "centering": -0.11483713984489441,
+          "tilt": -0.0007629537722095847,
+          "action_smoothness": -0.011489691212773323,
+          "time": -2.500000238418579,
+          "invalid_rotation_path": 0.0
+        },
+        "joints": {
+          "index_joint1": {
+            "limits": [
+              0.0,
+              1.659999966621399
+            ],
+            "q_mean": 0.8550697565078735,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.8647540211677551,
+            "action_mean": 0.0022791577503085136,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          },
+          "index_joint0": {
+            "limits": [
+              -0.25999999046325684,
+              0.25999999046325684
+            ],
+            "q_mean": 0.17688718438148499,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.184375,
+            "target_mean": 0.1785428673028946,
+            "action_mean": 0.00041110365418717265,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.10703125
+          },
+          "index_joint2": {
+            "limits": [
+              0.0,
+              1.3599998950958252
+            ],
+            "q_mean": 0.28693482279777527,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.2932300865650177,
+            "action_mean": -0.0029223738238215446,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          }
+        }
+      },
+      {
+        "seconds": [
+          10,
+          24
+        ],
+        "pad_contact_fraction": [
+          0.9442446043165468,
+          0.85431654676259,
+          0.9192333633093526,
+          0.0,
+          0.0
+        ],
+        "full_contact": 0.8000224820143885,
+        "index_no_force_fraction": 0.02045863309352518,
+        "index_force_but_invalid_pad_fraction": 0.1252248201438849,
+        "reward_terms_total_per_episode": {
+          "rotation": -1.2263330221176147,
+          "regrasp_milestone": 0.28125,
+          "pad_guidance": -0.44572269916534424,
+          "pad_approach": -2.5554959774017334,
+          "missing_driving_contacts": -1.7062517404556274,
+          "support_duty_deficit": -1.7359176874160767,
+          "centering": -0.5001419186592102,
+          "tilt": -0.4623861312866211,
+          "action_smoothness": -0.030208293348550797,
+          "time": -6.950016975402832,
+          "invalid_rotation_path": -0.8062519431114197
+        },
+        "joints": {
+          "index_joint1": {
+            "limits": [
+              0.0,
+              1.659999966621399
+            ],
+            "q_mean": 0.8097320199012756,
+            "lower_limit_fraction": 0.004721223021582734,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.8215956687927246,
+            "action_mean": -0.005849956069141626,
+            "outward_action_at_lower_fraction": 0.0038781474820143887,
+            "outward_action_at_upper_fraction": 0.0
+          },
+          "index_joint0": {
+            "limits": [
+              -0.25999999046325684,
+              0.25999999046325684
+            ],
+            "q_mean": 0.12728986144065857,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.10757643884892086,
+            "target_mean": 0.12935283780097961,
+            "action_mean": -0.0017241312889382243,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.06328687050359712
+          },
+          "index_joint2": {
+            "limits": [
+              0.0,
+              1.3599998950958252
+            ],
+            "q_mean": 0.2805726230144501,
+            "lower_limit_fraction": 0.011634442446043166,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.2886282801628113,
+            "action_mean": -0.00363695016130805,
+            "outward_action_at_lower_fraction": 0.00949865107913669,
+            "outward_action_at_upper_fraction": 0.0
+          }
+        }
+      }
+    ],
+    "discounted_terms": {
+      "rotation": 1.7976127248760272,
+      "regrasp_milestone": 1.7808146218184753,
+      "pad_guidance": -0.016159786081672352,
+      "pad_approach": -0.6965590547948632,
+      "missing_driving_contacts": -0.048911364146851696,
+      "support_duty_deficit": -0.35550397796826794,
+      "centering": -0.06541179648480426,
+      "tilt": -0.01869674205112549,
+      "action_smoothness": -0.010985118197983212,
+      "time": -2.479713952883731,
+      "invalid_rotation_path": -0.031708897952684986
+    }
+  },
+  "final": {
+    "checkpoint": "logs/roto2_pressure_fruit/jacobian_seed47/2026-10-20_10-11-56/checkpoints/final_agent.pt",
+    "episodes": 64,
+    "dt": 0.05,
+    "discount": 0.99,
+    "mean_undiscounted_return": -21.825471878051758,
+    "mean_discounted_return": 5.857394231186701,
+    "near_limit_fraction_by_joint": {
+      "thumb_joint2": 0.0,
+      "index_joint1": 0.0,
+      "middle_joint1": 0.0,
+      "ring_joint1": 0.0,
+      "little_joint1": 0.5942066805845512,
+      "thumb_joint0": 0.0,
+      "index_joint0": 0.795472338204593,
+      "middle_joint0": 0.31484864300626303,
+      "ring_joint0": 0.01507045929018789,
+      "little_joint0": 0.4307150313152401,
+      "thumb_joint1": 0.0,
+      "thumb_joint3": 0.0,
+      "index_joint2": 0.27909707724425886,
+      "middle_joint2": 0.0,
+      "ring_joint2": 0.46225861169102295,
+      "little_joint2": 0.793384655532359
+    },
+    "policy_std": 0.14914341270923615,
+    "windows": [
+      {
+        "seconds": [
+          0,
+          1
+        ],
+        "pad_contact_fraction": [
+          1.0,
+          1.0,
+          0.99296875,
+          0.0,
+          0.0
+        ],
+        "full_contact": 0.99296875,
+        "index_no_force_fraction": 0.0,
+        "index_force_but_invalid_pad_fraction": 0.0,
+        "reward_terms_total_per_episode": {
+          "rotation": 0.0,
+          "regrasp_milestone": 0.0,
+          "pad_guidance": -0.0002009573654504493,
+          "pad_approach": -0.11023090779781342,
+          "missing_driving_contacts": 0.0,
+          "support_duty_deficit": -0.3298526108264923,
+          "centering": -0.0016523890662938356,
+          "tilt": -9.616125316824764e-05,
+          "action_smoothness": -0.0035005579702556133,
+          "time": -0.5000000596046448,
+          "invalid_rotation_path": 0.0
+        },
+        "joints": {
+          "index_joint1": {
+            "limits": [
+              0.0,
+              1.659999966621399
+            ],
+            "q_mean": 0.7628318071365356,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.7698858976364136,
+            "action_mean": 0.008000696077942848,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          },
+          "index_joint0": {
+            "limits": [
+              -0.25999999046325684,
+              0.25999999046325684
+            ],
+            "q_mean": -0.00044298620196059346,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.010348496027290821,
+            "action_mean": 0.20112018287181854,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          },
+          "index_joint2": {
+            "limits": [
+              0.0,
+              1.3599998950958252
+            ],
+            "q_mean": 0.3494824469089508,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.3537651598453522,
+            "action_mean": -0.010952127166092396,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          }
+        }
+      },
+      {
+        "seconds": [
+          1,
+          5
+        ],
+        "pad_contact_fraction": [
+          0.998828125,
+          0.9849609375,
+          0.823046875,
+          0.0,
+          0.0
+        ],
+        "full_contact": 0.8109375,
+        "index_no_force_fraction": 0.0,
+        "index_force_but_invalid_pad_fraction": 0.0150390625,
+        "reward_terms_total_per_episode": {
+          "rotation": 9.15176773071289,
+          "regrasp_milestone": 5.9375,
+          "pad_guidance": -0.03904356062412262,
+          "pad_approach": -0.6226381063461304,
+          "missing_driving_contacts": -0.03281250223517418,
+          "support_duty_deficit": -0.11462461948394775,
+          "centering": -0.1423424631357193,
+          "tilt": -0.0068497927859425545,
+          "action_smoothness": -0.012908988632261753,
+          "time": -1.9999988079071045,
+          "invalid_rotation_path": 0.0
+        },
+        "joints": {
+          "index_joint1": {
+            "limits": [
+              0.0,
+              1.659999966621399
+            ],
+            "q_mean": 0.7738888263702393,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.7845901846885681,
+            "action_mean": 0.010867225006222725,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          },
+          "index_joint0": {
+            "limits": [
+              -0.25999999046325684,
+              0.25999999046325684
+            ],
+            "q_mean": 0.21734540164470673,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.5818359375,
+            "target_mean": 0.22218754887580872,
+            "action_mean": 0.1283527910709381,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.492578125
+          },
+          "index_joint2": {
+            "limits": [
+              0.0,
+              1.3599998950958252
+            ],
+            "q_mean": 0.36384811997413635,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.37150076031684875,
+            "action_mean": 0.008601320907473564,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          }
+        }
+      },
+      {
+        "seconds": [
+          5,
+          10
+        ],
+        "pad_contact_fraction": [
+          0.8928125,
+          0.7471875,
+          0.8575,
+          0.0,
+          0.0
+        ],
+        "full_contact": 0.548125,
+        "index_no_force_fraction": 0.02140625,
+        "index_force_but_invalid_pad_fraction": 0.23140625,
+        "reward_terms_total_per_episode": {
+          "rotation": 2.6073780059814453,
+          "regrasp_milestone": 0.03125,
+          "pad_guidance": -0.35723912715911865,
+          "pad_approach": -0.999518632888794,
+          "missing_driving_contacts": -0.4937500059604645,
+          "support_duty_deficit": -0.9671188592910767,
+          "centering": -0.428141713142395,
+          "tilt": -0.06645750999450684,
+          "action_smoothness": -0.01546008512377739,
+          "time": -2.500000238418579,
+          "invalid_rotation_path": 0.0
+        },
+        "joints": {
+          "index_joint1": {
+            "limits": [
+              0.0,
+              1.659999966621399
+            ],
+            "q_mean": 0.8084822297096252,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.8213778734207153,
+            "action_mean": 0.009173043072223663,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          },
+          "index_joint0": {
+            "limits": [
+              -0.25999999046325684,
+              0.25999999046325684
+            ],
+            "q_mean": 0.25436344742774963,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.94875,
+            "target_mean": 0.2553337812423706,
+            "action_mean": 0.04646129906177521,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.63265625
+          },
+          "index_joint2": {
+            "limits": [
+              0.0,
+              1.3599998950958252
+            ],
+            "q_mean": 0.34895598888397217,
+            "lower_limit_fraction": 0.00203125,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.35645854473114014,
+            "action_mean": -0.0190226249396801,
+            "outward_action_at_lower_fraction": 0.00140625,
+            "outward_action_at_upper_fraction": 0.0
+          }
+        }
+      },
+      {
+        "seconds": [
+          10,
+          24
+        ],
+        "pad_contact_fraction": [
+          0.9748201438848921,
+          0.11516411870503597,
+          0.9250786870503597,
+          0.0,
+          0.0
+        ],
+        "full_contact": 0.08279001798561152,
+        "index_no_force_fraction": 0.45402428057553956,
+        "index_force_but_invalid_pad_fraction": 0.4308116007194245,
+        "reward_terms_total_per_episode": {
+          "rotation": 0.7220710515975952,
+          "regrasp_milestone": 0.1875,
+          "pad_guidance": -2.4126062393188477,
+          "pad_approach": -3.0978713035583496,
+          "missing_driving_contacts": -1.8437509536743164,
+          "support_duty_deficit": -13.969566345214844,
+          "centering": -1.6838102340698242,
+          "tilt": -0.5892468094825745,
+          "action_smoothness": -0.04415693134069443,
+          "time": -6.950016975402832,
+          "invalid_rotation_path": 0.0
+        },
+        "joints": {
+          "index_joint1": {
+            "limits": [
+              0.0,
+              1.659999966621399
+            ],
+            "q_mean": 0.9016902446746826,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.9115467071533203,
+            "action_mean": 0.012334819883108139,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.0
+          },
+          "index_joint0": {
+            "limits": [
+              -0.25999999046325684,
+              0.25999999046325684
+            ],
+            "q_mean": 0.2505011260509491,
+            "lower_limit_fraction": 0.0,
+            "upper_limit_fraction": 0.8590939748201439,
+            "target_mean": 0.25472909212112427,
+            "action_mean": 0.058936405926942825,
+            "outward_action_at_lower_fraction": 0.0,
+            "outward_action_at_upper_fraction": 0.6013938848920863
+          },
+          "index_joint2": {
+            "limits": [
+              0.0,
+              1.3599998950958252
+            ],
+            "q_mean": 0.12168975174427032,
+            "lower_limit_fraction": 0.4772931654676259,
+            "upper_limit_fraction": 0.0,
+            "target_mean": 0.12301476299762726,
+            "action_mean": -0.052187006920576096,
+            "outward_action_at_lower_fraction": 0.32969874100719426,
+            "outward_action_at_upper_fraction": 0.0
+          }
+        }
+      }
+    ],
+    "discounted_terms": {
+      "rotation": 6.753573151087453,
+      "regrasp_milestone": 4.174533958907613,
+      "pad_guidance": -0.19168172217665347,
+      "pad_approach": -0.8110073160792646,
+      "missing_driving_contacts": -0.18375770984685652,
+      "support_duty_deficit": -1.105665265122169,
+      "centering": -0.24240847070764873,
+      "tilt": -0.04046376537629248,
+      "action_smoothness": -0.016012611691499656,
+      "time": -2.479713952883731,
+      "invalid_rotation_path": 0.0
+    }
+  }
+}

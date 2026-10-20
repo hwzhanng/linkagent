@@ -1,0 +1,20 @@
+{
+  "baseline": "RoTO2_2026_multimodal_rl_unchanged",
+  "variant": "jacobian",
+  "checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/checkpoints/final_agent.pt",
+  "episodes": 64,
+  "success_definition": ">=2pi positive rotation, >=65% secure grip, no fall, below proxy pressure limit",
+  "success_fraction": 0.796875,
+  "mean_directed_rotation_radians": 29.788646697998047,
+  "mean_directed_rotations": 4.7410101890563965,
+  "mean_secure_support_fraction": 0.9754540920257568,
+  "mean_peak_pressure_proxy_pa": 10792.546875,
+  "worst_peak_pressure_proxy_pa": 35211.578125,
+  "mean_per_step_peak_pressure_proxy_pa": 5990.1328125,
+  "failure_fraction": 0.203125,
+  "mean_jacobian_acceptance_fraction": 0.11151698231697083,
+  "mean_episode_steps": 441.96875,
+  "simulation_physx_rollout_completed": true,
+  "measured_real_fruit_damage": false,
+  "pressure_source": "Gaussian contact-normal-force synthetic surface proxy"
+}

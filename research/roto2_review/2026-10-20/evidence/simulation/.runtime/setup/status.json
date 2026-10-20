@@ -1,0 +1,404 @@
+{
+  "updated_at": "2026-10-20T10:10:20.761706+08:00",
+  "status": "rotation_v6_regrasp_training_not_accepted",
+  "training_started": true,
+  "license_authorization": "accepted_by_user",
+  "source_commits": {
+    "linkagent": "cd97e7a75c83ddd20584816d8089fc08fac2dcad",
+    "IsaacLab": "ffff603eafc6b74264a5261cc0183d6a65390d78",
+    "multimodal_rl": "4ac55e854b4c732534d443715a0322d4220b461c",
+    "roto": "0fa344e6e224f141cb6ab3ed4c2fbbbd86cf1cc2"
+  },
+  "planned_training": {
+    "num_envs": 16384,
+    "million_steps": 100,
+    "seed": 42,
+    "pressure_variant": "jacobian",
+    "additional_million_steps": 94.27968,
+    "prior_training_transitions": 5845008,
+    "total_training_transitions": 100124688
+  },
+  "checks": {
+    "git_access": true,
+    "vendor_mesh_present": true,
+    "cuda_physx_smoke": true,
+    "ppo_updates": 80,
+    "torch_cuda": {
+      "version": "2.10.0+cu128",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "capability": [
+        12,
+        0
+      ],
+      "finite_cuda_matmul": true
+    },
+    "ppo_runtime_imports": true,
+    "cpu_regression": {
+      "passed": 6,
+      "failed": 0,
+      "duration_seconds": 0.7
+    },
+    "pip_check_clean": false,
+    "training_transitions": 9968,
+    "validated_training_transitions": 619920,
+    "eval_reset_isolation": true,
+    "checkpoint_exact_restore": true,
+    "formal_preflight_passed": true
+  },
+  "pip_check_report": "/home/descfly/linkagent-ppo/simulation/.runtime/setup/pip-check.txt",
+  "license_url": "https://docs.omniverse.nvidia.com/platform/latest/common/NVIDIA_Omniverse_License_Agreement.html",
+  "next_steps": [
+    "Evaluate low-noise pad-contact policy independently",
+    "Continue true-pose rotation curriculum only after contact validation",
+    "Validate quaternion-derived turns, active-pad support and actual simulation video"
+  ],
+  "formal_training_started": true,
+  "formal_service": "linkagent-roto2-ppo-scaled-20261019.service",
+  "formal_run_dir": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40",
+  "formal_log": "/home/descfly/linkagent-ppo/simulation/.runtime/setup/formal-training-scaled.log",
+  "independent_evaluation": {
+    "seed": 2026,
+    "episodes": 64,
+    "before_mean_rotations": 0.0017420029,
+    "after_mean_rotations": 0.4194412529,
+    "before_support_fraction": 0.2202220261,
+    "after_support_fraction": 0.8592287898,
+    "complete_task_success_fraction": 0.0,
+    "pressure_improvement_proven": false
+  },
+  "completion_gate": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/training_result.json",
+  "scaling_base_checkpoint": "/home/descfly/linkagent-ppo/simulation/.runtime/setup/scaling_base/checkpoints/last_agent.pt",
+  "resource_scaling": {
+    "started_at": "2026-10-19T23:00:55.844848+08:00",
+    "service": "linkagent-roto2-ppo-scaled-20261019.service",
+    "log": "/home/descfly/linkagent-ppo/simulation/.runtime/setup/formal-training-scaled.log",
+    "num_envs": 16384,
+    "train_envs": 16368,
+    "eval_envs": 16,
+    "prior_training_transitions": 5845008,
+    "additional_training_transitions": 94279680,
+    "control_steps": 5760,
+    "total_training_transitions": 100124688,
+    "resume_checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_22-58-21/checkpoints/final_agent.pt",
+    "benchmark_transitions_per_second": 75825.68408202675,
+    "benchmark_resources": {
+      "mean_gpu_util_percent": 85.81481481481481,
+      "mean_gpu_power_w": 334.5188888888889,
+      "peak_gpu_memory_mib": 26082.0,
+      "peak_rss_mib": 19961.4140625,
+      "minimum_available_ram_gib": 32.42538833618164,
+      "max_temperature_c": 60.0
+    },
+    "command": [
+      "systemd-run",
+      "--user",
+      "--unit=linkagent-roto2-ppo-scaled-20261019.service",
+      "--property=Type=exec",
+      "--property=RemainAfterExit=yes",
+      "--property=Restart=no",
+      "--property=KillSignal=SIGINT",
+      "--property=TimeoutStopSec=45s",
+      "--property=WorkingDirectory=/home/descfly/linkagent-ppo",
+      "--property=StandardOutput=append:/home/descfly/linkagent-ppo/simulation/.runtime/setup/formal-training-scaled.log",
+      "--property=StandardError=append:/home/descfly/linkagent-ppo/simulation/.runtime/setup/formal-training-scaled.log",
+      "/usr/bin/bash",
+      "/home/descfly/linkagent-ppo/simulation/.runtime/run_roto2.sh",
+      "train",
+      "--num-envs",
+      "16384",
+      "--million-steps",
+      "94.27968001",
+      "--validate-contracts",
+      "--resume-checkpoint",
+      "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_22-58-21/checkpoints/final_agent.pt"
+    ],
+    "formal_start_verification": {
+      "checked_at": "2026-10-19T23:05:46.668220+08:00",
+      "run_dir": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40",
+      "checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/checkpoints/last_agent.pt",
+      "exact_restore_all_modules_and_optimizers": true,
+      "all_checkpoint_tensors_finite": true,
+      "eval_reset_isolation_passed": true,
+      "parameter_change_l2": {
+        "encoder": 2.8174462031343457,
+        "policy": 0.34079498276896153,
+        "value": 0.9288369453938945
+      },
+      "optimizer_steps": {
+        "encoder_optimiser": [
+          7584
+        ],
+        "policy_optimiser": [
+          7584
+        ],
+        "value_optimiser": [
+          7584
+        ]
+      },
+      "progress": {
+        "training_completed": false,
+        "training_transitions": 7856640,
+        "cumulative_training_transitions": 13701648,
+        "checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/checkpoints/last_agent.pt",
+        "upstream_eval_return": 53.331703186035156
+      }
+    },
+    "formal_measured_resources": {
+      "sample_count": 52,
+      "mean_gpu_util_percent": 87.82692307692308,
+      "mean_gpu_power_w": 340.08903846153845,
+      "peak_gpu_memory_mib": 26210.0,
+      "maximum_temperature_c": 63.0
+    },
+    "formal_measured_transitions_per_second": 75982.27137462671
+  },
+  "independent_evaluation_at_scaling": {
+    "base": {
+      "baseline": "RoTO2_2026_multimodal_rl_unchanged",
+      "variant": "jacobian",
+      "checkpoint": "/home/descfly/linkagent-ppo/simulation/.runtime/setup/scaling_base/checkpoints/last_agent.pt",
+      "episodes": 64,
+      "success_definition": ">=2pi positive rotation, >=65% secure grip, no fall, below proxy pressure limit",
+      "success_fraction": 0.203125,
+      "mean_directed_rotation_radians": 6.984173774719238,
+      "mean_directed_rotations": 1.1115657091140747,
+      "mean_secure_support_fraction": 0.8508082628250122,
+      "mean_peak_pressure_proxy_pa": 11160.494140625,
+      "worst_peak_pressure_proxy_pa": 38482.6875,
+      "mean_per_step_peak_pressure_proxy_pa": 5264.7333984375,
+      "failure_fraction": 0.75,
+      "mean_jacobian_acceptance_fraction": 0.048615358769893646,
+      "mean_episode_steps": 285.796875,
+      "simulation_physx_rollout_completed": true,
+      "measured_real_fruit_damage": false,
+      "pressure_source": "Gaussian contact-normal-force synthetic surface proxy"
+    },
+    "selected": {
+      "baseline": "RoTO2_2026_multimodal_rl_unchanged",
+      "variant": "jacobian",
+      "checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_22-58-21/checkpoints/final_agent.pt",
+      "episodes": 64,
+      "success_definition": ">=2pi positive rotation, >=65% secure grip, no fall, below proxy pressure limit",
+      "success_fraction": 0.40625,
+      "mean_directed_rotation_radians": 9.412419319152832,
+      "mean_directed_rotations": 1.498033046722412,
+      "mean_secure_support_fraction": 0.8580814599990845,
+      "mean_peak_pressure_proxy_pa": 10778.59765625,
+      "worst_peak_pressure_proxy_pa": 23588.71484375,
+      "mean_per_step_peak_pressure_proxy_pa": 5258.8701171875,
+      "failure_fraction": 0.5625,
+      "mean_jacobian_acceptance_fraction": 0.06043853610754013,
+      "mean_episode_steps": 344.296875,
+      "simulation_physx_rollout_completed": true,
+      "measured_real_fruit_damage": false,
+      "pressure_source": "Gaussian contact-normal-force synthetic surface proxy"
+    }
+  },
+  "training_completed": true,
+  "formal_training_result": {
+    "training_completed": true,
+    "ppo_updates": 180,
+    "training_transitions": 94279680,
+    "cumulative_training_transitions": 100124688,
+    "parameter_change_l2": {
+      "encoder": 13.624384880065918,
+      "policy": 2.2365872859954834,
+      "value": 5.310985565185547
+    },
+    "finite_parameters": true,
+    "elapsed_seconds": 1200.4579278379679,
+    "final_checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/checkpoints/final_agent.pt",
+    "seed": 42,
+    "variant": "jacobian",
+    "resumed_from": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_22-58-21/checkpoints/final_agent.pt"
+  },
+  "final_checkpoint_audit": {
+    "checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/checkpoints/final_agent.pt",
+    "size_bytes": 14985496,
+    "completed_at": "2026-10-19T23:23:42.379776+08:00",
+    "tensor_count": 99,
+    "all_tensors_finite": true,
+    "optimizer_steps": {
+      "encoder_optimiser": [
+        12864
+      ],
+      "policy_optimiser": [
+        12864
+      ],
+      "value_optimiser": [
+        12864
+      ]
+    }
+  },
+  "final_evaluation_summary": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/final_evaluation/summary.json",
+  "final_evaluation_aggregate": {
+    "mean_directed_rotations": 4.521781285603841,
+    "mean_secure_support_fraction": 0.946218729019165,
+    "mean_peak_pressure_proxy_pa": 11216.873046875,
+    "mean_per_step_peak_pressure_proxy_pa": 6017.66845703125,
+    "mean_episode_steps": 417.3229166666667,
+    "mean_jacobian_acceptance_fraction": 0.10444927463928859,
+    "episodes": 192,
+    "successes": 139,
+    "failures": 53,
+    "worst_peak_pressure_proxy_pa": 37743.67578125,
+    "success_fraction": 0.7239583333333334
+  },
+  "final_report": "/home/descfly/linkagent-ppo/simulation/roto2_pressure/FINAL_RESULTS.md",
+  "final_evaluation_valid": false,
+  "rotation_validation_issue": {
+    "video": "/home/descfly/linkagent-ppo/artifacts/simulation/final_ppo_simulation_verified.mp4",
+    "checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/checkpoints/final_agent.pt",
+    "seed": 2026,
+    "env_index": 0,
+    "actual_physx_render": true,
+    "duration_s": 25.95,
+    "fps": 20,
+    "resolution": [
+      1280,
+      720
+    ],
+    "frame_count": 519,
+    "legacy_reported_turns": 6.225948620311138,
+    "measured_net_yaw_change_degrees": -5.000301935240452,
+    "measured_yaw_range_degrees": 16.411724357031915,
+    "quaternion_increment_world_z_net_turns": -0.020407453556724877,
+    "maximum_frame_relative_rotation_degrees": 7.422893489252429,
+    "rotation_success_verified": false,
+    "previous_success_metric_invalid": true,
+    "note": "Real rendered frames retained. Overlay corrected using actual recorded quaternion poses. Last terminal image holds pre-reset pose, plus 2-second labeled end card."
+  },
+  "active_service": null,
+  "core_architecture_changed": false,
+  "task_acceptance_passed": false,
+  "current_training_seed": 48,
+  "current_domain_profile": "nominal",
+  "current_reward_stage": "continuous",
+  "current_num_envs": 16384,
+  "current_training_budget_million": 32,
+  "new_training_from_scratch": false,
+  "rejected_retraining_transitions": 159997200,
+  "active_pad_reset_nominal_validation": {
+    "environments": 64,
+    "physical_failures": 0,
+    "mean_secure_pad_fraction": 0.9672200679779053,
+    "steps_per_env": 480
+  },
+  "active_pad_reset_gentle_validation": {
+    "environments": 64,
+    "no_physical_failure_environments": 54,
+    "mean_secure_pad_fraction": 0.6298828125,
+    "steps_per_env": 480
+  },
+  "full_randomization_validated": false,
+  "current_run_dir": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed48/2026-10-20_17-27-37",
+  "current_exploration_std_override": null,
+  "current_entropy_weight": 0.005,
+  "current_curriculum_status": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v7/trial_seed48/status.json",
+  "latest_corrected_policy_evaluation": {
+    "status": "completed_not_accepted",
+    "training_active": false,
+    "core_architecture_changed": false,
+    "task_acceptance_passed": false,
+    "new_transitions": 31999440,
+    "ppo_updates": 61,
+    "training_seconds": 398.68306794716045,
+    "transitions_per_second": 80262.85180548739,
+    "training_gpu_samples": 40,
+    "mean_training_gpu_util_percent": 91.325,
+    "peak_gpu_memory_mib": 26401.0,
+    "max_temperature_c": 65.0,
+    "final_evaluation_episodes": 128,
+    "final_task_successes": 0,
+    "physical_failures": 1,
+    "strict_support_fraction": 0.7448133826255798,
+    "net_rotation_degrees": 18.426754474639893,
+    "after_settling_degrees": 15.370730247263946,
+    "after_10s_degrees": 2.1369664707365676,
+    "best_checkpoint_evaluation": {
+      "episodes": 64,
+      "successes": 0,
+      "strict_support_fraction": 0.8739111423492432,
+      "net_rotation_degrees": 11.361558437347412,
+      "after_10s_degrees": -0.5485415301390805
+    },
+    "mean_reward_term_totals": {
+      "rotation": 3.1154216527938843,
+      "missing_full_support": -18.290639877319336,
+      "bad_pad_contact": -34.29890441894531,
+      "pose_deviation": -23.71494483947754,
+      "pad_guidance": -0.7834148406982422,
+      "pad_approach": -4.087789297103882,
+      "centering": -0.5597997307777405,
+      "tilt": -0.1725376844406128,
+      "action_smoothness": -0.08034547418355942,
+      "time": -11.9575777053833,
+      "invalid_rotation_path": -0.12187492847442627
+    },
+    "trace": {
+      "late_window_seconds": [
+        10,
+        24
+      ],
+      "late_index_contact_fraction": 0.725550809352518,
+      "late_index_near_upper_fraction": 0.4208071043165468,
+      "late_index_outward_at_upper_fraction": 0.2610161870503597,
+      "late_index_force_insufficient": 0.01393884892086331,
+      "late_index_force_outside_pad": 0.2605103417266187,
+      "raw_bad_contact_fraction_by_finger": [
+        0.02556223849372385,
+        0.16929262552301255,
+        0.059427301255230124,
+        0.9213192991631799,
+        0.0
+      ],
+      "pose_cost_contributions_by_joint": [
+        0.0012846983736380935,
+        0.0004547758144326508,
+        0.0005765995010733604,
+        0.009515081532299519,
+        0.010389040224254131,
+        0.0005725803202949464,
+        0.0032701492309570312,
+        0.0014043677365407348,
+        0.0011966770980507135,
+        0.00035058922367170453,
+        0.0010879732435569167,
+        0.0005790443974547088,
+        0.0008283304050564766,
+        0.0005757212056778371,
+        0.0041056745685637,
+        0.013533120043575764
+      ]
+    },
+    "latest_video": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v7/trial_seed48/nominal_seed2071_video.mp4",
+    "report": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v7/trial_seed48/REVIEW.md",
+    "conclusion": "Contact retention and index saturation improve relative to the preceding diagnostic, but repeated rotation is not learned; do not automatically extend this recipe. Single training seed and unequal budgets do not establish an algorithmic superiority comparison."
+  },
+  "current_simulation_video": {
+    "video": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v7/trial_seed48/nominal_seed2071_video.mp4",
+    "decode_check_passed": true,
+    "actual_physx_render": true,
+    "frames_visually_inspected": [
+      250,
+      478
+    ],
+    "task_acceptance_passed": false
+  },
+  "current_hand_posture": "palm_up",
+  "vertical_curriculum_completed": "/home/descfly/linkagent-ppo/artifacts/simulation/reward_correction/curriculum_v5_seed45/status.json",
+  "palm_up_reset_validation": {
+    "environments": 16,
+    "control_steps_per_env": 480,
+    "physical_failures": 0,
+    "mean_secure_pad_support_fraction": 0.2559895981103182,
+    "is_learned_policy_result": false
+  },
+  "current_training_active": false,
+  "current_trial_completed": true,
+  "latest_trial_review": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v7/trial_seed48/review_summary.json",
+  "current_goal_direction": "positive",
+  "current_analysis_report": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v7/trial_seed48/REVIEW.md",
+  "current_service": "linkagent-roto2-continuous-v7.service",
+  "current_service_result": "completed_not_accepted"
+}

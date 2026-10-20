@@ -1,0 +1,27 @@
+{
+  "review_date": "2026-10-20",
+  "training_active": false,
+  "first_stage_transitions": 63998880,
+  "second_stage_started": false,
+  "evaluation_episodes": 128,
+  "full_task_successes": 0,
+  "after_settling_30deg_episodes": 121,
+  "small_angle_curriculum_successes": 15,
+  "mean_strict_support_fraction": 0.34339119493961334,
+  "mean_net_rotation_degrees": 45.339449644088745,
+  "mean_after_settling_degrees": 39.1362614209297,
+  "physical_failures": 0,
+  "task_acceptance_passed": false,
+  "core_architecture_changed": false,
+  "trace_comparison": "/home/descfly/linkagent-ppo/simulation/.runtime/setup/rotation_v6/review/trace_comparison.json",
+  "video": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v6/trial_seed47/regrasp_seed2061.mp4",
+  "plot": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v6/trial_seed47/review_rotation_contact.png",
+  "scope": "nominal palm-up positive-direction; no full-rotation or randomization success claim",
+  "findings": [
+    "Rotation plateaus at about 45 degrees; strict support is only 34.3 percent.",
+    "Index joint0 is near its upper limit in 85.9 percent of nonterminal 10\u201324s samples. Policy still commands outward in 60.1 percent.",
+    "Index valid contact in 10\u201324s is 11.5 percent; force <=0.15N in 45.4 percent and sufficient force outside valid pad in 43.1 percent.",
+    "Diagnostic replay discounted return improves from -0.145 to 5.857 while undiscounted return worsens from -17.240 to -21.825. This supports a timing mismatch, not proof that discount alone causes failure."
+  ],
+  "baseline_replay_note": "New trace replay of old contact checkpoint uses same diagnostic configuration as final trace. Original pretraining baseline used validate-contracts, which consumes reset/RNG state; do not treat it as identical initial-state paired data or replace its recorded metrics."
+}

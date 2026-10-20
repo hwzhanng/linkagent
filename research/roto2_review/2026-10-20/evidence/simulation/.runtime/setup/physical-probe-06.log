@@ -1,0 +1,50 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+Loading user config located at: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-19T14:31:25Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers' or '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers/config'
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792420285.833069  654476 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792420285.833098  654476 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+2026-10-19T14:31:26Z [216ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+[ISAACLAB] AppLauncher initialization complete
+2026-10-19T14:31:28Z [2,993ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 42
+	Physics step-size     : 0.008333333333333333
+	Rendering step-size   : 0.05
+	Environment step-size : 0.05
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Registered backend 'physx' for factory RigidObject.
+[INFO]: Registered backend 'physx' for factory ContactSensor.
+[INFO]: Physics scene prim path: /physicsScene
+[INFO]: Time taken for scene creation Last: 2.239541 s, Mean: 2.239541 s, Std: 0.000000 s, N: 1
+[INFO]: Scene manager:  <class InteractiveScene>
+	Number of environments: 64
+	Environment spacing   : 1.0
+	Source prim name      : /World/envs/env_0
+	Global prim paths     : ['/World/ground']
+	Replicate physics     : False
+[INFO]: SimulationContext cleared
+Traceback (most recent call last):
+  File "/home/descfly/linkagent-ppo/script/train_roto2_pressure.py", line 223, in main
+    env = gym.make(task_id, cfg=cfg)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/gymnasium/envs/registration.py", line 734, in make
+    env = env_creator(**env_spec_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/descfly/linkagent-ppo/simulation/roto2_pressure/env.py", line 45, in __init__
+    super().__init__(cfg, render_mode=render_mode, **kwargs)
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/envs/direct_rl_env.py", line 120, in __init__
+    self._init_sim(render_mode, **kwargs)
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/envs/direct_rl_env.py", line 178, in _init_sim
+    self.event_manager = EventManager(self.cfg.events, self)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/managers/event_manager.py", line 77, in __init__
+    super().__init__(cfg, env)
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/managers/manager_base.py", line 174, in __init__
+    self._prepare_terms()
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/managers/event_manager.py", line 373, in _prepare_terms
+    self._resolve_common_term_cfg(term_name, term_cfg, min_argc=2)
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/managers/manager_base.py", line 368, in _resolve_common_term_cfg
+    raise ValueError(
+ValueError: The term 'geometry' expects mandatory parameters: ['kwargs'] and optional parameters: [], but received: ['asset_name', 'axis_ranges_m', 'density_range_kg_m3', 'accepted_mass_kg', 'maximum_axis_ratio'].

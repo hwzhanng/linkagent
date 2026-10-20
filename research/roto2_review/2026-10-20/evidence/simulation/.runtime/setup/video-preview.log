@@ -1,0 +1,828 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+Loading user config located at: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-19T16:09:44Z [Info] [carb] Logging to file: /home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/logs/Kit/IsaacLab/3.0/kit_20261020_000944.log
+2026-10-19T16:09:44Z [4ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers' or '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers/config'
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792426184.182890  743165 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792426184.182924  743165 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+2026-10-19T16:09:44Z [546ms] [Warning] [omni.rtx] Skipping unsupported non-NVIDIA GPU: AMD Ryzen 9 9950X3D 16-Core Processor (RADV RAPHAEL_MENDOCINO)
+2026-10-19T16:09:44Z [546ms] [Warning] [omni.rtx] Skipping unsupported non-NVIDIA GPU: AMD Ryzen 9 9950X3D 16-Core Processor (RADV RAPHAEL_MENDOCINO)
+
+|---------------------------------------------------------------------------------------------|
+| Driver Version: 595.84        | Graphics API: Vulkan
+|=============================================================================================|
+| GPU | Name                             | Active | LDA | GPU Memory | Vendor-ID | LUID       |
+|     |                                  |        |     |            | Device-ID | UUID       |
+|     |                                  |        |     |            | Bus-ID    |            |
+|---------------------------------------------------------------------------------------------|
+| 0   | NVIDIA GeForce RTX 5090          | Yes: 0 |     | 32607   MB | 10de      | 0          |
+|     |                                  |        |     |            | 2b85      | dc902398.. |
+|     |                                  |        |     |            | 1         |            |
+|---------------------------------------------------------------------------------------------|
+| 1   | AMD Ryzen 9 9950X3D 16-Core Pr.. |        |     | 22004   MB | 1002      | 0          |
+|     |                                  |        |     |            | 13c0      | 00000000.. |
+|     |                                  |        |     |            | 73        |            |
+|=============================================================================================|
+| OS: 24.04.5 LTS (Noble Numbat) ubuntu, Version: 24.04.5, Kernel: 7.0.0-31-generic
+| XServer Vendor: The X.Org Foundation, XServer Version: 12101011 (1.21.1.11)
+| Processor: AMD Ryzen 9 9950X3D 16-Core Processor
+| Cores: 16 | Logical Cores: 32
+|---------------------------------------------------------------------------------------------|
+| Total Memory (MB): 61918 | Free Memory: 50408
+| Total Page/Swap (MB): 8191 | Free Page/Swap: 868
+|---------------------------------------------------------------------------------------------|
+2026-10-19T16:09:44Z [773ms] [Warning] [omni.rtx] IOMMU is enabled.
+2026-10-19T16:09:45Z [1,857ms] [Warning] [omni.log] Source: omni.hydra was already registered.
+2026-10-19T16:09:47Z [3,142ms] [Warning] [pxr.Semantics] pxr.Semantics is deprecated - please use Semantics instead
+2026-10-19T16:09:47Z [3,259ms] [Warning] [omni.replicator.core.scripts.extension] No material configuration file, adding configuration to material settings directly.
+2026-10-19T16:09:51Z [0ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] A crash has occurred.  If a debugger should be attached, please set the '/crashreporter/debuggerAttachTimeoutMs' setting to a timeout in milliseconds.  This can be used to allow the crash reporter to wait for up to that long for a debugger to attach before processing or sending the crash report.
+2026-10-19T16:09:51Z [60ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] compressing 4 files into '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp.zip' for upload.
+2026-10-19T16:09:51Z [62ms] [Warning] [carb.crashreporter-breakpad.plugin] failed to open the input file '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/logs/Kit/IsaacLab/3.0/kit_20261020_000944.nvcudmp' for read.
+2026-10-19T16:09:51Z [348ms] [Info] [carb.crashreporter-breakpad.plugin] attempting to delete the file '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp' with 10 retries remaining.
+2026-10-19T16:09:51Z [351ms] [Info] [carb.crashreporter-breakpad.plugin] attempting to delete the file '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp.toml' with 10 retries remaining.
+2026-10-19T16:09:51Z [354ms] [Error] [carb.crashreporter-breakpad.plugin] [crash] Wrote dump file '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp.zip'
+2026-10-19T16:09:51Z [356ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Uploading minidump: file:'/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp.zip' svr:'https://services.nvidia.com/submit'
+2026-10-19T16:09:51Z [357ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Crash metadata for upload:
+2026-10-19T16:09:51Z [358ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'BuildGitlabJobID' = '339414756'
+2026-10-19T16:09:51Z [359ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'CarbSdkVersion' = '210.1.11+release.13746.80f6dc72.gl'
+2026-10-19T16:09:51Z [360ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'CrashTime' = 'Mon Oct 19 16:09:51 2026 GMT'
+2026-10-19T16:09:51Z [361ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'DriverShaderCacheWrapper' = 'disabled'
+2026-10-19T16:09:51Z [361ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'DumpId' = '89e90e5a-5eb8-46c1-a47735bd-1e527158'
+2026-10-19T16:09:51Z [362ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'GlibcVersion' = '2.39'
+2026-10-19T16:09:51Z [363ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'LastUploadStatus' = ''
+2026-10-19T16:09:51Z [364ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'ProductName' = 'OmniverseKit'
+2026-10-19T16:09:51Z [365ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'PythonTracebackStatus' = ''py-spy' successfully wrote info to '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.py.txt''
+2026-10-19T16:09:51Z [366ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'RetryCount' = '0'
+2026-10-19T16:09:51Z [367ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'StartupTime' = '1792426184'
+2026-10-19T16:09:51Z [368ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'UploadSuccessful' = '0'
+2026-10-19T16:09:51Z [370ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'UptimeSeconds' = '7'
+2026-10-19T16:09:51Z [371ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'UserEmail' = ''
+2026-10-19T16:09:51Z [372ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'UserStory' = ''
+2026-10-19T16:09:51Z [373ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'UserStoryStatus' = 'Running in headless mode; not gathering user story'
+2026-10-19T16:09:51Z [374ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'Version' = '110.1.2+production.326809.f9bf0dda.gl'
+2026-10-19T16:09:51Z [375ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'aftermath_enabled' = '1'
+2026-10-19T16:09:51Z [376ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'aftermath_flags' = '3'
+2026-10-19T16:09:51Z [378ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'aftermath_status' = 'auto-enabled'
+2026-10-19T16:09:51Z [381ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'aftermath_version' = '2025.5'
+2026-10-19T16:09:51Z [385ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'appName' = 'IsaacLab'
+2026-10-19T16:09:51Z [386ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'appState' = 'started'
+2026-10-19T16:09:51Z [387ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'appVersion' = '3.0.0'
+2026-10-19T16:09:51Z [388ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'autoloadExts' = ''
+2026-10-19T16:09:51Z [390ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildBranch' = 'production'
+2026-10-19T16:09:51Z [391ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildCi' = 'gl'
+2026-10-19T16:09:51Z [392ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildConfig' = 'release'
+2026-10-19T16:09:51Z [393ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildGitlabJobName' = 'kit-build-release-linux-x86_64'
+2026-10-19T16:09:51Z [394ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildGitlabJobStage' = 'kit-build'
+2026-10-19T16:09:51Z [395ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildGitlabPipelineID' = '54503051'
+2026-10-19T16:09:51Z [397ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildHash' = 'f9bf0dda'
+2026-10-19T16:09:51Z [398ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildMajor' = '110'
+2026-10-19T16:09:51Z [399ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildMinor' = '1'
+2026-10-19T16:09:51Z [400ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildNumber' = '326809'
+2026-10-19T16:09:51Z [401ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildPatch' = '2'
+2026-10-19T16:09:51Z [402ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildVersion' = '110.1.2'
+2026-10-19T16:09:51Z [403ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'carboniteFrameworkVersion' = '210.1.11+release.13746.80f6dc72.gl'
+2026-10-19T16:09:51Z [404ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'carboniteSdkVersion' = '210.1.11+release.13746.80f6dc72.gl'
+2026-10-19T16:09:51Z [405ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'commandLine' = '/home/<username>/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python -m script.train_roto2_pressure --headless --num-envs 64 --seed 2026 --pressure-variant jacobian --evaluate-checkpoint /home/<username>/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/checkpoints/final_agent.pt --record-video /home/<username>/linkagent-ppo/artifacts/simulation/final_ppo_seed2026_env0_preview.mp4 --video-max-steps 2'
+2026-10-19T16:09:51Z [406ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'cpuCoreLimited' = '32'
+2026-10-19T16:09:51Z [408ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'cpuId' = 'Intel64 Family 26 Model 68 Stepping 0'
+2026-10-19T16:09:51Z [409ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'cpuLogicalCoresBareMetal' = '32'
+2026-10-19T16:09:51Z [410ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'cpuName' = 'AMD Ryzen 9 9950X3D 16-Core Processor'
+2026-10-19T16:09:51Z [411ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'cpuPhysicalCoresBareMetal' = '16'
+2026-10-19T16:09:51Z [412ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'cpuUsageQuota' = '-1.000000'
+2026-10-19T16:09:51Z [413ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'cpuVendor' = 'AuthenticAMD'
+2026-10-19T16:09:51Z [415ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'cuda_core_dumps_enabled' = '1'
+2026-10-19T16:09:51Z [416ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'desktopOrigin' = '(0, 0)'
+2026-10-19T16:09:51Z [417ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'desktopSize' = '2560x1440'
+2026-10-19T16:09:51Z [418ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'displayCount' = '1'
+2026-10-19T16:09:51Z [419ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'displayRes_0' = '2560x1440x32bit@60Hz'
+2026-10-19T16:09:51Z [420ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'environmentName' = 'Individual'
+2026-10-19T16:09:51Z [421ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'experience' = 'Isaac Sim'
+2026-10-19T16:09:51Z [422ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'externalBuild' = '1'
+2026-10-19T16:09:51Z [423ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'gpuDriver_0' = '595.84'
+2026-10-19T16:09:51Z [424ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'gpuVRAM_0' = '34190917632'
+2026-10-19T16:09:51Z [426ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'gpu_0' = 'NVIDIA GeForce RTX 5090'
+2026-10-19T16:09:51Z [427ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'graphicsApi' = 'vulkan'
+2026-10-19T16:09:51Z [428ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'kitRendererDriverVersion' = '595.84'
+2026-10-19T16:09:51Z [429ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'lib_physx_buildBranch' = 'HEAD'
+2026-10-19T16:09:51Z [430ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'lib_physx_buildDate' = 'Jun-04-2026'
+2026-10-19T16:09:51Z [431ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'lib_physx_buildHash' = 'c38f7d1'
+2026-10-19T16:09:51Z [432ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'lib_physx_buildRepo' = 'omniverse/physics'
+2026-10-19T16:09:51Z [433ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'lib_physx_buildVersion' = '110.1.13'
+2026-10-19T16:09:51Z [434ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'memoryStats' = '(avail/total) RAM: 45.0121/60.4676GB, Swap: 0.84771/8GB, VM: 1.71799e+10/1.71799e+10GB'
+2026-10-19T16:09:51Z [435ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'nvidia-smi' = '
+==============NVSMI LOG==============
+
+Timestamp                                              : Tue Oct 20 00:09:44 2026
+Driver Version                                         : 595.84
+CUDA Version                                           : 13.2
+
+Attached GPUs                                          : 1
+GPU 00000000:01:00.0
+    Product Name                                       : NVIDIA GeForce RTX 5090
+    Product Brand                                      : GeForce
+    Product Architecture                               : Blackwell
+    Display Mode                                       : Requested functionality has been deprecated
+    Display Attached                                   : Yes
+    Display Active                                     : Enabled
+    Persistence Mode                                   : Disabled
+    Addressing Mode                                    : HMM
+    MIG Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    Accounting Mode                                    : Disabled
+    Accounting Mode Buffer Size                        : 4000
+    Driver Model
+        Current                                        : N/A
+        Pending                                        : N/A
+    Serial Number                                      : 0
+    GPU UUID                                           : GPU-dc902398-a215-c275-4f8a-f9e4801590e4
+    GPU PDI                                            : 0x50820204dcfb863b
+    Minor Number                                       : 0
+    VBIOS Version                                      : 98.02.2E.40.E1
+    MultiGPU Board                                     : No
+    Board ID                                           : 0x100
+    Board Part Number                                  : N/A
+    GPU Part Number                                    : 2B85-300-A1
+    FRU Part Number                                    : N/A
+    Platform Info
+        Chassis Serial Number                          : 
+        Slot Number                                    : 0
+        Tray Index                                     : 0
+        Host ID                                        : 1
+        Peer Type                                      : Direct Connected
+        Module Id                                      : 1
+        GPU Fabric GUID                                : 0x0000000000000000
+    Inforom Version
+        Image Version                                  : G005.0000.98.01
+        OEM Object                                     : 2.1
+        ECC Object                                     : N/A
+        Power Management Object                        : N/A
+    Inforom BBX Object Flush
+        Latest Timestamp                               : N/A
+        Latest Duration                                : N/A
+    GPU Operation Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    GPU C2C Mode                                       : Disabled
+    GPU Virtualization Mode
+        Virtualization Mode                            : None
+        Host VGPU Mode                                 : N/A
+        vGPU Heterogeneous Mode                        : N/A
+    GPU Recovery Action                                : None
+    GSP Firmware Version                               : 595.84
+    IBMNPU
+        Relaxed Ordering Mode                          : N/A
+    PCI
+        Bus                                            : 0x01
+        Device                                         : 0x00
+        Domain                                         : 0x0000
+        Base Classcode                                 : 0x3
+        Sub Classcode                                  : 0x0
+        Device Id                                      : 0x2B8510DE
+        Bus Id                                         : 00000000:01:00.0
+        Sub System Id                                  : 0x89E31043
+        GPU Link Info
+            PCIe Generation
+                Max                                    : 5
+                Current                                : 5
+                Device Current                         : 5
+                Device Max                             : 5
+                Host Max                               : 5
+            Link Width
+                Max                                    : 16x
+                Current                                : 16x
+        Bridge Chip
+            Type                                       : N/A
+            Firmware                                   : N/A
+        Replays Since Reset                            : 0
+        Replay Number Rollovers                        : 0
+        Tx Throughput                                  : 120483 KB/s
+        Rx Throughput                                  : 1568324 KB/s
+        Atomic Caps Outbound                           : N/A
+        Atomic Caps Inbound                            : FETCHADD_32 FETCHADD_64 SWAP_32 SWAP_64 CAS_32 CAS_64 
+    Fan Speed                                          : 30 %
+    Performance State                                  : P1
+    Clocks Event Reasons
+        Idle                                           : Not Active
+        Applications Clocks Setting                    : Not Active
+        SW Power Cap                                   : Not Active
+        HW Slowdown                                    : Not Active
+            HW Thermal Slowdown                        : Not Active
+            HW Power Brake Slowdown                    : Not Active
+        Sync Boost                                     : Not Active
+        SW Thermal Slowdown                            : Not Active
+        Display Clock Setting                          : Not Active
+    Clocks Event Reasons Counters
+        SW Power Capping                               : 219555 us
+        Sync Boost                                     : 0 us
+        SW Thermal Slowdown                            : 0 us
+        HW Thermal Slowdown                            : 0 us
+        HW Power Braking                               : 0 us
+    Sparse Operation Mode                              : N/A
+    FB Memory Usage
+        Total                                          : 32607 MiB
+        Reserved                                       : 497 MiB
+        Used                                           : 746 MiB
+        Free                                           : 31366 MiB
+    BAR1 Memory Usage
+        Total                                          : 32768 MiB
+        Used                                           : 5 MiB
+        Free                                           : 32763 MiB
+    Conf Compute Protected Memory Usage
+        Total                                          : 0 MiB
+        Used                                           : 0 MiB
+        Free                                           : 0 MiB
+    Compute Mode                                       : Default
+    Utilization
+        GPU                                            : 5 %
+        Memory                                         : 0 %
+        Encoder                                        : 1 %
+        Decoder                                        : 0 %
+        JPEG                                           : 0 %
+        OFA                                            : 0 %
+    Encoder Stats
+        Active Sessions                                : 1
+        Average FPS                                    : 15
+        Average Latency                                : 2381
+    FBC Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    DRAM Encryption Mode
+        Current                                        : Disabled
+        Pending                                        : Disabled
+    ECC Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    ECC Errors
+        Volatile
+            SRAM Correctable                           : N/A
+            SRAM Uncorrectable Parity                  : N/A
+            SRAM Uncorrectable SEC-DED                 : N/A
+            DRAM Correctable                           : N/A
+            DRAM Uncorrectable                         : N/A
+        Aggregate
+            SRAM Correctable                           : N/A
+            SRAM Uncorrectable Parity                  : N/A
+            SRAM Uncorrectable SEC-DED                 : N/A
+            DRAM Correctable                           : N/A
+            DRAM Uncorrectable                         : N/A
+            SRAM Threshold Exceeded                    : N/A
+        Aggregate Uncorrectable SRAM Sources
+            SRAM L2                                    : N/A
+            SRAM SM                                    : N/A
+            SRAM Microcontroller                       : N/A
+            SRAM PCIE                                  : N/A
+            SRAM Other                                 : N/A
+        Channel Repair Pending                         : No
+        TPC Repair Pending                             : No
+        Unrepairable Memory                            : N/A
+    Retired Pages
+        Single Bit ECC                                 : N/A
+        Double Bit ECC                                 : N/A
+        Pending Page Blacklist                         : N/A
+    Remapped Rows                                      : N/A
+    Temperature
+        GPU Current Temp                               : 38 C
+        GPU T.Limit Temp                               : 52 C
+        GPU Shutdown T.Limit Temp                      : -5 C
+        GPU Slowdown T.Limit Temp                      : -2 C
+        GPU Max Operating T.Limit Temp                 : 0 C
+        GPU Target Temperature                         : N/A
+        Memory Current Temp                            : N/A
+        Memory Max Operating T.Limit Temp              : N/A
+    GPU Power Readings
+        Average Power Draw                             : 64.68 W
+        Instantaneous Power Draw                       : 65.72 W
+        Current Power Limit                            : 600.00 W
+        Requested Power Limit                          : 600.00 W
+        Default Power Limit                            : 600.00 W
+        Min Power Limit                                : 400.00 W
+        Max Power Limit                                : 600.00 W
+    GPU Memory Power Readings 
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+    Module Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+        Current Power Limit                            : N/A
+        Requested Power Limit                          : N/A
+        Default Power Limit                            : N/A
+        Min Power Limit                                : N/A
+        Max Power Limit                                : N/A
+    Power Smoothing                                    : N/A
+    Workload Power Profiles
+        Requested Profiles                             : N/A
+        Enforced Profiles                              : N/A
+    EDPp Multiplier                                    : N/A
+    Clocks
+        Graphics                                       : 2610 MHz
+        SM                                             : 2610 MHz
+        Memory                                         : 13801 MHz
+        Video                                          : 2205 MHz
+    Applications Clocks
+        Graphics                                       : Requested functionality has been deprecated
+        Memory                                         : Requested functionality has been deprecated
+    Default Applications Clocks
+        Graphics                                       : Requested functionality has been deprecated
+        Memory                                         : Requested functionality has been deprecated
+    Deferred Clocks
+        Memory                                         : N/A
+    Max Clocks
+        Graphics                                       : 3135 MHz
+        SM                                             : 3135 MHz
+        Memory                                         : 14001 MHz
+        Video                                          : 3090 MHz
+    Max Customer Boost Clocks
+        Graphics                                       : N/A
+    Clock Policy
+        Auto Boost                                     : N/A
+        Auto Boost Default                             : N/A
+    Fabric
+        State                                          : N/A
+        Status                                         : N/A
+        CliqueId                                       : N/A
+        ClusterUUID                                    : N/A
+        Health
+            Summary                                    : N/A
+            Bandwidth                                  : N/A
+            Route Recovery in progress                 : N/A
+            Route Unhealthy                            : N/A
+            Access Timeout Recovery                    : N/A
+            Incorrect Configuration                    : N/A
+            Partition Assigned                         : N/A
+    Processes
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 2069
+            Type                          : G
+            Name                          : ............./Xorg
+            Used GPU Memory               : 69 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 734662
+            Type                          : C
+            Name                          : ...................../awesun_desktop
+            Used GPU Memory               : 656 MiB
+    Capabilities
+        EGM                                            : disabled
+
+'
+2026-10-19T16:09:51Z [436ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'osDistro' = 'ubuntu'
+2026-10-19T16:09:51Z [437ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'osName' = '24.04.5 LTS (Noble Numbat)'
+2026-10-19T16:09:51Z [439ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'osVersion' = '24.04.5'
+2026-10-19T16:09:51Z [440ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'portableMode' = '1'
+2026-10-19T16:09:51Z [441ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'primaryDisplayRes' = '2560x1440x32bit@60Hz'
+2026-10-19T16:09:51Z [442ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'runEnvironment' = 'Individual'
+2026-10-19T16:09:51Z [443ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'runningInContainer' = '0'
+2026-10-19T16:09:51Z [444ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'shaderdb_debugSymbols' = '0'
+2026-10-19T16:09:51Z [445ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'shaderdb_dumpIncludeOverrides' = '0'
+2026-10-19T16:09:51Z [446ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'shaderdb_dumpIntermediates' = '0'
+2026-10-19T16:09:51Z [447ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'shaderdb_obfuscateCode' = '1'
+2026-10-19T16:09:51Z [448ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'shaderdb_optimizationLevel' = '1'
+2026-10-19T16:09:51Z [449ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'shaderdb_separateDebugSymbols' = '0'
+2026-10-19T16:09:51Z [450ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'systemInfo' = '
+|---------------------------------------------------------------------------------------------|
+| Driver Version: 595.84        | Graphics API: Vulkan
+|=============================================================================================|
+| GPU | Name                             | Active | LDA | GPU Memory | Vendor-ID | LUID       |
+|     |                                  |        |     |            | Device-ID | UUID       |
+|     |                                  |        |     |            | Bus-ID    |            |
+|---------------------------------------------------------------------------------------------|
+| 0   | NVIDIA GeForce RTX 5090          | Yes: 0 |     | 32607   MB | 10de      | 0          |
+|     |                                  |        |     |            | 2b85      | dc902398.. |
+|     |                                  |        |     |            | 1         |            |
+|---------------------------------------------------------------------------------------------|
+| 1   | AMD Ryzen 9 9950X3D 16-Core Pr.. |        |     | 22004   MB | 1002      | 0          |
+|     |                                  |        |     |            | 13c0      | 00000000.. |
+|     |                                  |        |     |            | 73        |            |
+|=============================================================================================|
+| OS: 24.04.5 LTS (Noble Numbat) ubuntu, Version: 24.04.5, Kernel: 7.0.0-31-generic
+| XServer Vendor: The X.Org Foundation, XServer Version: 12101011 (1.21.1.11)
+| Processor: AMD Ryzen 9 9950X3D 16-Core Processor
+| Cores: 16 | Logical Cores: 32
+|---------------------------------------------------------------------------------------------|
+| Total Memory (MB): 61918 | Free Memory: 50408
+| Total Page/Swap (MB): 8191 | Free Page/Swap: 868
+|---------------------------------------------------------------------------------------------|
+'
+2026-10-19T16:09:51Z [452ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'telemetrySessionId' = '3810288405686047653'
+2026-10-19T16:09:51Z [453ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'terminatedByAbort' = '0'
+2026-10-19T16:09:51Z [454ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'totalRamBareMetalMB' = '61918'
+2026-10-19T16:09:51Z [456ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'totalRamLimitedMB' = '61918'
+2026-10-19T16:09:51Z [457ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'totalSwapBareMetalMB' = '8191'
+2026-10-19T16:09:51Z [458ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'totalSwapLimitedMB' = '8191'
+2026-10-19T16:09:51Z [459ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'userId' = 'default'
+2026-10-19T16:09:51Z [460ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'workingDirectory' = '/home/<username>/linkagent-ppo'
+2026-10-19T16:09:51Z [462ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Crash report files for upload:
+2026-10-19T16:09:51Z [463ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'upload_file_minidump' = '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp.zip'
+2026-10-19T16:09:55Z [3,615ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] uploaded minidump: file: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp.zip', code:200, response:
+2026-10-19T16:09:55Z [3,617ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]     4a37c72e-3c20-4dd2-84b9-0bfb79e35ede
+2026-10-19T16:09:55Z [3,619ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Deleting file: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp.zip' (use setting "/crashreporter/preserveDump=true" to save)
+2026-10-19T16:09:55Z [3,621ms] [Info] [carb.crashreporter-breakpad.plugin] attempting to delete the file '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp.zip' with 10 retries remaining.
+2026-10-19T16:09:55Z [3,625ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Deleting file: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp.zip.toml'
+2026-10-19T16:09:55Z [3,626ms] [Info] [carb.crashreporter-breakpad.plugin] attempting to delete the file '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.dmp.zip.toml' with 10 retries remaining.
+2026-10-19T16:09:55Z [3,628ms] [Error] [carb.crashreporter-breakpad.plugin] [crash]     dump file size is 0 bytes, file is readable.
+2026-10-19T16:09:55Z [3,632ms] [Fatal] [carb.crashreporter-breakpad.plugin] [crash] Crash detected in pid 743165 thread 743179
+2026-10-19T16:09:55Z [3,633ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Crash metadata:
+2026-10-19T16:09:55Z [3,634ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  BuildGitlabJobID = '339414756'
+2026-10-19T16:09:55Z [3,635ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  CarbSdkVersion = '210.1.11+release.13746.80f6dc72.gl'
+2026-10-19T16:09:55Z [3,639ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  CrashTime = 'Mon Oct 19 16:09:51 2026 GMT'
+2026-10-19T16:09:55Z [3,641ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  DriverShaderCacheWrapper = 'disabled'
+2026-10-19T16:09:55Z [3,642ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  DumpId = '89e90e5a-5eb8-46c1-a47735bd-1e527158'
+2026-10-19T16:09:55Z [3,643ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  GlibcVersion = '2.39'
+2026-10-19T16:09:55Z [3,645ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  LastUploadStatus = '200'
+2026-10-19T16:09:55Z [3,648ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  ProductName = 'OmniverseKit'
+2026-10-19T16:09:55Z [3,651ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  PythonTracebackStatus = ''py-spy' successfully wrote info to '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/89e90e5a-5eb8-46c1-a47735bd-1e527158.py.txt''
+2026-10-19T16:09:55Z [3,652ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  RetryCount = '0'
+2026-10-19T16:09:55Z [3,654ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  StartupTime = '1792426184'
+2026-10-19T16:09:55Z [3,657ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UploadSuccessful = '0'
+2026-10-19T16:09:55Z [3,659ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UptimeSeconds = '7'
+2026-10-19T16:09:55Z [3,661ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UserEmail = ''
+2026-10-19T16:09:55Z [3,662ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UserStory = ''
+2026-10-19T16:09:55Z [3,664ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UserStoryStatus = 'Running in headless mode; not gathering user story'
+2026-10-19T16:09:55Z [3,665ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  Version = '110.1.2+production.326809.f9bf0dda.gl'
+2026-10-19T16:09:55Z [3,666ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  aftermath_enabled = '1'
+2026-10-19T16:09:55Z [3,667ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  aftermath_flags = '3'
+2026-10-19T16:09:55Z [3,669ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  aftermath_status = 'auto-enabled'
+2026-10-19T16:09:55Z [3,671ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  aftermath_version = '2025.5'
+2026-10-19T16:09:55Z [3,673ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  appName = 'IsaacLab'
+2026-10-19T16:09:55Z [3,675ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  appState = 'started'
+2026-10-19T16:09:55Z [3,677ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  appVersion = '3.0.0'
+2026-10-19T16:09:55Z [3,679ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  autoloadExts = ''
+2026-10-19T16:09:55Z [3,681ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildBranch = 'production'
+2026-10-19T16:09:55Z [3,683ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildCi = 'gl'
+2026-10-19T16:09:55Z [3,686ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildConfig = 'release'
+2026-10-19T16:09:55Z [3,688ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildGitlabJobName = 'kit-build-release-linux-x86_64'
+2026-10-19T16:09:55Z [3,689ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildGitlabJobStage = 'kit-build'
+2026-10-19T16:09:55Z [3,690ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildGitlabPipelineID = '54503051'
+2026-10-19T16:09:55Z [3,693ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildHash = 'f9bf0dda'
+2026-10-19T16:09:55Z [3,695ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildMajor = '110'
+2026-10-19T16:09:55Z [3,701ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildMinor = '1'
+2026-10-19T16:09:55Z [3,703ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildNumber = '326809'
+2026-10-19T16:09:55Z [3,704ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildPatch = '2'
+2026-10-19T16:09:55Z [3,709ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildVersion = '110.1.2'
+2026-10-19T16:09:55Z [3,710ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  carboniteFrameworkVersion = '210.1.11+release.13746.80f6dc72.gl'
+2026-10-19T16:09:55Z [3,712ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  carboniteSdkVersion = '210.1.11+release.13746.80f6dc72.gl'
+2026-10-19T16:09:55Z [3,715ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  commandLine = '/home/<username>/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python -m script.train_roto2_pressure --headless --num-envs 64 --seed 2026 --pressure-variant jacobian --evaluate-checkpoint /home/<username>/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/checkpoints/final_agent.pt --record-video /home/<username>/linkagent-ppo/artifacts/simulation/final_ppo_seed2026_env0_preview.mp4 --video-max-steps 2'
+2026-10-19T16:09:55Z [3,717ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuCoreLimited = '32'
+2026-10-19T16:09:55Z [3,718ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuId = 'Intel64 Family 26 Model 68 Stepping 0'
+2026-10-19T16:09:55Z [3,721ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuLogicalCoresBareMetal = '32'
+2026-10-19T16:09:55Z [3,724ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuName = 'AMD Ryzen 9 9950X3D 16-Core Processor'
+2026-10-19T16:09:55Z [3,731ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuPhysicalCoresBareMetal = '16'
+2026-10-19T16:09:55Z [3,734ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuUsageQuota = '-1.000000'
+2026-10-19T16:09:55Z [3,737ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuVendor = 'AuthenticAMD'
+2026-10-19T16:09:55Z [3,740ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cuda_core_dumps_enabled = '1'
+2026-10-19T16:09:55Z [3,742ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  desktopOrigin = '(0, 0)'
+2026-10-19T16:09:55Z [3,744ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  desktopSize = '2560x1440'
+2026-10-19T16:09:55Z [3,746ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  displayCount = '1'
+2026-10-19T16:09:55Z [3,748ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  displayRes_0 = '2560x1440x32bit@60Hz'
+2026-10-19T16:09:55Z [3,752ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  environmentName = 'Individual'
+2026-10-19T16:09:55Z [3,754ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  experience = 'Isaac Sim'
+2026-10-19T16:09:55Z [3,755ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  externalBuild = '1'
+2026-10-19T16:09:55Z [3,758ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  gpuDriver_0 = '595.84'
+2026-10-19T16:09:55Z [3,761ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  gpuVRAM_0 = '34190917632'
+2026-10-19T16:09:55Z [3,765ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  gpu_0 = 'NVIDIA GeForce RTX 5090'
+2026-10-19T16:09:55Z [3,768ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  graphicsApi = 'vulkan'
+2026-10-19T16:09:55Z [3,770ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  kitRendererDriverVersion = '595.84'
+2026-10-19T16:09:55Z [3,773ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_physx_buildBranch = 'HEAD'
+2026-10-19T16:09:55Z [3,776ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_physx_buildDate = 'Jun-04-2026'
+2026-10-19T16:09:55Z [3,779ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_physx_buildHash = 'c38f7d1'
+2026-10-19T16:09:55Z [3,783ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_physx_buildRepo = 'omniverse/physics'
+2026-10-19T16:09:55Z [3,786ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_physx_buildVersion = '110.1.13'
+2026-10-19T16:09:55Z [3,789ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  memoryStats = '(avail/total) RAM: 45.0121/60.4676GB, Swap: 0.84771/8GB, VM: 1.71799e+10/1.71799e+10GB'
+2026-10-19T16:09:55Z [3,792ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  nvidia-smi = '
+==============NVSMI LOG==============
+
+Timestamp                                              : Tue Oct 20 00:09:44 2026
+Driver Version                                         : 595.84
+CUDA Version                                           : 13.2
+
+Attached GPUs                                          : 1
+GPU 00000000:01:00.0
+    Product Name                                       : NVIDIA GeForce RTX 5090
+    Product Brand                                      : GeForce
+    Product Architecture                               : Blackwell
+    Display Mode                                       : Requested functionality has been deprecated
+    Display Attached                                   : Yes
+    Display Active                                     : Enabled
+    Persistence Mode                                   : Disabled
+    Addressing Mode                                    : HMM
+    MIG Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    Accounting Mode                                    : Disabled
+    Accounting Mode Buffer Size                        : 4000
+    Driver Model
+        Current                                        : N/A
+        Pending                                        : N/A
+    Serial Number                                      : 0
+    GPU UUID                                           : GPU-dc902398-a215-c275-4f8a-f9e4801590e4
+    GPU PDI                                            : 0x50820204dcfb863b
+    Minor Number                                       : 0
+    VBIOS Version                                      : 98.02.2E.40.E1
+    MultiGPU Board                                     : No
+    Board ID                                           : 0x100
+    Board Part Number                                  : N/A
+    GPU Part Number                                    : 2B85-300-A1
+    FRU Part Number                                    : N/A
+    Platform Info
+        Chassis Serial Number                          : 
+        Slot Number                                    : 0
+        Tray Index                                     : 0
+        Host ID                                        : 1
+        Peer Type                                      : Direct Connected
+        Module Id                                      : 1
+        GPU Fabric GUID                                : 0x0000000000000000
+    Inforom Version
+        Image Version                                  : G005.0000.98.01
+        OEM Object                                     : 2.1
+        ECC Object                                     : N/A
+        Power Management Object                        : N/A
+    Inforom BBX Object Flush
+        Latest Timestamp                               : N/A
+        Latest Duration                                : N/A
+    GPU Operation Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    GPU C2C Mode                                       : Disabled
+    GPU Virtualization Mode
+        Virtualization Mode                            : None
+        Host VGPU Mode                                 : N/A
+        vGPU Heterogeneous Mode                        : N/A
+    GPU Recovery Action                                : None
+    GSP Firmware Version                               : 595.84
+    IBMNPU
+        Relaxed Ordering Mode                          : N/A
+    PCI
+        Bus                                            : 0x01
+        Device                                         : 0x00
+        Domain                                         : 0x0000
+        Base Classcode                                 : 0x3
+        Sub Classcode                                  : 0x0
+        Device Id                                      : 0x2B8510DE
+        Bus Id                                         : 00000000:01:00.0
+        Sub System Id                                  : 0x89E31043
+        GPU Link Info
+            PCIe Generation
+                Max                                    : 5
+                Current                                : 5
+                Device Current                         : 5
+                Device Max                             : 5
+                Host Max                               : 5
+            Link Width
+                Max                                    : 16x
+                Current                                : 16x
+        Bridge Chip
+            Type                                       : N/A
+            Firmware                                   : N/A
+        Replays Since Reset                            : 0
+        Replay Number Rollovers                        : 0
+        Tx Throughput                                  : 120483 KB/s
+        Rx Throughput                                  : 1568324 KB/s
+        Atomic Caps Outbound                           : N/A
+        Atomic Caps Inbound                            : FETCHADD_32 FETCHADD_64 SWAP_32 SWAP_64 CAS_32 CAS_64 
+    Fan Speed                                          : 30 %
+    Performance State                                  : P1
+    Clocks Event Reasons
+        Idle                                           : Not Active
+        Applications Clocks Setting                    : Not Active
+        SW Power Cap                                   : Not Active
+        HW Slowdown                                    : Not Active
+            HW Thermal Slowdown                        : Not Active
+            HW Power Brake Slowdown                    : Not Active
+        Sync Boost                                     : Not Active
+        SW Thermal Slowdown                            : Not Active
+        Display Clock Setting                          : Not Active
+    Clocks Event Reasons Counters
+        SW Power Capping                               : 219555 us
+        Sync Boost                                     : 0 us
+        SW Thermal Slowdown                            : 0 us
+        HW Thermal Slowdown                            : 0 us
+        HW Power Braking                               : 0 us
+    Sparse Operation Mode                              : N/A
+    FB Memory Usage
+        Total                                          : 32607 MiB
+        Reserved                                       : 497 MiB
+        Used                                           : 746 MiB
+        Free                                           : 31366 MiB
+    BAR1 Memory Usage
+        Total                                          : 32768 MiB
+        Used                                           : 5 MiB
+        Free                                           : 32763 MiB
+    Conf Compute Protected Memory Usage
+        Total                                          : 0 MiB
+        Used                                           : 0 MiB
+        Free                                           : 0 MiB
+    Compute Mode                                       : Default
+    Utilization
+        GPU                                            : 5 %
+        Memory                                         : 0 %
+        Encoder                                        : 1 %
+        Decoder                                        : 0 %
+        JPEG                                           : 0 %
+        OFA                                            : 0 %
+    Encoder Stats
+        Active Sessions                                : 1
+        Average FPS                                    : 15
+        Average Latency                                : 2381
+    FBC Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    DRAM Encryption Mode
+        Current                                        : Disabled
+        Pending                                        : Disabled
+    ECC Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    ECC Errors
+        Volatile
+            SRAM Correctable                           : N/A
+            SRAM Uncorrectable Parity                  : N/A
+            SRAM Uncorrectable SEC-DED                 : N/A
+            DRAM Correctable                           : N/A
+            DRAM Uncorrectable                         : N/A
+        Aggregate
+            SRAM Correctable                           : N/A
+            SRAM Uncorrectable Parity                  : N/A
+            SRAM Uncorrectable SEC-DED                 : N/A
+            DRAM Correctable                           : N/A
+            DRAM Uncorrectable                         : N/A
+            SRAM Threshold Exceeded                    : N/A
+        Aggregate Uncorrectable SRAM Sources
+            SRAM L2                                    : N/A
+            SRAM SM                                    : N/A
+            SRAM Microcontroller                       : N/A
+            SRAM PCIE                                  : N/A
+            SRAM Other                                 : N/A
+        Channel Repair Pending                         : No
+        TPC Repair Pending                             : No
+        Unrepairable Memory                            : N/A
+    Retired Pages
+        Single Bit ECC                                 : N/A
+        Double Bit ECC                                 : N/A
+        Pending Page Blacklist                         : N/A
+    Remapped Rows                                      : N/A
+    Temperature
+        GPU Current Temp                               : 38 C
+        GPU T.Limit Temp                               : 52 C
+        GPU Shutdown T.Limit Temp                      : -5 C
+        GPU Slowdown T.Limit Temp                      : -2 C
+        GPU Max Operating T.Limit Temp                 : 0 C
+        GPU Target Temperature                         : N/A
+        Memory Current Temp                            : N/A
+        Memory Max Operating T.Limit Temp              : N/A
+    GPU Power Readings
+        Average Power Draw                             : 64.68 W
+        Instantaneous Power Draw                       : 65.72 W
+        Current Power Limit                            : 600.00 W
+        Requested Power Limit                          : 600.00 W
+        Default Power Limit                            : 600.00 W
+        Min Power Limit                                : 400.00 W
+        Max Power Limit                                : 600.00 W
+    GPU Memory Power Readings 
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+    Module Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+        Current Power Limit                            : N/A
+        Requested Power Limit                          : N/A
+        Default Power Limit                            : N/A
+        Min Power Limit                                : N/A
+        Max Power Limit                                : N/A
+    Power Smoothing                                    : N/A
+    Workload Power Profiles
+        Requested Profiles                             : N/A
+        Enforced Profiles                              : N/A
+    EDPp Multiplier                                    : N/A
+    Clocks
+        Graphics                                       : 2610 MHz
+        SM                                             : 2610 MHz
+        Memory                                         : 13801 MHz
+        Video                                          : 2205 MHz
+    Applications Clocks
+        Graphics                                       : Requested functionality has been deprecated
+        Memory                                         : Requested functionality has been deprecated
+    Default Applications Clocks
+        Graphics                                       : Requested functionality has been deprecated
+        Memory                                         : Requested functionality has been deprecated
+    Deferred Clocks
+        Memory                                         : N/A
+    Max Clocks
+        Graphics                                       : 3135 MHz
+        SM                                             : 3135 MHz
+        Memory                                         : 14001 MHz
+        Video                                          : 3090 MHz
+    Max Customer Boost Clocks
+        Graphics                                       : N/A
+    Clock Policy
+        Auto Boost                                     : N/A
+        Auto Boost Default                             : N/A
+    Fabric
+        State                                          : N/A
+        Status                                         : N/A
+        CliqueId                                       : N/A
+        ClusterUUID                                    : N/A
+        Health
+            Summary                                    : N/A
+            Bandwidth                                  : N/A
+            Route Recovery in progress                 : N/A
+            Route Unhealthy                            : N/A
+            Access Timeout Recovery                    : N/A
+            Incorrect Configuration                    : N/A
+            Partition Assigned                         : N/A
+    Processes
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 2069
+            Type                          : G
+            Name                          : ............./Xorg
+            Used GPU Memory               : 69 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 734662
+            Type                          : C
+            Name                          : ...................../awesun_desktop
+            Used GPU Memory               : 656 MiB
+    Capabilities
+        EGM                                            : disabled
+
+'
+2026-10-19T16:09:55Z [3,795ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  osDistro = 'ubuntu'
+2026-10-19T16:09:55Z [3,797ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  osName = '24.04.5 LTS (Noble Numbat)'
+2026-10-19T16:09:55Z [3,799ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  osVersion = '24.04.5'
+2026-10-19T16:09:55Z [3,801ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  portableMode = '1'
+2026-10-19T16:09:55Z [3,803ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  primaryDisplayRes = '2560x1440x32bit@60Hz'
+2026-10-19T16:09:55Z [3,805ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  runEnvironment = 'Individual'
+2026-10-19T16:09:55Z [3,807ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  runningInContainer = '0'
+2026-10-19T16:09:55Z [3,808ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_debugSymbols = '0'
+2026-10-19T16:09:55Z [3,813ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_dumpIncludeOverrides = '0'
+2026-10-19T16:09:55Z [3,815ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_dumpIntermediates = '0'
+2026-10-19T16:09:55Z [3,817ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_obfuscateCode = '1'
+2026-10-19T16:09:55Z [3,819ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_optimizationLevel = '1'
+2026-10-19T16:09:55Z [3,821ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_separateDebugSymbols = '0'
+2026-10-19T16:09:55Z [3,823ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  systemInfo = '
+|---------------------------------------------------------------------------------------------|
+| Driver Version: 595.84        | Graphics API: Vulkan
+|=============================================================================================|
+| GPU | Name                             | Active | LDA | GPU Memory | Vendor-ID | LUID       |
+|     |                                  |        |     |            | Device-ID | UUID       |
+|     |                                  |        |     |            | Bus-ID    |            |
+|---------------------------------------------------------------------------------------------|
+| 0   | NVIDIA GeForce RTX 5090          | Yes: 0 |     | 32607   MB | 10de      | 0          |
+|     |                                  |        |     |            | 2b85      | dc902398.. |
+|     |                                  |        |     |            | 1         |            |
+|---------------------------------------------------------------------------------------------|
+| 1   | AMD Ryzen 9 9950X3D 16-Core Pr.. |        |     | 22004   MB | 1002      | 0          |
+|     |                                  |        |     |            | 13c0      | 00000000.. |
+|     |                                  |        |     |            | 73        |            |
+|=============================================================================================|
+| OS: 24.04.5 LTS (Noble Numbat) ubuntu, Version: 24.04.5, Kernel: 7.0.0-31-generic
+| XServer Vendor: The X.Org Foundation, XServer Version: 12101011 (1.21.1.11)
+| Processor: AMD Ryzen 9 9950X3D 16-Core Processor
+| Cores: 16 | Logical Cores: 32
+|---------------------------------------------------------------------------------------------|
+| Total Memory (MB): 61918 | Free Memory: 50408
+| Total Page/Swap (MB): 8191 | Free Page/Swap: 868
+|---------------------------------------------------------------------------------------------|
+'
+2026-10-19T16:09:55Z [3,826ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  telemetrySessionId = '3810288405686047653'
+2026-10-19T16:09:55Z [3,828ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  terminatedByAbort = '0'
+2026-10-19T16:09:55Z [3,832ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  totalRamBareMetalMB = '61918'
+2026-10-19T16:09:55Z [3,834ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  totalRamLimitedMB = '61918'
+2026-10-19T16:09:55Z [3,836ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  totalSwapBareMetalMB = '8191'
+2026-10-19T16:09:55Z [3,838ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  totalSwapLimitedMB = '8191'
+2026-10-19T16:09:55Z [3,841ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  userId = 'default'
+2026-10-19T16:09:55Z [3,843ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  workingDirectory = '/home/<username>/linkagent-ppo'
+2026-10-19T16:09:55Z [3,845ms] [Fatal] [carb.crashreporter-breakpad.plugin] [crash] Thread 743179 backtrace follows:
+2026-10-19T16:09:55Z [3,869ms] [Fatal] [carb.crashreporter-breakpad.plugin] 000: libcarb.crashreporter-breakpad.plugin.so!google_breakpad::ExceptionHandler::SignalHandler(int, siginfo_t*, void*)+0x17d ***
+2026-10-19T16:09:55Z [4,056ms] [Fatal] [carb.crashreporter-breakpad.plugin] 001: libc.so.6!__sigaction+0x50 (libc_sigaction.c:?)
+2026-10-19T16:09:55Z [4,072ms] [Fatal] [carb.crashreporter-breakpad.plugin] 002: libnvidia-rtcore.so.595.84!rtcGetVersion+0x701e23 ***
+2026-10-19T16:09:55Z [4,088ms] [Fatal] [carb.crashreporter-breakpad.plugin] 003: libnvidia-rtcore.so.595.84!rtcGetVersion+0x7038bc ***
+2026-10-19T16:09:55Z [4,098ms] [Fatal] [carb.crashreporter-breakpad.plugin] 004: libnvidia-rtcore.so.595.84!rtcGetVersion+0x703bb9 ***
+2026-10-19T16:09:55Z [4,106ms] [Fatal] [carb.crashreporter-breakpad.plugin] 005: libnvidia-rtcore.so.595.84!rtcGetVersion+0x6ef33 ***
+2026-10-19T16:09:55Z [4,113ms] [Fatal] [carb.crashreporter-breakpad.plugin] 006: libnvidia-rtcore.so.595.84!rtcGetVersion+0xf5158 ***
+2026-10-19T16:09:55Z [4,119ms] [Fatal] [carb.crashreporter-breakpad.plugin] 007: libnvidia-rtcore.so.595.84!rtcGetVersion+0x83652 ***
+2026-10-19T16:09:55Z [4,131ms] [Fatal] [carb.crashreporter-breakpad.plugin] 008: libnvidia-rtcore.so.595.84!rtcGetVersion+0x83d52 ***
+2026-10-19T16:09:55Z [4,141ms] [Fatal] [carb.crashreporter-breakpad.plugin] 009: libnvidia-rtcore.so.595.84!rtcGetVersion+0x8701a ***
+2026-10-19T16:09:55Z [4,160ms] [Fatal] [carb.crashreporter-breakpad.plugin] 010: libnvidia-rtcore.so.595.84!rtcGetVersion+0x875be ***
+2026-10-19T16:09:55Z [4,173ms] [Fatal] [carb.crashreporter-breakpad.plugin] 011: libnvidia-rtcore.so.595.84!rtcGetVersion+0x876bb ***
+2026-10-19T16:09:55Z [4,187ms] [Fatal] [carb.crashreporter-breakpad.plugin] 012: libnvidia-rtcore.so.595.84!rtcGetVersion+0xb85e7 ***
+2026-10-19T16:09:55Z [4,206ms] [Fatal] [carb.crashreporter-breakpad.plugin] 013: libnvidia-glcore.so.595.84!+0xe64bb2 ***
+2026-10-19T16:09:55Z [4,214ms] [Fatal] [carb.crashreporter-breakpad.plugin] 014: libnvidia-glcore.so.595.84!+0xe6500f ***
+2026-10-19T16:09:55Z [4,227ms] [Fatal] [carb.crashreporter-breakpad.plugin] 015: libnvidia-glcore.so.595.84!+0xf92f75 ***
+2026-10-19T16:09:55Z [4,242ms] [Fatal] [carb.crashreporter-breakpad.plugin] 016: libnvidia-glcore.so.595.84!+0xd4f741 ***
+2026-10-19T16:09:55Z [4,261ms] [Fatal] [carb.crashreporter-breakpad.plugin] 017: libcarb.graphics-vulkan.plugin.so!void std::vector<carb::profiler::PerfSdkMetricType, std::allocator<carb::profiler::PerfSdkMetricType> >::_M_realloc_insert<carb::profiler::PerfSdkMetricType const&>(__gnu_cxx::__normal_iterator<carb::profiler::PerfSdkMetricType*, std::vector<carb::profiler::PerfSdkMetricType, std::allocator<carb::profiler::PerfSdkMetricType> > >, carb::profiler::PerfSdkMetricType const&)+0x6d95 ***
+2026-10-19T16:09:55Z [4,273ms] [Fatal] [carb.crashreporter-breakpad.plugin] 018: libcarb.graphics-vulkan.plugin.so!void std::vector<carb::profiler::PerfSdkMetricType, std::allocator<carb::profiler::PerfSdkMetricType> >::_M_realloc_insert<carb::profiler::PerfSdkMetricType const&>(__gnu_cxx::__normal_iterator<carb::profiler::PerfSdkMetricType*, std::vector<carb::profiler::PerfSdkMetricType, std::allocator<carb::profiler::PerfSdkMetricType> > >, carb::profiler::PerfSdkMetricType const&)+0x7733 ***
+2026-10-19T16:09:55Z [4,296ms] [Fatal] [carb.crashreporter-breakpad.plugin] 019: libcarb.graphics-vulkan.plugin.so!void std::vector<unsigned int, std::allocator<unsigned int> >::_M_realloc_insert<unsigned int>(__gnu_cxx::__normal_iterator<unsigned int*, std::vector<unsigned int, std::allocator<unsigned int> > >, unsigned int&&)+0x10524 ***
+2026-10-19T16:09:55Z [4,312ms] [Fatal] [carb.crashreporter-breakpad.plugin] 020: libgpu.foundation.plugin.so!std::unique_lock<std::mutex>::unlock()+0x11d0d ***
+2026-10-19T16:09:55Z [4,326ms] [Fatal] [carb.crashreporter-breakpad.plugin] 021: libgpu.foundation.plugin.so!std::unique_lock<std::mutex>::unlock()+0x12240 ***
+2026-10-19T16:09:55Z [4,338ms] [Fatal] [carb.crashreporter-breakpad.plugin] 022: libgpu.foundation.plugin.so!std::unique_lock<std::mutex>::unlock()+0x12643 ***
+2026-10-19T16:09:55Z [4,363ms] [Fatal] [carb.crashreporter-breakpad.plugin] 023: libcarb.tasking.plugin.so!std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_dispose()+0x7007 ***
+2026-10-19T16:09:55Z [4,378ms] [Fatal] [carb.crashreporter-breakpad.plugin] 024: libcarb.tasking.plugin.so!std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char)+0x10d3c ***
+2026-10-19T16:09:55Z [4,397ms] [Fatal] [carb.crashreporter-breakpad.plugin] 025: libcarb.tasking.plugin.so!std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char)+0x10d5f ***
+2026-10-19T16:09:55Z [4,410ms] [Fatal] [carb.crashreporter-breakpad.plugin] 026: libcarb.tasking.plugin.so!make_fcontext+0x39 ***
+2026-10-19T16:09:55Z [4,412ms] [Fatal] [carb.crashreporter-breakpad.plugin] [crash] NOTE: *** indicates a low-confidence frame, such as when symbols cannot be found
+2026-10-19T16:09:55Z [4,414ms] [Warning] [carb.crashreporter-breakpad.plugin] terminating this process with exit code 139.

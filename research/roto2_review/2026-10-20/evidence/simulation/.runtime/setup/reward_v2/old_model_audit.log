@@ -1,0 +1,378 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+Loading user config located at: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-19T16:22:39Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers' or '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers/config'
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792426959.384577  757783 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792426959.384612  757783 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+2026-10-19T16:22:39Z [220ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+[ISAACLAB] AppLauncher initialization complete
+2026-10-19T16:22:42Z [2,962ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 2026
+	Physics step-size     : 0.008333333333333333
+	Rendering step-size   : 0.05
+	Environment step-size : 0.05
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Registered backend 'physx' for factory RigidObject.
+[INFO]: Registered backend 'physx' for factory ContactSensor.
+[INFO]: Physics scene prim path: /physicsScene
+[INFO]: Time taken for scene creation Last: 1.748366 s, Mean: 1.748366 s, Std: 0.000000 s, N: 1
+[INFO]: Scene manager:  <class InteractiveScene>
+	Number of environments: 64
+	Environment spacing   : 1.0
+	Source prim name      : /World/envs/env_0
+	Global prim paths     : ['/World/ground']
+	Replicate physics     : False
+[INFO]: Starting the simulation. This may take a few seconds. Please wait...
+2026-10-19T16:22:44Z [5,375ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?
+[INFO]: Simulation parameters for joints in /World/envs/env_.*/Robot:
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                 Simulation Joint Information (Prim path: /World/envs/env_.*/Robot)                                                 |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+| Index | Name          | Stiffness | Damping | Armature | Static Friction | Dynamic Friction | Viscous Friction | Position Limits | Velocity Limits | Effort Limits |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+|   0   | thumb_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.490, 1.050] |      1.000      |     0.450     |
+|   1   | index_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   2   | middle_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   3   | ring_joint0   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   4   | little_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   5   | thumb_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-1.450, 0.000] |      1.000      |     0.450     |
+|   6   | index_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   7   | middle_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   8   | ring_joint1   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   9   | little_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   10  | thumb_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 0.840] |      1.000      |     0.450     |
+|   11  | index_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   12  | middle_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   13  | ring_joint2   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   14  | little_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   15  | thumb_joint3  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.320] |      1.000      |     0.450     |
+|   16  | index_joint3  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   17  | middle_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   18  | ring_joint3   |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   19  | little_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   20  | thumb_joint4  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.340] |      1.000      |     0.010     |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+[INFO]: Time taken for simulation start Last: 0.884246 s, Mean: 0.884246 s, Std: 0.000000 s, N: 1
+2026-10-19T16:22:44Z [5,602ms] [Warning] [isaaclab.envs.direct_rl_env] DirectRLEnvCfg.num_actions is deprecated. Use DirectRLEnvCfg.action_space instead.
+[INFO] Event Manager:  <EventManager> contains 1 active terms.
++------------------------------------+
+| Active Event Terms in Mode: 'prestartup' |
++--------------+---------------------+
+|    Index     | Name                |
++--------------+---------------------+
+|      0       | geometry            |
++--------------+---------------------+
+
+[INFO]: Completed setting up the environment...
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+***USING FRAME STACK: 4
+Registering standard scaler with input size 280
+Registering standard scaler with input size 1728
+Registering standard scaler with input size 1
+[Hard reset] : Duplicating frames
+{
+  "checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/checkpoints/final_agent.pt",
+  "physics_dt": 0.008333333333333333,
+  "decimation": 6,
+  "substeps": 1200,
+  "per_env": [
+    {
+      "env": 0,
+      "control_steps": 200,
+      "pose_z_turns": -0.0029126743835046665,
+      "physics_omega_integral_turns": 2.425597667694092,
+      "control_omega_integral_turns": 2.3522963523864746,
+      "substep_omega_pose_rate_rmse": 1.8640633771471118,
+      "finger_contact_fractions": [
+        0.995,
+        0.995,
+        0.765,
+        0.975,
+        0.0
+      ],
+      "positive_contact_local_xyz_m": [
+        [
+          -0.01664029061794281,
+          0.004710311070084572,
+          0.001161862164735794
+        ],
+        [
+          -0.010192705318331718,
+          -0.0006164399674162269,
+          0.02242027409374714
+        ],
+        [
+          -0.018610645085573196,
+          0.0028149927966296673,
+          0.015813235193490982
+        ],
+        [
+          -0.015278452076017857,
+          0.009038551710546017,
+          0.013653252273797989
+        ],
+        null
+      ]
+    },
+    {
+      "env": 1,
+      "control_steps": 200,
+      "pose_z_turns": 0.009576949194545332,
+      "physics_omega_integral_turns": -2.1213150024414062,
+      "control_omega_integral_turns": -2.181065082550049,
+      "substep_omega_pose_rate_rmse": 1.3806328417682694,
+      "finger_contact_fractions": [
+        1.0,
+        0.995,
+        0.98,
+        0.0,
+        0.32
+      ],
+      "positive_contact_local_xyz_m": [
+        [
+          -0.016173098236322403,
+          0.0051071192137897015,
+          0.005350410006940365
+        ],
+        [
+          -0.005939077585935593,
+          -0.0007030246779322624,
+          0.01584310457110405
+        ],
+        [
+          -0.013745278120040894,
+          0.00015228371194098145,
+          0.0035562189295887947
+        ],
+        null,
+        [
+          -0.00609504384920001,
+          0.008938310667872429,
+          0.020264972001314163
+        ]
+      ]
+    },
+    {
+      "env": 2,
+      "control_steps": 200,
+      "pose_z_turns": 0.03673440929040256,
+      "physics_omega_integral_turns": -2.576587677001953,
+      "control_omega_integral_turns": -2.598546266555786,
+      "substep_omega_pose_rate_rmse": 1.491424323818526,
+      "finger_contact_fractions": [
+        1.0,
+        1.0,
+        0.985,
+        0.0,
+        0.135
+      ],
+      "positive_contact_local_xyz_m": [
+        [
+          -0.016001150012016296,
+          0.007799047511070967,
+          0.005215820856392384
+        ],
+        [
+          -0.007304041646420956,
+          -0.0011816710466518998,
+          0.018071293830871582
+        ],
+        [
+          -0.015502525493502617,
+          0.003095764433965087,
+          0.009031272493302822
+        ],
+        null,
+        [
+          -0.0051948633044958115,
+          0.01131918653845787,
+          0.01438272837549448
+        ]
+      ]
+    },
+    {
+      "env": 3,
+      "control_steps": 200,
+      "pose_z_turns": -0.09466923497001223,
+      "physics_omega_integral_turns": -2.641308069229126,
+      "control_omega_integral_turns": -2.5352871417999268,
+      "substep_omega_pose_rate_rmse": 1.9152171037249621,
+      "finger_contact_fractions": [
+        1.0,
+        1.0,
+        0.82,
+        0.0,
+        0.27
+      ],
+      "positive_contact_local_xyz_m": [
+        [
+          -0.014625647105276585,
+          0.018727470189332962,
+          0.002244788222014904
+        ],
+        [
+          -0.010085895657539368,
+          -0.0004007670213468373,
+          0.02104058489203453
+        ],
+        [
+          -0.013721972703933716,
+          0.0008013846818357706,
+          0.003954092971980572
+        ],
+        null,
+        [
+          -0.0033935047686100006,
+          0.009107351303100586,
+          0.01526772789657116
+        ]
+      ]
+    },
+    {
+      "env": 4,
+      "control_steps": 200,
+      "pose_z_turns": -0.004754196168715313,
+      "physics_omega_integral_turns": -2.6369693279266357,
+      "control_omega_integral_turns": -2.6184349060058594,
+      "substep_omega_pose_rate_rmse": 1.3954827702669386,
+      "finger_contact_fractions": [
+        1.0,
+        1.0,
+        0.99,
+        0.005,
+        0.04
+      ],
+      "positive_contact_local_xyz_m": [
+        [
+          -0.015293455682694912,
+          0.009236572310328484,
+          0.007090607658028603
+        ],
+        [
+          -0.0052627082914114,
+          -0.00029140571132302284,
+          0.015264310874044895
+        ],
+        [
+          -0.014243140816688538,
+          0.00028529041446745396,
+          0.0060506039299070835
+        ],
+        [
+          -0.009566282853484154,
+          0.008851398713886738,
+          -0.00551008153706789
+        ],
+        [
+          -0.013720406219363213,
+          0.010364711284637451,
+          0.0292389914393425
+        ]
+      ]
+    },
+    {
+      "env": 5,
+      "control_steps": 1,
+      "pose_z_turns": -0.007595876454877473,
+      "physics_omega_integral_turns": -0.006531263701617718,
+      "control_omega_integral_turns": 0.0017626775661483407,
+      "substep_omega_pose_rate_rmse": 1.7454462088364575,
+      "finger_contact_fractions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "positive_contact_local_xyz_m": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "env": 6,
+      "control_steps": 176,
+      "pose_z_turns": -0.0814185709372069,
+      "physics_omega_integral_turns": -1.8416064977645874,
+      "control_omega_integral_turns": -1.762322187423706,
+      "substep_omega_pose_rate_rmse": 1.3966701980299685,
+      "finger_contact_fractions": [
+        1.0,
+        0.9886363636363636,
+        0.9318181818181818,
+        0.0,
+        0.42045454545454547
+      ],
+      "positive_contact_local_xyz_m": [
+        [
+          -0.01464933156967163,
+          0.016704518347978592,
+          0.004525465425103903
+        ],
+        [
+          -0.01023620180785656,
+          -0.0015435138484463096,
+          0.018942736089229584
+        ],
+        [
+          -0.013065104372799397,
+          -0.00032181013375520706,
+          0.001767045701853931
+        ],
+        null,
+        [
+          -0.003972997423261404,
+          0.008001362904906273,
+          0.016873296350240707
+        ]
+      ]
+    },
+    {
+      "env": 7,
+      "control_steps": 200,
+      "pose_z_turns": -0.06146894239201617,
+      "physics_omega_integral_turns": -2.464515209197998,
+      "control_omega_integral_turns": -2.412668466567993,
+      "substep_omega_pose_rate_rmse": 1.3504373528989906,
+      "finger_contact_fractions": [
+        1.0,
+        0.995,
+        0.98,
+        0.0,
+        0.42
+      ],
+      "positive_contact_local_xyz_m": [
+        [
+          -0.014742638915777206,
+          0.01629529893398285,
+          0.004560644272714853
+        ],
+        [
+          -0.009328585118055344,
+          -0.001705241622403264,
+          0.019984234124422073
+        ],
+        [
+          -0.012817579321563244,
+          -7.986000855453312e-05,
+          0.0018183980137109756
+        ],
+        null,
+        [
+          -0.0039114938117563725,
+          0.00859004259109497,
+          0.017418161034584045
+        ]
+      ]
+    }
+  ]
+}
+[INFO]: SimulationContext cleared

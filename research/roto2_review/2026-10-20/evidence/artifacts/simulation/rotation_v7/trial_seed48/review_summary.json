@@ -1,0 +1,82 @@
+{
+  "status": "completed_not_accepted",
+  "training_active": false,
+  "core_architecture_changed": false,
+  "task_acceptance_passed": false,
+  "new_transitions": 31999440,
+  "ppo_updates": 61,
+  "training_seconds": 398.68306794716045,
+  "transitions_per_second": 80262.85180548739,
+  "training_gpu_samples": 40,
+  "mean_training_gpu_util_percent": 91.325,
+  "peak_gpu_memory_mib": 26401.0,
+  "max_temperature_c": 65.0,
+  "final_evaluation_episodes": 128,
+  "final_task_successes": 0,
+  "physical_failures": 1,
+  "strict_support_fraction": 0.7448133826255798,
+  "net_rotation_degrees": 18.426754474639893,
+  "after_settling_degrees": 15.370730247263946,
+  "after_10s_degrees": 2.1369664707365676,
+  "best_checkpoint_evaluation": {
+    "episodes": 64,
+    "successes": 0,
+    "strict_support_fraction": 0.8739111423492432,
+    "net_rotation_degrees": 11.361558437347412,
+    "after_10s_degrees": -0.5485415301390805
+  },
+  "mean_reward_term_totals": {
+    "rotation": 3.1154216527938843,
+    "missing_full_support": -18.290639877319336,
+    "bad_pad_contact": -34.29890441894531,
+    "pose_deviation": -23.71494483947754,
+    "pad_guidance": -0.7834148406982422,
+    "pad_approach": -4.087789297103882,
+    "centering": -0.5597997307777405,
+    "tilt": -0.1725376844406128,
+    "action_smoothness": -0.08034547418355942,
+    "time": -11.9575777053833,
+    "invalid_rotation_path": -0.12187492847442627
+  },
+  "trace": {
+    "late_window_seconds": [
+      10,
+      24
+    ],
+    "late_index_contact_fraction": 0.725550809352518,
+    "late_index_near_upper_fraction": 0.4208071043165468,
+    "late_index_outward_at_upper_fraction": 0.2610161870503597,
+    "late_index_force_insufficient": 0.01393884892086331,
+    "late_index_force_outside_pad": 0.2605103417266187,
+    "raw_bad_contact_fraction_by_finger": [
+      0.02556223849372385,
+      0.16929262552301255,
+      0.059427301255230124,
+      0.9213192991631799,
+      0.0
+    ],
+    "pose_cost_contributions_by_joint": [
+      0.0012846983736380935,
+      0.0004547758144326508,
+      0.0005765995010733604,
+      0.009515081532299519,
+      0.010389040224254131,
+      0.0005725803202949464,
+      0.0032701492309570312,
+      0.0014043677365407348,
+      0.0011966770980507135,
+      0.00035058922367170453,
+      0.0010879732435569167,
+      0.0005790443974547088,
+      0.0008283304050564766,
+      0.0005757212056778371,
+      0.0041056745685637,
+      0.013533120043575764
+    ],
+    "pose_cost_fraction_ring_little": 0.7861364777227343,
+    "pose_cost_fraction_index_joint0": 0.06576545365398345
+  },
+  "latest_video": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v7/trial_seed48/nominal_seed2071_video.mp4",
+  "report": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v7/trial_seed48/REVIEW.md",
+  "conclusion": "Contact retention and index saturation improve relative to the preceding diagnostic, but repeated rotation is not learned; do not automatically extend this recipe. Single training seed and unequal budgets do not establish an algorithmic superiority comparison."
+}

@@ -1,0 +1,3202 @@
+diff --git a/.gitignore b/.gitignore
+index c6a7363..e8a64cf 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -34,6 +34,7 @@ logs/
+ /artifacts/simulation/
+ /artifacts/vision_spool/**/.writer.lock
+ /simulation/.runtime/
++/botSDK/urdf/02_project_derived/isaac_assets/single_l20_right_rotation/
+ /wandb/
+ 
+ # Pinned upstream RoTO 2.0 source checkouts (installed editable, not vendored)
+diff --git a/script/generate_roto2_review_tables.py b/script/generate_roto2_review_tables.py
+new file mode 100644
+index 0000000..cae151e
+--- /dev/null
++++ b/script/generate_roto2_review_tables.py
+@@ -0,0 +1,40 @@
++"""Generate readable indexes from package registries and adapt historical report links."""
++from pathlib import Path
++import json,re,os
++root=Path(__file__).resolve().parents[1]; base=root/'research/roto2_review/2026-10-20'
++runs=json.loads((base/'tables/runs.json').read_text()); ev=json.loads((base/'tables/evaluations.json').read_text())
++fmt=lambda x: '未记录' if x is None else (f'{x:,}' if isinstance(x,int) else str(x))
++lines=['# 全部运行与训练量','', '统计来自原始完成/进度JSON。训练完成只表示计算结束，不代表任务达标。累计继承量不可跨行相加。配置或事件单独存在的目录包括评估、探针、启动失败等，不能一律算作失败训练。','', '完整78目录：[CSV](tables/runs.csv) / [JSON](tables/runs.json)。原始TensorBoard：[标量CSV](tables/tensorboard_scalars.csv)，共2,310行；事件文件保存在各运行目录。','', '| 运行（配置） | 状态/版本/阶段 | 环境数 | 本次新增转移 | 权重累计转移 | PPO更新 | 秒 | 完成证据 |','|---|---|---:|---:|---:|---:|---:|---|']
++for r in runs:
++ if r['status']=='config_or_events_only':continue
++ label=r['run'].replace('logs/roto2_pressure_fruit/','')
++ cfg=r['config_path'] or r['run'];result=r['result_path'] or r['progress_path']
++ lines.append(f"| [{label}](evidence/{cfg}) | {r['status']} / {r['reward_version']} / {r['reward_stage']} | {fmt(r['num_envs'])} | {fmt(r['additional_training_transitions'] if r['status']=='completed_training' else r['saved_progress_transitions'])} | {fmt(r['cumulative_lineage_transitions'])} | {fmt(r['ppo_updates'])} | {round(r['elapsed_seconds'],2) if r['elapsed_seconds'] else '未记录'} | [JSON](evidence/{result}) |")
++lines += ['', '## 继承关系与原始配置','', '下表包含每次训练记录的来源；旧绝对路径是原机定位信息，恢复时使用仓库内对应相对路径。检查点在Release归档，参见[恢复说明](REPRODUCE.md)。','']
++for r in runs:
++ if r['status']=='config_or_events_only':continue
++ lines += [f"- `{r['run']}`：源权重 `{r['resumed_from'] or '未记录/无恢复权重'}`；手姿 `{r['hand_posture']}`，域 `{r['domain_profile']}`，方向 `{r['goal_direction']}`；源码快照 `{r['source_snapshot_present']}`。"]
++(base/'TRAINING_RUNS.md').write_text('\n'.join(lines)+'\n')
++lines=['# 全部评估记录','', '**40份文档不是40个独立模型，也不是合计独立测试集。** 同检查点、同种子、不同课程或扰动条件可能重复。下表“成功”是各原JSON定义的成功；contact/regrasp等课程成功不可当作完整一圈成功。早期角速度指标和错误初始化保留作排错证据，不能混入有效旋转统计。','', '[完整CSV](tables/evaluations.csv) · [JSON与每项成功定义](tables/evaluations.json) · [2,048条逐回合CSV](tables/episodes.csv)','', '| 原始评估 | 回合 | 有效性 | 阶段/手姿/域 | 原定义成功率 | 失败率 | 净角度° | 严格承托率 |','|---|---:|---|---|---:|---:|---:|---:|']
++pct=lambda x:'未记录' if x is None else f'{100*x:.3f}%'
++for r in ev:
++ lines.append(f"| [{r['source']}](evidence/{r['source']}) | {r['episodes']} | {r['validity']} | {r['stage']}/{r['posture']}/{r['profile']} | {pct(r['success_fraction'])} | {pct(r['failure_fraction'])} | {round(360*r['mean_directed_rotations'],4) if r['mean_directed_rotations'] is not None else '未记录'} | {pct(r['mean_secure_support_fraction'])} |")
++lines += ['', '`pose_based_stage_specific`表示有姿态计数来源字段，仍需读该项成功定义和轨迹核验；它不是自动认证。`legacy_or_unverified_rotation_metric`不可作为已实现真实旋转的证据。`rejected_initialization`明确撤回。缺失值不补零。','', '当前最终权重的128回合汇总和最佳回报权重的64回合对照见[v7详细复核](reports/v7_review.md)。']
++(base/'EVALUATIONS.md').write_text('\n'.join(lines)+'\n')
++manifest={x['source_path']:x for x in json.loads((base/'manifest.json').read_text())}
++reports=base/'reports';reports.mkdir(exist_ok=True)
++for version in ['v6','v7']:
++ for kind,src in [('design',f'artifacts/simulation/rotation_{version}/ANALYSIS_AND_DESIGN.md'),('review',f'artifacts/simulation/rotation_{version}/trial_seed{47 if version=="v6" else 48}/REVIEW.md')]:
++  if version == 'v6' and kind == 'design': src=src.replace('ANALYSIS_AND_DESIGN','ANALYSIS_AND_CHANGES')
++  text=(root/src).read_text()
++  def replacement(m):
++   path=m.group(1);item=manifest.get(path)
++   if item and item['review_path']:dest=base/item['review_path']
++   elif item: return '(../REPRODUCE.md)'
++   else: dest=root/path
++   return '('+os.path.relpath(dest,reports)+')'
++  text=re.sub(r'\(/home/descfly/linkagent-ppo/([^\)]+)\)',replacement,text)
++  text='> 阅读副本：仅将本机链接改为仓库链接；原始文档见[逐字证据副本](../evidence/'+src+')。模型链接统一指向恢复说明。\n\n'+text
++  (reports/f'{version}_{kind}.md').write_text(text)
++p=base/'METHOD_AND_PROTOCOL.md';p.write_text(p.read_text().replace('+r_motion =','r_motion ='))
++print('Generated tables and four readable reports')
+diff --git a/script/package_roto2_review.py b/script/package_roto2_review.py
+new file mode 100644
+index 0000000..2152c25
+--- /dev/null
++++ b/script/package_roto2_review.py
+@@ -0,0 +1,289 @@
++"""Build a reproducible, source-hashed research handoff from saved local evidence.
++
++Copies experiment evidence verbatim. Does not include installed dependencies,
++unrelated experiments, credentials, or invent missing PPO transition records.
++Run with the project Python (TensorBoard installed) from the repository root.
++"""
++from __future__ import annotations
++
++import argparse
++import csv
++from datetime import datetime, timezone
++import gzip
++import hashlib
++import json
++import os
++from pathlib import Path
++import re
++import shutil
++import subprocess
++import tarfile
++
++ROOT = Path(__file__).resolve().parents[1]
++REVIEW = ROOT / "research/roto2_review/2026-10-20"
++LARGE = ROOT / "simulation/.runtime/review_upload"
++ARCHIVE_NAME = "roto2-20261020-models-and-assets.tar.gz"
++SKIP_DIRS = {"__pycache__", "uv-cache", "wheels"}
++CHECKPOINT_SUFFIXES = {".pt", ".pth", ".ckpt"}
++SECRET_PATTERNS = {
++    "github_token": re.compile(r"\b(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{35,})"),
++    "hf_token": re.compile(r"\bhf_[A-Za-z0-9]{30,}"),
++    "private_key": re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
++    "url_password": re.compile(r"https?://[^/\s:@]+:[^/\s@]{5,}@"),
++    "bearer_literal": re.compile(r"Authorization:\s*Bearer\s+[A-Za-z0-9._-]{20,}", re.I),
++}
++
++
++def sha(path):
++    h = hashlib.sha256()
++    with path.open("rb") as stream:
++        for block in iter(lambda: stream.read(1024 * 1024), b""):
++            h.update(block)
++    return h.hexdigest()
++
++
++def write_json(path, data):
++    path.parent.mkdir(parents=True, exist_ok=True)
++    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
++
++
++def write_csv(path, rows, fields):
++    path.parent.mkdir(parents=True, exist_ok=True)
++    with path.open("w", newline="") as stream:
++        writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
++        writer.writeheader()
++        writer.writerows(rows)
++
++
++def read_json(path):
++    try:
++        return json.loads(path.read_text())
++    except (UnicodeDecodeError, ValueError, OSError):
++        return None
++
++
++def selected_files():
++    roots = [
++        ROOT / "logs/roto2_pressure_fruit",
++        ROOT / "simulation/.runtime/setup",
++        ROOT / "artifacts/simulation",
++        ROOT / "botSDK/urdf/02_project_derived/isaac_assets/single_l20_right_rotation",
++    ]
++    files, exclusions = [], []
++    for root in roots:
++        for parent, dirs, names in os.walk(root, followlinks=False):
++            for name in list(dirs):
++                if name in SKIP_DIRS or (root.name == "simulation" and name == "tomato_pick_clean_v5"):
++                    exclusions.append({"path": str((Path(parent) / name).relative_to(ROOT)),
++                                       "reason": "dependency cache, bytecode, or unrelated tomato-pick experiment"})
++                    dirs.remove(name)
++            for name in names:
++                f = Path(parent) / name
++                if f.is_symlink() or f.suffix in {".pyc", ".pyo"}:
++                    exclusions.append({"path": str(f.relative_to(ROOT)), "reason": "symlink or generated bytecode"})
++                else:
++                    files.append(f)
++    wrapper = ROOT / "simulation/.runtime/run_roto2.sh"
++    if wrapper.exists():
++        files.append(wrapper)
++    return sorted(set(files)), exclusions
++
++
++def security_check(files):
++    issues = []
++    for f in files:
++        if f.suffix in CHECKPOINT_SUFFIXES | {".mp4", ".npz", ".png", ".jpg", ".usd", ".usdc"}:
++            continue
++        try:
++            text = f.read_text()
++        except UnicodeDecodeError:
++            continue
++        for kind, regex in SECRET_PATTERNS.items():
++            if regex.search(text):
++                issues.append({"file": str(f.relative_to(ROOT)), "kind": kind})
++    if issues:
++        # Deliberately never print matched secret values.
++        raise RuntimeError("Potential literal credentials in selected files: " + json.dumps(issues))
++    return {"selected_files_scanned": len(files), "credential_pattern_matches": 0,
++            "note": "Heuristic scan, not a guarantee; dependency caches and unrelated directories excluded."}
++
++
++def make_registries(files):
++    run_rows = []
++    for folder in sorted((ROOT / "logs/roto2_pressure_fruit").glob("*/*")):
++        if not folder.is_dir():
++            continue
++        cfg = read_json(folder / "run_config.json") or {}
++        result = read_json(folder / "training_result.json") or {}
++        progress = read_json(folder / "progress.json") or {}
++        if not any((cfg, result, progress, list(folder.glob("events.out*")))):
++            continue
++        run_rows.append({
++            "run": str(folder.relative_to(ROOT)),
++            "status": "completed_training" if result.get("training_completed") else
++                      "partial_progress_saved" if progress else "config_or_events_only",
++            "seed": cfg.get("seed", result.get("seed")),
++            "reward_version": cfg.get("reward_version", "legacy_unversioned"),
++            "reward_stage": cfg.get("reward_stage", "not_recorded"),
++            "hand_posture": cfg.get("hand_posture", "not_recorded"),
++            "domain_profile": cfg.get("domain_profile", "not_recorded"),
++            "goal_direction": cfg.get("goal_direction", "not_recorded"),
++            "num_envs": cfg.get("num_envs"), "num_eval_envs": cfg.get("num_eval_envs"),
++            "additional_training_transitions": result.get("training_transitions"),
++            "saved_progress_transitions": progress.get("training_transitions"),
++            "cumulative_lineage_transitions": result.get("cumulative_training_transitions"),
++            "ppo_updates": result.get("ppo_updates"), "elapsed_seconds": result.get("elapsed_seconds"),
++            "finite_parameters": result.get("finite_parameters"),
++            "resumed_from": cfg.get("resumed_from", result.get("resumed_from")),
++            "final_checkpoint": result.get("final_checkpoint"),
++            "config_path": str((folder / "run_config.json").relative_to(ROOT)) if cfg else None,
++            "result_path": str((folder / "training_result.json").relative_to(ROOT)) if result else None,
++            "progress_path": str((folder / "progress.json").relative_to(ROOT)) if progress else None,
++            "source_snapshot_present": (folder / "source_snapshot").is_dir(),
++            "tensorboard_event_files": len(list(folder.glob("events.out*"))),
++            "checkpoint_files": len(list((folder / "checkpoints").glob("*.pt"))),
++        })
++    evaluations = []
++    episodes = []
++    for f in files:
++        if f.suffix != ".json":
++            continue
++        d = read_json(f)
++        if not isinstance(d, dict) or not isinstance(d.get("episodes"), int) or "success_fraction" not in d:
++            continue
++        validity = "pose_based_stage_specific" if "rotation_source" in d else "legacy_or_unverified_rotation_metric"
++        if "rejected_wrong_quat" in str(f):
++            validity = "rejected_initialization"
++        row = {
++            "source": str(f.relative_to(ROOT)), "validity": validity,
++            "checkpoint": d.get("checkpoint"), "episodes": d["episodes"],
++            "reward_version": d.get("reward_version", "not_recorded"),
++            "stage": d.get("evaluation_reward_stage", "not_recorded"),
++            "posture": d.get("hand_posture", "not_recorded"), "profile": d.get("domain_profile", "not_recorded"),
++            "direction": d.get("goal_direction", "not_recorded"),
++            "success_fraction": d["success_fraction"], "failure_fraction": d.get("failure_fraction"),
++            "mean_directed_rotations": d.get("mean_directed_rotations"),
++            "mean_secure_support_fraction": d.get("mean_secure_support_fraction"),
++            "mean_after_settling_directed_turns": d.get("mean_after_settling_directed_turns"),
++            "mean_after_10s_directed_turns": d.get("mean_after_10s_directed_turns"),
++            "mean_peak_pressure_proxy_pa": d.get("mean_peak_pressure_proxy_pa"),
++            "mean_jacobian_acceptance_fraction": d.get("mean_jacobian_acceptance_fraction"),
++            "success_definition": d.get("success_definition"),
++            "pose_metric_max_error_turns": d.get("pose_metric_max_error_turns"),
++        }
++        evaluations.append(row)
++        for item in d.get("per_episode", []):
++            episodes.append({"source": row["source"], "validity": validity, **item})
++    write_json(REVIEW / "tables/runs.json", run_rows)
++    write_csv(REVIEW / "tables/runs.csv", run_rows, list(run_rows[0]))
++    write_json(REVIEW / "tables/evaluations.json", evaluations)
++    write_csv(REVIEW / "tables/evaluations.csv", evaluations, list(evaluations[0]))
++    write_json(REVIEW / "tables/episodes.json", episodes)
++    write_csv(REVIEW / "tables/episodes.csv", episodes, sorted({k for r in episodes for k in r}))
++    from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
++    scalar_rows = []
++    tb_errors = []
++    for row in run_rows:
++        if not row["tensorboard_event_files"]:
++            continue
++        try:
++            event = EventAccumulator(str(ROOT / row["run"]), size_guidance={"scalars": 0}).Reload()
++            for tag in event.Tags()["scalars"]:
++                for value in event.Scalars(tag):
++                    scalar_rows.append(dict(run=row["run"], tag=tag, step=value.step,
++                                            wall_time=value.wall_time, value=value.value))
++        except Exception as exc:
++            tb_errors.append({"run": row["run"], "error": str(exc)})
++    write_csv(REVIEW / "tables/tensorboard_scalars.csv", scalar_rows,
++              ["run", "tag", "step", "wall_time", "value"])
++    write_json(REVIEW / "tables/tensorboard_export_status.json",
++               {"scalar_rows": len(scalar_rows), "errors": tb_errors})
++    if tb_errors:
++        raise RuntimeError("TensorBoard exports failed; see status")
++    return {"run_directories": len(run_rows),
++            "completed_training_runs": sum(r["status"] == "completed_training" for r in run_rows),
++            "partial_progress_runs": sum(r["status"] == "partial_progress_saved" for r in run_rows),
++            "completed_additional_transitions_sum": sum(r["additional_training_transitions"] or 0 for r in run_rows),
++            "completed_training_seconds_sum": sum(r["elapsed_seconds"] or 0 for r in run_rows),
++            "evaluation_documents": len(evaluations), "per_episode_rows": len(episodes),
++            "tensorboard_scalar_rows": len(scalar_rows),
++            "warning": "Transition sum covers completed runs only, including benchmarks and rejected experiments; do not sum cumulative lineage counts. Evaluation docs include repeated checkpoints and invalid historical metrics."}
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--skip-archive", action="store_true")
++    args = parser.parse_args()
++    REVIEW.mkdir(parents=True, exist_ok=True)
++    LARGE.mkdir(parents=True, exist_ok=True)
++    files, exclusions = selected_files()
++    scan = security_check(files)
++    manifest = []
++    archived = []
++    for f in files:
++        relative = f.relative_to(ROOT)
++        large = f.suffix in CHECKPOINT_SUFFIXES or str(relative).startswith("botSDK/")
++        destination = None if large else Path("evidence") / relative
++        if large:
++            archived.append(f)
++        else:
++            target = REVIEW / destination
++            target.parent.mkdir(parents=True, exist_ok=True)
++            shutil.copy2(f, target)
++        manifest.append({
++            "source_path": str(relative), "bytes": f.stat().st_size, "sha256": sha(f),
++            "storage": "github_release_archive" if large else "git_branch",
++            "review_path": str(destination) if destination else None,
++            "archive": ARCHIVE_NAME if large else None,
++            "archive_member": str(relative) if large else None,
++        })
++    write_json(REVIEW / "manifest.json", manifest)
++    write_csv(REVIEW / "manifest.csv", manifest, list(manifest[0]))
++    write_json(REVIEW / "excluded.json", exclusions)
++    write_json(REVIEW / "security_scan.json", scan)
++    summary = make_registries(files)
++    summary.update({
++        "created_utc": datetime.now(timezone.utc).isoformat(),
++        "base_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
++        "branch": subprocess.check_output(["git", "branch", "--show-current"], cwd=ROOT, text=True).strip(),
++        "original_file_count": len(files), "original_total_bytes": sum(x["bytes"] for x in manifest),
++        "branch_evidence_file_count": len(files) - len(archived),
++        "branch_evidence_bytes": sum(x["bytes"] for x in manifest if x["storage"] == "git_branch"),
++        "archived_file_count": len(archived),
++        "checkpoint_file_count": sum(f.suffix in CHECKPOINT_SUFFIXES for f in archived),
++        "raw_transition_dataset_present": False,
++    })
++    if not args.skip_archive:
++        destination = LARGE / ARCHIVE_NAME
++        with destination.open("wb") as out:
++            with gzip.GzipFile(fileobj=out, mode="wb", compresslevel=1, mtime=0) as compressed:
++                with tarfile.open(fileobj=compressed, mode="w|") as archive:
++                    for f in archived:
++                        archive.add(f, arcname=str(f.relative_to(ROOT)), recursive=False)
++        # Read back all members and verify their decompressed bytes, not only tar listings.
++        expected = {x["source_path"]: x for x in manifest if x["storage"] == "github_release_archive"}
++        verified = set()
++        with tarfile.open(destination, "r:gz") as archive:
++            for member in archive:
++                if not member.isfile() or member.name not in expected:
++                    raise RuntimeError(f"Unexpected archive member {member.name}")
++                data = archive.extractfile(member)
++                digest = hashlib.sha256()
++                for block in iter(lambda: data.read(1024 * 1024), b""):
++                    digest.update(block)
++                if digest.hexdigest() != expected[member.name]["sha256"]:
++                    raise RuntimeError(f"Bad archive bytes: {member.name}")
++                verified.add(member.name)
++        if verified != set(expected):
++            raise RuntimeError("Archive omits manifest entries")
++        asset = {"name": ARCHIVE_NAME, "bytes": destination.stat().st_size,
++                 "sha256": sha(destination), "verified_members": len(verified)}
++        write_json(REVIEW / "release_assets.json", [asset])
++        (LARGE / "SHA256SUMS").write_text(f"{asset['sha256']}  {ARCHIVE_NAME}\n")
++        summary["archive"] = asset
++    write_json(REVIEW / "inventory_summary.json", summary)
++    print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/script/review_rotation_rollout.py b/script/review_rotation_rollout.py
+new file mode 100644
+index 0000000..302e8cc
+--- /dev/null
++++ b/script/review_rotation_rollout.py
+@@ -0,0 +1,72 @@
++"""Read-only phase-free behavior audit from independent evaluation pose/pad traces."""
++import argparse
++import json
++from pathlib import Path
++
++import numpy as np
++from scipy.spatial.transform import Rotation
++
++
++def inspect(evaluation):
++    metadata = json.loads(evaluation.read_text())
++    data = np.load(evaluation.with_suffix(".npz"))
++    active = data["active"]
++    poses = np.concatenate([data["initial_pose"][None], data["poses"]])
++    # The current Isaac Lab 3 runtime records native XYZW; verified at mount/reset.
++    matrices = Rotation.from_quat(poses[..., 3:7].reshape(-1, 4)).as_matrix().reshape(*poses.shape[:2], 3, 3)
++    heading = np.arctan2(matrices[..., 1, 0], matrices[..., 0, 0])
++    d = np.diff(heading, axis=0)
++    d = np.arctan2(np.sin(d), np.cos(d)) * active * data["target_direction"]
++    angle = np.cumsum(d, axis=0)
++    full = data["support"].astype(bool)
++    n = active.shape[1]
++    seen = np.zeros(n, bool)
++    armed = np.zeros(n, bool)
++    on = np.zeros(n, int)
++    off = np.zeros(n, int)
++    recovered = np.zeros(n, int)
++    progressed_recovery = np.zeros(n, int)
++    last_progress_angle = np.zeros(n)
++    for t in range(len(active)):
++        valid = active[t]
++        on = np.where(full[t] & valid, on + 1, 0)
++        off = np.where(~full[t] & valid, off + 1, 0)
++        seen |= on >= 4
++        armed |= seen & (off >= 4)
++        event = armed & (on >= 4) & valid & (t >= 20)
++        recovered += event
++        useful = event & (angle[t] - last_progress_angle >= np.deg2rad(10))
++        progressed_recovery += useful
++        last_progress_angle = np.where(useful, angle[t], last_progress_angle)
++        armed &= ~event
++    late = active[200:]
++    result = {
++        "evaluation": str(evaluation.resolve()), "episodes": n,
++        "scope": "Diagnostic events only; release/recontact does not establish a full rotation or successful gait.",
++        "event_definition": ">=4 supported steps before >=4 unsupported steps, then >=4 supported steps; 20Hz, after first second. Progress-linked event also requires >=10deg net advance beyond previous counted event.",
++        "mean_support_recoveries": float(recovered.mean()),
++        "mean_progress_linked_recoveries": float(progressed_recovery.mean()),
++        "episodes_with_two_progress_linked_recoveries": int((progressed_recovery >= 2).sum()),
++        "mean_after_10s_degrees": float(np.rad2deg(d[200:].sum(0)).mean()),
++        "episodes_with_after_10s_net_advance_ge15deg": int((d[200:].sum(0) >= np.deg2rad(15)).sum()),
++        "mean_late_strict_support_fraction": float((full[200:] * late).sum() / max(late.sum(), 1)),
++        "full_task_success_fraction": metadata["success_fraction"],
++    }
++    if "pads" in data.files:
++        result["mean_late_pad_contact_fraction"] = (
++            (data["pads"][200:] * late[..., None]).sum((0, 1)) / max(late.sum(), 1)).tolist()
++    result["per_episode"] = [
++        dict(env=i, recoveries=int(recovered[i]), progress_linked_recoveries=int(progressed_recovery[i]),
++             after_10s_degrees=float(np.rad2deg(d[200:, i].sum()))) for i in range(n)]
++    return result
++
++
++if __name__ == "__main__":
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("evaluation", type=Path)
++    parser.add_argument("--output", type=Path, required=True)
++    args = parser.parse_args()
++    result = inspect(args.evaluation)
++    args.output.parent.mkdir(parents=True, exist_ok=True)
++    args.output.write_text(json.dumps(result, indent=2) + "\n")
++    print(json.dumps({k: v for k, v in result.items() if k != "per_episode"}, indent=2))
+diff --git a/script/run_continuous_trial.py b/script/run_continuous_trial.py
+new file mode 100644
+index 0000000..c2e1f1e
+--- /dev/null
++++ b/script/run_continuous_trial.py
+@@ -0,0 +1,104 @@
++"""One bounded v7 PPO trial and fixed independent evaluations; no core changes."""
++import argparse
++from datetime import datetime
++import json
++from pathlib import Path
++import subprocess
++import threading
++import time
++
++ROOT = Path(__file__).resolve().parents[1]
++WRAPPER = ROOT / "simulation/.runtime/run_roto2.sh"
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--checkpoint", type=Path, required=True)
++    parser.add_argument("--output", type=Path, required=True)
++    parser.add_argument("--million-steps", type=float, default=32)
++    parser.add_argument("--seed", type=int, default=48)
++    args = parser.parse_args()
++    if not args.checkpoint.is_file() or args.million_steps <= 0:
++        parser.error("Existing checkpoint and positive budget required")
++    output = args.output.resolve()
++    output.mkdir(parents=True, exist_ok=False)
++    state = dict(started_at=datetime.now().astimezone().isoformat(),
++                 core_architecture_changed=False, task_acceptance_passed=False,
++                 reward_version="pose_pad_v7_continuous", training_seed=args.seed,
++                 num_envs=16384, budget_million=args.million_steps,
++                 initial_checkpoint=str(args.checkpoint.resolve()), evaluations=[])
++
++    def save(status, **values):
++        state.update(status=status, updated_at=datetime.now().astimezone().isoformat(), **values)
++        temporary = output / "status.json.tmp"
++        temporary.write_text(json.dumps(state, indent=2) + "\n")
++        temporary.replace(output / "status.json")
++        print(json.dumps(dict(status=status, **values)), flush=True)
++
++    def run(name, command):
++        save(name, current_log=str(output / f"{name}.log"))
++        with (output / f"{name}.log").open("w") as log:
++            subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
++        content = (output / f"{name}.log").read_text(errors="replace")
++        for bad in ("PhysX ABORT", "Scene state is corrupted", "failed to allocate", "Traceback (most recent call last)"):
++            if bad in content:
++                raise RuntimeError(f"{name}: {bad}")
++
++    stopped = threading.Event()
++
++    def monitor():
++        with (output / "gpu_samples.jsonl").open("w") as log:
++            while not stopped.is_set():
++                result = subprocess.run(["nvidia-smi", "--query-gpu=utilization.gpu,memory.used,power.draw,temperature.gpu",
++                                         "--format=csv,noheader,nounits"], capture_output=True, text=True)
++                log.write(json.dumps(dict(time=datetime.now().astimezone().isoformat(),
++                                          gpu_csv=result.stdout.strip())) + "\n")
++                log.flush()
++                stopped.wait(10)
++
++    worker = threading.Thread(target=monitor, daemon=True)
++    worker.start()
++    common = ["--hand-posture", "palm_up", "--domain-profile", "nominal",
++              "--reward-stage", "continuous", "--goal-direction", "positive",
++              "--reset-grasps", str(ROOT / "simulation/roto2_pressure/reset_pad_grasps_palm_up.json")]
++    try:
++        run_root = ROOT / f"logs/roto2_pressure_fruit/jacobian_seed{args.seed}"
++        before = set(run_root.glob("*/training_result.json"))
++        run("training", ["bash", str(WRAPPER), "train", "--seed", str(args.seed),
++                        "--million-steps", str(args.million_steps), "--entropy-weight", ".005",
++                        "--resume-checkpoint", str(args.checkpoint.resolve()), "--validate-contracts", *common])
++        added = set(run_root.glob("*/training_result.json")) - before
++        if len(added) != 1:
++            raise RuntimeError(f"Expected one new training result, found {added}")
++        result_path = added.pop()
++        result = json.loads(result_path.read_text())
++        if not (result["training_completed"] and result["finite_parameters"]
++                and all(value > 0 for value in result["parameter_change_l2"].values())):
++            raise RuntimeError("Training completion/finite/update check failed")
++        checkpoint = result["final_checkpoint"]
++        save("training_completed", training_result=str(result_path), latest_checkpoint=checkpoint)
++        for seed in (2071, 2072):
++            destination = output / f"nominal_seed{seed}.json"
++            run(f"evaluate_seed{seed}", ["bash", str(WRAPPER), "evaluate", "--seed", str(seed),
++                "--evaluate-checkpoint", checkpoint, "--evaluation-output", str(destination), *common])
++            evaluation = json.loads(destination.read_text())
++            if evaluation["episodes"] != 64 or evaluation["pose_metric_max_error_turns"] > 1e-4:
++                raise RuntimeError("Evaluation sample count or independent pose check failed")
++            state["evaluations"].append(str(destination))
++        # Recorder writes a same-stem JSON sidecar; keep it distinct from
++        # the independent evaluation's 64-episode JSON.
++        video = output / "nominal_seed2071_video.mp4"
++        run("recording", ["bash", str(WRAPPER), "record", "--seed", "2071",
++                         "--evaluate-checkpoint", checkpoint, "--record-video", str(video), *common])
++        subprocess.run(["ffmpeg", "-v", "error", "-i", str(video), "-f", "null", "-"], check=True)
++        save("completed_pending_behavior_review", latest_video=str(video), training_active=False)
++    except Exception as exc:
++        save("failed", error=str(exc), training_active=False)
++        raise
++    finally:
++        stopped.set()
++        worker.join(timeout=15)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/script/run_pad_curriculum.py b/script/run_pad_curriculum.py
+new file mode 100644
+index 0000000..3fcb695
+--- /dev/null
++++ b/script/run_pad_curriculum.py
+@@ -0,0 +1,157 @@
++"""Bounded local training continuation, with independent gates between stages.
++
++This orchestrates the existing PPO entrypoint. It does not implement or alter
++the policy, optimizer, environment dynamics, or training algorithm.
++"""
++from __future__ import annotations
++
++import argparse
++from datetime import datetime
++import json
++from pathlib import Path
++import subprocess
++
++ROOT = Path(__file__).resolve().parents[1]
++WRAPPER = ROOT / "simulation/.runtime/run_roto2.sh"
++FATAL = ("PhysX ABORT", "Scene state is corrupted", "failed to allocate", "Traceback (most recent call last)")
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--checkpoint", type=Path, required=True)
++    parser.add_argument("--output", type=Path, required=True)
++    parser.add_argument("--contact-million", type=float, default=96)
++    parser.add_argument("--rotation-million", type=float, default=128)
++    parser.add_argument("--hand-posture", choices=("vertical", "palm_up"), default="vertical")
++    parser.add_argument("--seed", type=int, default=45)
++    parser.add_argument("--reset-grasps", type=Path)
++    parser.add_argument("--rotation-curriculum", action="store_true",
++                        help="Use v6 one-direction regrasp then bidirectional spin; budgets apply to these stages")
++    args = parser.parse_args()
++    if min(args.contact_million, args.rotation_million) <= 0:
++        parser.error("Training budgets must be positive")
++    checkpoint = args.checkpoint.resolve()
++    if not checkpoint.is_file():
++        parser.error("Missing starting checkpoint")
++    reset_args = []
++    if args.reset_grasps:
++        if not args.reset_grasps.is_file():
++            parser.error("Missing reset-grasps file")
++        reset_args = ["--reset-grasps", str(args.reset_grasps.resolve())]
++    output = args.output.resolve()
++    output.mkdir(parents=True, exist_ok=False)
++    first_stage, second_stage = ("regrasp", "spin") if args.rotation_curriculum else ("contact", "rotation")
++    state = {
++        "started_at": datetime.now().astimezone().isoformat(),
++        "core_architecture_changed": False,
++        "task_acceptance_passed": False,
++        "initial_checkpoint": str(checkpoint),
++        "num_envs": 16384,
++        "hand_posture": args.hand_posture,
++        "seed": args.seed,
++        "reset_grasps_file": str(args.reset_grasps.resolve()) if args.reset_grasps else None,
++        "entropy_weight": 0.005,
++        "exploration_std": "restored from checkpoint",
++        "contact_budget_million": args.contact_million,
++        "rotation_budget_million": args.rotation_million,
++        "first_stage": first_stage, "second_stage": second_stage,
++        "first_stage_gate": ("both independent 64-episode evaluations: >=50% pass after-settling 30deg curriculum, mean strict pad support >=50%, physical failure <=10%; NOT full-task acceptance"
++                             if args.rotation_curriculum else "both independent 64-episode nominal evaluations: pad support >=65%, physical failure <=10%"),
++        "completed_runs": [],
++        "evaluations": [],
++    }
++
++    def save(status, **updates):
++        state.update(status=status, updated_at=datetime.now().astimezone().isoformat(), **updates)
++        tmp = output / "status.json.tmp"
++        tmp.write_text(json.dumps(state, indent=2) + "\n")
++        tmp.replace(output / "status.json")
++        print(json.dumps({"status": status, **updates}), flush=True)
++
++    def run(name, command):
++        save(name, current_log=str(output / (name + ".log")))
++        with (output / (name + ".log")).open("w") as log:
++            subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
++        content = (output / (name + ".log")).read_text(errors="replace")
++        found = [token for token in FATAL if token in content]
++        if found:
++            raise RuntimeError(f"Simulator error in {name}: {found}")
++
++    def train(stage, budget, source):
++        runs = ROOT / f"logs/roto2_pressure_fruit/jacobian_seed{args.seed}"
++        before = set(runs.glob("*/training_result.json"))
++        run(stage + "_training", ["bash", str(WRAPPER), "train", "--seed", str(args.seed),
++            "--hand-posture", args.hand_posture,
++            "--million-steps", str(budget), "--domain-profile", "nominal",
++            "--reward-stage", stage, "--entropy-weight", "0.005",
++            "--goal-direction", "positive" if stage == "regrasp" else "both",
++            "--resume-checkpoint", str(source), "--validate-contracts", *reset_args])
++        created = set(runs.glob("*/training_result.json")) - before
++        if len(created) != 1:
++            raise RuntimeError(f"Expected one completed training run, found {created}")
++        result_file = created.pop()
++        result = json.loads(result_file.read_text())
++        if not result["training_completed"] or not result["finite_parameters"]:
++            raise RuntimeError("Training completion/finite-parameter gate failed")
++        if not all(v > 0 for v in result["parameter_change_l2"].values()):
++            raise RuntimeError("A trainable module did not update")
++        state["completed_runs"].append(str(result_file))
++        return Path(result["final_checkpoint"])
++
++    def evaluate(stage, source, seed, profile="nominal"):
++        name = f"{stage}_{profile}_seed{seed}"
++        destination = output / (name + ".json")
++        run(name, ["bash", str(WRAPPER), "evaluate", "--seed", str(seed),
++            "--hand-posture", args.hand_posture,
++            "--domain-profile", profile, "--reward-stage", stage,
++            "--goal-direction", "positive" if stage == "regrasp" else "both",
++            "--evaluate-checkpoint", str(source), "--evaluation-output", str(destination), *reset_args])
++        result = json.loads(destination.read_text())
++        if result["episodes"] != 64 or result["pose_metric_max_error_turns"] > 1e-4:
++            raise RuntimeError("Independent evaluation evidence gate failed")
++        state["evaluations"].append(str(destination))
++        return result
++
++    def record(stage, source):
++        video_seed = (2061 if stage == "regrasp" else 2063) if args.rotation_curriculum else 2036
++        video = output / f"{stage}_seed{video_seed}.mp4"
++        run(stage + "_video", ["bash", str(WRAPPER), "record", "--seed", str(video_seed),
++            "--hand-posture", args.hand_posture,
++            "--domain-profile", "nominal", "--reward-stage", stage,
++            "--goal-direction", "positive" if stage == "regrasp" else "both",
++            "--evaluate-checkpoint", str(source), "--record-video", str(video), *reset_args])
++        subprocess.run(["ffmpeg", "-v", "error", "-i", str(video), "-f", "null", "-"], check=True)
++        state["latest_video"] = str(video)
++
++    save("starting")
++    try:
++        checkpoint = train(first_stage, args.contact_million, checkpoint)
++        contact = [evaluate(first_stage, checkpoint, seed) for seed in
++                   ((2061, 2062) if args.rotation_curriculum else (2036, 2037))]
++        if args.rotation_curriculum:
++            gate = all(x["small_angle_curriculum_success_fraction"] >= .5 and
++                       x["mean_secure_support_fraction"] >= .5 and x["failure_fraction"] <= .10 for x in contact)
++        else:
++            gate = all(x["mean_secure_support_fraction"] >= .65 and x["failure_fraction"] <= .10 for x in contact)
++        save(first_stage+"_evaluated", latest_checkpoint=str(checkpoint), first_stage_gate_passed=gate)
++        record(first_stage, checkpoint)
++        if not gate:
++            save(first_stage+"_gate_failed", conclusion=f"{first_stage} curriculum is not accepted; {second_stage} stage was not started.")
++            return 2
++        checkpoint = train(second_stage, args.rotation_million, checkpoint)
++        seeds = (2063,2064,2065,2066) if args.rotation_curriculum else (2038,2039,2040,2041)
++        rotation = [evaluate(second_stage, checkpoint, seed) for seed in seeds[:2]]
++        evaluate(second_stage, checkpoint, seeds[2], "gentle")
++        evaluate(second_stage, checkpoint, seeds[3], "full")
++        record(second_stage, checkpoint)
++        save("completed_pending_behavior_review", latest_checkpoint=str(checkpoint),
++             nominal_success_fractions=[x["success_fraction"] for x in rotation],
++             conclusion="Review independent pose, contact and video evidence; completion alone is not task acceptance.")
++        return 0
++    except Exception as exc:
++        save("failed", error=str(exc))
++        raise
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/script/train_roto2_pressure.py b/script/train_roto2_pressure.py
+index 3b0e71a..14d170b 100644
+--- a/script/train_roto2_pressure.py
++++ b/script/train_roto2_pressure.py
+@@ -11,6 +11,7 @@ import json
+ import os
+ from pathlib import Path
+ import sys
++import traceback
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+ 
+@@ -55,12 +56,26 @@ def build_roto2_training(env, cfg, agent_cfg, writer):
+ 
+     class TaskAwareWrapper(IsaacLabWrapper):
+         """Keep custom object/sensor reset consistent across evaluation episodes."""
++        def step(self, actions):
++            obs, reward, terminated, truncated, info = super().step(actions)
++            done = (terminated | truncated).reshape(-1)
++            if self.obs_stack > 1 and done.any():
++                for frames in self._env.frames.values():
++                    latest = frames[-1]
++                    for index in range(len(frames) - 1):
++                        frame = frames[index].clone()
++                        frame[done] = latest[done]
++                        frames[index] = frame
++                obs = self._env.observation(obs)
++                self._observations = obs
++            return obs, reward, terminated, truncated, info
++
+         def reset_eval_envs(self):
+             # Upstream's generic scene.reset() omits our episode-specific
+             # fruit repositioning, dropout and Jacobian counters.
+             self._unwrapped._reset_idx(self.eval_env_ids)
+             self._unwrapped.episode_length_buf[self.eval_env_ids] = 0
+-            new_obs = self._unwrapped.get_observations()
++            new_obs = self._unwrapped.get_observations(env_ids=self.eval_env_ids)
+             if self.obs_stack > 1:
+                 for key, frame_buffer in self._env.frames.items():
+                     for index in range(len(frame_buffer)):
+@@ -128,13 +143,47 @@ def main(argv=None):
+         "--pressure-variant", choices=("plain", "scalar", "jacobian"),
+         default="jacobian",
+     )
++    parser.add_argument("--initial-action-std", type=float, default=None,
++                        help="Fresh-run Gaussian exploration std; network/PPO are unchanged")
++    parser.add_argument("--entropy-weight", type=float, default=None)
++    parser.add_argument("--domain-profile", choices=("full", "gentle", "nominal"), default="gentle")
++    parser.add_argument("--hand-posture", choices=("vertical", "palm_up"), default="vertical")
++    parser.add_argument("--reward-stage", choices=("contact", "rotation", "regrasp", "spin", "continuous"), default="rotation")
++    parser.add_argument("--goal-direction", choices=("both", "positive", "negative"), default="both")
+     parser.add_argument("--smoke", action="store_true",
+                         help="Run 20 actual PhysX steps before spending GPU time")
+     parser.add_argument("--enable-wandb", action="store_true")
++    parser.add_argument("--probe-steps", type=int, default=0)
++    parser.add_argument("--probe-output", type=Path, default=None)
++    parser.add_argument("--reset-grasps", type=Path, default=None)
++    parser.add_argument("--validate-contracts", action="store_true")
++    parser.add_argument("--probe-nominal", action="store_true",
++                        help="Diagnostic only: 64 mm sphere and deterministic reset")
++    parser.add_argument("--search-pad-reset", action="store_true")
++    parser.add_argument("--probe-pad-surfaces", action="store_true")
++    parser.add_argument("--probe-free-hand", action="store_true")
++    parser.add_argument("--probe-no-self-collision", action="store_true")
+     parser.add_argument("--evaluate-checkpoint", type=Path, default=None)
++    parser.add_argument("--resume-checkpoint", type=Path, default=None,
++                        help="Restore model/optimizers; --million-steps is an additional budget")
+     parser.add_argument("--evaluation-output", type=Path, default=None)
++    parser.add_argument("--record-video", type=Path, default=None,
++                        help="Render an actual first-episode rollout of --evaluate-checkpoint")
++    parser.add_argument("--video-env-index", type=int, default=0)
++    parser.add_argument("--video-max-steps", type=int, default=480)
++    parser.add_argument("--audit-rotation-output", type=Path, default=None)
++    parser.add_argument("--probe-rotation-output", type=Path, default=None)
++    parser.add_argument("--trace-policy-output", type=Path, default=None)
+     AppLauncher.add_app_launcher_args(parser)
+     args = parser.parse_args(argv)
++    if args.record_video:
++        if args.evaluate_checkpoint is None:
++            parser.error("--record-video requires --evaluate-checkpoint")
++        args.enable_cameras = True
++    if args.initial_action_std is not None and (args.initial_action_std <= 0 or args.resume_checkpoint):
++        parser.error("--initial-action-std must be positive and is for fresh runs only")
++    if args.entropy_weight is not None and args.entropy_weight < 0:
++        parser.error("--entropy-weight must be non-negative")
+     if args.num_envs < 2:
+         raise ValueError("At least 2 environments required for train/eval split")
+     if args.million_steps <= 0:
+@@ -143,6 +192,7 @@ def main(argv=None):
+     launcher = AppLauncher(args)
+     application = launcher.app
+     env = None
++    exit_code = 0
+     try:
+         import gymnasium as gym
+         import torch
+@@ -158,6 +208,8 @@ def main(argv=None):
+         from multimodal_rl.tools.writer import Writer
+         from simulation.roto2_pressure.env import FruitRotationEnv
+         from simulation.roto2_pressure.env_cfg import FruitRotationEnvCfg
++        from simulation.roto2_pressure.reward_geometry import reward_version
++        REWARD_VERSION = reward_version(args.reward_stage)
+ 
+         task_id = "LinkAgent-Fruit-RoTO2-Direct-v0"
+         if task_id not in gym.registry:
+@@ -166,6 +218,11 @@ def main(argv=None):
+         agent_cfg = yaml.safe_load(
+             (ROOT / "simulation/roto2_pressure/agent.yaml").read_text()
+         )
++        if args.initial_action_std is not None:
++            import math
++            agent_cfg["policy"]["initial_log_std"] = math.log(args.initial_action_std)
++        if args.entropy_weight is not None:
++            agent_cfg["agent"]["entropy_loss_scale"] = args.entropy_weight
+         agent_cfg["seed"] = args.seed
+         agent_cfg["trainer"]["num_eval_envs"] = min(
+             16, max(1, args.num_envs // 8)
+@@ -180,11 +237,61 @@ def main(argv=None):
+         cfg.scene.num_envs = args.num_envs
+         cfg.seed = args.seed
+         cfg.pressure_variant = args.pressure_variant
++        cfg.reward_stage = args.reward_stage
++        cfg.goal_direction = args.goal_direction
++        if args.reward_stage in ("regrasp", "continuous"):
++            cfg.target_angular_speed_rad_s = (.15, .30)
++        cfg.domain_profile = args.domain_profile
++        cfg.hand_posture = args.hand_posture
++        if args.hand_posture == "palm_up":
++            # Vendor palm faces local +X. -90 degrees about Y puts it up,
++            # with fingers extending horizontally toward world -X.
++            # Existing reset code transforms fruit position from the hand frame.
++            import math
++            cfg.robot.init_state.pos = (0.0, 0.0, 0.90)
++            # Isaac Lab 3's InitialStateCfg uses XYZW, unlike older releases.
++            cfg.robot.init_state.rot = (0.0, -math.sqrt(.5), 0.0, math.sqrt(.5))
++            cfg.viewer.eye = (.18, -.36, 1.32)
++            cfg.viewer.lookat = (-.12, 0.0, .96)
++        if args.domain_profile in ("nominal", "gentle"):
++            radii = (.032, .032) if args.domain_profile == "nominal" else (.0315, .0325)
++            cfg.events.geometry.params["axis_ranges_m"] = {k: radii for k in "xyz"}
++            cfg.reset_joint_noise_rad = 0.0 if args.domain_profile == "nominal" else .004
++            cfg.reset_position_noise_m = 0.0 if args.domain_profile == "nominal" else .00025
++        if args.reset_grasps:
++            cfg.reset_grasps_file = str(args.reset_grasps.resolve())
++        if args.probe_nominal:
++            cfg.domain_profile = "nominal"
++            if not args.probe_steps:
++                raise ValueError("--probe-nominal requires --probe-steps")
++            cfg.events.geometry.params["axis_ranges_m"] = {k: (0.032, 0.032) for k in "xyz"}
++            cfg.reset_joint_noise_rad = 0.0
++            cfg.reset_position_noise_m = 0.0
++        if args.probe_no_self_collision:
++            if not args.probe_steps:
++                raise ValueError("Self-collision diagnostic requires --probe-steps")
++            cfg.robot.spawn.articulation_props.enabled_self_collisions = False
+         cfg.num_eval_envs = agent_cfg["trainer"]["num_eval_envs"]
+         cfg.obs_list = tuple(agent_cfg["observations"]["obs_list"])
+         cfg.obs_stack = agent_cfg["observations"]["obs_stack"]
+ 
+-        env = gym.make(task_id, cfg=cfg)
++        env = gym.make(task_id, cfg=cfg, render_mode="rgb_array" if args.record_video else None)
++        if args.search_pad_reset:
++            from simulation.roto2_pressure.calibrate_reset import search_pad_resets
++            search_pad_resets(env, args.probe_output)
++            return 0
++        if args.probe_pad_surfaces:
++            from simulation.roto2_pressure.validation import pad_surface_probe
++            pad_surface_probe(env, args.probe_output)
++            return 0
++        if args.probe_free_hand:
++            from simulation.roto2_pressure.validation import free_hand_probe
++            free_hand_probe(env, args.probe_output)
++            return 0
++        if args.probe_steps:
++            from simulation.roto2_pressure.validation import physical_probe
++            physical_probe(env, args.probe_steps, args.probe_output)
++            return 0
+         if args.smoke:
+             policy, _ = env.reset()
+             for t in range(20):
+@@ -206,10 +313,100 @@ def main(argv=None):
+                 "pressure_variant": args.pressure_variant,
+             }, indent=2))
+             return 0
+-        writer = Writer(agent_cfg)
++        class LocalWriter(Writer):
++            """Keep an atomic current-model checkpoint independent of eval selection."""
++            def write_checkpoint(self, mean_eval_return, timestep):
++                # The upstream loop evaluates at t=0 before a full episode.
++                # Exclude that warm-up score from best-checkpoint selection.
++                if timestep == 0:
++                    return
++                super().write_checkpoint(mean_eval_return, timestep)
++                destination = Path(self.checkpoint_dir) / "last_agent.pt"
++                temporary = destination.with_suffix(".pt.tmp")
++                torch.save({name: self._get_module_state(module)
++                            for name, module in self.checkpoint_modules.items()}, temporary)
++                temporary.replace(destination)
++                transitions = timestep + args.num_envs - cfg.num_eval_envs
++                (Path(self.log_dir) / "progress.json").write_text(json.dumps({
++                    "training_completed": False, "training_transitions": transitions,
++                    "cumulative_training_transitions": self.prior_transitions + transitions,
++                    "checkpoint": str(destination),
++                    "upstream_eval_return": float(mean_eval_return),
++                }, indent=2) + "\n")
++
++        writer = LocalWriter(agent_cfg)
++        writer.prior_transitions = 0
++        if args.resume_checkpoint:
++            source_run = args.resume_checkpoint.resolve().parent.parent
++            metadata = source_run / ("training_result.json" if args.resume_checkpoint.name == "final_agent.pt"
++                                     else "progress.json")
++            if metadata.is_file():
++                prior = json.loads(metadata.read_text())
++                writer.prior_transitions = prior.get("cumulative_training_transitions", prior["training_transitions"])
++        import hashlib
++        import shutil
++        snapshot = Path(writer.log_dir) / "source_snapshot"
++        snapshot.mkdir(parents=True, exist_ok=True)
++        for source in (ROOT / "simulation/roto2_pressure").glob("*"):
++            if source.is_file():
++                shutil.copy2(source, snapshot / source.name)
++        shutil.copy2(Path(__file__), snapshot / Path(__file__).name)
++        reset_data = Path(cfg.reset_grasps_file).read_bytes() if cfg.reset_grasps_file else b""
++        (Path(writer.log_dir) / "run_config.json").write_text(json.dumps({
++            "seed": args.seed, "num_envs": args.num_envs, "num_eval_envs": cfg.num_eval_envs,
++            "million_steps": args.million_steps, "pressure_variant": args.pressure_variant,
++            "physics_dt": cfg.sim.dt, "decimation": cfg.decimation,
++            "reward_version": REWARD_VERSION, "reward_stage": cfg.reward_stage,
++            "goal_direction": cfg.goal_direction,
++            "target_angular_speed_rad_s": cfg.target_angular_speed_rad_s,
++            "domain_profile": cfg.domain_profile,
++            "hand_posture": cfg.hand_posture,
++            "hand_mount_position": cfg.robot.init_state.pos,
++            "hand_mount_quaternion_xyzw": cfg.robot.init_state.rot,
++            "exploration_std_override": args.initial_action_std,
++            "entropy_loss_scale_effective": agent_cfg["agent"]["entropy_loss_scale"],
++            "reset_joint_noise_rad": cfg.reset_joint_noise_rad,
++            "reset_position_noise_m": cfg.reset_position_noise_m,
++            "reset_grasps_file": cfg.reset_grasps_file,
++            "reset_grasps_sha256": hashlib.sha256(reset_data).hexdigest(),
++            "resumed_from": str(args.resume_checkpoint) if args.resume_checkpoint else None,
++            "prior_training_transitions": writer.prior_transitions,
++            "fruit_axes_m": env.unwrapped._axes_m.cpu().tolist(),
++            "fruit_mass_kg": env.unwrapped._fruit.data.body_mass.torch.cpu().tolist(),
++            "upstream_ppo": "multimodal_rl@4ac55e854b4c732534d443715a0322d4220b461c",
++        }, indent=2) + "\n")
+         wrapped, trainer = build_roto2_training(env, cfg, agent_cfg, writer)
++        trainer.headless = args.headless
+         env = wrapped
++        if args.resume_checkpoint is not None:
++            if not args.resume_checkpoint.is_file():
++                raise FileNotFoundError(args.resume_checkpoint)
++            trainer.agent.load(str(args.resume_checkpoint))
++            for module in (trainer.agent.encoder, trainer.agent.policy, trainer.agent.value):
++                module.train()
++        if args.validate_contracts:
++            from simulation.roto2_pressure.validation import validate_wrapper
++            checks = validate_wrapper(wrapped)
++            (Path(writer.log_dir) / "wrapper_validation.json").write_text(json.dumps(checks, indent=2) + "\n")
+         if args.evaluate_checkpoint is not None:
++            if args.trace_policy_output:
++                from simulation.roto2_pressure.rotation_diagnostics import trace_policy
++                trace_policy(trainer, wrapped, args.evaluate_checkpoint, args.trace_policy_output)
++                return 0
++            if args.probe_rotation_output:
++                from simulation.roto2_pressure.rotation_diagnostics import probe_rotation_actions
++                probe_rotation_actions(trainer, wrapped, args.evaluate_checkpoint, args.probe_rotation_output)
++                return 0
++            if args.audit_rotation_output:
++                from simulation.roto2_pressure.audit import audit_checkpoint
++                audit_checkpoint(trainer, wrapped, args.evaluate_checkpoint, args.audit_rotation_output)
++                return 0
++            if args.record_video:
++                from simulation.roto2_pressure.record import record_checkpoint
++                record_checkpoint(trainer, wrapped, args.evaluate_checkpoint,
++                                  args.record_video, args.seed, args.video_env_index,
++                                  args.video_max_steps)
++                return 0
+             from simulation.roto2_pressure.evaluate import evaluate_checkpoint
+             if not args.evaluate_checkpoint.is_file():
+                 raise FileNotFoundError(args.evaluate_checkpoint)
+@@ -219,12 +416,52 @@ def main(argv=None):
+             )
+             evaluate_checkpoint(trainer, wrapped, args.evaluate_checkpoint, output)
+             return 0
+-        trainer.train()
++        initial_parameters = {
++            name: torch.cat([p.detach().flatten().clone() for p in module.parameters()])
++            for name, module in (("encoder", trainer.agent.encoder),
++                                 ("policy", trainer.agent.policy), ("value", trainer.agent.value))
++        }
++        torch.save({name: writer._get_module_state(module)
++                    for name, module in writer.checkpoint_modules.items()},
++                   Path(writer.checkpoint_dir) / "initial_agent.pt")
++        import time
++        started = time.monotonic()
++        best_return, aborted = trainer.train()
++        if aborted:
++            raise RuntimeError("Upstream PPO aborted (nonfinite update or pruning)")
++        changes = {}
++        for name, before in initial_parameters.items():
++            after = torch.cat([p.detach().flatten() for p in getattr(trainer.agent, name).parameters()])
++            if not torch.isfinite(after).all():
++                raise RuntimeError(f"Nonfinite learned parameters: {name}")
++            changes[name] = float((after - before).norm())
++        if trainer.rl_update < 1 or not all(v > 0 for v in changes.values()):
++            raise RuntimeError("Training did not update all three model modules")
++        final_checkpoint = Path(writer.checkpoint_dir) / "final_agent.pt"
++        torch.save({name: writer._get_module_state(module)
++                    for name, module in writer.checkpoint_modules.items()}, final_checkpoint)
++        result = {"training_completed": True, "ppo_updates": trainer.rl_update,
++                  "training_transitions": trainer.timesteps * trainer.num_train_envs,
++                  "cumulative_training_transitions": writer.prior_transitions + trainer.timesteps * trainer.num_train_envs,
++                  "parameter_change_l2": changes, "finite_parameters": True,
++                  "elapsed_seconds": time.monotonic() - started,
++                  "final_checkpoint": str(final_checkpoint), "seed": args.seed,
++                  "variant": args.pressure_variant,
++                  "resumed_from": str(args.resume_checkpoint) if args.resume_checkpoint else None}
++        (Path(writer.log_dir) / "training_result.json").write_text(json.dumps(result, indent=2) + "\n")
++        if writer.tb_writer:
++            writer.tb_writer.flush()
++            writer.tb_writer.close()
++        print(json.dumps(result, indent=2), flush=True)
+         return 0
++    except BaseException:
++        exit_code = 1
++        traceback.print_exc()
++        raise
+     finally:
+         if env is not None:
+             env.close()
+-        application.close()
++        application.close(exit_code=exit_code)
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/simulation/roto2_pressure/FINAL_RESULTS.md b/simulation/roto2_pressure/FINAL_RESULTS.md
+new file mode 100644
+index 0000000..2e847c3
+--- /dev/null
++++ b/simulation/roto2_pressure/FINAL_RESULTS.md
+@@ -0,0 +1,56 @@
++# PPO 正式训练最终结果
++
++> **历史归档，不是当前结论。** 下文保留2026-10-19初次训练的原始报告及撤回记录。当前有效结论、后续v2–v7实验和完整证据请从[研究审阅入口](../../research/roto2_review/2026-10-20/README.md)阅读；最新v7完整一圈成功0/128。
++
++> **2026-10-20 仿真视频核验更正：下文的旋转圈数与 72.4% 成功率结论已撤回，需修正后重评。** 固定 seed2026/env0 的真实回放中，旧指标累计 6.23 圈，但逐帧四元数显示偏航全程仅在约 16.4° 范围内摆动，首末净偏航约 −5.0°；相邻姿态增量的世界 Z 投影累计仅 −0.0204 圈。训练完成及检查点有效仍成立，持续旋转与成功率结论不成立。具体原因（角速度采样/积分、状态读取或奖励利用）仍待逐物理子步核验，不能直接归因。视频与轨迹见 `artifacts/simulation/`。
++
++结果核验时间：2026-10-20T00:05:59.880539+08:00。训练于 **2026-10-19T23:23:42.379776+08:00** 正常结束。
++
++## 结论
++
++**训练链路已跑通并完成约 1 亿样本，模型学到了持续的定向旋转；当前成功率仍不足以称为可靠完成或稳定收敛。** 三个评估种子共 192 个首回合，成功 **139/192（72.40%）**，平均定向旋转 **4.52 圈/回合**，平均回合内稳定支撑 **94.62%**。
++
++## 训练完成证据
++
++- 累计 100,124,688 条训练转移；最后一段 94,279,680 条、180 次 PPO 更新，耗时 20.01 分钟，平均 78,536 条/秒。
++- 正式运行 16384 环境（16368 训练 + 16 在线评估），seed42，jacobian。
++- `training_result.json` 明确 `training_completed=true`；systemd 退出码 0、Result=success。服务显示 active/exited 是 RemainAfterExit 配置，训练进程已经退出。
++- 最终检查点 14,985,496 字节，全部 99 个保存张量有限，三个优化器 step 均为 12864。
++- 日志未发现 CUDA OOM、PhysX 缓冲区溢出或非有限 PPO 更新；训练后段在线回报上升，最后两次约 207.9 与 207.2，不足以凭两个点判定收敛。
++
++## 最终模型独立评估
++
++评估使用确定性策略，种子 2026/2027/2028 与训练种子分离，来自相同任务随机化分布。每个环境仅统计首回合，自动复位后的回合不混入。成功要求定向旋转至少一圈、至少 65% 步骤稳定支撑、完整回合无失败终止、峰值压力代理不超过 18,000 Pa。评估种子不是独立训练种子。
++
++| 评估种子 | 成功回合 | 成功率 | 平均定向旋转 圈 | 稳定支撑 | 平均回合峰值压力 Pa | 最坏峰值压力 Pa |
++|---|---:|---:|---:|---:|---:|---:|
++| 2026 | 49/64 | 76.56% | 4.773 | 93.64% | 11,059 | 34,631 |
++| 2027 | 51/64 | 79.69% | 4.741 | 97.55% | 10,793 | 35,212 |
++| 2028 | 39/64 | 60.94% | 4.052 | 92.68% | 11,799 | 37,744 |
++| 合计/回合加权均值 | 139/192 | 72.40% | 4.522 | 94.62% | 11,217 | 37,744 |
++
++## 与正式续训前比较
++
++以下仅比较相同 seed2026、相同 64 回合口径：正式续训前累计 5,845,008 条转移，最终累计 100,124,688 条。
++
++| 指标 | 正式续训前 | 最终模型 |
++|---|---:|---:|
++| 成功回合 | 26/64（40.625%） | 49/64（76.5625%） |
++| 平均定向旋转 圈 | 1.498 | 4.773 |
++| 稳定支撑 | 85.81% | 93.64% |
++| 平均回合峰值压力 Pa | 10,779 | 11,059 |
++
++## 尚未满足的部分与下一步
++
++1. **稳定性不足**：仍有 53/192 个失败终止，种子间成功率为 60.9%–79.7%。当前汇总未分解各失败终止原因，不能把全部失败归因为掉落或超压。
++2. **压力约束仍有越界**：最坏回合峰值代理压力 37.74 kPa，超过 18 kPa 阈值。汇总没有每回合压力数据，不能据此计算越界回合数；成功回合定义已排除越界。
++3. **减压机制优势尚未验证**：Jacobian 修正约在 10.4% 的回合内步骤被接受，但接受比例并不等于有效减压。需要 plain/scalar/jacobian 的同训练预算、共同种子、匹配旋转表现对照。压力由仿真接触导出，未测真实水果损伤。
++4. 下一步应保存逐回合失败原因、极端压力轨迹与代表性回放，再决定是否补训练或修正；仅凭这次结果不能断言已收敛。本轮结果核验没有更改模型、奖励或物理核心，也没有自动启动下一轮训练。
++
++## 文件
++
++- 最终模型：`/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/checkpoints/final_agent.pt`。
++- 训练完成标记：`/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/training_result.json`。
++- 检查点审计：`/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/final_checkpoint_audit.json`。
++- 原始评估和汇总：`/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40/final_evaluation`。
++- 扩容实测与实现修正：`simulation/roto2_pressure/LOCAL_VALIDATION.md`。
+diff --git a/simulation/roto2_pressure/LOCAL_VALIDATION.md b/simulation/roto2_pressure/LOCAL_VALIDATION.md
+new file mode 100644
+index 0000000..4376b1d
+--- /dev/null
++++ b/simulation/roto2_pressure/LOCAL_VALIDATION.md
+@@ -0,0 +1,150 @@
++# 本机 PPO 验收记录（2026-10-19）
++
++> **历史验收记录。** 训练链路和资源测量可供追溯，旧旋转成功指标已撤回。当前实验状态与完整数据见[研究审阅入口](../../research/roto2_review/2026-10-20/README.md)。
++
++> **2026-10-20 仿真视频核验更正：下文的旋转圈数与 72.4% 成功率结论已撤回，需修正后重评。** 固定 seed2026/env0 的真实回放中，旧指标累计 6.23 圈，但逐帧四元数显示偏航全程仅在约 16.4° 范围内摆动，首末净偏航约 −5.0°；相邻姿态增量的世界 Z 投影累计仅 −0.0204 圈。训练完成及检查点有效仍成立，持续旋转与成功率结论不成立。具体原因（角速度采样/积分、状态读取或奖励利用）仍待逐物理子步核验，不能直接归因。视频与轨迹见 `artifacts/simulation/`。
++
++目录：`/home/descfly/linkagent-ppo`。分支：`research/roto2-object-pressure-track`。
++源码基线：`cd97e7a75c83ddd20584816d8089fc08fac2dcad`；修正保留为本地改动，尚未推送。
++
++当前结果：**16384 并行环境的正式训练已完成**，累计 100,124,688 条转移。最终模型三个评估种子合计成功 139/192 回合（72.40%），尚有稳定性与压力越界问题。最新结论见 [FINAL_RESULTS.md](FINAL_RESULTS.md)；本文下方运行状态均为历史验收记录。
++
++## 环境
++
++- RTX 5090 32 GB，驱动 595.84；Python 3.12，Torch 2.10.0+cu128。
++- Isaac Sim 6.0.1.0；IsaacLab `ffff603eafc6b74264a5261cc0183d6a65390d78`。
++- PPO 来自未改动的 `multimodal_rl@4ac55e854b4c732534d443715a0322d4220b461c`。
++- 隔离解释器：`simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python`。
++- NVIDIA EULA 已得到用户明确接受。没有操作真实机械手。
++
++## 发现与修正
++
++1. 转换后 USD 的非刚体子节点与刚体同名，PhysX 接触匹配重复。仅重命名非刚体包装节点；实际网格、关节和刚体路径保留。缓存加入转换器源码哈希。
++2. 无接触点时 PhysX 返回 NaN。零接触力对应零压力贡献；有接触力却没有有限接触位置时仍报错退出。
++3. 原预抓取姿态把水果放在四指上方、远离拇指。原始 16 环境各 200 步测试的稳定三指支撑占比为 0，平均约 4.8–4.9 步终止。现在用网格求解并经真实物理筛选的握姿初始化，保留关节/位置噪声和水果几何随机化。
++4. **底层物理配置修正（已汇报）**：掌部包围指根 link0/link1 装配件；间接连接的 link1 没有被 PhysX 自动排除。只过滤掌部与这十个指根装配件的碰撞；保留掌部与远端、跨手指及手与水果的碰撞。空手对照中掌部最大内部接触力由约 952,383 N 降至约 1.24 N；数值来自 16 个候选姿态诊断，不是硬件测量。
++5. 主动关节目标同时服从其被动 mimic 从动关节的可行范围。水果质量和惯量现在实际按照随机椭球几何及密度写入 PhysX，修复了原来只采样密度却仍使用固定质量的问题。
++6. 每环境日志保留向量；终止后的堆叠帧重置；评估复位不改变训练环境的物理状态、观测或时间差分历史。四帧输入仍为 prop 280 + tactile 1728。
++7. **奖励核心实现修正（已汇报）**：把原有 −8 失败惩罚覆盖到实际全部失败终止，包括超力和低位掉落；超时不扣该惩罚。幅度、旋转奖励、压力修正公式不变。
++8. 异常退出返回非零状态；检查 PPO 的异常返回、有限参数及三个网络的实际参数变化。保存初始、当前、最终检查点及每次运行的源码快照。
++
++## 已取得的证据
++
++| 测试 | 样本口径 | 结果 |
++|---|---|---|
++| 压力算法 CPU 回归 | 6 项原有测试 | 6 项通过 |
++| 实际 PhysX 冒烟 | 8 环境 × 20 控制步 | 观测尺寸、有限观测及奖励通过 |
++| 修正握姿、质量后的保持测试 | 64 环境 × 500 步，seed42 | 78.156% 环境步具有三指支撑；有回合达到完整 479 步时限 |
++| 同一配置的随机动作测试 | 64 环境 × 500 步 | 43.309% 支撑；2.109% 步骤接受 Jacobian 修正；全程有限 |
++| 首次 PPO 接口测试 | 9,968 训练转移，5 次更新 | 三个网络都更新；检查点保存和加载通过 |
++| 256 环境 PPO 验收（失败惩罚修正前） | 499,920 训练转移，65 次更新 | 三个网络参数有限且改变；140.7 秒完成 |
++| 训练/评估隔离检查 | 256 环境，16 评估 + 240 训练 | 评估复位前后训练物理状态与四帧输入完全相同 |
++
++最终奖励修正后的训练也完成 499,920 条转移、65 次更新，耗时 139.1 秒；编码器/策略/价值网络参数变化 L2 分别为 11.700 / 2.425 / 2.977，参数均有限。运行目录：`logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_22-36-56/`。原始日志与 JSON 在 `simulation/.runtime/setup/`。
++
++### 同分布独立评估
++
++评估 seed2026，与训练 seed42 分离；训练前后各 64 个完整首回合，按首次终止掩码统计。检查点分别是该运行的 `initial_agent.pt` 与 `final_agent.pt`。
++
++| 指标 | 初始策略 | 499,920 步后 |
++|---|---:|---:|
++| 平均定向转动（圈/回合） | 0.001742 | 0.419441 |
++| 平均回合内稳定支撑比例 | 22.022% | 85.923% |
++| 平均回合长度（20 Hz 控制步） | 28.719 | 137.188 |
++| Jacobian 修正接受比例（回合均值） | 0.0198% | 8.1198% |
++| 平均回合峰值压力代理（Pa） | 4,470.7 | 11,006.0 |
++| 完整成功率 | 0/64 | 0/64 |
++| 失败终止比例 | 64/64 | 64/64 |
++
++完整成功要求定向转动至少一圈、至少 65% 步骤稳定支撑、无失败终止且峰值压力代理不超过 18,000 Pa。这次短训练证明策略已经学到更持续的握持和定向旋转，**没有达到完整任务成功，也没有证明减压优势**。活动更强的策略压力也更高，不能以不匹配旋转表现的两列结果判断压力算法优劣。
++
++上述结果证明环境有非零接触/压力信号、可更新的 PPO 和会实际触发的压力修正。它们不证明已学会连续转动，也不证明 Jacobian 方法优于 plain/scalar。减压优势仍须按 README 的共同随机种子、独立评估和匹配旋转表现标准比较；这里的压力是接触导出的代理量，不是实测果实损伤。
++
++## 本机运行
++
++```bash
++cd /home/descfly/linkagent-ppo
++bash simulation/.runtime/run_roto2.sh smoke
++bash simulation/.runtime/run_roto2.sh train --num-envs 256 --million-steps 0.5 --validate-contracts
++bash simulation/.runtime/run_roto2.sh evaluate \
++  --evaluate-checkpoint /absolute/path/to/final_agent.pt \
++  --evaluation-output /absolute/path/to/evaluation.json
++```
++
++恢复：在 train 命令后传 `--resume-checkpoint /absolute/path/to/final_agent.pt` 或 `last_agent.pt`；`--million-steps` 表示新增预算。恢复网络、优化器和归一化器，重建环境和 rollout；不是物理状态/RNG 逐位续跑。当前模型的独立评估应使用 `last_agent.pt` 或 `final_agent.pt`；上游在线评估使用冻结策略窗口，在线“最佳”分数不代替独立评估。
++
++正式训练启动预算和运行目录记录在 `simulation/.runtime/setup/status.json`。实时状态须查询服务及运行输出。进度不能当作完成标记；完成须同时存在 `training_result.json` 的 `training_completed=true` 以及最终检查点。
++
++## 恢复验收与原 256 环境正式训练启动（已由下方扩容运行接替）
++
++恢复运行 `2026-10-19_22-40-45` 继续完成 120,000 条转移、15 次更新，累计 619,920 条转移。恢复前后的初始网络、优化器及归一化器状态逐项完全一致；三个优化器的 step 均从 2,080 增至 2,560。最终检查点全部张量、两个验收运行中记录的 110 个 TensorBoard 标量样本均有限。证据：`simulation/.runtime/setup/checkpoint-audit.json`。
++
++正式训练已于本机时间 2026-10-19 22:42:57 启动：
++
++- 服务：`linkagent-roto2-ppo-20261019.service`，256 环境（240 训练 + 16 评估），seed42，jacobian。
++- 从累计 619,920 步继续，新增预算取整后为 99,379,920 条转移；目标总计 **99,999,840** 条转移，约 1 亿步。
++- 运行目录：`/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_22-42-57/`。
++- 启动后已验证当前检查点实际继续更新、所有张量有限；最近本次审计累计 965,040 条转移，三个优化器 step 均为 3,968。它是时点记录，不是后续实时进度。
++- 短程测试约 3,500–3,600 条训练转移/秒，剩余正式预算约需 8 小时，具体随运行负载变化。
++- 启动清单在 `simulation/.runtime/setup/status.json`；实时状态以服务、该运行的 `progress.json` 及完成标记核实。训练目前尚未完成。
++
++```bash
++systemctl --user status linkagent-roto2-ppo-20261019.service
++tail -n 30 /home/descfly/linkagent-ppo/simulation/.runtime/setup/formal-training.log
++```
++
++该时点的短训尚未建立完整任务成功、收敛及相对 plain/scalar 的减压优势；更新后的成功回合结果见下方扩容评估。正式训练完成后仍需独立评估最终模型。
++
++## 2026-10-19 资源扩容实测与 16384 环境续训
++
++原 256 环境训练在累计 **1,654,800** 条转移的完整检查点处暂停。检查点和进度元数据复制到 `simulation/.runtime/setup/scaling_base/`。六档试验均从这一相同状态恢复，各运行 256 个控制步、8 次 PPO 更新；计时只含采样和更新，排除场景初始化。
++
++| 环境数 | 训练转移/秒 | 显存峰值 GiB | 平均 GPU 利用率 | 平均功耗 W | 训练时间 s |
++|---:|---:|---:|---:|---:|---:|
++| 256（原验收基线） | 约 3,500–3,600 | 约 4.0 | 即时约 76% | 即时约 119 | — |
++| 512 | 7,125 | 4.50 | 74.2% | 117.1 | 17.82 |
++| 1024 | 13,463 | 5.54 | 73.4% | 134.1 | 19.17 |
++| 2048 | 24,755 | 6.85 | 74.0% | 159.9 | 21.01 |
++| 4096 | 36,593 | 9.63 | 79.6% | 205.2 | 28.54 |
++| 8192 | 55,704 | 14.69 | 83.0% | 262.6 | 37.57 |
++| 16384 | 75,826 | 25.47 | 85.8% | 334.5 | 55.26 |
++
++256 行来自先前验收和暂停前即时资源读数，后六行是同一恢复点、同一控制步数的独立扩容实测。不同环境数的试验包含不同转移条数；此表测吞吐，不作同预算学习效率结论。
++
++选择 **16384 环境（16368 训练 + 16 评估）**。相对原吞吐约提升 21 倍，相对 8192 环境提升 36.1%；显存峰值约 25.47 GiB / 31.84 GiB，保留约 6.37 GiB 余量。主机进程 RSS 峰值约 19.49 GiB，主机可用内存最低约 32.43 GiB，GPU 温度最高 60°C。继续扩大到接近满显存会减少运行余量，本轮未继续测试。
++
++**变更范围**：本机启动器 train 默认环境数由 256 改为 16384；通用任务默认值仍可显式覆盖。网络、物理模型、奖励、PPO/GAE 实现均不改动。rollout 仍为 32 控制步，8 epochs、4 mini-batches、学习率 0.000202 不变；每轮采样批量由 7,680 增至 523,776，单个 minibatch 由 1,920 增至 130,944。这会改变每百万样本的更新次数，吞吐提升不能等同于收敛速度提升。
++
++六档均准确恢复全部网络、优化器、归一化状态；每档 8 次 PPO 更新后，99 个检查点张量全部有限，三个网络均有实际参数变化。三个优化器 step 均从 6,848 增至 7,104。未发现 PhysX 接触缓冲区溢出或 CUDA OOM。证据：`simulation/.runtime/setup/scaling/results.json`、`checkpoint-audit.json` 及各档日志。
++
++### 扩容前后同种子独立评估
++
++评估均为 seed2026、64 个首回合。前者为累计 1,654,800 条转移的恢复点；后者为 16384 环境新增 4,190,208 条转移、累计 5,845,008 条转移的模型。
++
++| 指标 | 恢复点 | 16384 环境短训后 |
++|---|---:|---:|
++| 完整成功回合 | 13/64 | 26/64 |
++| 平均定向转动 圈/回合 | 1.1116 | 1.4980 |
++| 平均稳定支撑 | 85.08% | 85.81% |
++| 平均回合步数 | 285.80 | 344.30 |
++| 平均回合峰值压力代理 Pa | 11160.5 | 10778.6 |
++
++这组检查未见明显策略退化，完整任务已有成功回合；仍是单个训练种子和同分布 64 回合，不能据此宣布收敛，也不能证明 Jacobian 优于 plain/scalar。没有测量真实果实损伤。原始评估：`simulation/.runtime/setup/scaling/evaluation-comparison.json`。
++
++### 正式续训
++
++- 启动时间：2026-10-19T23:00:55.844848+08:00；服务：`linkagent-roto2-ppo-scaled-20261019.service`。
++- 从选中试验的最终模型恢复，累计 **5,845,008** 条转移；其他五个试验是独立分支，不累加进正式学习进度。
++- 新增 **94,279,680** 条转移，5760 控制步、180 个完整 PPO rollout；总目标 **100,124,688**（约 1 亿）。预算向上对齐完整 rollout，避免末尾残留未更新批次。
++- 日志：`/home/descfly/linkagent-ppo/simulation/.runtime/setup/formal-training-scaled.log`；启动清单：`simulation/.runtime/setup/scaling/formal-launch.json`。
++- 启动耗时约 3 分钟；按短测吞吐，新增预算约 21 分钟训练时间，实际以正式运行实测为准。
++- 实时目录：`simulation/.runtime/setup/formal-run.txt`；状态清单：`simulation/.runtime/setup/status.json`。完成仍以正式目录 `training_result.json` 的 `training_completed=true` 及最终检查点为准。
++
++```bash
++systemctl --user status linkagent-roto2-ppo-scaled-20261019.service
++tail -n 30 /home/descfly/linkagent-ppo/simulation/.runtime/setup/formal-training-scaled.log
++```
++
++正式运行首次检查点验收（2026-10-19T23:05:46.668220+08:00）：累计 **13,701,648 / 100,124,688** 条转移（13.68%），本轮已完成 15 次 PPO 更新。正式运行实测 **75,982 条转移/秒**；52 次资源采样平均 GPU 利用率 **87.8%**、平均功耗 **340.1 W**、显存峰值 **25.60 GiB**、最高温度 **63°C**。该时点剩余预算预计约 19.0 分钟，不是完成承诺。
++
++实际运行目录：`/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_23-03-40`。恢复前后的全部网络/优化器/归一化状态逐项一致；16384 环境下评估复位隔离通过；当前检查点所有张量有限。三个优化器 step 从 7,104 增至 7,584；编码器/策略/价值网络参数变化 L2 分别为 2.817 / 0.341 / 0.929（排除归一化统计量）。服务 active/running，日志无 PhysX 缓冲区溢出或 CUDA OOM。证据：`simulation/.runtime/setup/scaling/formal-start.json`、`formal-checkpoint-audit.json`。正式训练仍在进行。
+diff --git a/simulation/roto2_pressure/README.md b/simulation/roto2_pressure/README.md
+index 4d28805..368cd48 100644
+--- a/simulation/roto2_pressure/README.md
++++ b/simulation/roto2_pressure/README.md
+@@ -4,7 +4,9 @@
+ 
+ One right LinkerHand L20 (16 active and 5 passive mimic joints), fixed wrist, one 58–70 mm fruit, Isaac Lab 3.0, 20 Hz policy / 120 Hz physics, 24 s episode. Learn continuous rotation with minimal surface load and no drop. There is NO second hand, arm, custom PPO, recurrent belief network or dynamics ensemble.
+ 
+-**Current status:** CPU analytic regression passed. There has been **NO Isaac GPU/PhysX smoke or converged training run**; all fruit stiffness, pressure threshold and actuator values are engineering priors. This is an experimental runnable prototype, not a validated zero-damage controller.
++**Current status (2026-10-20):** Real Isaac GPU/PhysX training and independent pose-based evaluation have been run. The latest 32M-transition v7 pilot achieved **0/128 full-rotation successes**, 74.5% strict active-pad support and 18.4° mean net rotation. Earlier velocity-integral success claims, including 72.4%, are **withdrawn**. No converged continuous-rotation or zero-damage controller has been demonstrated.
++
++**Teacher/research review:** [Complete Chinese experiment report, run registry, raw logs, trajectories, videos and checkpoint download instructions](../../research/roto2_review/2026-10-20/README.md). Start there for current findings; older run snapshots preserve historical, sometimes invalid conclusions.
+ 
+ ### Recent baseline
+ 
+@@ -14,11 +16,11 @@ The source installation pins:
+ - roto SHA 0fa344e6e224f141cb6ab3ed4c2fbbbd86cf1cc2
+ - multimodal_rl SHA 4ac55e854b4c732534d443715a0322d4220b461c
+ 
+-### Three modifications, nothing else
++### Original research design and current implementation
+ 
+ 1. **Dual-sided observations.** On the hand, 5 tactile grids at 12×6 = 360 proxy taxels. On the fruit, 6 small square patches at 2×2 = 24 measured pressure channels, their first differences, and 24 validity bits. Actor also sees encoder-derived joint state, contact centroid, pressure-face moments, target spin and past action. It NEVER sees privileged fruit pose / angular velocity or all-surface pressure directly.
+ 2. **Measured action sensitivity.** A damped rank-one secant update produces Jp = d(patch pressure) / d(hand action) of shape 24×16 from online physical transitions. A similar local spin Jacobian Jw is estimated from simulation spin. No differentiable simulator and no neural pressure predictor.
+-3. **Task-tangent pressure correction.** Compute g = Jp^T (d pressure-hotspot-risk / d pressure) and suppress components parallel to Jw before applying a *small* corrected action. A correction is rejected unless secure three-finger support is present, enough valid patches exist and the local counterfactual predicts a pressure decrease with little rotation change. Pressure-drop reward is similarly gated on secure contact and forward rotation, so releasing the object cannot farm positive reward.
++3. **Task-tangent pressure correction.** Compute g = Jp^T (d pressure-hotspot-risk / d pressure) and suppress components parallel to Jw before applying a *small* corrected action. A correction is rejected unless secure three-finger support is present, enough valid patches exist and the local counterfactual predicts a pressure decrease with little rotation change. Current corrected rewards use a pressure-risk penalty and **no positive pressure-drop bonus**, to avoid rewarding release/regrasp loops. Later reward curricula and pose/contact fixes are documented in the review.
+ 
+ No claim of first invention of Broyden updating or null-space projection is made; the research contribution is testing this simple, sparse fruit-mounted sensing + task-tangent closed-loop integration against an unchanged strong tactile PPO baseline.
+ 
+@@ -50,7 +52,7 @@ Compare with identical seed and training budget, changing ONLY pressure_variant:
+ 
+ plain: RoTO 2.0 PPO with identical pressure/tactile observations but no pressure-specific reward or action residual.
+ scalar: adds conventional pressure-risk penalty, no action residual.
+-jacobian: applies local action-pressure Jacobian descent with task-tangent projection and gated pressure relief reward.
++jacobian: applies local action-pressure Jacobian descent with task-tangent projection and the same pressure-risk penalty as scalar; no positive pressure-relief reward.
+ 
+ Checkpoint: logs/roto2_pressure_fruit/<variant>_seed42/<date>/checkpoints/best_agent.pt. Metrics: TensorBoard scalars and independent post-training evaluation.
+ 
+@@ -97,4 +99,4 @@ Across at least three common random seeds and identical test distributions, at *
+ 
+ Do not report improved training reward alone. If corrected actions are never accepted, or the pressure proxy remains all zeros, the hypothesis is NOT demonstrated and the sensor/contact mapping must be audited. Source robot geometry, effective contact dynamics and virtual taxel readouts require Isaac GPU validation. Real flexible-fruit damage will require film calibration and delayed bruise measurement.
+ 
+-Source references: RoTO 2.0 arXiv:2605.21429 (2026); [IsaacLab 2026 in-hand rolling PR](https://github.com/isaac-sim/IsaacLab/pull/6345) for stable grasp reset architecture.
+\ No newline at end of file
++Source references: RoTO 2.0 arXiv:2605.21429 (2026); [IsaacLab 2026 in-hand rolling PR](https://github.com/isaac-sim/IsaacLab/pull/6345) for stable grasp reset architecture.
+diff --git a/simulation/roto2_pressure/asset.py b/simulation/roto2_pressure/asset.py
+index 9b43255..a66260e 100644
+--- a/simulation/roto2_pressure/asset.py
++++ b/simulation/roto2_pressure/asset.py
+@@ -27,6 +27,19 @@ def _author_native_mimics(usd_path: Path) -> list[str]:
+     stage = Usd.Stage.Open(str(usd_path))
+     if stage is None:
+         raise RuntimeError(f"Unable to open converted hand USD: {usd_path}")
++    # PhysX's path matcher also finds a same-named visual child beneath a
++    # rigid body. Give those non-physical wrappers unique names without
++    # changing rigid-body paths, geometry, joints or collision parameters.
++    duplicates = [prim.GetPath() for prim in Usd.PrimRange(stage.GetPseudoRoot())
++                  if prim.GetParent() and not prim.HasAPI(UsdPhysics.RigidBodyAPI)
++                  and prim.GetParent().HasAPI(UsdPhysics.RigidBodyAPI)
++                  and prim.GetName() == prim.GetParent().GetName()]
++    for path in duplicates:
++        editor = Usd.NamespaceEditor(stage)
++        editor.MovePrimAtPath(path, path.GetParentPath().AppendChild("visual_geometry"))
++        if not editor.CanApplyEdits():
++            raise RuntimeError(f"Cannot disambiguate non-rigid geometry at {path}")
++        editor.ApplyEdits()
+     joints = {prim.GetName(): prim for prim in Usd.PrimRange(stage.GetPseudoRoot())
+               if prim.IsA(UsdPhysics.RevoluteJoint)}
+     required = set(ACTIVE_JOINTS) | set(MIMICS)
+@@ -54,6 +67,16 @@ def _author_native_mimics(usd_path: Path) -> list[str]:
+     # finger distal collisions remain enabled for contact-aware manipulation.
+     links = [p for p in Usd.PrimRange(stage.GetPseudoRoot())
+              if p.HasAPI(UsdPhysics.RigidBodyAPI)]
++    # The vendor palm encloses the lateral/proximal bearing assemblies.
++    # link0 is directly connected, but link1 is a grandchild and PhysX does
++    # not automatically filter it. Treat both as the same assembly; retain
++    # palm/distal and all cross-finger collision pairs.
++    palm = next(p for p in links if p.GetName() == "base_link")
++    palm_pairs = UsdPhysics.FilteredPairsAPI.Apply(palm).GetFilteredPairsRel()
++    for link in links:
++        if any(link.GetName() == f"{finger}_link{index}"
++               for finger in FINGERS for index in (0, 1)):
++            palm_pairs.AddTarget(link.GetPath())
+     for i, link in enumerate(links):
+         name = link.GetName()
+         digit = next((d for d in FINGERS if name.startswith(d + "_")), None)
+@@ -74,10 +97,12 @@ def ensure_single_hand_usd(force: bool = False) -> Path:
+     if not (URDF.parent / "meshes/base_link.STL").is_file():
+         raise FileNotFoundError("L20 vendor meshes are missing (check Git LFS)")
+     source_hash = _sha(URDF)
++    builder_hash = _sha(Path(__file__))
+     if MANIFEST.exists() and not force:
+         manifest = json.loads(MANIFEST.read_text())
+         asset = Path(manifest["usd_path"])
+         if (manifest.get("source_sha256") == source_hash
++                and manifest.get("builder_sha256") == builder_hash
+                 and asset.is_file() and _sha(asset) == manifest.get("asset_sha256")):
+             return asset
+ 
+@@ -113,6 +138,7 @@ def ensure_single_hand_usd(force: bool = False) -> Path:
+     manifest = {
+         "source_urdf": str(URDF.relative_to(ROOT)),
+         "source_sha256": source_hash,
++        "builder_sha256": builder_hash,
+         "usd_path": str(usd),
+         "asset_sha256": _sha(usd),
+         "joint_names": names,
+diff --git a/simulation/roto2_pressure/audit.py b/simulation/roto2_pressure/audit.py
+new file mode 100644
+index 0000000..3b8648a
+--- /dev/null
++++ b/simulation/roto2_pressure/audit.py
+@@ -0,0 +1,52 @@
++"""Diagnostic sampling at every physics substep; never used for policy updates."""
++import json
++from pathlib import Path
++import numpy as np
++import torch
++from scipy.spatial.transform import Rotation
++from .core import quat_inv_rotate
++
++@torch.no_grad()
++def audit_checkpoint(trainer, wrapped, checkpoint, output):
++    agent=trainer.agent
++    saved=torch.load(checkpoint,map_location=wrapped.device,weights_only=True)
++    for name in ('encoder','policy'):
++        getattr(agent,name).load_state_dict(saved[name]);getattr(agent,name).eval()
++    agent.encoder.state_preprocessor.load_state_dict(saved['state_preprocessor'])
++    states,_=wrapped.reset(hard=True);raw=wrapped._unwrapped
++    n=min(8,raw.num_envs);sub=[];contacts=[];control=[];done=[]
++    original=raw.scene.update
++    def sample(dt,*args,**kwargs):
++        result=original(dt,*args,**kwargs)
++        if dt>0:
++            sub.append(torch.cat((raw._fruit.data.root_pose_w.torch[:n],
++                                  raw._fruit.data.root_ang_vel_w.torch[:n],
++                                  raw._fruit.data.root_com_vel_w.torch[:n]),-1).cpu().numpy().copy())
++        return result
++    raw.scene.update=sample
++    try:
++        for step in range(200):
++            action,_,_=agent.policy.act(agent.encoder(states),deterministic=True)
++            states,_,term,trunc,info=wrapped.step(action)
++            q=raw._wxyz(raw._robot.data.body_quat_w.torch[:n,raw._contact_body_ids[:5]])
++            p=raw._robot.data.body_pos_w.torch[:n,raw._contact_body_ids[:5]]
++            local=quat_inv_rotate(q,raw._contact_positions[:n,:5]-p)
++            contacts.append(torch.cat((local,raw._forces[:n,:5,None]),-1).cpu().numpy().copy())
++            control.append(info['step']['rotation_rate'][:n].cpu().numpy().copy())
++            done.append((term|trunc).reshape(-1)[:n].cpu().numpy().copy())
++    finally: raw.scene.update=original
++    sub=np.array(sub);contacts=np.array(contacts);done=np.array(done)
++    output=Path(output);output.parent.mkdir(parents=True,exist_ok=True)
++    np.savez_compressed(output.with_suffix('.npz'),substeps=sub,contacts=contacts,control_omega=control,done=done)
++    summaries=[]
++    for i in range(n):
++        end=int(np.flatnonzero(done[:,i])[0]) if done[:,i].any() else 200
++        end=max(1,end);a=sub[:end*raw.cfg.decimation,i];q=Rotation.from_quat(a[:,3:7]);rv=(q[1:]*q[:-1].inv()).as_rotvec();w=a[:,7:10]
++        summaries.append({'env':i,'control_steps':end,'pose_z_turns':float(rv[:,2].sum()/(2*np.pi)),
++                          'physics_omega_integral_turns':float(w[:,2].sum()*raw.cfg.sim.dt/(2*np.pi)),
++                          'control_omega_integral_turns':float(np.array(control)[:end,i].sum()*raw.step_dt/(2*np.pi)),
++                          'substep_omega_pose_rate_rmse':float(np.sqrt(np.mean((rv/raw.cfg.sim.dt-w[1:])**2))),
++                          'finger_contact_fractions':(contacts[:end,i,:,3]>.15).mean(0).tolist(),
++                          'positive_contact_local_xyz_m':[[float(x) for x in np.median(contacts[:end,i,j,:3][contacts[:end,i,j,3]>.15],axis=0)] if (contacts[:end,i,j,3]>.15).any() else None for j in range(5)]})
++    result={'checkpoint':str(checkpoint),'physics_dt':raw.cfg.sim.dt,'decimation':raw.cfg.decimation,'substeps':len(sub),'per_env':summaries}
++    output.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+diff --git a/simulation/roto2_pressure/calibrate_reset.py b/simulation/roto2_pressure/calibrate_reset.py
+new file mode 100644
+index 0000000..2aa6265
+--- /dev/null
++++ b/simulation/roto2_pressure/calibrate_reset.py
+@@ -0,0 +1,58 @@
++"""Bounded real-physics search for a reset grasp; never a policy controller.
++
++Candidates are saved separately. This module never overwrites the task's reset
++file, changes architecture/physics, or reports a grasp as learned rotation.
++"""
++import json
++from pathlib import Path
++import torch
++
++@torch.no_grad()
++def search_pad_resets(env, output, rounds=24, horizon=48):
++    raw=env.unwrapped;device=raw.device;n=raw.num_envs
++    if n%8:raise ValueError('Use a multiple of 8 environments')
++    root=Path(__file__).resolve().parents[2];base=root/'simulation/.runtime/setup/reward_v2'
++    seeds=list(raw._reset_grasps or [])
++    seeds.extend(json.loads((root/'simulation/roto2_pressure/reset_grasps.json').read_text()))
++    for filename in ['antipodal_pad_candidates.json','surface_pad_candidates.json','pad_grasp_separated_candidates.json']:
++        seeds.extend(x for x in json.loads((base/filename).read_text()) if x['cost']<1)
++    seeds=seeds[:8]
++    while len(seeds)<8:seeds.append(seeds[-1])
++    means=torch.tensor([x['joint_positions']+x['fruit_position_hand'] for x in seeds],device=device)
++    sigma=torch.full_like(means,.07);sigma[:,16:]=.004
++    floor=sigma*.22;per=n//8;elite=max(8,per//8)
++    bounds=raw._active_limits[0]
++    lo=torch.cat((bounds[:,0]+.001,torch.tensor([.01,-.04,.12],device=device)))
++    hi=torch.cat((bounds[:,1]-.001,torch.tensor([.12,.04,.235],device=device)))
++    zero=torch.zeros_like(raw._action);archive=[];output=Path(output);output.parent.mkdir(parents=True,exist_ok=True)
++    for iteration in range(rounds):
++        x=means[:,None]+torch.randn(8,per,19,device=device)*sigma[:,None]
++        x[:,0]=means;x=x.clamp(lo,hi);flat=x.reshape(n,19)
++        rows=flat.cpu().tolist()
++        raw._reset_grasps=[{'joint_positions':r[:16],'fruit_position_hand':r[16:]} for r in rows]
++        env.reset();pending=torch.ones(n,device=device,dtype=torch.bool)
++        full=torch.zeros(n,device=device);coverage=full.clone();age=full.clone();failed=pending.clone().fill_(False);pad_sum=torch.zeros(n,5,device=device)
++        for t in range(horizon):
++            _,_,term,trunc,info=env.step(zero)
++            p=info['step']['pad_contact'].float();active=pending.float()
++            complete=info['step']['secure_support'].float()
++            full+=active*complete;pad_sum+=active[:,None]*p
++            coverage+=active*(4*p[:,0]+2*p[:,1:].sum(-1).clamp(max=2))
++            age+=active;done=term|trunc;failed|=pending&term;pending&=~done
++        score=30*full/horizon+coverage/horizon+2*age/horizon-10*failed.float()
++        score=score.reshape(8,per);ids=score.topk(elite,dim=1).indices
++        selected=torch.gather(x,1,ids[...,None].expand(-1,-1,19))
++        means=.25*means+.75*selected.mean(1)
++        sigma=torch.maximum(floor,.3*sigma+.7*selected.std(1))
++        best=score.reshape(-1).topk(8).indices
++        for i in best.cpu().tolist():
++            archive.append({'id':f'physx_pad_cem_{iteration}_{i}',
++                'joint_positions':rows[i][:16],'fruit_position_hand':rows[i][16:],
++                'score':float(score.reshape(-1)[i]),'pad_support_fraction':float(full[i]/horizon),
++                'per_finger_pad_fraction':(pad_sum[i]/horizon).cpu().tolist(),
++                'failed':bool(failed[i]),'steps_survived':int(age[i]),'nominal_sphere_only':True})
++            archive[-1]['hand_posture'] = raw.cfg.hand_posture
++        archive.sort(key=lambda r:r['score'],reverse=True);archive=archive[:32]
++        output.write_text(json.dumps(archive,indent=2)+'\n')
++        print(json.dumps({'round':iteration+1,'best':archive[0],'max_support_this_round':float(full.max()/horizon)}),flush=True)
++    return archive
+diff --git a/simulation/roto2_pressure/core.py b/simulation/roto2_pressure/core.py
+index 88d5d7c..9a52e7a 100644
+--- a/simulation/roto2_pressure/core.py
++++ b/simulation/roto2_pressure/core.py
+@@ -180,7 +180,7 @@ def rotation_reward(
+         "speed_tracking": 0.13 * follow * supported,
+         "stable_support": 0.025 * supported,
+         "unsecured_motion": -0.075 * (1.0 - supported),
+-        # Pressure risk is now optimized as a separate primal-dual PPO constraint.
++        # Legacy reward retained for historical reproducibility; not used by reward v2.
+         "centering": -0.04 * (translation_error / 0.05).square().clamp(max=9),
+         "tilt": -0.06 * tilt_error.square(),
+         "slip": -0.03 * slip_speed.clamp(0.0, 1.0),
+diff --git a/simulation/roto2_pressure/env.py b/simulation/roto2_pressure/env.py
+index 58558d4..5c203e8 100644
+--- a/simulation/roto2_pressure/env.py
++++ b/simulation/roto2_pressure/env.py
+@@ -6,6 +6,8 @@ pressure leakage to the actor. Simulation-only dense load is a critic target.
+ from __future__ import annotations
+ 
+ import torch
++import json
++from pathlib import Path
+ 
+ import isaaclab.sim as sim_utils
+ from isaaclab.assets import Articulation, RigidObject
+@@ -25,6 +27,7 @@ from .core import (
+ )
+ from .pressure_track import PressureJacobianTrack, hotspot_cost
+ from .env_cfg import FruitRotationEnvCfg
++from .reward_geometry import pose_heading, heading_delta, pad_contact, reward_v2, REWARD_VERSION, pad_approach_quality, valid_rotation_step, staged_rotation_reward, continuous_rotation_reward
+ 
+ CONTACT_BODIES = {
+     "thumb": "thumb_link4",
+@@ -53,15 +56,33 @@ class FruitRotationEnv(DirectRLEnv):
+         if len(self._follower_ids) != 5:
+             raise RuntimeError(f"Expected five passive follower joints: {follower_names}")
+         self._all_joint_ids = list(range(self._robot.num_joints))
++        self._active_limits = self._robot.data.joint_pos_limits.torch[:, self._active_ids].clone()
++        for follower, (driver, ratio) in MIMICS.items():
++            fid = self._robot.find_joints(follower)[0][0]
++            did = ACTIVE_JOINTS.index(driver)
++            limits = self._robot.data.joint_pos_limits.torch[:, fid] / ratio
++            self._active_limits[:, did, 0] = torch.maximum(self._active_limits[:, did, 0], limits[:, 0])
++            self._active_limits[:, did, 1] = torch.minimum(self._active_limits[:, did, 1], limits[:, 1])
+         self._contact_body_ids = [
+             self._robot.find_bodies(CONTACT_BODIES[name])[0][0]
+             for name in (*FINGERS, "palm")
+         ]
+         self._q_target = self._robot.data.default_joint_pos.torch[:, self._active_ids].clone()
++        self._grasp_reference = self._q_target.clone()
+         self._action = torch.zeros((self.num_envs, 16), device=self.device)
+         self._previous_action = self._action.clone()
+         self._goal = torch.ones(self.num_envs, device=self.device) * 0.6
+         self._angle = torch.zeros(self.num_envs, device=self.device)
++        self._heading_prev = self._angle.clone()
++        self._pose_delta = self._angle.clone()
++        self._rotation_highwater = self._angle.clone()
++        self._curriculum_angle = self._angle.clone()
++        self._support_average = self._angle.clone()
++        self._milestones_paid = torch.zeros(self.num_envs, device=self.device, dtype=torch.long)
++        self._reward_path_valid = torch.ones(self.num_envs, device=self.device, dtype=torch.bool)
++        self._new_rotation_progress = self._angle.clone()
++        self._previous_upright = torch.ones(self.num_envs, device=self.device, dtype=torch.bool)
++        self._previous_pad_support = torch.zeros(self.num_envs, device=self.device, dtype=torch.bool)
+         self._pressure_prev = torch.zeros((self.num_envs, 24), device=self.device)
+         self._panel_valid = torch.ones((self.num_envs, 6), device=self.device)
+         self._overpressure_streak = torch.zeros(
+@@ -87,6 +108,9 @@ class FruitRotationEnv(DirectRLEnv):
+         )
+         self._dense_sites, self._sparse_sites = surface_sites(self.device)
+         self._forces = torch.zeros((self.num_envs, 6), device=self.device)
++        self._pad_forces = torch.zeros((self.num_envs, 5), device=self.device)
++        self._pad_quality = self._pad_forces.clone()
++        self._pad_valid = self._pad_forces.bool()
+         self._force_vectors = torch.zeros((self.num_envs, 6, 3), device=self.device)
+         self._contact_positions = torch.zeros((self.num_envs, 6, 3), device=self.device)
+         self._dense = torch.zeros((self.num_envs, 96), device=self.device)
+@@ -96,6 +120,14 @@ class FruitRotationEnv(DirectRLEnv):
+         # below also supports a wxyz default pose; order is fixed at reset.
+         q0 = self._fruit.data.default_root_pose.torch[0, 3:7]
+         self._native_xyzw = bool(q0[3].abs() > q0[0].abs())
++        if cfg.hand_posture == "palm_up":
++            qbase = self._wxyz(self._robot.data.root_pose_w.torch[:, 3:7])
++            normal = quat_rotate(qbase, qbase.new_tensor((1., 0., 0.)).expand(self.num_envs, -1))
++            if not bool((normal[:, 2] > .999).all()):
++                raise RuntimeError("Palm-up mount validation failed: local +X must point world +Z")
++        self._reset_grasps = None
++        if cfg.reset_grasps_file:
++            self._reset_grasps = json.loads(Path(cfg.reset_grasps_file).read_text())
+ 
+     def _wxyz(self, native_quat: torch.Tensor) -> torch.Tensor:
+         return torch.cat((native_quat[..., 3:], native_quat[..., :3]), -1) if self._native_xyzw else native_quat
+@@ -141,15 +173,27 @@ class FruitRotationEnv(DirectRLEnv):
+         light.func("/World/Light", light)
+ 
+     def _measure(self) -> None:
++        pose = self._fruit.data.root_pose_w.torch
+         for i, name in enumerate((*FINGERS, "palm")):
+             data = self._sensors[name].data
+             matrix = data.force_matrix_w
+             location = data.contact_pos_w
+             if matrix is None or location is None:
+                 raise RuntimeError("Missing filtered physical contacts; never substitute fake sensor readings")
+-            self._force_vectors[:, i] = matrix.torch[:, 0, 0]
+-            self._contact_positions[:, i, :] = location.torch[:, 0, 0]
+-        pose = self._fruit.data.root_pose_w.torch
++            force = matrix.torch[:, 0, 0]
++            position = location.torch[:, 0, 0]
++            # PhysX explicitly uses NaN for an absent contact point. A zero
++            # resultant has no pressure contribution; its position is unused.
++            # Reject nonfinite measurements if an actual force is present.
++            has_force = torch.linalg.vector_norm(force, dim=-1) > 0
++            if not torch.isfinite(force).all() or (
++                has_force & ~torch.isfinite(position).all(-1)
++            ).any():
++                raise RuntimeError(f"Invalid physical contact measurement: {name}")
++            self._force_vectors[:, i] = force
++            self._contact_positions[:, i, :] = torch.where(
++                has_force[:, None], position, pose[:, :3]
++            )
+         quat = self._wxyz(pose[:, 3:7])
+         # Project measured contact resultant onto the local ellipsoid normal.
+         # Force magnitude alone conflates normal compression with tangential
+@@ -182,10 +226,12 @@ class FruitRotationEnv(DirectRLEnv):
+         tip_body_quat = self._wxyz(
+             self._robot.data.body_quat_w.torch[:, self._contact_body_ids[:5]]
+         )
+-        contact_xy = quat_inv_rotate(
++        contact_local = quat_inv_rotate(
+             tip_body_quat, self._contact_positions[:, :5] - tip_body_pos
+-        )[..., :2].clamp(-0.0048, 0.0048)
+-        self._taxels = fingertip_taxels(self._forces[:, :5], contact_xy)
++        )
++        contact_xy, self._pad_forces, self._pad_quality, self._pad_valid = pad_contact(
++            contact_local, self._forces[:, :5])
++        self._taxels = fingertip_taxels(self._pad_forces, contact_xy)
+ 
+     def _pre_physics_step(self, actions: torch.Tensor) -> None:
+         if actions.shape != self._action.shape:
+@@ -194,8 +240,8 @@ class FruitRotationEnv(DirectRLEnv):
+         self._previous_action.copy_(self._action)
+         valid = self._panel_valid.repeat_interleave(4, dim=-1)
+         grip_ok = (
+-            (self._forces[:, 0] > self.cfg.minimum_support_force_n)
+-            & ((self._forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2)
++            (self._pad_forces[:, 0] > self.cfg.minimum_support_force_n)
++            & ((self._pad_forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2)
+         )
+         applied = self._track.correct(
+             proposed, (self._sparse / PRESSURE_REF_PA).clamp(0, 4),
+@@ -204,7 +250,7 @@ class FruitRotationEnv(DirectRLEnv):
+         self._action.copy_(applied)
+         self._executed.copy_(applied)
+         q = self._robot.data.joint_pos.torch[:, self._active_ids]
+-        bounds = self._robot.data.joint_pos_limits.torch[:, self._active_ids]
++        bounds = self._active_limits
+         lead = self.cfg.maximum_joint_target_lead_rad
+         proposal = self._q_target + applied * self.cfg.maximum_joint_target_delta_rad
+         proposal = torch.maximum(q - lead, torch.minimum(q + lead, proposal))
+@@ -234,11 +280,18 @@ class FruitRotationEnv(DirectRLEnv):
+ 
+     def _get_dones(self):
+         self._measure()
++        current_heading = pose_heading(self._wxyz(self._fruit.data.root_pose_w.torch[:, 3:7]))
++        self._pose_delta.copy_(heading_delta(self._heading_prev, current_heading))
++        self._heading_prev.copy_(current_heading)
++        self._angle += self._pose_delta
++        directed = self._angle * self._goal.sign()
++        self._new_rotation_progress.copy_((directed - self._rotation_highwater).clamp_min(0))
++        self._rotation_highwater.copy_(torch.maximum(directed, self._rotation_highwater))
+         self._track.observe(
+             self._executed,
+             (self._sparse / PRESSURE_REF_PA).clamp(0, 4),
+             self._panel_valid.repeat_interleave(4, dim=-1),
+-            (self._fruit.data.root_ang_vel_w.torch[:, 2] / 6.0).clamp(-2, 2),
++            (self._pose_delta / (self.step_dt * 6.0)).clamp(-2, 2),
+         )
+         pressure_peak = self._dense.amax(-1)
+         self._overpressure_streak = torch.where(
+@@ -259,10 +312,8 @@ class FruitRotationEnv(DirectRLEnv):
+         return failure, timeout
+ 
+     def _get_rewards(self):
+-        w = self._fruit.data.root_ang_vel_w.torch
+-        signed_omega = w[:, 2]
+         dt = self.cfg.sim.dt * self.cfg.decimation
+-        self._angle += signed_omega.clamp(-12.0, 12.0) * dt
++        signed_omega = self._pose_delta / dt
+         fruit_pose = self._fruit.data.root_pose_w.torch
+         quat = self._wxyz(fruit_pose[:, 3:7])
+         z_axis = torch.tensor((0.0, 0.0, 1.0), device=self.device).expand(self.num_envs, -1)
+@@ -271,60 +322,86 @@ class FruitRotationEnv(DirectRLEnv):
+         center_error = torch.linalg.vector_norm(
+             fruit_pose[:, :3] - self._center_reference_w, dim=-1
+         )
+-        reward, terms = rotation_reward(
+-            signed_omega=signed_omega,
+-            desired_speed=self._goal,
+-            force_n=self._forces,
+-            dense_pressure=(self._dense / PRESSURE_REF_PA).clamp(0, 4),
+-            translation_error=center_error,
+-            tilt_error=tilt,
+-            slip_speed=self._slip_speed() / 0.25,
+-            actions=self._action,
+-            previous_actions=self._previous_action,
+-            dt=dt,
+-        )
+-        terminated = (
+-            (center_error > self.cfg.maximum_fruit_center_displacement_m)
+-            | (self._overpressure_streak >= self.cfg.overpressure_termination_steps)
+-        )
+-        # One additional pressure-vector signal, not another PPO architecture:
+-        # local hotspot potential relief = <dD/dp, p_old - p_now>.
+-        # It has no positive reward when pressure drops due to losing contact.
++        approach = pad_approach_quality(
++            self._robot.data.body_pos_w.torch[:, self._contact_body_ids[:5]],
++            self._wxyz(self._robot.data.body_quat_w.torch[:, self._contact_body_ids[:5]]),
++            fruit_pose[:, :3], quat, self._axes_m)
++        pose_step_valid = valid_rotation_step(self._previous_upright, tilt, self._pose_delta)
++        self._previous_upright.copy_(tilt < .5)
++        if self.cfg.reward_stage == "continuous":
++            ready = self.episode_length_buf > round(1.0 / dt)
++            self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))
++            safe_path = self._reward_path_valid & ~self.reset_terminated
++            reward, terms, secure_support = continuous_rotation_reward(
++                self._pose_delta, self._goal, self._pad_forces, self._pad_quality,
++                self._forces[:, :5], center_error, tilt, self._action,
++                self._previous_action, approach,
++                self._robot.data.joint_pos.torch[:, self._active_ids],
++                self._grasp_reference, safe_path, ready, dt)
++        elif self.cfg.reward_stage in ("regrasp", "spin"):
++            # Exclude the first second's settling from curriculum progress.
++            # Evaluation still uses the full unmodified pose trajectory.
++            ready = self.episode_length_buf > round(1.0 / dt)
++            full = (self._pad_forces[:, 0] > .15) & ((self._pad_forces[:, 1:] > .15).sum(-1) >= 2) & (tilt < .5)
++            self._support_average.lerp_(full.float(), .05)
++            self._curriculum_angle += self._goal.sign()*self._pose_delta*ready.float()
++            self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))
++            safe_path = self._reward_path_valid & ~self.reset_terminated & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa)
++            reward, terms, secure_support, paid = staged_rotation_reward(
++                self._pose_delta, self._goal, self._pad_forces, self._pad_quality,
++                center_error, tilt, self._action, self._previous_action, approach,
++                self._support_average, self._curriculum_angle, self._milestones_paid,
++                safe_path, ready, dt, self.cfg.reward_stage)
++            self._milestones_paid.copy_(paid)
++        else:
++            reward, terms, secure_support = reward_v2(
++                self._pose_delta, self._goal, self._pad_forces, self._pad_quality,
++                self._new_rotation_progress * pose_step_valid, center_error, tilt,
++                self._action, self._previous_action, self._previous_pad_support, dt, approach, self.cfg.reward_stage)
++        self._previous_pad_support.copy_(secure_support)
++        # DirectRLEnv computes this exact failure mask before rewards. Keep
++        # over-force / low-height failures subject to the same -60 penalty;
++        # time-limit truncation is not a physical failure.
++        terminated = self.reset_terminated
++        # Pressure reduction is never itself a positive reward. This closes
++        # the release/regrasp cycle loophole while keeping the Jacobian intact.
+         valid = self._panel_valid.repeat_interleave(4, dim=-1)
+-        measured_risk = hotspot_cost(
+-            (self._sparse / PRESSURE_REF_PA).clamp(0, 4), valid
+-        )
+-        relief = (self._previous_risk - measured_risk).clamp(-1, 1)
+-        secure_grasp = (
+-            (self._forces[:, 0] > self.cfg.minimum_support_force_n)
+-            & ((self._forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2)
+-        )
+-        forward_progress = signed_omega * self._goal > 0.0
+-        bonus = relief * (secure_grasp & forward_progress).float()
+-        self._pressure_relief.copy_(bonus.detach())
++        measured_risk = hotspot_cost((self._sparse / PRESSURE_REF_PA).clamp(0, 4), valid)
++        self._pressure_relief.zero_()
+         self._previous_risk.copy_(measured_risk.detach())
+-        if self.cfg.pressure_variant == "scalar":
+-            reward = reward - 0.15 * measured_risk
+-        elif self.cfg.pressure_variant == "jacobian":
+-            reward = reward + self.cfg.pressure_relief_weight * bonus
+-        reward = reward - 8.0 * terminated.float()
+-        secure_support = ((self._forces[:, 0] > self.cfg.minimum_support_force_n)
+-                          & ((self._forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2))
++        if self.cfg.pressure_variant != "plain":
++            reward -= 0.05 * measured_risk
++        reward -= (40.0 if self.cfg.reward_stage == "contact" else 60.0) * terminated.float()
+         self.extras["step"] = {
+             "rotation_rate": signed_omega.detach().clone(),
++            "pose_delta_rad": self._pose_delta.detach().clone(),
++            "pose_step_valid": pose_step_valid.detach().clone(),
++            "fruit_pose_native": fruit_pose.detach().clone(),
++            "reported_angular_velocity_z": self._fruit.data.root_ang_vel_w.torch[:, 2].detach().clone(),
++            "pad_contact": (self._pad_forces > .15).detach().clone(),
++            "pad_quality": self._pad_quality.detach().clone(),
++            "pad_approach_quality": approach.detach().clone(),
++            "reward_rotation": terms["rotation"].detach().clone(),
++            "reward_terms": {k:v.detach().clone() for k,v in terms.items()},
++            "curriculum_angle_rad": self._curriculum_angle.detach().clone(),
++            "curriculum_milestones_paid": self._milestones_paid.detach().clone(),
+             "pressure_risk": pressure_risk((self._dense / PRESSURE_REF_PA).clamp(0, 4)).detach().clone(),
+             "peak_pressure_pa": self._dense.amax(-1).detach().clone(),
+             "unwrapped_rotation_rad": self._angle.detach().clone(),
+             "secure_support": secure_support.detach().clone(),
++            "jacobian_accepted": self._track.last_accepted.detach().clone(),
+             "slip_speed": (self._slip_speed() / 0.25).detach().clone(),
+         }
+         self.extras["log"] = {
+-            "rotation/signed_speed_rad_s": (signed_omega * self._goal.sign()).mean().detach(),
+-            "rotation/secure_grasp": secure_grasp.float().mean().detach(),
+-            "pressure/sparse_hotspot_risk": measured_risk.mean().detach(),
+-            "pressure/peak_pressure_proxy_pa": self._dense.amax(-1).mean().detach(),
+-            "pressure/relief_bonus": bonus.mean().detach(),
+-            "pressure/gradient_track_acceptance": self._track.last_accepted.float().mean().detach(),
++            "rotation/signed_speed_rad_s": (signed_omega * self._goal.sign()).detach().clone(),
++            "rotation/secure_grasp": secure_support.float().detach().clone(),
++            "pressure/sparse_hotspot_risk": measured_risk.detach().clone(),
++            "pressure/peak_pressure_proxy_pa": self._dense.amax(-1).detach().clone(),
++            "reward/rotation": terms["rotation"].detach().clone(),
++            "contact/pad_approach": approach.mean(-1).detach().clone(),
++            "contact/pad_quality": self._pad_quality.mean(-1).detach().clone(),
++            "contact/pad_count": (self._pad_forces > .15).sum(-1).float().detach().clone(),
++            "pressure/gradient_track_acceptance": self._track.last_accepted.float().detach().clone(),
+         }
+         return reward
+ 
+@@ -394,13 +471,28 @@ class FruitRotationEnv(DirectRLEnv):
+             raise RuntimeError(f"Policy layout drift: {policy.shape[-1]}")
+         # 2026 RoTO 2.0 data contract: 4-frame tactile and proprioception.
+         # The policy never gets privileged exact fruit state or dense oracle.
+-        return {"policy": {
++        self._last_observations = {"policy": {
+             "tactile": policy[:, :432],
+             "prop": policy[:, 432:],
+         }}
++        return self._last_observations
+ 
+-    def get_observations(self):
+-        return self._get_observations()
++    def get_observations(self, env_ids=None):
++        if env_ids is None:
++            return self._last_observations
++        # Evaluation resets must not consume another temporal delta/noise
++        # sample or replace the already-stacked training observation.
++        previous = self._last_observations
++        pressure = self._pressure_prev.clone()
++        centroid = self._contact_centroid_prev.clone()
++        fresh = self._get_observations()
++        keep = torch.ones(self.num_envs, device=self.device, dtype=torch.bool)
++        keep[env_ids] = False
++        self._pressure_prev[keep] = pressure[keep]
++        self._contact_centroid_prev[keep] = centroid[keep]
++        for key in fresh["policy"]:
++            fresh["policy"][key][keep] = previous["policy"][key][keep]
++        return fresh
+ 
+     def set_spaces(self, single_obs, obs, single_action, action):
+         # Used by RoTO 2.0 common_utils.make_env without copying PPO code.
+@@ -414,6 +506,10 @@ class FruitRotationEnv(DirectRLEnv):
+             env_ids = self._ids if hasattr(self, "_ids") else torch.arange(
+                 self.num_envs, device=self.device
+             )
++        # Keep full per-environment metrics for the upstream train/eval split.
++        self.extras["counters"] = {
++            "episode_rotation_abs_turns": self._angle.abs().clone() / (2 * torch.pi)
++        }
+         super()._reset_idx(env_ids)
+         n = len(env_ids)
+         joint_pos = self._robot.data.default_joint_pos.torch[env_ids].clone()
+@@ -424,13 +520,17 @@ class FruitRotationEnv(DirectRLEnv):
+         if pregrasp.numel() != 16:
+             raise RuntimeError("Unexpected LinkAgent calibrated pregrasp manifold")
+         active_ids = self._active_ids
+-        active_limits = self._robot.data.joint_pos_limits.torch[
+-            env_ids[:, None], active_ids
+-        ]
+-        noise = torch.randn((n, 16), device=self.device) * 0.018
++        active_limits = self._active_limits[env_ids]
++        noise = torch.randn((n, 16), device=self.device) * self.cfg.reset_joint_noise_rad
+         active = (pregrasp + noise).clamp(
+             min=active_limits[..., 0], max=active_limits[..., 1]
+         )
++        if self._reset_grasps is not None:
++            candidates = self._reset_grasps
++            chosen = [candidates[int(i) % len(candidates)] for i in env_ids.cpu()]
++            active = torch.tensor([c["joint_positions"] for c in chosen],
++                                  device=self.device, dtype=joint_pos.dtype)
++            active = (active + noise).clamp(min=active_limits[..., 0], max=active_limits[..., 1])
+         joint_pos[:, active_ids] = active
+         for follower_name, (driver_name, ratio) in MIMICS.items():
+             fid = self._robot.find_joints(follower_name)[0][0]
+@@ -457,7 +557,12 @@ class FruitRotationEnv(DirectRLEnv):
+             finger_mean - palm, dim=-1, eps=1e-6
+         )
+         initial = finger_mean + direction * 0.034
+-        initial += torch.randn_like(initial) * 0.002
++        if self._reset_grasps is not None:
++            local = torch.tensor([c["fruit_position_hand"] for c in chosen],
++                                 device=self.device, dtype=joint_pos.dtype)
++            base = self._robot.data.root_pose_w.torch[env_ids]
++            initial = base[:, :3] + quat_rotate(self._wxyz(base[:, 3:]), local)
++        initial += torch.randn_like(initial) * self.cfg.reset_position_noise_m
+         root_pose = self._fruit.data.default_root_pose.torch[env_ids].clone()
+         root_pose[:, :3] = initial
+         self._fruit.write_root_pose_to_sim_index(
+@@ -467,6 +572,7 @@ class FruitRotationEnv(DirectRLEnv):
+             root_velocity=torch.zeros((n, 6), device=self.device), env_ids=env_ids
+         )
+         self._q_target[env_ids] = active
++        self._grasp_reference[env_ids] = active
+         self._action[env_ids] = 0
+         self._previous_action[env_ids] = 0
+         self._goal[env_ids] = (
+@@ -475,7 +581,22 @@ class FruitRotationEnv(DirectRLEnv):
+                 *self.cfg.target_angular_speed_rad_s
+             )
+         )
++        if self.cfg.goal_direction != "both":
++            self._goal[env_ids] = self._goal[env_ids].abs() * (1 if self.cfg.goal_direction == "positive" else -1)
+         self._angle[env_ids] = 0
++        self._heading_prev[env_ids] = pose_heading(self._wxyz(root_pose[:, 3:7]))
++        self._pose_delta[env_ids] = 0
++        self._rotation_highwater[env_ids] = 0
++        self._curriculum_angle[env_ids] = 0
++        self._support_average[env_ids] = 0
++        self._milestones_paid[env_ids] = 0
++        self._reward_path_valid[env_ids] = True
++        self._new_rotation_progress[env_ids] = 0
++        self._previous_pad_support[env_ids] = False
++        self._previous_upright[env_ids] = True
++        self._pad_forces[env_ids] = 0
++        self._pad_quality[env_ids] = 0
++        self._pad_valid[env_ids] = False
+         self._pressure_prev[env_ids] = 0
+         self._center_reference_w[env_ids] = initial
+         self._contact_centroid_prev[env_ids] = tips.mean(dim=1)
+@@ -484,12 +605,10 @@ class FruitRotationEnv(DirectRLEnv):
+         self._previous_risk[env_ids] = 0
+         self._pressure_relief[env_ids] = 0
+         self._executed[env_ids] = 0
++        self._forces[env_ids] = 0
++        self._sparse[env_ids] = 0
++        self._dense[env_ids] = 0
+         self._panel_valid[env_ids] = (
+             torch.rand((n, 6), device=self.device)
+             > self.cfg.sparse_panel_dropout_probability
+         ).float()
+-        self.extras["log"] = {
+-            "episode_rotation_abs_turns": (
+-                self._angle[env_ids].abs().mean() / (2.0 * torch.pi)
+-            ).detach(),
+-        }
+diff --git a/simulation/roto2_pressure/env_cfg.py b/simulation/roto2_pressure/env_cfg.py
+index 4f397bc..06b96dd 100644
+--- a/simulation/roto2_pressure/env_cfg.py
++++ b/simulation/roto2_pressure/env_cfg.py
+@@ -22,10 +22,32 @@ if not ASSET_USD or not Path(ASSET_USD).is_file():
+     raise RuntimeError("Launch via script/train_fruit_rotation.py to build and select single L20 USD")
+ 
+ 
++def randomize_rotation_fruit(env, env_ids, *, asset_name, axis_ranges_m,
++                             density_range_kg_m3, accepted_mass_kg, maximum_axis_ratio):
++    """Keep the sampled ellipsoid's geometry, density, mass and inertia consistent."""
++    import math
++    from pxr import Gf, UsdPhysics
++    randomize_correlated_ellipsoid_geometry(
++        env, env_ids, asset_name=asset_name, axis_ranges_m=axis_ranges_m,
++        density_range_kg_m3=density_range_kg_m3, accepted_mass_kg=accepted_mass_kg,
++        maximum_axis_ratio=maximum_axis_ratio)
++    axes = env._prestartup_fruit_axes_m
++    masses = (4 * math.pi / 3) * axes.prod(-1) * env._prestartup_fruit_density_kg_m3
++    paths = sim_utils.find_matching_prim_paths(env.scene[asset_name].cfg.prim_path)
++    for path, dimensions, mass in zip(paths, axes, masses):
++        x, y, z = [float(v) for v in dimensions]
++        m = float(mass)
++        api = UsdPhysics.MassAPI.Apply(env.sim.stage.GetPrimAtPath(path))
++        api.CreateMassAttr().Set(m)
++        api.CreateDiagonalInertiaAttr().Set(Gf.Vec3f(
++            m * (y*y + z*z) / 5, m * (x*x + z*z) / 5, m * (x*x + y*y) / 5))
++    env._prestartup_fruit_mass_kg = masses
++
++
+ @configclass
+ class RotationEvents:
+     geometry = EventTerm(
+-        func=randomize_correlated_ellipsoid_geometry,
++        func=randomize_rotation_fruit,
+         mode="prestartup",
+         params={
+             "asset_name": "fruit",
+@@ -54,7 +76,14 @@ class FruitRotationEnvCfg(DirectRLEnvCfg):
+     num_eval_envs = 16
+     num_actions = 16
+     debug = False
++    domain_profile = "full"  # launch-time randomization curriculum
++    hand_posture = "vertical"  # optional palm-up mount; policy dimensions unchanged
++    goal_direction = "both"  # single-direction curriculum; existing goal observation
++    reward_stage = "rotation"  # "contact" curriculum or full "rotation" objective
+     pressure_variant = "jacobian"  # "plain" | "scalar" | "jacobian"
++    reset_grasps_file = str(Path(__file__).with_name("reset_pad_grasps.json"))
++    reset_joint_noise_rad = 0.018
++    reset_position_noise_m = 0.002
+     pressure_relief_weight = 0.25
+     action_space = ACTION_DIM
+     observation_space = POLICY_DIM
+@@ -94,7 +123,8 @@ class FruitRotationEnvCfg(DirectRLEnvCfg):
+                 solver_position_iteration_count=8,
+                 solver_velocity_iteration_count=4,
+             ),
+-            activate_contact_sensors=True,
++            # The task explicitly activates its six nested contact bodies.
++            activate_contact_sensors=False,
+         ),
+         actuators={
+             "g20_active": ImplicitActuatorCfg(
+diff --git a/simulation/roto2_pressure/evaluate.py b/simulation/roto2_pressure/evaluate.py
+index c017950..4cae2a0 100644
+--- a/simulation/roto2_pressure/evaluate.py
++++ b/simulation/roto2_pressure/evaluate.py
+@@ -11,6 +11,7 @@ import math
+ from pathlib import Path
+ 
+ import torch
++from .reward_geometry import reward_version
+ 
+ 
+ @torch.no_grad()
+@@ -31,7 +32,12 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+     raw = wrapped._unwrapped
+     n = wrapped.num_envs
+     pending = torch.ones(n, dtype=torch.bool, device=wrapped.device)
+-    target_direction = raw._goal.detach().sign()
++    target_direction = raw._goal.detach().sign().clone()
++    initial_pose = raw._fruit.data.root_pose_w.torch.clone()
++    pose_trace, active_trace, support_trace, pad_trace = [], [], [], []
++    pad_counts = torch.zeros((n, 5), device=wrapped.device)
++    pad_quality_sum = pad_counts.clone()
++    approach_quality_sum = pad_counts.clone()
+     signed_progress = torch.zeros(n, device=wrapped.device)
+     support = torch.zeros(n, device=wrapped.device)
+     pressure_max = torch.zeros(n, device=wrapped.device)
+@@ -39,6 +45,7 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+     steps = torch.zeros(n, device=wrapped.device)
+     failed = torch.zeros(n, dtype=torch.bool, device=wrapped.device)
+     correction_accepted = torch.zeros(n, device=wrapped.device)
++    reward_term_totals = {}
+     max_steps = int(raw.max_episode_length + 2)
+     dt = float(raw.cfg.sim.dt * raw.cfg.decimation)
+ 
+@@ -49,6 +56,10 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+         action, _, _ = agent.policy.act(latents, deterministic=True)
+         states, _, terminated, truncated, info = wrapped.step(action)
+         events = info.get("step", {})
++        for key, value in events.get("reward_terms", {}).items():
++            if key not in reward_term_totals:
++                reward_term_totals[key] = torch.zeros(n, device=wrapped.device)
++            reward_term_totals[key][pending] += value[pending]
+         required = ("rotation_rate", "peak_pressure_pa", "secure_support",
+                     "unwrapped_rotation_rad")
+         missing = [key for key in required if key not in events]
+@@ -57,33 +68,107 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+         omega = events["rotation_rate"].reshape(-1)
+         proxy_pressure = events["peak_pressure_pa"].reshape(-1)
+         support_flag = events["secure_support"].reshape(-1).float()
+-        signed_progress[pending] += omega[pending] * target_direction[pending] * dt
++        pose_trace.append(events["fruit_pose_native"].cpu().numpy().copy())
++        active_trace.append(pending.cpu().numpy().copy())
++        support_trace.append((support_flag.bool() & events["pose_step_valid"]).float().cpu().numpy().copy())
++        pad_trace.append(events["pad_contact"].cpu().numpy().copy())
++        pad_counts[pending] += events["pad_contact"][pending].float()
++        pad_quality_sum[pending] += events["pad_quality"][pending]
++        approach_quality_sum[pending] += events["pad_approach_quality"][pending]
++        signed_progress[pending] += events["pose_delta_rad"][pending] * target_direction[pending]
+         support[pending] += support_flag[pending]
+         pressure_max[pending] = torch.maximum(
+             pressure_max[pending], proxy_pressure[pending]
+         )
+         pressure_sum[pending] += proxy_pressure[pending]
+-        correction_accepted[pending] += raw._track.last_accepted[pending].float()
++        correction_accepted[pending] += events["jacobian_accepted"][pending].float()
+         steps[pending] += 1
+         done = (terminated | truncated).reshape(-1)
+         failed[pending & done] = terminated.reshape(-1)[pending & done]
+         pending &= ~done
+     if bool(pending.any()):
+         raise RuntimeError("Evaluation episodes did not terminate within episode horizon")
++    # Independent offline reconstruction from recorded poses, not reward counters.
++    import numpy as np
++    from scipy.spatial.transform import Rotation
++    poses = np.array(pose_trace)
++    all_poses = np.concatenate([initial_pose.cpu().numpy()[None], poses])
++    q = all_poses[..., 3:7]
++    if not raw._native_xyzw:
++        q = q[..., [1,2,3,0]]
++    mat = Rotation.from_quat(q.reshape(-1,4)).as_matrix().reshape(len(q),n,3,3)
++    headings = np.arctan2(mat[...,1,0], mat[...,0,0])
++    offline_delta = np.arctan2(np.sin(np.diff(headings,axis=0)), np.cos(np.diff(headings,axis=0)))
++    active = np.array(active_trace)
++    direction = target_direction.cpu().numpy()
++    offline_turns = (offline_delta * active).sum(0) * direction / (2*math.pi)
++    error = np.max(np.abs(offline_turns - signed_progress.cpu().numpy()/(2*math.pi)))
++    if error > 1e-4:
++        raise RuntimeError(f'Pose/reward rotation mismatch {error} turns')
++    directed_path = np.cumsum(offline_delta*active,axis=0)*direction
++    highwater = np.maximum.accumulate(np.maximum(directed_path,0),axis=0)
++    increments = np.diff(np.concatenate([np.zeros((1,n)),highwater]),axis=0)
++    supported_new_turns = (increments*np.array(support_trace)*active).sum(0)/(2*math.pi)
++    upright_fraction = ((mat[1:,...,2,2]>.5)*active).sum(0)/active.sum(0).clip(1)
++    output.parent.mkdir(parents=True, exist_ok=True)
++    np.savez_compressed(output.with_suffix('.npz'), poses=poses, initial_pose=initial_pose.cpu().numpy(),
++                        active=active, support=support_trace, pads=pad_trace, target_direction=direction)
+     mean_pressure = pressure_sum / steps.clamp_min(1)
+     grip_fraction = support / steps.clamp_min(1)
+     success = (
+         (signed_progress >= 2.0 * math.pi)
++        & torch.as_tensor(supported_new_turns >= 1.,device=wrapped.device)
++        & torch.as_tensor(upright_fraction >= .95,device=wrapped.device)
++        & torch.as_tensor((np.abs(offline_delta)*active).max(0) < .5,device=wrapped.device)
+         & (grip_fraction >= 0.65)
+         & (pressure_max <= raw.cfg.maximum_pressure_proxy_pa)
+         & ~failed
+     )
++    settling_steps = round(1. / dt)
++    after_settle_turns = (offline_delta[settling_steps:]*active[settling_steps:]).sum(0)*direction/(2*math.pi)
++    late_steps = round(10. / dt)
++    late_turns = (offline_delta[late_steps:]*active[late_steps:]).sum(0)*direction/(2*math.pi)
++    small_angle_success = ((after_settle_turns >= 1/12) & (grip_fraction.cpu().numpy() >= .5)
++                          & (upright_fraction >= .95) & ~failed.cpu().numpy()
++                          & ((np.abs(offline_delta)*active).max(0) < .5)
++                          & (pressure_max.cpu().numpy() <= raw.cfg.maximum_pressure_proxy_pa))
+     result = {
+         "baseline": "RoTO2_2026_multimodal_rl_unchanged",
+         "variant": raw.cfg.pressure_variant,
+         "checkpoint": str(checkpoint),
+         "episodes": n,
+-        "success_definition": ">=2pi positive rotation, >=65% secure grip, no fall, below proxy pressure limit",
++        "reward_version": reward_version(raw.cfg.reward_stage), "evaluation_reward_stage": raw.cfg.reward_stage,
++        "domain_profile": raw.cfg.domain_profile,
++        "hand_posture": raw.cfg.hand_posture,
++        "goal_direction": raw.cfg.goal_direction,
++        "target_angular_speed_rad_s": raw.cfg.target_angular_speed_rad_s,
++        "mean_reward_term_totals": {k:float(v.mean()) for k,v in reward_term_totals.items()},
++        "small_angle_curriculum_success_fraction": float(small_angle_success.mean()),
++        "small_angle_curriculum_definition": "after first 1s: >=30deg net target-direction pose rotation, >=50% strict pad support, >=95% upright, no failure, pressure below limit, no pose jump; NOT full-task success",
++        "mean_after_settling_directed_turns": float(after_settle_turns.mean()),
++        "mean_after_10s_directed_turns": float(late_turns.mean()),
++        "direction_results": {str(int(s)): {"episodes":int((direction==s).sum()),
++            "mean_directed_turns":float(offline_turns[direction==s].mean()),
++            "mean_after_settling_directed_turns":float(after_settle_turns[direction==s].mean())}
++            for s in (-1,1) if (direction==s).any()},
++        "rotation_source": "independently reconstructed unwrapped material-axis heading from actual quaternion poses",
++        "success_definition": ">=1 net directed pose turn AND >=1 new turn with thumb+2 active pads; >=65% pad support; >=95% upright; no physical failure; below pressure limit",
++        "pose_metric_max_error_turns": float(error),
++        "maximum_pose_heading_step_rad": float((np.abs(offline_delta)*active).max()),
++        "mean_supported_new_turns": float(supported_new_turns.mean()),
++        "mean_per_finger_pad_quality": (pad_quality_sum / steps[:,None].clamp_min(1)).mean(0).cpu().tolist(),
++        "mean_per_finger_approach_quality": (approach_quality_sum / steps[:,None].clamp_min(1)).mean(0).cpu().tolist(),
++        "mean_per_finger_pad_contact_fraction": (pad_counts / steps[:,None].clamp_min(1)).mean(0).cpu().tolist(),
++        "per_episode": [{"env":i,"directed_pose_turns":float(offline_turns[i]),
++                         "goal_direction":float(direction[i]),
++                         "after_settling_directed_turns":float(after_settle_turns[i]),
++                         "after_10s_directed_turns":float(late_turns[i]),
++                         "upright_fraction":float(upright_fraction[i]),
++                         "small_angle_curriculum_success":bool(small_angle_success[i]),
++                         "supported_new_turns":float(supported_new_turns[i]),
++                         "pad_support_fraction":float(grip_fraction[i]),
++                         "failed":bool(failed[i]),"success":bool(success[i]),
++                         "steps":int(steps[i])} for i in range(n)],
+         "success_fraction": float(success.float().mean()),
+         "mean_directed_rotation_radians": float(signed_progress.mean()),
+         "mean_directed_rotations": float(signed_progress.mean() / (2 * math.pi)),
+@@ -95,7 +180,8 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+         "mean_jacobian_acceptance_fraction": float(
+             (correction_accepted / steps.clamp_min(1)).mean()
+         ),
+-        "simulation_physx_verified_in_this_chat": False,
++        "mean_episode_steps": float(steps.mean()),
++        "simulation_physx_rollout_completed": True,
+         "measured_real_fruit_damage": False,
+         "pressure_source": "Gaussian contact-normal-force synthetic surface proxy",
+     }
+diff --git a/simulation/roto2_pressure/record.py b/simulation/roto2_pressure/record.py
+new file mode 100644
+index 0000000..5dc5a4c
+--- /dev/null
++++ b/simulation/roto2_pressure/record.py
+@@ -0,0 +1,195 @@
++"""Film an actual PhysX first episode, with visual-only orientation markers."""
++from __future__ import annotations
++
++import json
++import math
++from pathlib import Path
++import subprocess
++
++import numpy as np
++from PIL import Image, ImageDraw, ImageFont
++import torch
++
++
++@torch.no_grad()
++def record_checkpoint(trainer, wrapped, checkpoint: Path, output: Path,
++                      seed: int, env_index: int = 0, max_steps: int = 480):
++    if not 0 <= env_index < wrapped.num_envs:
++        raise ValueError("Video environment index is out of range")
++    output.parent.mkdir(parents=True, exist_ok=True)
++    agent = trainer.agent
++    modules = torch.load(checkpoint, map_location=wrapped.device, weights_only=True)
++    for key in ("encoder", "policy"):
++        getattr(agent, key).load_state_dict(modules[key])
++        getattr(agent, key).eval()
++    if agent.encoder.state_preprocessor is not None:
++        agent.encoder.state_preprocessor.load_state_dict(modules["state_preprocessor"])
++    states, _ = wrapped.reset(hard=True)
++    raw = wrapped._unwrapped
++    direction = float(raw._goal[env_index].sign())
++    dt = float(raw.cfg.sim.dt * raw.cfg.decimation)
++    fps = round(1 / dt)
++
++    # Explicitly follow measured poses: adding children after Fabric initialization
++    # can leave their inherited transforms stale. These have no physics APIs.
++    from pxr import UsdGeom, Gf
++    from isaaclab.sim.utils.stage import get_current_stage
++    stage = get_current_stage()
++    from .core import quat_rotate
++    marker_ops = []
++    marker_offsets = []
++    for i, (axis, color) in enumerate([((1, 0, 0), (1, .95, .75)),
++                                      ((0, 1, 0), (.2, .8, .95)),
++                                      ((0, 0, 1), (.95, .85, .1))]):
++        marker = UsdGeom.Sphere.Define(stage, f"/World/VideoOrientationMarker_{i}")
++        marker.CreateRadiusAttr(.0027)
++        marker.CreateDisplayColorAttr([Gf.Vec3f(*color)])
++        marker_ops.append(UsdGeom.Xformable(marker).AddTranslateOp())
++        marker_offsets.append(axis)
++    offsets = torch.tensor(marker_offsets, device=raw.device) * raw._axes_m[env_index] * .98
++
++    def update_markers():
++        pose = raw._fruit.data.root_pose_w.torch[env_index]
++        quat = raw._wxyz(pose[3:7])
++        positions = pose[:3] + quat_rotate(quat.expand(3, -1), offsets)
++        for op, pos in zip(marker_ops, positions.cpu().tolist()):
++            op.Set(Gf.Vec3d(*pos))
++        return pose.detach().cpu().tolist()
++
++    from .reward_geometry import pad_frames
++    centers, ux, vy, _ = pad_frames(raw.device)
++    corners = centers[:,None] + torch.tensor([[-1.,-1.],[-1.,1.],[1.,1.],[1.,-1.]],device=raw.device)[None,:,0:1]*.0048*ux[:,None] + torch.tensor([[-1.,-1.],[-1.,1.],[1.,1.],[1.,-1.]],device=raw.device)[None,:,1:2]*.0072*vy[:,None]
++    pad_ops = []
++    for j in range(5):
++        group = []
++        for k in range(4):
++            dot = UsdGeom.Sphere.Define(stage, f'/World/VideoPad_{j}_{k}')
++            dot.CreateRadiusAttr(.0012)
++            color = dot.CreateDisplayColorAttr([Gf.Vec3f(.9,.6,.1)])
++            group.append((UsdGeom.Xformable(dot).AddTranslateOp(), color))
++        pad_ops.append(group)
++    def update_pads():
++        ids = raw._contact_body_ids[:5]
++        q = raw._wxyz(raw._robot.data.body_quat_w.torch[env_index,ids])
++        pos = raw._robot.data.body_pos_w.torch[env_index,ids]
++        points = pos[:,None] + quat_rotate(q[:,None].expand(-1,4,-1),corners)
++        for j in range(5):
++            active = bool(raw._pad_forces[env_index,j] > .15)
++            color = Gf.Vec3f(.1,.95,.3) if active else Gf.Vec3f(.9,.6,.1)
++            for k,(op,attr) in enumerate(pad_ops[j]):
++                op.Set(Gf.Vec3d(*points[j,k].cpu().tolist()));attr.Set([color])
++    initial_pose = update_markers()
++    update_pads()
++
++    origin = raw.scene.env_origins[env_index].cpu().numpy()
++    capture = raw.video_recorder._capture
++    capture.cfg.eye = tuple(origin + np.array((.34, -.34, 1.09)))
++    capture.cfg.lookat = tuple(origin + np.array((.065, 0, .88)))
++    if raw.cfg.hand_posture == "palm_up":
++        capture.cfg.eye = tuple(origin + np.array((.18, -.36, 1.32)))
++        capture.cfg.lookat = tuple(origin + np.array((-.12, 0, .96)))
++    capture.cfg.window_width = 1280
++    capture.cfg.window_height = 720
++    for _ in range(35):
++        frame = raw.render()
++    if frame is None or frame.shape != (720, 1280, 3) or np.std(frame) < 3:
++        raise RuntimeError("Renderer did not produce a nonblank 1280x720 RGB image")
++
++    font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
++    stage_label = {"contact":"接触课程", "rotation":"转动课程", "regrasp":"小角度换指课程", "spin":"双向转动课程", "continuous":"连续转动课程"}[raw.cfg.reward_stage]
++    font = ImageFont.truetype(font_path, 22)
++    small = ImageFont.truetype(font_path, 17)
++    command = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
++               "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", "1280x720",
++               "-r", str(fps), "-i", "-", "-an", "-c:v", "libx264",
++               "-preset", "fast", "-crf", "19", "-pix_fmt", "yuv420p",
++               "-movflags", "+faststart", str(output)]
++    encoder = subprocess.Popen(command, stdin=subprocess.PIPE)
++    trace = []
++    turns = 0.0
++    support_steps = 0
++    peak = 0.0
++    ended = False
++    failed = False
++    last_frame = None
++    try:
++        for step in range(min(max_steps, int(raw.max_episode_length + 2))):
++            latent = agent.encoder(states)
++            action, _, _ = agent.policy.act(latent, deterministic=True)
++            states, _, terminated, truncated, info = wrapped.step(action)
++            event = info["step"]
++            turns += float(event["rotation_rate"][env_index]) * direction * dt / (2 * math.pi)
++            pressure = float(event["peak_pressure_pa"][env_index])
++            support = bool(event["secure_support"][env_index])
++            support_steps += support
++            peak = max(peak, pressure)
++            failed = bool(terminated.reshape(-1)[env_index])
++            ended = bool((terminated | truncated).reshape(-1)[env_index])
++            # Auto-reset happens inside step(). Do not show the newly reset pose
++            # as if it were the failed/finished terminal state.
++            if ended and last_frame is not None:
++                frame = last_frame
++                pose = None
++            else:
++                pose = update_markers()
++                update_pads()
++                frame = raw.render().copy()
++                last_frame = frame
++            im = Image.fromarray(frame)
++            draw = ImageDraw.Draw(im)
++            draw.rectangle((0, 0, 1280, 103), fill=(17, 24, 35))
++            draw.text((24, 13), f"PPO {stage_label}  |  真实 PhysX 仿真  |  种子 {seed} / 环境 {env_index}", font=font, fill="white")
++            draw.text((24, 50), f"时间 {(step+1)*dt:5.2f} 秒    实际姿态转角 {turns:6.3f} 圈    压力 {pressure/1000:5.1f} kPa", font=font, fill=(255, 196, 136))
++            draw.rectangle((0, 678, 1280, 720), fill=(17, 24, 35))
++            draw.text((24, 690), "原速 | 果实彩点显示姿态 | 指尖四角：橙色无有效触摸 / 绿色有效触摸 | 压力为代理量", font=small, fill=(200, 210, 222))
++            if ended:
++                label = f"回合结束：实际净转角 {turns:.3f} 圈；有效区域承托 {support_steps/(step+1):.1%}"
++                draw.rectangle((24, 121, 1000, 188), fill=(125, 40, 35))
++                draw.text((39, 132), label, font=font, fill="white")
++                draw.text((39, 162), "回合结束：画面停留在自动复位前一帧，指标为终止步数值", font=small, fill="white")
++            encoder.stdin.write(np.asarray(im).tobytes())
++            if step in (0, 100, 250) or ended:
++                im.save(output.with_name(f"{output.stem}_frame{step:03d}.jpg"))
++            trace.append({'step':step+1,'time_s':(step+1)*dt,'directed_turns':turns,
++                          'secure_support':support,'pressure_pa':pressure,
++                          'failed':failed,'ended':ended,'fruit_pose_native':event['fruit_pose_native'][env_index].cpu().tolist(),
++                          'pad_contact':event['pad_contact'][env_index].cpu().tolist()})
++            if ended:
++                # A clearly marked two-second still lets the viewer read the result.
++                for _ in range(2*fps):
++                    encoder.stdin.write(np.asarray(im).tobytes())
++                break
++        encoder.stdin.close()
++        if encoder.wait() != 0:
++            raise RuntimeError("Video encoding failed")
++    finally:
++        if encoder.poll() is None:
++            encoder.kill()
++            encoder.wait()
++    from scipy.spatial.transform import Rotation
++    all_poses = np.array([initial_pose] + [t['fruit_pose_native'] for t in trace])
++    q = all_poses[:,3:7]
++    if not raw._native_xyzw: q=q[:,[1,2,3,0]]
++    matrices=Rotation.from_quat(q).as_matrix()
++    headings=np.arctan2(matrices[:,1,0],matrices[:,0,0])
++    delta=np.arctan2(np.sin(np.diff(headings)),np.cos(np.diff(headings)))
++    offline_turns=float(delta.sum()*direction/(2*math.pi))
++    if abs(offline_turns-turns)>1e-4: raise RuntimeError('Video pose/metric mismatch')
++    result = {'checkpoint' :str(checkpoint), 'seed':seed, 'env_index':env_index,
++              'parallel_envs':wrapped.num_envs, 'physics_steps_recorded':len(trace),
++              'domain_profile':raw.cfg.domain_profile, 'reward_stage':raw.cfg.reward_stage,
++              'hand_posture':raw.cfg.hand_posture,
++              'training_goal_direction':raw.cfg.goal_direction,
++              'task_acceptance_claimed':False,
++              'fps':fps,'real_time_playback':True,'episode_completed':ended,
++              'failure_termination':failed,'directed_turns':turns,
++              'secure_support_fraction':support_steps/max(1,len(trace)),
++              'peak_pressure_proxy_pa':peak,
++              'independent_pose_turns':offline_turns,
++              'rotation_metric_status':'VERIFIED against independent scipy quaternion heading reconstruction',
++              'pad_geometry':'vendor sensor-cap mesh fitted prior; not hardware calibrated',
++              'goal_direction':direction,
++              'terminal_frame_note':'Last pre-reset pose is held at terminal step; 2s labeled end card follows.',
++              'visual_only_orientation_markers':True,'trace':trace,'video':str(output)}
++    output.with_suffix('.json').write_text(json.dumps(result,indent=2)+'\n')
++    print(json.dumps({k:v for k,v in result.items() if k!='trace'},indent=2),flush=True)
+diff --git a/simulation/roto2_pressure/reset_grasps.json b/simulation/roto2_pressure/reset_grasps.json
+new file mode 100644
+index 0000000..b86ab66
+--- /dev/null
++++ b/simulation/roto2_pressure/reset_grasps.json
+@@ -0,0 +1,30 @@
++[
++  {
++    "cost": 0.06409270265767467,
++    "joint_positions": [
++      0.10152548202091602,
++      1.0652900113552597,
++      1.1487242584060917,
++      1.2666024747688556,
++      0.622703990127734,
++      0.8534427155998333,
++      -0.1314613188982489,
++      -0.03970169504158722,
++      -0.048383970106635164,
++      -0.2070890658384004,
++      -1.0399987014633838,
++      0.4856964339527179,
++      0.439943399421661,
++      1.214377909728442,
++      1.0989075068964484,
++      0.6203561264822111
++    ],
++    "fruit_position_hand": [
++      0.0815745707826538,
++      -0.005532627711728068,
++      0.17417035974224818
++    ],
++    "id": "l20_mesh_candidate_14_physx_verified",
++    "validation": "64 environments x 500 hold steps: secure support 0.7815625; random-action acceptance 0.02109375; seed42, randomized ellipsoid and mass. This is a reset prior, not trained policy performance."
++  }
++]
+diff --git a/simulation/roto2_pressure/reset_pad_grasps.json b/simulation/roto2_pressure/reset_pad_grasps.json
+new file mode 100644
+index 0000000..dcc45b2
+--- /dev/null
++++ b/simulation/roto2_pressure/reset_pad_grasps.json
+@@ -0,0 +1,41 @@
++[
++  {
++    "id": "physx_pad_cem_19_202",
++    "joint_positions": [
++      0.2106989324092865,
++      0.8457632660865784,
++      0.7818941473960876,
++      0.71794593334198,
++      0.5218458771705627,
++      0.39936283230781555,
++      0.03296276554465294,
++      0.07510653883218765,
++      -0.05554172396659851,
++      -0.02387128956615925,
++      -0.8687267899513245,
++      0.1841430366039276,
++      0.4199410378932953,
++      0.5489440560340881,
++      1.0936288833618164,
++      0.5866495370864868
++    ],
++    "fruit_position_hand": [
++      0.0798209086060524,
++      0.014558540657162666,
++      0.19255883991718292
++    ],
++    "score": 36.58333206176758,
++    "pad_support_fraction": 0.8958333730697632,
++    "per_finger_pad_fraction": [
++      1.0,
++      0.8958333730697632,
++      0.9583333730697632,
++      0.0,
++      0.0
++    ],
++    "failed": false,
++    "steps_survived": 48,
++    "nominal_sphere_only": true,
++    "validation_note": "64/64 independent nominal 64 mm sphere environments, seed2029, 480 control steps: zero physical failures; mean active thumb+two-pad support 0.9672201. Full original randomization support only 0.0339193; use domain curriculum. This is a reset prior, NOT learned rotation."
++  }
++]
+diff --git a/simulation/roto2_pressure/reset_pad_grasps_palm_up.json b/simulation/roto2_pressure/reset_pad_grasps_palm_up.json
+new file mode 100644
+index 0000000..ed42d1c
+--- /dev/null
++++ b/simulation/roto2_pressure/reset_pad_grasps_palm_up.json
+@@ -0,0 +1,42 @@
++[
++  {
++    "id": "physx_pad_cem_16_90",
++    "joint_positions": [
++      0.3148348927497864,
++      0.7717865109443665,
++      0.7318739891052246,
++      0.6251166462898254,
++      0.6199179887771606,
++      0.3375157415866852,
++      -0.05949685350060463,
++      0.07163085788488388,
++      -0.0608929879963398,
++      -0.2590000033378601,
++      -0.8093823790550232,
++      0.17671440541744232,
++      0.3601316511631012,
++      0.47551801800727844,
++      1.1111153364181519,
++      0.5674958825111389
++    ],
++    "fruit_position_hand": [
++      0.08047444373369217,
++      0.012176710180938244,
++      0.19301559031009674
++    ],
++    "score": 40.0,
++    "pad_support_fraction": 1.0,
++    "per_finger_pad_fraction": [
++      1.0,
++      1.0,
++      1.0,
++      0.0,
++      0.0
++    ],
++    "failed": false,
++    "steps_survived": 48,
++    "nominal_sphere_only": true,
++    "hand_posture": "palm_up",
++    "validation_note": "Palm-up nominal 64mm, seed2053: 16 environments x480 steps, no physical failures, mean secure three-pad support 0.2559895981. Reset calibration only, not learned performance; full support is not yet stable."
++  }
++]
+diff --git a/simulation/roto2_pressure/reward_geometry.py b/simulation/roto2_pressure/reward_geometry.py
+new file mode 100644
+index 0000000..e30822f
+--- /dev/null
++++ b/simulation/roto2_pressure/reward_geometry.py
+@@ -0,0 +1,208 @@
++"""Reward/sensor geometry only; no policy or PPO changes.
++
++Pad frames are engineering priors fitted to the vendor distal sensor-cap STL,
++not hardware calibration. Coordinates are in each distal link frame (metres).
++"""
++import torch
++from .core import quat_rotate
++
++REWARD_VERSION = 'pose_pad_v6'
++
++
++def pose_heading(quat_wxyz):
++    # Heading of the material X axis. A full revolution must actually change
++    # orientation; spinning velocity reports and roll/pitch loops are not turns.
++    x = torch.zeros_like(quat_wxyz[..., 1:]); x[..., 0] = 1
++    axis = quat_rotate(quat_wxyz, x)
++    return torch.atan2(axis[..., 1], axis[..., 0])
++
++
++def heading_delta(previous, current):
++    return torch.atan2(torch.sin(current - previous), torch.cos(current - previous))
++
++
++def pad_frames(device, dtype=torch.float32):
++    normal = torch.tensor([[0., .49, .87]] + [[.86, 0., .51]] * 4, device=device, dtype=dtype)
++    normal = torch.nn.functional.normalize(normal, dim=-1)
++    back = torch.tensor([[-.007996, .024621, .000033]] + [[-.010314, .005054, .021898]] * 4,
++                        device=device, dtype=dtype)
++    center = back + .0035 * normal
++    u = torch.tensor([[1., 0., 0.]] + [[0., 1., 0.]] * 4, device=device, dtype=dtype)
++    v = torch.cross(normal, u, dim=-1)
++    return center, u, v, normal
++
++
++def pad_contact(local_points, normal_forces):
++    center, u, v, normal = pad_frames(local_points.device, local_points.dtype)
++    relative = local_points - center
++    xy = torch.stack(((relative*u).sum(-1), (relative*v).sum(-1)), -1)
++    depth = (relative*normal).sum(-1)
++    # Never clamp a point outside the active rectangle into a taxel.
++    inside = (xy[..., 0].abs() <= .0048) & (xy[..., 1].abs() <= .0072)
++    front = (depth >= -.0015) & (depth <= .0040)
++    valid = inside & front & (normal_forces > .025)
++    # Smooth bounded guidance toward the active face; no invented contact force.
++    outside_xy = torch.relu(xy.abs() - xy.new_tensor([.0048, .0072]))
++    outside_z = torch.relu(-.0015 - depth) + torch.relu(depth - .004)
++    distance2 = outside_xy.square().sum(-1) + outside_z.square()
++    quality = torch.exp(-distance2 / (2*.004**2)) * (normal_forces / .3).clamp(0, 1)
++    return xy, normal_forces * valid, quality, valid
++
++
++def reward_v2(delta, goal, pad_forces, pad_quality, new_progress, translation,
++              tilt, actions, previous_actions, previous_support, dt, approach_quality=None, stage="rotation"):
++    directed = goal.sign() * delta
++    thumb = pad_forces[:, 0] > .15
++    others = (pad_forces[:, 1:] > .15).sum(-1) >= 2
++    supported = thumb & others & (tilt < .5)
++    # Only growth of the episode's actual orientation high-water mark earns
++    # progress. Backtracking cannot repeatedly farm the same orientation arc.
++    # Negative direction is penalized even when contact is deliberately lost.
++    positive = new_progress * supported.float()
++    seek = .5 * pad_quality[:, 0] + .5 * pad_quality[:, 1:].topk(2, dim=-1).values.mean(-1)
++    approach = seek if approach_quality is None else (.5 * approach_quality[:,0] + .5 * approach_quality[:,1:].topk(2,dim=-1).values.mean(-1))
++    terms = {
++        'rotation': 12.0 * positive,
++        'reverse': 2.0 * directed.clamp(max=0),
++        'pad_guidance': .15 * (seek - 1),
++        'pad_approach': .15 * (approach - 1),
++        'missing_pad_support': -.04 * (~supported).float(),
++        'lost_pad_support': -.08 * (previous_support & ~supported).float(),
++        'stall': -.03 * (new_progress < .001).float(),
++        'centering': -.04 * (translation/.05).square().clamp(max=9),
++        'tilt': -.06 * tilt.square(),
++        'action_smoothness': -.006 * (actions-previous_actions).square().mean(-1),
++        'time': torch.full_like(delta, -.025),
++    }
++    if stage == "contact":
++        # Contact-acquisition curriculum. Holding real active pads is rewarded
++        # here; deployment/rotation acceptance still requires genuine turns.
++        coverage = .5*thumb.float() + .5*((pad_forces[:,1:]>.15).sum(-1).float()/2).clamp(max=1)
++        terms["pad_guidance"] = .15 * seek
++        terms["active_pad_coverage"] = .25 * coverage
++        terms["complete_pad_grasp"] = .25 * supported.float()
++        terms["pad_approach"] = .10 * (approach - 1)
++        terms["missing_pad_support"] = -.02 * (~supported).float()
++        terms["stall"] = torch.zeros_like(delta)
++        terms["reverse"] = .2 * directed.clamp(max=0)
++        terms["time"] = torch.full_like(delta, -.05)
++    return torch.stack(list(terms.values()), -1).sum(-1), terms, supported
++
++
++def pad_approach_quality(tip_pos, tip_quat, fruit_pos, fruit_quat, axes):
++    """Dense reward-only approach guidance, including before contact exists.
++
++    Uses simulator geometry exclusively in the reward; never actor inputs.
++    Desired pad front points toward fruit center and stays near its surface.
++    """
++    from .core import quat_inv_rotate
++    center, _, _, normal = pad_frames(tip_pos.device, tip_pos.dtype)
++    center_w = tip_pos + quat_rotate(tip_quat, center.expand_as(tip_pos))
++    normal_w = quat_rotate(tip_quat, normal.expand_as(tip_pos))
++    to_fruit = fruit_pos[:,None] - center_w
++    distance = torch.linalg.vector_norm(to_fruit, dim=-1).clamp_min(1e-6)
++    direction = to_fruit / distance[...,None]
++    alignment = (normal_w*direction).sum(-1).clamp(-1,1)
++    direction_local = quat_inv_rotate(fruit_quat[:,None].expand(-1,5,-1), direction)
++    radius = ((direction_local / axes[:,None]).square().sum(-1)).rsqrt()
++    gap = distance - radius
++    # Linear geometric cost retains guidance when pads initially point away
++    # or lie several centimetres from the fruit (the exponential was flat).
++    target_error = torch.linalg.vector_norm(center_w + normal_w*radius[...,None] - fruit_pos[:,None],dim=-1)
++    quality = 1 - (target_error/.06).clamp(max=3)
++    return quality
++
++
++def valid_rotation_step(previous_upright, current_tilt, delta):
++    """Reject heading singularities/large pose jumps as rewarded progress."""
++    return previous_upright & (current_tilt < .5) & (delta.abs() < .5) & torch.isfinite(delta)
++
++
++def staged_rotation_reward(delta, goal, pad_forces, pad_quality, translation,
++                           tilt, actions, previous_actions, approach_quality,
++                           support_average, reward_angle, milestones_paid,
++                           eligible_path, ready, dt, stage):
++    """Reward-only curriculum: tactile driving, regrasp, and signed pose motion.
++
++    Positive/negative motion use equal per-radian weights. Thus returning over
++    an already traversed arc provides dense feedback, but oscillations have
++    nonpositive total motion reward. No positive reward without real contacts.
++    Milestone rewards require restored thumb+two-pad support and pay only once.
++    The strict independent full-turn acceptance criterion is unchanged.
++    """
++    pads = pad_forces > .15
++    full = pads[:, 0] & (pads[:, 1:].sum(-1) >= 2) & (tilt < .5)
++    driving = (pads.sum(-1) >= 2) & (tilt < .5) & (translation < .06)
++    directed = goal.sign() * delta
++    valid = ready & eligible_path
++    # Cap positive credit at twice commanded speed; never cap reverse cost.
++    positive = torch.minimum(directed.clamp_min(0), 2*goal.abs()*dt)
++    motion = 20 * (positive * (valid & driving).float()
++                   + directed.clamp(max=0) * ready.float())
++    seek = .5*pad_quality[:, 0] + .5*pad_quality[:, 1:].topk(2,dim=-1).values.mean(-1)
++    approach = .5*approach_quality[:, 0] + .5*approach_quality[:, 1:].topk(2,dim=-1).values.mean(-1)
++    target_support = .50 if stage == 'regrasp' else .70
++    degrees = [5., 10., 20., 40., 60., 90.] if stage == 'regrasp' else [90., 180., 270., 360.]
++    thresholds = delta.new_tensor(degrees) * (torch.pi / 180)
++    attained = (reward_angle[:, None] >= thresholds).sum(-1)
++    new_count = (attained - milestones_paid).clamp_min(0)
++    pay = (valid & full & (translation < .06)).long() * new_count
++    terms = {
++        'rotation': motion,
++        'regrasp_milestone': 2.0*pay.float(),
++        'pad_guidance': .04*(seek-1),
++        'pad_approach': .04*(approach-1),
++        'missing_driving_contacts': -.10*(~driving).float(),
++        'support_duty_deficit': -.12*(target_support-support_average).clamp_min(0),
++        'centering': -.04*(translation/.05).square().clamp(max=9),
++        'tilt': -.10*tilt.square(),
++        'action_smoothness': -.006*(actions-previous_actions).square().mean(-1),
++        'time': torch.full_like(delta, -.025),
++        'invalid_rotation_path': -.20*(ready & ~eligible_path).float(),
++    }
++    return torch.stack(list(terms.values()), -1).sum(-1), terms, full, milestones_paid+pay
++
++
++def continuous_rotation_reward(delta, goal, pad_forces, pad_quality, raw_forces,
++                               translation, tilt, actions, previous_actions,
++                               approach_quality, joint_pos, reference_joint_pos,
++                               eligible_path, ready, dt):
++    """v7: local continuous progress and a weak canonical-grasp prior.
++
++    Hora motivates the joint-pose cost; AnyRotate motivates bad-contact cost.
++    No gait phase, contact-release bonus, angle milestone or support EMA.
++    Two-pad rotation retains a small learning signal but cannot earn positive
++    total reward at this curriculum's commanded speed (0.15--0.30 rad/s).
++    Rotation is measured from actual poses, never integrated reported velocity.
++    """
++    pads = pad_forces > .15
++    full = pads[:, 0] & (pads[:, 1:].sum(-1) >= 2) & (tilt < .5)
++    driving = pads[:, 0] & (pads[:, 1:].sum(-1) >= 1) & (tilt < .5) & (translation < .06)
++    directed = goal.sign() * delta
++    positive = torch.minimum(directed.clamp_min(0), 2 * goal.abs() * dt)
++    contact_weight = .25 + .75 * full.float()
++    motion = 20 * (positive * contact_weight * (ready & eligible_path & driving).float()
++                   + directed.clamp(max=0) * ready.float())
++    seek = .5 * pad_quality[:, 0] + .5 * pad_quality[:, 1:].topk(2, dim=-1).values.mean(-1)
++    approach = .5 * approach_quality[:, 0] + .5 * approach_quality[:, 1:].topk(2, dim=-1).values.mean(-1)
++    # Sufficient raw force outside the active pad is undesirable contact,
++    # not a synthetic positive tactile reading.
++    bad_contacts = (raw_forces > .15) & ~pads
++    terms = {
++        'rotation': motion,
++        'missing_full_support': -.15 * (~full).float() * ready.float(),
++        'bad_pad_contact': -.06 * bad_contacts.float().sum(-1),
++        'pose_deviation': -.05 * (joint_pos - reference_joint_pos).square().sum(-1),
++        'pad_guidance': .04 * (seek - 1),
++        'pad_approach': .04 * (approach - 1),
++        'centering': -.04 * (translation / .05).square().clamp(max=9),
++        'tilt': -.10 * tilt.square(),
++        'action_smoothness': -.006 * (actions - previous_actions).square().mean(-1),
++        'time': torch.full_like(delta, -.025),
++        'invalid_rotation_path': -.20 * (ready & ~eligible_path).float(),
++    }
++    return torch.stack(list(terms.values()), -1).sum(-1), terms, full
++
++
++def reward_version(stage):
++    return 'pose_pad_v7_continuous' if stage == 'continuous' else REWARD_VERSION
+diff --git a/simulation/roto2_pressure/rotation_diagnostics.py b/simulation/roto2_pressure/rotation_diagnostics.py
+new file mode 100644
+index 0000000..7ea0b23
+--- /dev/null
++++ b/simulation/roto2_pressure/rotation_diagnostics.py
+@@ -0,0 +1,114 @@
++"""Bounded real-physics action-response probe, never used as a controller."""
++import json
++from pathlib import Path
++import numpy as np
++import torch
++from .core import ACTIVE_JOINTS
++
++
++@torch.no_grad()
++def trace_policy(trainer, wrapped, checkpoint, output):
++    """First-episode reward timing and actuator saturation diagnostics only."""
++    agent = trainer.agent
++    modules = torch.load(checkpoint, map_location=wrapped.device, weights_only=True)
++    for key in ('encoder', 'policy'):
++        getattr(agent, key).load_state_dict(modules[key]);getattr(agent, key).eval()
++    if agent.encoder.state_preprocessor is not None:
++        agent.encoder.state_preprocessor.load_state_dict(modules['state_preprocessor'])
++    states, _ = wrapped.reset(hard=True);raw = wrapped._unwrapped
++    pending = torch.ones(raw.num_envs,device=raw.device,dtype=torch.bool)
++    data = {k:[] for k in ('joint','target','action','reward','active','done','pad','pose','forces','contact_local')}
++    term_data = {}
++    from .core import quat_inv_rotate
++    limits=raw._active_limits.cpu().numpy().copy()
++    for t in range(int(raw.max_episode_length+2)):
++        if not pending.any(): break
++        action,_,_=agent.policy.act(agent.encoder(states),deterministic=True)
++        data['joint'].append(raw._robot.data.joint_pos.torch[:,raw._active_ids].cpu().numpy().copy())
++        data['target'].append(raw._q_target.cpu().numpy().copy())
++        data['action'].append(action.cpu().numpy().copy())
++        data['active'].append(pending.cpu().numpy().copy())
++        states,reward,term,trunc,info=wrapped.step(action)
++        e=info['step'];done=(term|trunc).reshape(-1)
++        data['reward'].append(reward.reshape(-1).cpu().numpy().copy())
++        data['done'].append(done.cpu().numpy().copy())
++        data['pad'].append(e['pad_contact'].cpu().numpy().copy())
++        data['pose'].append(e['fruit_pose_native'].cpu().numpy().copy())
++        data['forces'].append(raw._forces[:,:5].cpu().numpy().copy())
++        ids=raw._contact_body_ids[:5]
++        local=quat_inv_rotate(raw._wxyz(raw._robot.data.body_quat_w.torch[:,ids]),
++                              raw._contact_positions[:,:5]-raw._robot.data.body_pos_w.torch[:,ids])
++        data['contact_local'].append(local.cpu().numpy().copy())
++        for k,v in e['reward_terms'].items():term_data.setdefault(k,[]).append(v.cpu().numpy().copy())
++        pending &= ~done
++    data={k:np.array(v) for k,v in data.items()}
++    rewards=data['reward']*data['active'];discount=.99**np.arange(len(rewards))
++    near=np.minimum(data['joint']-limits[None,:,:,0],limits[None,:,:,1]-data['joint'])<.02
++    near_fraction=(near*data['active'][...,None]).sum((0,1))/data['active'].sum()
++    output=Path(output);output.parent.mkdir(parents=True,exist_ok=True)
++    np.savez_compressed(output.with_suffix('.npz'),**data,limits=limits,
++                        **{'term_'+k:np.array(v) for k,v in term_data.items()})
++    result={'checkpoint':str(checkpoint),'episodes':raw.num_envs,'dt':raw.step_dt,
++            'discount':.99,'mean_undiscounted_return':float(rewards.sum(0).mean()),
++            'mean_discounted_return':float((rewards*discount[:,None]).sum(0).mean()),
++            'near_limit_fraction_by_joint':dict(zip(ACTIVE_JOINTS,near_fraction.tolist())),
++            'policy_std':float(agent.policy.log_std_parameter.exp().mean())}
++    output.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2),flush=True)
++
++
++@torch.no_grad()
++def probe_rotation_actions(trainer, wrapped, checkpoint, output):
++    modules = torch.load(checkpoint, map_location=wrapped.device, weights_only=True)
++    agent = trainer.agent
++    for key in ("encoder", "policy"):
++        getattr(agent, key).load_state_dict(modules[key]); getattr(agent, key).eval()
++    if agent.encoder.state_preprocessor is not None:
++        agent.encoder.state_preprocessor.load_state_dict(modules["state_preprocessor"])
++    raw = wrapped._unwrapped
++    n = raw.num_envs
++    # 32 single-joint +/- pulses, plus an unperturbed policy control group.
++    group = torch.arange(n, device=raw.device) % 33
++    pulse = torch.zeros_like(raw._action)
++    for j in range(32):
++        pulse[group == j, j // 2] = .35 if j % 2 == 0 else -.35
++    states, _ = wrapped.reset(hard=True)
++    initial = raw._fruit.data.root_pose_w.torch.clone().cpu().numpy()
++    pending = torch.ones(n, device=raw.device, dtype=torch.bool)
++    rows = {k: [] for k in ("pose", "pad", "alive", "action", "delta", "pressure")}
++    for t in range(140):
++        action, _, _ = agent.policy.act(agent.encoder(states), deterministic=True)
++        if 80 <= t < 100:
++            action = action + pulse
++        states, _, term, trunc, info = wrapped.step(action)
++        e = info["step"]
++        rows["pose"].append(e["fruit_pose_native"].cpu().numpy())
++        rows["pad"].append(e["pad_contact"].cpu().numpy())
++        rows["alive"].append(pending.cpu().numpy().copy())
++        rows["action"].append(action.cpu().numpy())
++        rows["delta"].append(e["pose_delta_rad"].cpu().numpy())
++        rows["pressure"].append(e["peak_pressure_pa"].cpu().numpy())
++        pending &= ~(term | trunc).reshape(-1)
++    data = {k: np.array(v) for k, v in rows.items()}
++    output = Path(output); output.parent.mkdir(parents=True, exist_ok=True)
++    np.savez_compressed(output.with_suffix('.npz'), **data, initial_pose=initial,
++                        pulse=pulse.cpu().numpy(), group=group.cpu().numpy())
++    results = []
++    for j in range(33):
++        ids = (group.cpu().numpy() == j) & data['alive'][79]
++        if not ids.any():
++            continue
++        degrees = np.rad2deg((data['delta'][80:100, ids] * data['alive'][80:100, ids]).sum(0))
++        pad = data['pad'][80:100, ids]
++        full = pad[..., 0] & (pad[..., 1:].sum(-1) >= 2)
++        results.append({'group': j, 'joint': ACTIVE_JOINTS[j//2] if j < 32 else 'control',
++                        'pulse': (.35 if j%2 == 0 else -.35) if j < 32 else 0.,
++                        'eligible_environments': int(ids.sum()),
++                        'mean_pulse_world_z_degrees': float(degrees.mean()),
++                        'mean_full_pad_support': float(full.mean()),
++                        'mean_two_pad_support': float((pad.sum(-1) >= 2).mean()),
++                        'alive_after_pulse': int(data['alive'][100, ids].sum())})
++    result = {'checkpoint': str(checkpoint), 'hand_posture': raw.cfg.hand_posture,
++              'probe_only': True, 'warmup_control_steps':80, 'pulse_control_steps':20,
++              'results': results}
++    output.write_text(json.dumps(result, indent=2)+'\n')
++    print(json.dumps(result, indent=2), flush=True)
+diff --git a/simulation/roto2_pressure/test_continuous_reward.py b/simulation/roto2_pressure/test_continuous_reward.py
+new file mode 100644
+index 0000000..0470ffd
+--- /dev/null
++++ b/simulation/roto2_pressure/test_continuous_reward.py
+@@ -0,0 +1,45 @@
++"""Behavioral counterexamples for the v7 reward; no simulator dependency."""
++import torch
++from .reward_geometry import continuous_rotation_reward
++
++
++def test_continuous_reward():
++    full = torch.tensor([[1., 1., 1., 0., 0.]])
++    two = torch.tensor([[1., 0., 1., 0., 0.]])
++    def call(delta=0., pads=full, raw=None, q=None, goal=.30, valid=True, ready=True):
++        z = torch.zeros(1)
++        a = torch.zeros(1, 16)
++        return continuous_rotation_reward(torch.tensor([delta]), torch.tensor([goal]),
++            pads, pads, pads if raw is None else raw, z, z, a, a,
++            torch.ones_like(pads), a if q is None else q, a,
++            torch.tensor([valid]), torch.tensor([ready]), .05)
++    assert call()[0] < 0                     # no holding bonus
++    assert call(.0125)[0] > 0               # supported 0.25 rad/s is worthwhile
++    assert call(.1, two)[0] < 0             # even capped two-pad motion cannot win
++    assert call(.1, torch.zeros_like(full))[1]['rotation'] == 0
++    assert call(.1, valid=False)[1]['rotation'] == 0
++    assert call(.1, ready=False)[1]['rotation'] == 0
++    assert call(-.01, torch.zeros_like(full))[1]['rotation'] < 0
++    assert call(.01, two, raw=full)[0] < call(.01, two)[0]
++    near_limit = torch.zeros(1, 16); near_limit[:, 6] = .25
++    recovered = near_limit * .2
++    assert call(q=near_limit)[0] < call(q=recovered)[0]
++    assert torch.allclose(call(.01)[0], call(-.01, goal=-.3)[0])
++    # An unproductive release/recontact has no event bonus.
++    assert call(pads=two)[0] + call()[0] < 0
++    # A complete forward/backward excursion cannot farm undiscounted motion.
++    assert call(.01)[1]['rotation'] + call(-.01)[1]['rotation'] <= 1e-7
++    # A useful cycle with 0.5s recovery is preferable to the same duration idle.
++    productive = 20 * call(.0125)[0] + 10 * call(pads=two, q=near_limit)[0]
++    idle = 30 * call()[0]
++    assert productive > idle
++    # Conversely, push once then keep two-pad contact is worse than restoring it.
++    stuck = 20 * call(.0125)[0] + 100 * call(pads=two, q=near_limit)[0]
++    restored = 20 * call(.0125)[0] + 10 * call(pads=two, q=near_limit)[0] + 90 * call()[0]
++    assert restored > stuck
++
++
++if __name__ == '__main__':
++    test_continuous_reward()
++    print('PASS: static, useful rotation, two-pad shortcut, outside-pad force, pose recovery, '
++          'direction, invalid path, settling, release farming, oscillation and useful gait')
+diff --git a/simulation/roto2_pressure/test_reward_geometry.py b/simulation/roto2_pressure/test_reward_geometry.py
+new file mode 100644
+index 0000000..9416da3
+--- /dev/null
++++ b/simulation/roto2_pressure/test_reward_geometry.py
+@@ -0,0 +1,79 @@
++"""Anti-exploit regression tests, CPU-only and independent of Isaac Sim."""
++import math
++import torch
++from .reward_geometry import pose_heading, heading_delta, pad_contact, pad_frames, reward_v2
++from .core import fingertip_taxels
++
++
++def test_pose_rotation():
++    angles = torch.linspace(0, 4*math.pi, 1001)
++    q = torch.zeros(1001, 4); q[:,0] = (angles/2).cos(); q[:,3] = (angles/2).sin()
++    h = pose_heading(q)
++    delta = heading_delta(h[:-1], h[1:])
++    assert abs(delta.sum().item()-4*math.pi)<1e-5
++    assert torch.allclose(pose_heading(-q), h, atol=1e-6)
++    assert heading_delta(torch.tensor([3.13]), torch.tensor([-3.13])).item() > 0
++    # Arbitrary reported angular velocity cannot alter a fixed material pose.
++    assert heading_delta(h[:1], h[:1]).item() == 0
++
++
++def test_contacts():
++    c,u,v,n=pad_frames('cpu');f=torch.ones(1,5)
++    xy,force,quality,valid=pad_contact(c[None],f)
++    assert valid.all() and torch.allclose(force,f)
++    # Real force on the side/back of a sensor housing must yield no taxels.
++    for displaced in (c+.015*u, c-.01*n, c+.02*v):
++        xy,force,_,valid=pad_contact(displaced[None],f)
++        assert not valid.any()
++        assert fingertip_taxels(force,xy).count_nonzero()==0
++    assert pad_contact(c[None],torch.zeros_like(f))[1].count_nonzero()==0
++
++
++def test_reward_loopholes():
++    z=torch.zeros(1);actions=torch.zeros(1,16);f=torch.ones(1,5);quality=f
++    def reward(delta,progress,forces=f):
++        return reward_v2(torch.tensor([delta]),torch.ones(1)*.6,forces,quality,
++                         torch.tensor([progress]),z,z,actions,actions,torch.ones(1,dtype=torch.bool),.05)
++    r,terms,_=reward(.03,.03)
++    assert terms['rotation'].item()>0
++    assert reward(0.,0.)[0].item()<0  # safe holding is not a successful task
++    assert reward(.03,.03,torch.zeros_like(f))[1]['rotation'].item()==0
++    assert reward(-.03,0.,torch.zeros_like(f))[1]['reverse'].item()<0
++    assert reward(.03,0.)[1]['rotation'].item()==0 # revisiting a previous peak
++    # Oscillating .03 -> 0 -> .03 cannot farm repeated progress.
++    assert reward(.03,0.)[0].item()+reward(-.03,0.)[0].item()<0
++
++def test_approach_guidance():
++    from .reward_geometry import pad_approach_quality
++    c,u,v,n = pad_frames('cpu')
++    q=torch.zeros(1,5,4);q[...,0]=1
++    fq=torch.tensor([[1.,0,0,0]])
++    fruit=torch.zeros(1,3);axes=torch.ones(1,3)*.03
++    ideal=(-.03*n-c)[None]
++    near=pad_approach_quality(ideal,q,fruit,fq,axes)
++    distant=pad_approach_quality(ideal-.05*n[None],q,fruit,fq,axes)
++    backside=pad_approach_quality((.03*n-c)[None],q,fruit,fq,axes)
++    assert torch.allclose(near,torch.ones_like(near),atol=1e-5)
++    assert (near>distant).all() and (near>backside*10).all()
++
++def test_contact_curriculum():
++    z=torch.zeros(1);a=torch.zeros(1,16);f=torch.ones(1,5)
++    def call(forces):
++        return reward_v2(z,torch.ones(1)*.6,forces,forces,z,z,z,a,a,
++                         torch.zeros(1,dtype=torch.bool),.05,torch.ones_like(f),"contact")
++    none=call(torch.zeros_like(f));one=call(torch.tensor([[1.,0,0,0,0]]));full=call(f)
++    assert full[0].item()>one[0].item()>none[0].item()
++    assert none[1]['rotation'].item()==0
++    # A contact curriculum may reward a stationary valid grasp, but the full
++    # rotation objective must not (covered independently above).
++    assert full[0].item()>0
++
++def test_pose_jump_gate():
++    from .reward_geometry import valid_rotation_step
++    ok=valid_rotation_step(torch.tensor([True,False,True,True]),
++                           torch.tensor([0.,0.,.9,0.]),torch.tensor([.03,.03,.03,1.]))
++    assert ok.tolist()==[True,False,False,False]
++
++if __name__=='__main__':
++    test_pose_rotation();test_contacts();test_reward_loopholes();test_approach_guidance();test_contact_curriculum();test_pose_jump_gate()
++    print('PASS: pose winding/sign, side/back rejection, stall/release/reversal/oscillation exploits')
+diff --git a/simulation/roto2_pressure/test_rotation_curriculum.py b/simulation/roto2_pressure/test_rotation_curriculum.py
+new file mode 100644
+index 0000000..b38e5c7
+--- /dev/null
++++ b/simulation/roto2_pressure/test_rotation_curriculum.py
+@@ -0,0 +1,40 @@
++"""Counterexample tests for dense rotation and one-time regrasp credit."""
++import math
++import torch
++from .reward_geometry import staged_rotation_reward
++
++
++def test_curriculum_invariants():
++    full = torch.tensor([[1., 1., 1., 0., 0.]])
++    two = torch.tensor([[1., 1., 0., 0., 0.]])
++    none = torch.zeros_like(full)
++    def call(delta=0., pads=full, angle=0., paid=0, valid=True, ready=True):
++        z = torch.zeros(1); a = torch.zeros(1,16)
++        return staged_rotation_reward(torch.tensor([delta]), torch.tensor([.25]),
++            pads, pads, z, z, a, a, torch.ones_like(pads), torch.ones(1)*.7,
++            torch.tensor([angle]), torch.tensor([paid]), torch.tensor([valid]),
++            torch.tensor([ready]), .05, 'regrasp')
++    assert call()[0].item() < 0  # stationary holding cannot earn positive return
++    assert call(.01, none)[1]['rotation'].item() == 0
++    assert call(.01, two)[1]['rotation'].item() > 0  # a finger may reposition
++    forward = call(.01, two)[1]['rotation']
++    reverse = call(-.01, none)[1]['rotation']
++    assert (forward+reverse).item() <= 1e-7  # release/backtrack cannot farm motion
++    assert (call(.1, full)[1]['rotation']+call(-.1, none)[1]['rotation']).item() < 0
++    assert call(.01, full, valid=False)[1]['rotation'].item() == 0
++    assert call(.01, full, ready=False)[1]['rotation'].item() == 0
++    angle = math.radians(11)
++    assert call(.01, two, angle)[1]['regrasp_milestone'].item() == 0
++    first = call(0., full, angle)
++    assert first[1]['regrasp_milestone'].item() > 0
++    paid = int(first[3][0])
++    assert call(0., full, angle, paid)[1]['regrasp_milestone'].item() == 0
++    assert call(0., full, 0., paid)[1]['regrasp_milestone'].item() == 0
++    assert call(0., full, angle, paid)[1]['regrasp_milestone'].item() == 0
++    assert call(0., full, angle, valid=False)[1]['regrasp_milestone'].item() == 0
++    assert call(0., full, angle, ready=False)[1]['regrasp_milestone'].item() == 0
++
++
++if __name__ == '__main__':
++    test_curriculum_invariants()
++    print('PASS: no-contact, stationary, reversal, oscillation, settling, invalid pose, and repeated milestone exploits')
+diff --git a/simulation/roto2_pressure/validation.py b/simulation/roto2_pressure/validation.py
+new file mode 100644
+index 0000000..2e0e69b
+--- /dev/null
++++ b/simulation/roto2_pressure/validation.py
+@@ -0,0 +1,183 @@
++"""Real-physics diagnostics; these do not establish learned policy quality."""
++import json
++import time
++from pathlib import Path
++
++import torch
++from .core import quat_inv_rotate
++
++
++@torch.no_grad()
++def free_hand_probe(env, output):
++    raw = env.unwrapped
++    env.reset()
++    initial = raw._robot.data.joint_pos.torch.clone()
++    pose = raw._fruit.data.root_pose_w.torch.clone()
++    pose[:, 2] += 3
++    raw._fruit.write_root_pose_to_sim_index(root_pose=pose)
++    for _ in range(120):
++        raw._apply_action()
++        raw.scene.write_data_to_sim()
++        raw.sim.step(render=False)
++        raw.scene.update(raw.cfg.sim.dt)
++    final = raw._robot.data.joint_pos.torch.clone()
++    result = {"joint_names":raw._robot.joint_names,
++              "initial":initial.tolist(),"final":final.tolist(),
++              "target":raw._q_target.tolist(),
++              "max_joint_deviation_per_env":(final-initial).abs().amax(-1).tolist(),
++              "net_contact_forces":{k:v.data.net_forces_w.torch.tolist() for k,v in raw._sensors.items()}}
++    Path(output).write_text(json.dumps(result,indent=2)+'\n')
++    print(json.dumps({"free_hand_max_deviation": result["max_joint_deviation_per_env"]}),flush=True)
++
++
++@torch.no_grad()
++def validate_wrapper(wrapped):
++    """An eval-only reset must preserve training physics and observation history."""
++    wrapped.reset(hard=True)
++    raw = wrapped._unwrapped
++    obs, *_ = wrapped.step(torch.zeros_like(raw._action))
++    start = wrapped.num_eval_envs
++    before = {k: v[:][start:].clone() for k, v in obs["policy"].items()}
++    joints = raw._robot.data.joint_pos.torch[start:].clone()
++    fruit = raw._fruit.data.root_pose_w.torch[start:].clone()
++    pressure_history = raw._pressure_prev[start:].clone()
++    rotation_history = {name:getattr(raw,name)[start:].clone() for name in
++                        ("_heading_prev","_angle","_rotation_highwater","_new_rotation_progress","_previous_upright",
++                         "_curriculum_angle","_support_average","_milestones_paid","_reward_path_valid",
++                         "_grasp_reference")}
++    after, _ = wrapped.reset_eval_envs()
++    for name,value in rotation_history.items():
++        if not torch.equal(value,getattr(raw,name)[start:]):
++            raise RuntimeError(f"Evaluation reset changed training rotation history: {name}")
++    for k, v in before.items():
++        if not torch.equal(v, after["policy"][k][:][start:]):
++            raise RuntimeError(f"Evaluation reset changed training history: {k}")
++    if not (torch.equal(joints, raw._robot.data.joint_pos.torch[start:])
++            and torch.equal(fruit, raw._fruit.data.root_pose_w.torch[start:])
++            and torch.equal(pressure_history, raw._pressure_prev[start:])):
++        raise RuntimeError("Evaluation reset changed training physics or pressure history")
++    result = {"eval_reset_isolation_passed": True,
++              "stacked_shapes": {k: list(v[:].shape) for k, v in after["policy"].items()}}
++    print(json.dumps(result), flush=True)
++    return result
++
++
++@torch.no_grad()
++def physical_probe(env, steps, output=None):
++    raw = env.unwrapped
++    reports = {}
++    start = time.monotonic()
++    for mode in ("hold", "random"):
++        obs, _ = env.reset()
++        initial = {
++            "hand_posture": raw.cfg.hand_posture,
++            "hand_root_pose_native": raw._robot.data.root_pose_w.torch[:1].tolist(),
++            "fruit": raw._fruit.data.root_pos_w.torch[:1].tolist(),
++            "contact_bodies": raw._robot.data.body_pos_w.torch[:1, raw._contact_body_ids].tolist(),
++            "active_joints": raw._robot.data.joint_pos.torch[:1, raw._active_ids].tolist(),
++        }
++        age = torch.zeros(raw.num_envs, device=raw.device)
++        support_per_env = torch.zeros_like(age)
++        endings_per_env = torch.zeros_like(age)
++        failures_per_env = torch.zeros_like(age)
++        timeouts_per_env = torch.zeros_like(age)
++        max_age = torch.zeros_like(age)
++        lifetimes, samples, snapshots = [], [], []
++        count = 0
++        for step in range(steps):
++            action = torch.zeros_like(raw._action)
++            if mode == "random":
++                action.uniform_(-1, 1)
++            obs, reward, failed, timeout, info = env.step(action)
++            if not all(torch.isfinite(x).all() for x in (
++                *obs["policy"].values(), reward, raw._dense, raw._sparse,
++                raw._robot.data.joint_pos.torch, raw._fruit.data.root_pose_w.torch,
++                raw._track.J, raw._track.spin_J,
++            )):
++                raise RuntimeError(f"Nonfinite physical probe {mode} step {step}")
++            if bool((raw._robot.data.joint_pos.torch == 0).all()) and bool((raw._q_target.abs() > .01).any()):
++                raise RuntimeError("Physics invalid: all joint states collapsed to zero despite nonzero pose/targets; check PhysX errors and GPU memory")
++            age += 1
++            max_age = torch.maximum(max_age, age)
++            done = failed | timeout
++            endings_per_env += done.float()
++            failures_per_env += failed.float()
++            timeouts_per_env += timeout.float()
++            lifetimes.extend(age[done].cpu().tolist())
++            age[done] = 0
++            count += int(done.sum())
++            metrics = info["step"]
++            support_per_env += metrics["secure_support"].float()
++            samples.append(torch.stack((
++                metrics["secure_support"].float().mean(),
++                metrics["peak_pressure_pa"].mean(),
++                metrics["rotation_rate"].abs().mean(), reward.mean(),
++                raw._track.ready.float().mean(),
++                raw._track.last_accepted.float().mean(),
++                raw._forces.amax(-1).mean(),
++            )).cpu())
++            if step in (0, 1, 4, 9, 19, 49, 99, steps - 1):
++                snapshots.append({"step": step, "forces_env0": raw._forces[0].tolist(),
++                                  "pad_forces_env0": raw._pad_forces[0].tolist(),
++                                  "pad_quality_env0": raw._pad_quality[0].tolist(),
++                                  "contact_local_env0": quat_inv_rotate(
++                                      raw._wxyz(raw._robot.data.body_quat_w.torch[0,raw._contact_body_ids[:5]]),
++                                      raw._contact_positions[0,:5]-raw._robot.data.body_pos_w.torch[0,raw._contact_body_ids[:5]]).tolist(),
++                                  "joints_env0": raw._robot.data.joint_pos.torch[0].tolist(),
++                                  "fruit_velocity_env0": raw._fruit.data.root_vel_w.torch[0].tolist(),
++                                  "fruit_env0": raw._fruit.data.root_pos_w.torch[0].tolist(),
++                                  "failed_count": int(failed.sum())})
++        mean = torch.stack(samples).mean(0).tolist()
++        reports[mode] = dict(zip(("secure_support_fraction", "mean_peak_pressure_pa",
++                                 "mean_abs_spin_rad_s", "mean_reward", "track_ready_fraction",
++                                 "track_acceptance_fraction", "mean_max_contact_force_n"), mean))
++        reports[mode].update({"steps_per_env": steps, "num_envs": raw.num_envs,
++                              "completed_episodes": count,
++                              "mean_completed_episode_steps": sum(lifetimes) / max(1, len(lifetimes)),
++                              "longest_completed_episode_steps": max(lifetimes, default=0),
++                              "longest_ongoing_episode_steps": float(age.max()),
++                              "initial": initial, "snapshots": snapshots})
++        reports[mode]["per_env"] = {"support_fraction": (support_per_env / steps).tolist(),
++                                   "endings": endings_per_env.tolist(),
++                                   "physical_failures": failures_per_env.tolist(),
++                                   "timeouts": timeouts_per_env.tolist(), "longest_episode_steps": max_age.tolist()}
++        print(json.dumps({mode: reports[mode]}, indent=2), flush=True)
++    reports["elapsed_seconds"] = time.monotonic() - start
++    reports["finite_rollout_passed"] = True
++    if output:
++        output = Path(output)
++        output.parent.mkdir(parents=True, exist_ok=True)
++        output.write_text(json.dumps(reports, indent=2) + "\n")
++    return reports
++
++
++@torch.no_grad()
++def pad_surface_probe(env, output):
++    """Place the real sphere by each pad and inspect the first physics substeps."""
++    from .reward_geometry import pad_frames
++    from .core import quat_rotate
++    raw=env.unwrapped;env.reset();n=raw.num_envs
++    centers,_,_,normals=pad_frames(raw.device)
++    f=torch.arange(n,device=raw.device)%5
++    ids=torch.tensor(raw._contact_body_ids[:5],device=raw.device)[f]
++    row=torch.arange(n,device=raw.device)
++    pos=raw._robot.data.body_pos_w.torch[row,ids]
++    quat=raw._wxyz(raw._robot.data.body_quat_w.torch[row,ids])
++    point=pos+quat_rotate(quat,centers[f]);normal=quat_rotate(quat,normals[f])
++    fruit=raw._fruit.data.root_pose_w.torch.clone()
++    fruit[:,:3]=point+normal*.031
++    raw._fruit.write_root_pose_to_sim_index(root_pose=fruit)
++    raw._fruit.write_root_velocity_to_sim_index(root_velocity=torch.zeros(n,6,device=raw.device))
++    raw.scene.write_data_to_sim();raw.sim.forward();raw.scene.update(0.)
++    rows=[]
++    for t in range(12):
++        raw._apply_action();raw.scene.write_data_to_sim();raw.sim.step(render=False);raw.scene.update(raw.cfg.sim.dt);raw._measure()
++        body_q=raw._wxyz(raw._robot.data.body_quat_w.torch[row,ids]);body_p=raw._robot.data.body_pos_w.torch[row,ids]
++        local=quat_inv_rotate(body_q,raw._contact_positions[row,f]-body_p)
++        rows.append({'substep':t+1,'target_force_n':raw._forces[row,f].cpu().tolist(),
++                     'active_pad_force_n':raw._pad_forces[row,f].cpu().tolist(),
++                     'target_contact_local':local.cpu().tolist(),
++                     'all_forces':raw._forces.cpu().tolist()})
++    result={'target_finger':f.cpu().tolist(),'physics_dt':raw.cfg.sim.dt,'substeps':rows}
++    Path(output).write_text(json.dumps(result,indent=2)+'\n')
++    print('Pad surface probe complete',flush=True)

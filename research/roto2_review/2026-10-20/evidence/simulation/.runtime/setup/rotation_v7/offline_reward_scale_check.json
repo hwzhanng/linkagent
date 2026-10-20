@@ -1,0 +1,39 @@
+{
+  "baseline": {
+    "v6_discounted_shaping_sum": -0.14459748808587636,
+    "v7_discounted_shaping_sum": -10.404328238738682,
+    "v7_shaping_sum": -84.97195638085562,
+    "v7_discounted_terms": {
+      "pad_guidance": -0.016134692793789106,
+      "pad_approach": -0.696478756565755,
+      "centering": -0.06539278779552486,
+      "tilt": -0.01868177030492373,
+      "action_smoothness": -0.010984035283404138,
+      "time": -2.4795090429406077,
+      "invalid_rotation_path": -0.03168328420979462,
+      "rotation": 1.7593432353862162,
+      "missing_full_support": -0.33333703527127606,
+      "bad_pad_contact": -6.012088206125556,
+      "pose_deviation": -2.4993818612289482
+    }
+  },
+  "final": {
+    "v6_discounted_shaping_sum": 5.858440703025406,
+    "v7_discounted_shaping_sum": -12.580218648469884,
+    "v7_shaping_sum": -124.74515531200761,
+    "v7_discounted_terms": {
+      "pad_guidance": -0.19159986770989784,
+      "pad_approach": -0.8109143812521169,
+      "centering": -0.24235727172054916,
+      "tilt": -0.04044300374317343,
+      "action_smoothness": -0.01601125914066522,
+      "time": -2.4795090429406077,
+      "invalid_rotation_path": 0.0,
+      "rotation": 5.624980927518124,
+      "missing_full_support": -4.288840842634656,
+      "bad_pad_contact": -7.228864145519369,
+      "pose_deviation": -2.906659760854833
+    }
+  },
+  "limitations": "Offline reward-scale sanity check, not policy learning or a causal counterfactual. Excludes terminal steps and common pressure/physical-failure cost. Joint pose is pre-step (runtime reward uses post-step), upright inferred from prior valid trajectory. Not an exact resimulation."
+}

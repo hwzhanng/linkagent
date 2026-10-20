@@ -22,10 +22,32 @@ if not ASSET_USD or not Path(ASSET_USD).is_file():
     raise RuntimeError("Launch via script/train_fruit_rotation.py to build and select single L20 USD")
 
 
+def randomize_rotation_fruit(env, env_ids, *, asset_name, axis_ranges_m,
+                             density_range_kg_m3, accepted_mass_kg, maximum_axis_ratio):
+    """Keep the sampled ellipsoid's geometry, density, mass and inertia consistent."""
+    import math
+    from pxr import Gf, UsdPhysics
+    randomize_correlated_ellipsoid_geometry(
+        env, env_ids, asset_name=asset_name, axis_ranges_m=axis_ranges_m,
+        density_range_kg_m3=density_range_kg_m3, accepted_mass_kg=accepted_mass_kg,
+        maximum_axis_ratio=maximum_axis_ratio)
+    axes = env._prestartup_fruit_axes_m
+    masses = (4 * math.pi / 3) * axes.prod(-1) * env._prestartup_fruit_density_kg_m3
+    paths = sim_utils.find_matching_prim_paths(env.scene[asset_name].cfg.prim_path)
+    for path, dimensions, mass in zip(paths, axes, masses):
+        x, y, z = [float(v) for v in dimensions]
+        m = float(mass)
+        api = UsdPhysics.MassAPI.Apply(env.sim.stage.GetPrimAtPath(path))
+        api.CreateMassAttr().Set(m)
+        api.CreateDiagonalInertiaAttr().Set(Gf.Vec3f(
+            m * (y*y + z*z) / 5, m * (x*x + z*z) / 5, m * (x*x + y*y) / 5))
+    env._prestartup_fruit_mass_kg = masses
+
+
 @configclass
 class RotationEvents:
     geometry = EventTerm(
-        func=randomize_correlated_ellipsoid_geometry,
+        func=randomize_rotation_fruit,
         mode="prestartup",
         params={
             "asset_name": "fruit",
@@ -54,7 +76,14 @@ class FruitRotationEnvCfg(DirectRLEnvCfg):
     num_eval_envs = 16
     num_actions = 16
     debug = False
+    domain_profile = "full"  # launch-time randomization curriculum
+    hand_posture = "vertical"  # optional palm-up mount; policy dimensions unchanged
+    goal_direction = "both"  # single-direction curriculum; existing goal observation
+    reward_stage = "rotation"  # "contact" curriculum or full "rotation" objective
     pressure_variant = "jacobian"  # "plain" | "scalar" | "jacobian"
+    reset_grasps_file = str(Path(__file__).with_name("reset_pad_grasps.json"))
+    reset_joint_noise_rad = 0.018
+    reset_position_noise_m = 0.002
     pressure_relief_weight = 0.25
     action_space = ACTION_DIM
     observation_space = POLICY_DIM
@@ -94,7 +123,8 @@ class FruitRotationEnvCfg(DirectRLEnvCfg):
                 solver_position_iteration_count=8,
                 solver_velocity_iteration_count=4,
             ),
-            activate_contact_sensors=True,
+            # The task explicitly activates its six nested contact bodies.
+            activate_contact_sensors=False,
         ),
         actuators={
             "g20_active": ImplicitActuatorCfg(

@@ -1,0 +1,97 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+Loading user config located at: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-19T14:51:21Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers' or '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers/config'
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792421481.050938  674050 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792421481.050976  674050 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+2026-10-19T14:51:21Z [224ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+[ISAACLAB] AppLauncher initialization complete
+2026-10-19T14:51:24Z [3,036ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 42
+	Physics step-size     : 0.008333333333333333
+	Rendering step-size   : 0.05
+	Environment step-size : 0.05
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Registered backend 'physx' for factory RigidObject.
+[INFO]: Registered backend 'physx' for factory ContactSensor.
+[INFO]: Physics scene prim path: /physicsScene
+[INFO]: Time taken for scene creation Last: 5.695567 s, Mean: 5.695567 s, Std: 0.000000 s, N: 1
+[INFO]: Scene manager:  <class InteractiveScene>
+	Number of environments: 2048
+	Environment spacing   : 1.0
+	Source prim name      : /World/envs/env_0
+	Global prim paths     : ['/World/ground']
+	Replicate physics     : False
+[INFO]: Starting the simulation. This may take a few seconds. Please wait...
+2026-10-19T14:51:38Z [17,369ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?
+[INFO]: Simulation parameters for joints in /World/envs/env_.*/Robot:
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                 Simulation Joint Information (Prim path: /World/envs/env_.*/Robot)                                                 |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+| Index | Name          | Stiffness | Damping | Armature | Static Friction | Dynamic Friction | Viscous Friction | Position Limits | Velocity Limits | Effort Limits |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+|   0   | thumb_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.490, 1.050] |      1.000      |     0.450     |
+|   1   | index_joint0  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   2   | middle_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   3   | ring_joint0   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   4   | little_joint0 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-0.260, 0.260] |      1.000      |     0.450     |
+|   5   | thumb_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       | [-1.450, 0.000] |      1.000      |     0.450     |
+|   6   | index_joint1  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   7   | middle_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   8   | ring_joint1   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   9   | little_joint1 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.660] |      1.000      |     0.450     |
+|   10  | thumb_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 0.840] |      1.000      |     0.450     |
+|   11  | index_joint2  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   12  | middle_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   13  | ring_joint2   |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   14  | little_joint2 |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.360] |      1.000      |     0.450     |
+|   15  | thumb_joint3  |   10.000  |  0.800  |  0.002   |      0.020      |      0.000       |      0.000       |  [0.000, 1.320] |      1.000      |     0.450     |
+|   16  | index_joint3  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   17  | middle_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   18  | ring_joint3   |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   19  | little_joint3 |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.480] |      1.000      |     0.010     |
+|   20  | thumb_joint4  |   0.000   |  0.000  |  0.000   |      0.002      |      0.000       |      0.000       |  [0.000, 1.340] |      1.000      |     0.010     |
++-------+---------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+[INFO]: Time taken for simulation start Last: 14.398283 s, Mean: 14.398283 s, Std: 0.000000 s, N: 1
+2026-10-19T14:51:44Z [23,240ms] [Warning] [isaaclab.envs.direct_rl_env] DirectRLEnvCfg.num_actions is deprecated. Use DirectRLEnvCfg.action_space instead.
+[INFO] Event Manager:  <EventManager> contains 1 active terms.
++------------------------------------+
+| Active Event Terms in Mode: 'prestartup' |
++--------------+---------------------+
+|    Index     | Name                |
++--------------+---------------------+
+|      0       | geometry            |
++--------------+---------------------+
+
+[INFO]: Completed setting up the environment...
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+***USING FRAME STACK: 4
+Registering standard scaler with input size 280
+Registering standard scaler with input size 1728
+Registering standard scaler with input size 1
+[Hard reset] : Duplicating frames
+  0%|          | 0/256 [00:00<?, ?it/s]0.00M steps (update 0): -0.0339
+  0%|          | 1/256 [00:00<00:45,  5.65it/s]  1%|          | 3/256 [00:00<00:23, 10.73it/s]  2%|▏         | 5/256 [00:00<00:19, 12.75it/s]  3%|▎         | 7/256 [00:00<00:18, 13.61it/s]  4%|▎         | 9/256 [00:00<00:17, 13.92it/s]  4%|▍         | 11/256 [00:00<00:17, 14.08it/s]  5%|▌         | 13/256 [00:00<00:17, 14.09it/s]  6%|▌         | 15/256 [00:01<00:17, 14.17it/s]  7%|▋         | 17/256 [00:01<00:16, 14.13it/s]  7%|▋         | 19/256 [00:01<00:16, 14.13it/s]  8%|▊         | 21/256 [00:01<00:16, 14.15it/s]  9%|▉         | 23/256 [00:01<00:16, 14.17it/s] 10%|▉         | 25/256 [00:01<00:16, 14.14it/s] 11%|█         | 27/256 [00:01<00:16, 14.04it/s] 11%|█▏        | 29/256 [00:02<00:16, 14.00it/s] 12%|█▏        | 31/256 [00:02<00:16, 13.94it/s] 13%|█▎        | 33/256 [00:02<00:26,  8.42it/s] 14%|█▎        | 35/256 [00:02<00:23,  9.49it/s] 14%|█▍        | 37/256 [00:03<00:20, 10.45it/s] 15%|█▌        | 39/256 [00:03<00:19, 11.21it/s] 16%|█▌        | 41/256 [00:03<00:18, 11.82it/s] 17%|█▋        | 43/256 [00:03<00:17, 12.23it/s] 18%|█▊        | 45/256 [00:03<00:16, 12.63it/s] 18%|█▊        | 47/256 [00:03<00:16, 12.95it/s] 19%|█▉        | 49/256 [00:03<00:15, 13.15it/s] 20%|█▉        | 51/256 [00:04<00:15, 13.37it/s] 21%|██        | 53/256 [00:04<00:15, 13.47it/s] 21%|██▏       | 55/256 [00:04<00:14, 13.47it/s] 22%|██▏       | 57/256 [00:04<00:14, 13.54it/s] 23%|██▎       | 59/256 [00:04<00:14, 13.60it/s] 24%|██▍       | 61/256 [00:04<00:14, 13.61it/s] 25%|██▍       | 63/256 [00:04<00:14, 13.64it/s] 25%|██▌       | 65/256 [00:05<00:21,  9.08it/s] 26%|██▌       | 67/256 [00:05<00:18, 10.05it/s] 27%|██▋       | 69/256 [00:05<00:17, 10.88it/s] 28%|██▊       | 71/256 [00:05<00:15, 11.61it/s] 29%|██▊       | 73/256 [00:05<00:15, 12.16it/s] 29%|██▉       | 75/256 [00:06<00:14, 12.54it/s] 30%|███       | 77/256 [00:06<00:13, 13.04it/s] 31%|███       | 79/256 [00:06<00:13, 13.39it/s] 32%|███▏      | 81/256 [00:06<00:12, 13.56it/s] 32%|███▏      | 83/256 [00:06<00:12, 13.67it/s] 33%|███▎      | 85/256 [00:06<00:12, 13.69it/s] 34%|███▍      | 87/256 [00:06<00:12, 13.63it/s] 35%|███▍      | 89/256 [00:07<00:12, 13.49it/s] 36%|███▌      | 91/256 [00:07<00:12, 13.56it/s] 36%|███▋      | 93/256 [00:07<00:11, 13.64it/s] 37%|███▋      | 95/256 [00:07<00:11, 13.67it/s] 38%|███▊      | 97/256 [00:07<00:17,  9.11it/s] 39%|███▊      | 99/256 [00:08<00:15, 10.15it/s] 39%|███▉      | 101/256 [00:08<00:14, 10.95it/s] 40%|████      | 103/256 [00:08<00:13, 11.61it/s] 41%|████      | 105/256 [00:08<00:12, 12.10it/s] 42%|████▏     | 107/256 [00:08<00:11, 12.51it/s] 43%|████▎     | 109/256 [00:08<00:11, 12.85it/s] 43%|████▎     | 111/256 [00:08<00:11, 13.13it/s] 44%|████▍     | 113/256 [00:09<00:10, 13.29it/s] 45%|████▍     | 115/256 [00:09<00:10, 13.43it/s] 46%|████▌     | 117/256 [00:09<00:10, 13.40it/s] 46%|████▋     | 119/256 [00:09<00:10, 13.32it/s] 47%|████▋     | 121/256 [00:09<00:10, 13.43it/s] 48%|████▊     | 123/256 [00:09<00:09, 13.40it/s] 49%|████▉     | 125/256 [00:09<00:09, 13.49it/s] 50%|████▉     | 127/256 [00:10<00:09, 12.97it/s] 50%|█████     | 129/256 [00:10<00:14,  8.88it/s] 51%|█████     | 131/256 [00:10<00:12,  9.94it/s] 52%|█████▏    | 133/256 [00:10<00:11, 10.84it/s] 53%|█████▎    | 135/256 [00:10<00:10, 11.59it/s] 54%|█████▎    | 137/256 [00:11<00:09, 12.15it/s] 54%|█████▍    | 139/256 [00:11<00:09, 12.57it/s] 55%|█████▌    | 141/256 [00:11<00:08, 12.89it/s] 56%|█████▌    | 143/256 [00:11<00:08, 13.10it/s] 57%|█████▋    | 145/256 [00:11<00:08, 13.26it/s] 57%|█████▋    | 147/256 [00:11<00:08, 13.50it/s] 58%|█████▊    | 149/256 [00:11<00:07, 13.63it/s] 59%|█████▉    | 151/256 [00:12<00:07, 13.79it/s] 60%|█████▉    | 153/256 [00:12<00:07, 13.82it/s] 61%|██████    | 155/256 [00:12<00:07, 13.84it/s] 61%|██████▏   | 157/256 [00:12<00:07, 13.74it/s] 62%|██████▏   | 159/256 [00:12<00:07, 13.81it/s] 63%|██████▎   | 161/256 [00:13<00:10,  9.20it/s] 64%|██████▎   | 163/256 [00:13<00:09, 10.21it/s] 64%|██████▍   | 165/256 [00:13<00:08, 11.08it/s] 65%|██████▌   | 167/256 [00:13<00:07, 11.87it/s] 66%|██████▌   | 169/256 [00:13<00:07, 12.26it/s] 67%|██████▋   | 171/256 [00:13<00:06, 12.67it/s] 68%|██████▊   | 173/256 [00:13<00:06, 12.97it/s] 68%|██████▊   | 175/256 [00:14<00:06, 13.08it/s] 69%|██████▉   | 177/256 [00:14<00:06, 13.12it/s] 70%|██████▉   | 179/256 [00:14<00:05, 13.12it/s] 71%|███████   | 181/256 [00:14<00:05, 13.17it/s] 71%|███████▏  | 183/256 [00:14<00:05, 13.26it/s] 72%|███████▏  | 185/256 [00:14<00:05, 13.30it/s] 73%|███████▎  | 187/256 [00:15<00:05, 13.18it/s] 74%|███████▍  | 189/256 [00:15<00:05, 13.18it/s] 75%|███████▍  | 191/256 [00:15<00:04, 13.22it/s] 75%|███████▌  | 193/256 [00:15<00:07,  8.94it/s] 76%|███████▌  | 195/256 [00:15<00:06,  9.86it/s] 77%|███████▋  | 197/256 [00:16<00:05, 10.69it/s] 78%|███████▊  | 199/256 [00:16<00:05, 11.27it/s] 79%|███████▊  | 201/256 [00:16<00:04, 11.67it/s] 79%|███████▉  | 203/256 [00:16<00:04, 12.03it/s] 80%|████████  | 205/256 [00:16<00:04, 12.29it/s] 81%|████████  | 207/256 [00:16<00:03, 12.41it/s] 82%|████████▏ | 209/256 [00:16<00:03, 12.67it/s] 82%|████████▏ | 211/256 [00:17<00:03, 12.79it/s] 83%|████████▎ | 213/256 [00:17<00:03, 12.73it/s] 84%|████████▍ | 215/256 [00:17<00:03, 12.79it/s] 85%|████████▍ | 217/256 [00:17<00:03, 12.76it/s] 86%|████████▌ | 219/256 [00:17<00:02, 12.79it/s] 86%|████████▋ | 221/256 [00:17<00:02, 12.93it/s] 87%|████████▋ | 223/256 [00:18<00:02, 13.05it/s] 88%|████████▊ | 225/256 [00:18<00:03,  8.69it/s] 89%|████████▊ | 227/256 [00:18<00:03,  9.58it/s] 89%|████████▉ | 229/256 [00:18<00:02, 10.39it/s] 90%|█████████ | 231/256 [00:18<00:02, 10.97it/s] 91%|█████████ | 233/256 [00:19<00:02, 11.48it/s] 92%|█████████▏| 235/256 [00:19<00:01, 12.04it/s] 93%|█████████▎| 237/256 [00:19<00:01, 12.23it/s] 93%|█████████▎| 239/256 [00:19<00:01, 12.60it/s] 94%|█████████▍| 241/256 [00:19<00:01, 12.84it/s] 95%|█████████▍| 243/256 [00:19<00:00, 13.03it/s] 96%|█████████▌| 245/256 [00:19<00:00, 13.22it/s] 96%|█████████▋| 247/256 [00:20<00:00, 13.36it/s] 97%|█████████▋| 249/256 [00:20<00:00, 13.35it/s] 98%|█████████▊| 251/256 [00:20<00:00, 13.44it/s] 99%|█████████▉| 253/256 [00:20<00:00, 13.53it/s]100%|█████████▉| 255/256 [00:20<00:00, 13.46it/s]100%|██████████| 256/256 [00:20<00:00, 12.20it/s]
+{
+  "training_completed": true,
+  "ppo_updates": 8,
+  "training_transitions": 520192,
+  "cumulative_training_transitions": 2174992,
+  "parameter_change_l2": {
+    "encoder": 2.7197937965393066,
+    "policy": 0.323983371257782,
+    "value": 0.7145122289657593
+  },
+  "finite_parameters": true,
+  "elapsed_seconds": 21.013248337898403,
+  "final_checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed42/2026-10-19_22-51-44/checkpoints/final_agent.pt",
+  "seed": 42,
+  "variant": "jacobian",
+  "resumed_from": "/home/descfly/linkagent-ppo/simulation/.runtime/setup/scaling_base/checkpoints/last_agent.pt"
+}
+[INFO]: SimulationContext cleared

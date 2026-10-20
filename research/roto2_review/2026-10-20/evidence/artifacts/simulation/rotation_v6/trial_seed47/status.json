@@ -1,0 +1,31 @@
+{
+  "started_at": "2026-10-20T10:09:10.100317+08:00",
+  "core_architecture_changed": false,
+  "task_acceptance_passed": false,
+  "initial_checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed46/2026-10-20_08-13-16/checkpoints/final_agent.pt",
+  "num_envs": 16384,
+  "hand_posture": "palm_up",
+  "seed": 47,
+  "reset_grasps_file": "/home/descfly/linkagent-ppo/simulation/roto2_pressure/reset_pad_grasps_palm_up.json",
+  "entropy_weight": 0.005,
+  "exploration_std": "restored from checkpoint",
+  "contact_budget_million": 64.0,
+  "rotation_budget_million": 96.0,
+  "first_stage": "regrasp",
+  "second_stage": "spin",
+  "first_stage_gate": "both independent 64-episode evaluations: >=50% pass after-settling 30deg curriculum, mean strict pad support >=50%, physical failure <=10%; NOT full-task acceptance",
+  "completed_runs": [
+    "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed47/2026-10-20_10-11-56/training_result.json"
+  ],
+  "evaluations": [
+    "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v6/trial_seed47/regrasp_nominal_seed2061.json",
+    "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v6/trial_seed47/regrasp_nominal_seed2062.json"
+  ],
+  "status": "regrasp_gate_failed",
+  "updated_at": "2026-10-20T10:28:37.726417+08:00",
+  "current_log": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v6/trial_seed47/regrasp_video.log",
+  "latest_checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/jacobian_seed47/2026-10-20_10-11-56/checkpoints/final_agent.pt",
+  "first_stage_gate_passed": false,
+  "latest_video": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v6/trial_seed47/regrasp_seed2061.mp4",
+  "conclusion": "regrasp curriculum is not accepted; spin stage was not started."
+}

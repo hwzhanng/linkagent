@@ -1,0 +1,122 @@
+Base isaacsim=6.0.1.0
+Base torch=2.10.0+cu128
+Base isaaclab=6.1.14
+Base isaaclab-physx=1.1.3
+HEAD is now at 4ac55e8 tactile scaling fix
+HEAD is now at 0fa344e bolding
+Obtaining file:///home/descfly/linkagent-ppo/.external_roto2/multimodal_rl
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: multimodal_rl
+  Building editable for multimodal_rl (pyproject.toml): started
+  Building editable for multimodal_rl (pyproject.toml): finished with status 'done'
+  Created wheel for multimodal_rl: filename=multimodal_rl-1.0.0-0.editable-py3-none-any.whl size=4097 sha256=67a46ea560d8563a9ac5cc4d0e608a3b0f84cb7db1fa8fa7cd785e1aafde02b6
+  Stored in directory: /tmp/pip-ephem-wheel-cache-hm8eciyg/wheels/c5/5b/8e/1ab5e5197faaa6e91c898af41930e64efa37a5de5ee02db3b2
+Successfully built multimodal_rl
+Installing collected packages: multimodal_rl
+Successfully installed multimodal_rl-1.0.0
+Collecting gym<1,>=0.26
+  Downloading gym-0.26.2.tar.gz (721 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 721.7/721.7 kB 671.0 kB/s  0:00:01
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: gymnasium<2,>=1 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (1.2.1)
+Collecting skrl==2.1.0
+  Downloading skrl-2.1.0-py3-none-any.whl.metadata (5.5 kB)
+Requirement already satisfied: PyYAML<7,>=6 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (6.0.3)
+Requirement already satisfied: tqdm<5,>=4.66 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (4.67.1)
+Requirement already satisfied: matplotlib<4,>=3.8 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (3.10.8)
+Requirement already satisfied: tensorboard<3,>=2.17 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (2.21.0)
+Collecting wandb<0.29,>=0.28
+  Downloading wandb-0.28.2-py3-none-manylinux_2_28_x86_64.whl.metadata (11 kB)
+Requirement already satisfied: packaging in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from skrl==2.1.0) (23.2)
+Requirement already satisfied: numpy>=1.18.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from gym<1,>=0.26) (2.3.1)
+Requirement already satisfied: cloudpickle>=1.2.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from gym<1,>=0.26) (3.1.2)
+Collecting gym_notices>=0.0.4 (from gym<1,>=0.26)
+  Downloading gym_notices-0.1.0-py3-none-any.whl.metadata (1.2 kB)
+Requirement already satisfied: typing-extensions>=4.3.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from gymnasium<2,>=1) (4.12.2)
+Requirement already satisfied: farama-notifications>=0.0.1 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from gymnasium<2,>=1) (0.0.6)
+Requirement already satisfied: contourpy>=1.0.1 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from matplotlib<4,>=3.8) (1.3.3)
+Requirement already satisfied: cycler>=0.10 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from matplotlib<4,>=3.8) (0.12.1)
+Requirement already satisfied: fonttools>=4.22.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from matplotlib<4,>=3.8) (4.61.1)
+Requirement already satisfied: kiwisolver>=1.3.1 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from matplotlib<4,>=3.8) (1.4.9)
+Requirement already satisfied: pillow>=8 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from matplotlib<4,>=3.8) (12.2.0)
+Requirement already satisfied: pyparsing>=3 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from matplotlib<4,>=3.8) (3.3.2)
+Requirement already satisfied: python-dateutil>=2.7 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from matplotlib<4,>=3.8) (2.9.0.post0)
+Requirement already satisfied: absl-py>=0.4 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from tensorboard<3,>=2.17) (2.4.0)
+Requirement already satisfied: grpcio<2.0,>=1.74.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from tensorboard<3,>=2.17) (1.85.0rc1)
+Requirement already satisfied: markdown>=2.6.8 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from tensorboard<3,>=2.17) (3.11.1)
+Requirement already satisfied: protobuf<8.0.0,>=6.31.1 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from tensorboard<3,>=2.17) (7.37.0rc1)
+Requirement already satisfied: setuptools>=41.0.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from tensorboard<3,>=2.17) (81.0.0)
+Requirement already satisfied: tensorboard-data-server<0.8.0,>=0.7.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from tensorboard<3,>=2.17) (0.7.2)
+Requirement already satisfied: werkzeug>=1.0.1 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from tensorboard<3,>=2.17) (3.1.9)
+Collecting click>=8.2.0 (from wandb<0.29,>=0.28)
+  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting opentelemetry-api>=1.43.0 (from wandb<0.29,>=0.28)
+  Downloading opentelemetry_api-1.45.1-py3-none-any.whl.metadata (1.4 kB)
+Collecting platformdirs (from wandb<0.29,>=0.28)
+  Downloading platformdirs-4.13.5-py3-none-any.whl.metadata (5.5 kB)
+Requirement already satisfied: pydantic<3,>=2.6 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from wandb<0.29,>=0.28) (2.11.10)
+Requirement already satisfied: requests<3,>=2.0.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from wandb<0.29,>=0.28) (2.32.3)
+Requirement already satisfied: sentry-sdk>=2.0.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from wandb<0.29,>=0.28) (2.42.1)
+Requirement already satisfied: annotated-types>=0.6.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from pydantic<3,>=2.6->wandb<0.29,>=0.28) (0.8.0)
+Requirement already satisfied: pydantic-core==2.33.2 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from pydantic<3,>=2.6->wandb<0.29,>=0.28) (2.33.2)
+Requirement already satisfied: typing-inspection>=0.4.0 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from pydantic<3,>=2.6->wandb<0.29,>=0.28) (0.4.2)
+Requirement already satisfied: charset-normalizer<4,>=2 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from requests<3,>=2.0.0->wandb<0.29,>=0.28) (3.3.2)
+Requirement already satisfied: idna<4,>=2.5 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from requests<3,>=2.0.0->wandb<0.29,>=0.28) (3.10)
+Requirement already satisfied: urllib3<3,>=1.21.1 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from requests<3,>=2.0.0->wandb<0.29,>=0.28) (2.6.3)
+Requirement already satisfied: certifi>=2017.4.17 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from requests<3,>=2.0.0->wandb<0.29,>=0.28) (2026.10.18)
+Requirement already satisfied: six>=1.5 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from python-dateutil>=2.7->matplotlib<4,>=3.8) (1.17.0)
+Requirement already satisfied: markupsafe>=2.1.1 in ./simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages (from werkzeug>=1.0.1->tensorboard<3,>=2.17) (3.0.4)
+Downloading skrl-2.1.0-py3-none-any.whl (458 kB)
+Downloading wandb-0.28.2-py3-none-manylinux_2_28_x86_64.whl (29.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29.6/29.6 MB 726.7 kB/s  0:00:43
+Downloading click-8.5.0-py3-none-any.whl (125 kB)
+Downloading gym_notices-0.1.0-py3-none-any.whl (3.3 kB)
+Downloading opentelemetry_api-1.45.1-py3-none-any.whl (60 kB)
+Downloading platformdirs-4.13.5-py3-none-any.whl (32 kB)
+Building wheels for collected packages: gym
+  Building wheel for gym (pyproject.toml): started
+  Building wheel for gym (pyproject.toml): finished with status 'done'
+  Created wheel for gym: filename=gym-0.26.2-py3-none-any.whl size=827729 sha256=ae97ace55e991c5bf058023f1d7e933b18207b4c174cf1c07bef552ab5b50374
+  Stored in directory: /tmp/pip-ephem-wheel-cache-i7jncr2v/wheels/95/51/6c/9bb05ebbe7c5cb8171dfaa3611f32622ca4658d53f31c79077
+Successfully built gym
+Installing collected packages: gym_notices, platformdirs, opentelemetry-api, gym, click, wandb, skrl
+  Attempting uninstall: click
+    Found existing installation: click 8.1.7
+    Uninstalling click-8.1.7:
+      Successfully uninstalled click-8.1.7
+
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+multimodal-rl 1.0.0 requires autoflake, which is not installed.
+multimodal-rl 1.0.0 requires black, which is not installed.
+multimodal-rl 1.0.0 requires flake8, which is not installed.
+multimodal-rl 1.0.0 requires isort, which is not installed.
+multimodal-rl 1.0.0 requires kornia, which is not installed.
+multimodal-rl 1.0.0 requires mypy, which is not installed.
+multimodal-rl 1.0.0 requires optuna, which is not installed.
+multimodal-rl 1.0.0 requires optuna-dashboard, which is not installed.
+multimodal-rl 1.0.0 requires tbparse, which is not installed.
+isaacsim-kernel 6.0.1.0 requires click==8.1.7, but you have click 8.5.0 which is incompatible.
+isaacsim-kernel 6.0.1.0 requires coverage==7.4.4, but you have coverage 7.6.1 which is incompatible.
+Successfully installed click-8.5.0 gym-0.26.2 gym_notices-0.1.0 opentelemetry-api-1.45.1 platformdirs-4.13.5 skrl-2.1.0 wandb-0.28.2
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+RoTO2 PPO + Trainer + Encoder + wrapper: import PASS
+Torch: 2.10.0+cu128 | CUDA: True
+
+Installed; next run real GPU/PhysX smoke:
+  "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python" -m script.train_roto2_pressure --headless --smoke --num-envs 8
+  "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python" -m script.train_roto2_pressure --headless --num-envs 256 --million-steps 100 --seed 42 --pressure-variant jacobian

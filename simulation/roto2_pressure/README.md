@@ -4,7 +4,9 @@
 
 One right LinkerHand L20 (16 active and 5 passive mimic joints), fixed wrist, one 58–70 mm fruit, Isaac Lab 3.0, 20 Hz policy / 120 Hz physics, 24 s episode. Learn continuous rotation with minimal surface load and no drop. There is NO second hand, arm, custom PPO, recurrent belief network or dynamics ensemble.
 
-**Current status:** CPU analytic regression passed. There has been **NO Isaac GPU/PhysX smoke or converged training run**; all fruit stiffness, pressure threshold and actuator values are engineering priors. This is an experimental runnable prototype, not a validated zero-damage controller.
+**Current status (2026-10-20):** Real Isaac GPU/PhysX training and independent pose-based evaluation have been run. The latest 32M-transition v7 pilot achieved **0/128 full-rotation successes**, 74.5% strict active-pad support and 18.4° mean net rotation. Earlier velocity-integral success claims, including 72.4%, are **withdrawn**. No converged continuous-rotation or zero-damage controller has been demonstrated.
+
+**Teacher/research review:** [Complete Chinese experiment report, run registry, raw logs, trajectories, videos and checkpoint download instructions](../../research/roto2_review/2026-10-20/README.md). Start there for current findings; older run snapshots preserve historical, sometimes invalid conclusions.
 
 ### Recent baseline
 
@@ -14,11 +16,11 @@ The source installation pins:
 - roto SHA 0fa344e6e224f141cb6ab3ed4c2fbbbd86cf1cc2
 - multimodal_rl SHA 4ac55e854b4c732534d443715a0322d4220b461c
 
-### Three modifications, nothing else
+### Original research design and current implementation
 
 1. **Dual-sided observations.** On the hand, 5 tactile grids at 12×6 = 360 proxy taxels. On the fruit, 6 small square patches at 2×2 = 24 measured pressure channels, their first differences, and 24 validity bits. Actor also sees encoder-derived joint state, contact centroid, pressure-face moments, target spin and past action. It NEVER sees privileged fruit pose / angular velocity or all-surface pressure directly.
 2. **Measured action sensitivity.** A damped rank-one secant update produces Jp = d(patch pressure) / d(hand action) of shape 24×16 from online physical transitions. A similar local spin Jacobian Jw is estimated from simulation spin. No differentiable simulator and no neural pressure predictor.
-3. **Task-tangent pressure correction.** Compute g = Jp^T (d pressure-hotspot-risk / d pressure) and suppress components parallel to Jw before applying a *small* corrected action. A correction is rejected unless secure three-finger support is present, enough valid patches exist and the local counterfactual predicts a pressure decrease with little rotation change. Pressure-drop reward is similarly gated on secure contact and forward rotation, so releasing the object cannot farm positive reward.
+3. **Task-tangent pressure correction.** Compute g = Jp^T (d pressure-hotspot-risk / d pressure) and suppress components parallel to Jw before applying a *small* corrected action. A correction is rejected unless secure three-finger support is present, enough valid patches exist and the local counterfactual predicts a pressure decrease with little rotation change. Current corrected rewards use a pressure-risk penalty and **no positive pressure-drop bonus**, to avoid rewarding release/regrasp loops. Later reward curricula and pose/contact fixes are documented in the review.
 
 No claim of first invention of Broyden updating or null-space projection is made; the research contribution is testing this simple, sparse fruit-mounted sensing + task-tangent closed-loop integration against an unchanged strong tactile PPO baseline.
 
@@ -50,7 +52,7 @@ Compare with identical seed and training budget, changing ONLY pressure_variant:
 
 plain: RoTO 2.0 PPO with identical pressure/tactile observations but no pressure-specific reward or action residual.
 scalar: adds conventional pressure-risk penalty, no action residual.
-jacobian: applies local action-pressure Jacobian descent with task-tangent projection and gated pressure relief reward.
+jacobian: applies local action-pressure Jacobian descent with task-tangent projection and the same pressure-risk penalty as scalar; no positive pressure-relief reward.
 
 Checkpoint: logs/roto2_pressure_fruit/<variant>_seed42/<date>/checkpoints/best_agent.pt. Metrics: TensorBoard scalars and independent post-training evaluation.
 
