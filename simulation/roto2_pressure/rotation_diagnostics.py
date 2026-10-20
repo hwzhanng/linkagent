@@ -18,14 +18,14 @@ def trace_policy(trainer, wrapped, checkpoint, output):
     states, _ = wrapped.reset(hard=True);raw = wrapped._unwrapped
     pending = torch.ones(raw.num_envs,device=raw.device,dtype=torch.bool)
     data = {k:[] for k in ('joint','target','action','reward','active','done','pad','pose','forces','contact_local',
-                           'tip_position_w','tip_quaternion_xyzw','approach_quality')}
+                           'tip_position_w','tip_quaternion_xyzw','approach_quality',
+                           'peak_pressure_pa','terminated','truncated')}
     term_data = {}
     from .core import quat_inv_rotate
     limits=raw._active_limits.cpu().numpy().copy()
     grasp_reference_initial=raw._grasp_reference.cpu().numpy().copy()
     center_reference_initial=raw._center_reference_w.cpu().numpy().copy()
     fruit_axes_m=raw._axes_m.cpu().numpy().copy()
-    from .reward_geometry import pad_approach_quality
     for t in range(int(raw.max_episode_length+2)):
         if not pending.any(): break
         action,_,_=agent.policy.act(agent.encoder(states),deterministic=True)
@@ -37,18 +37,18 @@ def trace_policy(trainer, wrapped, checkpoint, output):
         e=info['step'];done=(term|trunc).reshape(-1)
         data['reward'].append(reward.reshape(-1).cpu().numpy().copy())
         data['done'].append(done.cpu().numpy().copy())
+        data['terminated'].append(term.reshape(-1).cpu().numpy().copy())
+        data['truncated'].append(trunc.reshape(-1).cpu().numpy().copy())
         data['pad'].append(e['pad_contact'].cpu().numpy().copy())
         data['pose'].append(e['fruit_pose_native'].cpu().numpy().copy())
         data['forces'].append(raw._forces[:,:5].cpu().numpy().copy())
         ids=raw._contact_body_ids[:5]
         tip_pos=raw._robot.data.body_pos_w.torch[:,ids]
         tip_quat=raw._robot.data.body_quat_w.torch[:,ids]
-        fruit_pose=raw._fruit.data.root_pose_w.torch
         data['tip_position_w'].append(tip_pos.cpu().numpy().copy())
         data['tip_quaternion_xyzw'].append(tip_quat.cpu().numpy().copy())
-        data['approach_quality'].append(pad_approach_quality(
-            tip_pos,raw._wxyz(tip_quat),fruit_pose[:,:3],
-            raw._wxyz(fruit_pose[:,3:7]),raw._axes_m).cpu().numpy().copy())
+        data['approach_quality'].append(e['pad_approach_quality'].cpu().numpy().copy())
+        data['peak_pressure_pa'].append(e['peak_pressure_pa'].cpu().numpy().copy())
         local=quat_inv_rotate(raw._wxyz(raw._robot.data.body_quat_w.torch[:,ids]),
                               raw._contact_positions[:,:5]-raw._robot.data.body_pos_w.torch[:,ids])
         data['contact_local'].append(local.cpu().numpy().copy())
@@ -69,7 +69,7 @@ def trace_policy(trainer, wrapped, checkpoint, output):
             'mean_discounted_return':float((rewards*discount[:,None]).sum(0).mean()),
             'near_limit_fraction_by_joint':dict(zip(ACTIVE_JOINTS,near_fraction.tolist())),
             'policy_std':float(agent.policy.log_std_parameter.exp().mean()),
-            'geometry_trace_note':'World-frame tip positions and native xyzw quaternions; approach quality is diagnostic only. Exclude done steps for post-step raw buffers, which automatic resets may replace.'}
+            'geometry_trace_note':'World-frame tip positions and native xyzw quaternions. Approach quality, peak pressure, pad flags and fruit pose come from pre-reset step snapshots. Exclude done steps for raw tip, force and contact-position buffers, which automatic resets may replace. Joint and target arrays are pre-action.'}
     output.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2),flush=True)
 
 
