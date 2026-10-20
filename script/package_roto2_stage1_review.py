@@ -69,7 +69,9 @@ def main():
             "simulation/roto2_pressure/reset_grasps_v8_validated256.json",
             "script/train_roto2_pressure.py", "script/validate_roto2_stage1_run.py",
             "script/snapshot_roto2_milestones.py", "script/plot_roto2_policy_diagnostic.py",
-            "script/package_roto2_stage1_review.py"]]))
+            "script/package_roto2_stage1_review.py",
+            "script/probe_roto2_shifted_grasp_ik.py",
+            "simulation/.runtime/setup/search_grasp.py"]]))
     scan = old.security_check(files + sources)
     archive_name = TAG + "-evidence.tar.gz"
     manifest, schemas, checkpoints, scalar_rows, training_rows = [], [], [], [], []
