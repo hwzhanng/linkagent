@@ -1,7 +1,7 @@
 """Freeze completed stage1 training/diagnostics, including interrupted lineage."""
 import argparse
 import csv
-from datetime import datetime
+from datetime import datetime, timezone
 import hashlib
 import importlib.util
 import json
@@ -40,7 +40,9 @@ def main():
     assert result["cumulative_training_transitions"] >= 299_000_000
     pipeline = json.loads((BASE / "final_validation/VALIDATION_PIPELINE.json").read_text())
     assert pipeline["status"] == "completed_pending_visual_review"
-    cutoff = datetime.fromisoformat(pipeline["completed_utc"]).astimezone(
+    packaged_at = datetime.now(timezone.utc)
+    # Include diagnostics explicitly run after the automatic video pipeline.
+    cutoff = packaged_at.astimezone(
         ZoneInfo("Asia/Shanghai")).strftime("%Y-%m-%d_%H-%M-%S")
     gate = json.loads((BASE / "final_validation/QUANTITATIVE_GATE.json").read_text())
     assert gate["visual_review_pending"] is False, "Actual visual review must precede delivery"
@@ -174,6 +176,7 @@ def main():
         "training_completed": True, "stage1_task_accepted": gate["stage1_accepted"],
         "cumulative_samples": result["cumulative_training_transitions"],
         "cumulative_ppo_updates": result["cumulative_ppo_updates"],
+        "packaged_at_utc": packaged_at.isoformat(),
         "full_PPO_rollout_dataset_saved": False,
         "note": "On-policy rollout buffers are reused. This archive contains saved evidence, not an invented300M-row offline dataset.",
     })

@@ -15,6 +15,7 @@ def main():
     p.add_argument("--trace", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--label", default="Policy diagnostic")
+    p.add_argument("--final-training-result", action="store_true")
     a = p.parse_args()
     summary = json.loads(a.evaluation.read_text())
     e = np.load(a.evaluation.with_suffix(".npz"))
@@ -80,7 +81,7 @@ def main():
         "rotation_and_reward_denominator": f"All{n} first episodes, freeze accumulated values after first termination.",
         "contact_and_joint_denominator": "Still-active episodes at each time; active count is in CSV.",
         "failure_cost_in_reward_panel": False,
-        "final_training_result": False,
+        "final_training_result": a.final_training_result,
     }, indent=2) + "\n")
 
 
