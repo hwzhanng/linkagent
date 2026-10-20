@@ -1,0 +1,72 @@
+{
+  "utc": "2026-10-20T11:47:07.980528+00:00",
+  "previous_evidence_files_verified_unchanged": 2136,
+  "new_evidence_files": 203,
+  "evidence_bytes": 114712671,
+  "branch_mirrored_files": 105,
+  "npz_files_read_and_archived": 98,
+  "search_runs": 6,
+  "search_physical_rollouts": 559104,
+  "n1_validation_runs": 9,
+  "n1_configuration_tests": 735,
+  "n1_condition_rows": 4410,
+  "n1_accepted_configurations": 0,
+  "core_ast_unchanged": {
+    "build_roto2_training": true,
+    "_pre_physics_step": true,
+    "_apply_action": true,
+    "_get_dones": true,
+    "_get_observations": true
+  },
+  "tests": [
+    {
+      "module": "test_redundant_baseline",
+      "returncode": 0,
+      "stdout": "PASS: no-thumb support, stable release, airborne rejection, motion dominance, reverse loop, normalized joints\n",
+      "stderr": ""
+    },
+    {
+      "module": "test_continuous_reward",
+      "returncode": 0,
+      "stdout": "PASS: static, useful rotation, two-pad shortcut, outside-pad force, pose recovery, direction, invalid path, settling, release farming, oscillation and useful gait\n",
+      "stderr": ""
+    },
+    {
+      "module": "test_reward_geometry",
+      "returncode": 0,
+      "stdout": "PASS: pose winding/sign, side/back rejection, stall/release/reversal/oscillation exploits\n",
+      "stderr": ""
+    },
+    {
+      "module": "test_rotation_curriculum",
+      "returncode": 0,
+      "stdout": "PASS: no-contact, stationary, reversal, oscillation, settling, invalid pose, and repeated milestone exploits\n",
+      "stderr": ""
+    }
+  ],
+  "credential_scan": {
+    "selected_files_scanned": 203,
+    "credential_pattern_matches": 0,
+    "note": "Heuristic scan, not a guarantee; dependency caches and unrelated directories excluded."
+  },
+  "all_archive_members_hash_verified": true,
+  "data_boundary": "No new PPO training. Probe trials are not independent policies or PPO transitions.",
+  "excluded": [
+    {
+      "path": "simulation/.runtime/setup/uv-cache",
+      "reason": "dependency cache, bytecode, or unrelated tomato-pick experiment"
+    },
+    {
+      "path": "simulation/.runtime/setup/wheels",
+      "reason": "dependency cache, bytecode, or unrelated tomato-pick experiment"
+    },
+    {
+      "path": "simulation/.runtime/setup/__pycache__",
+      "reason": "dependency cache, bytecode, or unrelated tomato-pick experiment"
+    },
+    {
+      "path": "artifacts/simulation/tomato_pick_clean_v5",
+      "reason": "dependency cache, bytecode, or unrelated tomato-pick experiment"
+    }
+  ]
+}

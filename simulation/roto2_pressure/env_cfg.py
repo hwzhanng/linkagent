@@ -84,11 +84,14 @@ class FruitRotationEnvCfg(DirectRLEnvCfg):
     reset_grasps_file = str(Path(__file__).with_name("reset_pad_grasps.json"))
     reset_joint_noise_rad = 0.018
     reset_position_noise_m = 0.002
+    randomize_reset_grasp = False
     pressure_relief_weight = 0.25
     action_space = ACTION_DIM
     observation_space = POLICY_DIM
     state_space = 0
     debug_vis = False
+    # Read-only whole-finger contact instrumentation for N-1 calibration only.
+    diagnostic_all_finger_contacts = False
     viewer = ViewerCfg(
         eye=(0.60, -0.58, 1.18), lookat=(0.0, 0.0, 0.89),
         origin_type="world", env_index=0,

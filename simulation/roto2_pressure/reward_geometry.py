@@ -205,4 +205,6 @@ def continuous_rotation_reward(delta, goal, pad_forces, pad_quality, raw_forces,
 
 
 def reward_version(stage):
+    if stage == 'baseline':
+        return 'pose_stable_v8_baseline'
     return 'pose_pad_v7_continuous' if stage == 'continuous' else REWARD_VERSION

@@ -1,0 +1,393 @@
+diff --git a/script/train_roto2_pressure.py b/script/train_roto2_pressure.py
+index 14d170b..b4e1aba 100644
+--- a/script/train_roto2_pressure.py
++++ b/script/train_roto2_pressure.py
+@@ -146,9 +146,11 @@ def main(argv=None):
+     parser.add_argument("--initial-action-std", type=float, default=None,
+                         help="Fresh-run Gaussian exploration std; network/PPO are unchanged")
+     parser.add_argument("--entropy-weight", type=float, default=None)
++    parser.add_argument("--rollout-steps", type=int, default=None,
++                        help="Override rollout length without changing upstream PPO")
+     parser.add_argument("--domain-profile", choices=("full", "gentle", "nominal"), default="gentle")
+     parser.add_argument("--hand-posture", choices=("vertical", "palm_up"), default="vertical")
+-    parser.add_argument("--reward-stage", choices=("contact", "rotation", "regrasp", "spin", "continuous"), default="rotation")
++    parser.add_argument("--reward-stage", choices=("contact", "rotation", "regrasp", "spin", "continuous", "baseline"), default="rotation")
+     parser.add_argument("--goal-direction", choices=("both", "positive", "negative"), default="both")
+     parser.add_argument("--smoke", action="store_true",
+                         help="Run 20 actual PhysX steps before spending GPU time")
+@@ -160,6 +162,19 @@ def main(argv=None):
+     parser.add_argument("--probe-nominal", action="store_true",
+                         help="Diagnostic only: 64 mm sphere and deterministic reset")
+     parser.add_argument("--search-pad-reset", action="store_true")
++    parser.add_argument("--search-redundant-reset", action="store_true",
++                        help="Stage-0 multi-contact grasp proposal search; no PPO")
++    parser.add_argument("--validate-redundant-reset", action="store_true",
++                        help="Stage-0 physically verified whole-finger N-1 release tests; no PPO")
++    parser.add_argument("--calibration-rounds", type=int, default=32)
++    parser.add_argument("--calibration-horizon", type=int, default=80)
++    parser.add_argument("--calibration-spread", type=float, default=.12)
++    parser.add_argument("--calibration-release-mode", choices=("full_open", "adaptive"), default="full_open")
++    parser.add_argument("--calibration-region", choices=("broad", "palm"), default="broad")
++    parser.add_argument("--calibration-replicas", type=int, default=1)
++    parser.add_argument("--calibration-video", type=Path, default=None)
++    parser.add_argument("--calibration-density", type=float, default=950.0,
++                        help="Matched N-1 conditions use one density in the existing 850-1050 range")
+     parser.add_argument("--probe-pad-surfaces", action="store_true")
+     parser.add_argument("--probe-free-hand", action="store_true")
+     parser.add_argument("--probe-no-self-collision", action="store_true")
+@@ -180,10 +195,16 @@ def main(argv=None):
+         if args.evaluate_checkpoint is None:
+             parser.error("--record-video requires --evaluate-checkpoint")
+         args.enable_cameras = True
++    if args.calibration_video:
++        if not args.validate_redundant_reset:
++            parser.error("--calibration-video requires --validate-redundant-reset")
++        args.enable_cameras = True
+     if args.initial_action_std is not None and (args.initial_action_std <= 0 or args.resume_checkpoint):
+         parser.error("--initial-action-std must be positive and is for fresh runs only")
+     if args.entropy_weight is not None and args.entropy_weight < 0:
+         parser.error("--entropy-weight must be non-negative")
++    if args.rollout_steps is not None and args.rollout_steps < 2:
++        parser.error("--rollout-steps must be >=2")
+     if args.num_envs < 2:
+         raise ValueError("At least 2 environments required for train/eval split")
+     if args.million_steps <= 0:
+@@ -223,6 +244,8 @@ def main(argv=None):
+             agent_cfg["policy"]["initial_log_std"] = math.log(args.initial_action_std)
+         if args.entropy_weight is not None:
+             agent_cfg["agent"]["entropy_loss_scale"] = args.entropy_weight
++        if args.rollout_steps is not None:
++            agent_cfg["agent"]["rollouts"] = args.rollout_steps
+         agent_cfg["seed"] = args.seed
+         agent_cfg["trainer"]["num_eval_envs"] = min(
+             16, max(1, args.num_envs // 8)
+@@ -239,8 +262,14 @@ def main(argv=None):
+         cfg.pressure_variant = args.pressure_variant
+         cfg.reward_stage = args.reward_stage
+         cfg.goal_direction = args.goal_direction
++        cfg.diagnostic_all_finger_contacts = args.validate_redundant_reset
++        if args.validate_redundant_reset:
++            cfg.scene.lazy_sensor_update = False
+         if args.reward_stage in ("regrasp", "continuous"):
+             cfg.target_angular_speed_rad_s = (.15, .30)
++        elif args.reward_stage == "baseline":
++            cfg.target_angular_speed_rad_s = (.30, .50)
++            cfg.randomize_reset_grasp = True
+         cfg.domain_profile = args.domain_profile
+         cfg.hand_posture = args.hand_posture
+         if args.hand_posture == "palm_up":
+@@ -260,6 +289,13 @@ def main(argv=None):
+             cfg.reset_position_noise_m = 0.0 if args.domain_profile == "nominal" else .00025
+         if args.reset_grasps:
+             cfg.reset_grasps_file = str(args.reset_grasps.resolve())
++        if args.validate_redundant_reset:
++            if not 850 <= args.calibration_density <= 1050:
++                raise ValueError("Calibration density must remain inside task randomization range")
++            cfg.events.geometry.params["density_range_kg_m3"] = (
++                args.calibration_density, args.calibration_density)
++        if args.search_redundant_reset or args.validate_redundant_reset:
++            cfg.randomize_reset_grasp = False
+         if args.probe_nominal:
+             cfg.domain_profile = "nominal"
+             if not args.probe_steps:
+@@ -275,7 +311,21 @@ def main(argv=None):
+         cfg.obs_list = tuple(agent_cfg["observations"]["obs_list"])
+         cfg.obs_stack = agent_cfg["observations"]["obs_stack"]
+ 
+-        env = gym.make(task_id, cfg=cfg, render_mode="rgb_array" if args.record_video else None)
++        env = gym.make(task_id, cfg=cfg, render_mode="rgb_array" if (args.record_video or args.calibration_video) else None)
++        if args.search_redundant_reset or args.validate_redundant_reset:
++            if args.pressure_variant != "plain" or args.hand_posture != "palm_up":
++                raise ValueError("Stage-0 calibration requires plain + palm_up")
++            if args.probe_output is None:
++                raise ValueError("Stage-0 calibration requires --probe-output")
++            from simulation.roto2_pressure.calibrate_redundancy import search_redundant_resets, validate_n_minus_one
++            if args.search_redundant_reset:
++                search_redundant_resets(env, args.probe_output, args.calibration_rounds,
++                                       args.calibration_horizon, args.calibration_spread,
++                                       args.calibration_region, args.calibration_replicas)
++            else:
++                validate_n_minus_one(env, args.probe_output, args.calibration_release_mode,
++                                     args.calibration_video, args.video_env_index)
++            return 0
+         if args.search_pad_reset:
+             from simulation.roto2_pressure.calibrate_reset import search_pad_resets
+             search_pad_resets(env, args.probe_output)
+@@ -365,10 +415,14 @@ def main(argv=None):
+             "hand_mount_quaternion_xyzw": cfg.robot.init_state.rot,
+             "exploration_std_override": args.initial_action_std,
+             "entropy_loss_scale_effective": agent_cfg["agent"]["entropy_loss_scale"],
++            "rollout_steps_effective": agent_cfg["agent"]["rollouts"],
++            "learning_epochs": agent_cfg["agent"]["learning_epochs"],
++            "mini_batches": agent_cfg["agent"]["mini_batches"],
+             "reset_joint_noise_rad": cfg.reset_joint_noise_rad,
+             "reset_position_noise_m": cfg.reset_position_noise_m,
+             "reset_grasps_file": cfg.reset_grasps_file,
+             "reset_grasps_sha256": hashlib.sha256(reset_data).hexdigest(),
++            "reset_grasp_selection": "uniform_per_reset" if cfg.randomize_reset_grasp else "env_id_modulo",
+             "resumed_from": str(args.resume_checkpoint) if args.resume_checkpoint else None,
+             "prior_training_transitions": writer.prior_transitions,
+             "fruit_axes_m": env.unwrapped._axes_m.cpu().tolist(),
+diff --git a/simulation/roto2_pressure/env.py b/simulation/roto2_pressure/env.py
+index 5c203e8..b7b648c 100644
+--- a/simulation/roto2_pressure/env.py
++++ b/simulation/roto2_pressure/env.py
+@@ -26,6 +26,7 @@ from .core import (
+     quat_inv_rotate, quat_rotate,
+ )
+ from .pressure_track import PressureJacobianTrack, hotspot_cost
++from .reward_baseline import baseline_reward
+ from .env_cfg import FruitRotationEnvCfg
+ from .reward_geometry import pose_heading, heading_delta, pad_contact, reward_v2, REWARD_VERSION, pad_approach_quality, valid_rotation_step, staged_rotation_reward, continuous_rotation_reward
+ 
+@@ -162,6 +163,23 @@ class FruitRotationEnv(DirectRLEnv):
+             )
+             self._sensors[name] = ContactSensor(sensor_cfg)
+             self.scene.sensors[f"fruit_{name}"] = self._sensors[name]
++        self._diagnostic_finger_sensors = {}
++        if self.cfg.diagnostic_all_finger_contacts:
++            diagnostic_paths = {
++                prim.GetName(): str(prim.GetPath()) for prim in Usd.PrimRange(root)
++                if prim.HasAPI(UsdPhysics.RigidBodyAPI)
++                and any(prim.GetName().startswith(f"{finger}_link") for finger in FINGERS)
++            }
++            activate_nested_contact_reporters("/World/envs/env_0/Robot", tuple(diagnostic_paths))
++            for body, path in diagnostic_paths.items():
++                sensor = ContactSensor(ContactSensorCfg(
++                    prim_path=path.replace("/env_0/", "/env_.*/"),
++                    update_period=self.cfg.sim.dt, history_length=self.cfg.decimation,
++                    filter_prim_paths_expr=[f"{self.scene.env_regex_ns}/Fruit"],
++                    track_pose=False, track_contact_points=False,
++                    track_friction_forces=False, max_contact_data_count_per_prim=64))
++                self._diagnostic_finger_sensors[body] = sensor
++                self.scene.sensors[f"diagnostic_{body}"] = sensor
+         self.scene.articulations["robot"] = self._robot
+         self.scene.rigid_objects["fruit"] = self._fruit
+         self.cfg.terrain.num_envs = self.scene.cfg.num_envs
+@@ -328,7 +346,21 @@ class FruitRotationEnv(DirectRLEnv):
+             fruit_pose[:, :3], quat, self._axes_m)
+         pose_step_valid = valid_rotation_step(self._previous_upright, tilt, self._pose_delta)
+         self._previous_upright.copy_(tilt < .5)
+-        if self.cfg.reward_stage == "continuous":
++        if self.cfg.reward_stage == "baseline":
++            ready = self.episode_length_buf > round(1.0 / dt)
++            self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))
++            safe_path = self._reward_path_valid & ~self.reset_terminated
++            speed = self._fruit.data.root_lin_vel_w.torch.norm(dim=-1)
++            height_drop = self._center_reference_w[:, 2] - fruit_pose[:, 2]
++            reward, terms, secure_support = baseline_reward(
++                self._pose_delta, self._goal, self._pad_forces, center_error,
++                speed, height_drop, tilt,
++                self._robot.data.joint_pos.torch[:, self._active_ids],
++                self._grasp_reference, self._active_limits,
++                self._robot.data.joint_vel.torch[:, self._active_ids],
++                self._robot.data.applied_torque.torch[:, self._active_ids],
++                self._action, self._previous_action, safe_path, ready, dt)
++        elif self.cfg.reward_stage == "continuous":
+             ready = self.episode_length_buf > round(1.0 / dt)
+             self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))
+             safe_path = self._reward_path_valid & ~self.reset_terminated
+@@ -389,6 +421,8 @@ class FruitRotationEnv(DirectRLEnv):
+             "peak_pressure_pa": self._dense.amax(-1).detach().clone(),
+             "unwrapped_rotation_rad": self._angle.detach().clone(),
+             "secure_support": secure_support.detach().clone(),
++            "legacy_thumb_support": ((self._pad_forces[:, 0] > .15)
++                & ((self._pad_forces[:, 1:] > .15).sum(-1) >= 2) & (tilt < .5)).detach().clone(),
+             "jacobian_accepted": self._track.last_accepted.detach().clone(),
+             "slip_speed": (self._slip_speed() / 0.25).detach().clone(),
+         }
+@@ -527,7 +561,11 @@ class FruitRotationEnv(DirectRLEnv):
+         )
+         if self._reset_grasps is not None:
+             candidates = self._reset_grasps
+-            chosen = [candidates[int(i) % len(candidates)] for i in env_ids.cpu()]
++            if self.cfg.randomize_reset_grasp:
++                indices = torch.randint(len(candidates), (n,), device=self.device).cpu().tolist()
++                chosen = [candidates[i] for i in indices]
++            else:
++                chosen = [candidates[int(i) % len(candidates)] for i in env_ids.cpu()]
+             active = torch.tensor([c["joint_positions"] for c in chosen],
+                                   device=self.device, dtype=joint_pos.dtype)
+             active = (active + noise).clamp(min=active_limits[..., 0], max=active_limits[..., 1])
+@@ -565,6 +603,15 @@ class FruitRotationEnv(DirectRLEnv):
+         initial += torch.randn_like(initial) * self.cfg.reset_position_noise_m
+         root_pose = self._fruit.data.default_root_pose.torch[env_ids].clone()
+         root_pose[:, :3] = initial
++        if self._reset_grasps is not None and any("fruit_quaternion_xyzw" in c for c in chosen):
++            saved = torch.as_tensor(["fruit_quaternion_xyzw" in c for c in chosen], device=self.device)
++            q = torch.as_tensor([c.get("fruit_quaternion_xyzw", [0,0,0,1]) for c in chosen],
++                                device=self.device, dtype=root_pose.dtype)
++            if q.shape != (n,4) or not torch.isfinite(q).all() or (q.norm(dim=-1) < 1e-6).any():
++                raise ValueError("Invalid saved reset fruit quaternion")
++            q = q / q.norm(dim=-1,keepdim=True)
++            native = q if self._native_xyzw else q[:,[3,0,1,2]]
++            root_pose[:,3:] = torch.where(saved[:,None], native, root_pose[:,3:])
+         self._fruit.write_root_pose_to_sim_index(
+             root_pose=root_pose, env_ids=env_ids
+         )
+@@ -572,6 +619,14 @@ class FruitRotationEnv(DirectRLEnv):
+             root_velocity=torch.zeros((n, 6), device=self.device), env_ids=env_ids
+         )
+         self._q_target[env_ids] = active
++        if self._reset_grasps is not None and any("joint_targets" in c for c in chosen):
++            targets = torch.as_tensor([c.get("joint_targets", c["joint_positions"]) for c in chosen],
++                                      device=self.device, dtype=joint_pos.dtype)
++            saved = torch.as_tensor(["joint_targets" in c for c in chosen], device=self.device)
++            targets = torch.where(saved[:,None], targets, active)
++            targets = targets.clamp(min=active_limits[..., 0], max=active_limits[..., 1])
++            lead = self.cfg.maximum_joint_target_lead_rad
++            self._q_target[env_ids] = torch.maximum(active-lead, torch.minimum(active+lead, targets))
+         self._grasp_reference[env_ids] = active
+         self._action[env_ids] = 0
+         self._previous_action[env_ids] = 0
+diff --git a/simulation/roto2_pressure/env_cfg.py b/simulation/roto2_pressure/env_cfg.py
+index 06b96dd..da0d701 100644
+--- a/simulation/roto2_pressure/env_cfg.py
++++ b/simulation/roto2_pressure/env_cfg.py
+@@ -84,11 +84,14 @@ class FruitRotationEnvCfg(DirectRLEnvCfg):
+     reset_grasps_file = str(Path(__file__).with_name("reset_pad_grasps.json"))
+     reset_joint_noise_rad = 0.018
+     reset_position_noise_m = 0.002
++    randomize_reset_grasp = False
+     pressure_relief_weight = 0.25
+     action_space = ACTION_DIM
+     observation_space = POLICY_DIM
+     state_space = 0
+     debug_vis = False
++    # Read-only whole-finger contact instrumentation for N-1 calibration only.
++    diagnostic_all_finger_contacts = False
+     viewer = ViewerCfg(
+         eye=(0.60, -0.58, 1.18), lookat=(0.0, 0.0, 0.89),
+         origin_type="world", env_index=0,
+diff --git a/simulation/roto2_pressure/evaluate.py b/simulation/roto2_pressure/evaluate.py
+index 4cae2a0..3ecf461 100644
+--- a/simulation/roto2_pressure/evaluate.py
++++ b/simulation/roto2_pressure/evaluate.py
+@@ -33,8 +33,11 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+     n = wrapped.num_envs
+     pending = torch.ones(n, dtype=torch.bool, device=wrapped.device)
+     target_direction = raw._goal.detach().sign().clone()
++    target_speed = raw._goal.detach().abs().clone()
+     initial_pose = raw._fruit.data.root_pose_w.torch.clone()
+     pose_trace, active_trace, support_trace, pad_trace = [], [], [], []
++    legacy_support_trace = []
++    legacy_support = torch.zeros(n, device=wrapped.device)
+     pad_counts = torch.zeros((n, 5), device=wrapped.device)
+     pad_quality_sum = pad_counts.clone()
+     approach_quality_sum = pad_counts.clone()
+@@ -71,6 +74,9 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+         pose_trace.append(events["fruit_pose_native"].cpu().numpy().copy())
+         active_trace.append(pending.cpu().numpy().copy())
+         support_trace.append((support_flag.bool() & events["pose_step_valid"]).float().cpu().numpy().copy())
++        legacy_flag = events.get("legacy_thumb_support", events["secure_support"]).bool()
++        legacy_support_trace.append((legacy_flag & events["pose_step_valid"]).cpu().numpy().copy())
++        legacy_support[pending] += legacy_flag[pending].float()
+         pad_trace.append(events["pad_contact"].cpu().numpy().copy())
+         pad_counts[pending] += events["pad_contact"][pending].float()
+         pad_quality_sum[pending] += events["pad_quality"][pending]
+@@ -109,10 +115,12 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+     highwater = np.maximum.accumulate(np.maximum(directed_path,0),axis=0)
+     increments = np.diff(np.concatenate([np.zeros((1,n)),highwater]),axis=0)
+     supported_new_turns = (increments*np.array(support_trace)*active).sum(0)/(2*math.pi)
++    legacy_supported_turns = (increments*np.array(legacy_support_trace)*active).sum(0)/(2*math.pi)
+     upright_fraction = ((mat[1:,...,2,2]>.5)*active).sum(0)/active.sum(0).clip(1)
+     output.parent.mkdir(parents=True, exist_ok=True)
+     np.savez_compressed(output.with_suffix('.npz'), poses=poses, initial_pose=initial_pose.cpu().numpy(),
+-                        active=active, support=support_trace, pads=pad_trace, target_direction=direction)
++                        active=active, support=support_trace, legacy_support=legacy_support_trace,
++                        pads=pad_trace, target_direction=direction, target_speed=target_speed.cpu().numpy())
+     mean_pressure = pressure_sum / steps.clamp_min(1)
+     grip_fraction = support / steps.clamp_min(1)
+     success = (
+@@ -124,6 +132,17 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+         & (pressure_max <= raw.cfg.maximum_pressure_proxy_pa)
+         & ~failed
+     )
++    legacy_fraction = legacy_support / steps.clamp_min(1)
++    legacy_success = (
++        (signed_progress >= 2.0 * math.pi)
++        & torch.as_tensor(legacy_supported_turns >= 1., device=wrapped.device)
++        & torch.as_tensor(upright_fraction >= .95, device=wrapped.device)
++        & torch.as_tensor((np.abs(offline_delta)*active).max(0) < .5, device=wrapped.device)
++        & (legacy_fraction >= .65) & (pressure_max <= raw.cfg.maximum_pressure_proxy_pa) & ~failed
++    )
++    support_definition = (
++        "any >=3 effective pads OR stable object (center displacement<25mm, linear speed<0.12m/s, height drop<15mm); tilt cosine>0.5"
++        if raw.cfg.reward_stage == "baseline" else "thumb+>=2 other effective pads; tilt cosine>0.5")
+     settling_steps = round(1. / dt)
+     after_settle_turns = (offline_delta[settling_steps:]*active[settling_steps:]).sum(0)*direction/(2*math.pi)
+     late_steps = round(10. / dt)
+@@ -144,7 +163,7 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+         "target_angular_speed_rad_s": raw.cfg.target_angular_speed_rad_s,
+         "mean_reward_term_totals": {k:float(v.mean()) for k,v in reward_term_totals.items()},
+         "small_angle_curriculum_success_fraction": float(small_angle_success.mean()),
+-        "small_angle_curriculum_definition": "after first 1s: >=30deg net target-direction pose rotation, >=50% strict pad support, >=95% upright, no failure, pressure below limit, no pose jump; NOT full-task success",
++        "small_angle_curriculum_definition": "after first 1s: >=30deg net target-direction pose rotation, >=50% task-defined support, >=95% upright, no failure, pressure below limit, no pose jump; NOT full-task success",
+         "mean_after_settling_directed_turns": float(after_settle_turns.mean()),
+         "mean_after_10s_directed_turns": float(late_turns.mean()),
+         "direction_results": {str(int(s)): {"episodes":int((direction==s).sum()),
+@@ -152,7 +171,12 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+             "mean_after_settling_directed_turns":float(after_settle_turns[direction==s].mean())}
+             for s in (-1,1) if (direction==s).any()},
+         "rotation_source": "independently reconstructed unwrapped material-axis heading from actual quaternion poses",
+-        "success_definition": ">=1 net directed pose turn AND >=1 new turn with thumb+2 active pads; >=65% pad support; >=95% upright; no physical failure; below pressure limit",
++        "support_definition": support_definition,
++        "metric_schema_note": "pad_support_fraction is a historical compatibility alias for task_support_fraction; use support_definition and legacy_thumb_support_fraction to interpret it",
++        "success_definition": ">=1 net directed pose turn AND >=1 new turn with task-defined support; >=65% task-defined support; >=95% upright; no physical failure; below pressure limit; no pose jump",
++        "legacy_success_definition": ">=1 net directed pose turn AND >=1 new turn with thumb+2 active pads; >=65% legacy support; >=95% upright; no physical failure; below pressure limit; no pose jump",
++        "legacy_success_fraction": float(legacy_success.float().mean()),
++        "mean_legacy_thumb_support_fraction": float(legacy_fraction.mean()),
+         "pose_metric_max_error_turns": float(error),
+         "maximum_pose_heading_step_rad": float((np.abs(offline_delta)*active).max()),
+         "mean_supported_new_turns": float(supported_new_turns.mean()),
+@@ -161,12 +185,17 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
+         "mean_per_finger_pad_contact_fraction": (pad_counts / steps[:,None].clamp_min(1)).mean(0).cpu().tolist(),
+         "per_episode": [{"env":i,"directed_pose_turns":float(offline_turns[i]),
+                          "goal_direction":float(direction[i]),
++                         "target_speed_rad_s":float(target_speed[i]),
+                          "after_settling_directed_turns":float(after_settle_turns[i]),
+                          "after_10s_directed_turns":float(late_turns[i]),
+                          "upright_fraction":float(upright_fraction[i]),
+                          "small_angle_curriculum_success":bool(small_angle_success[i]),
+                          "supported_new_turns":float(supported_new_turns[i]),
+                          "pad_support_fraction":float(grip_fraction[i]),
++                         "task_support_fraction":float(grip_fraction[i]),
++                         "legacy_thumb_support_fraction":float(legacy_fraction[i]),
++                         "legacy_supported_new_turns":float(legacy_supported_turns[i]),
++                         "legacy_success":bool(legacy_success[i]),
+                          "failed":bool(failed[i]),"success":bool(success[i]),
+                          "steps":int(steps[i])} for i in range(n)],
+         "success_fraction": float(success.float().mean()),
+diff --git a/simulation/roto2_pressure/record.py b/simulation/roto2_pressure/record.py
+index 5dc5a4c..6ef0d9d 100644
+--- a/simulation/roto2_pressure/record.py
++++ b/simulation/roto2_pressure/record.py
+@@ -96,7 +96,7 @@ def record_checkpoint(trainer, wrapped, checkpoint: Path, output: Path,
+         raise RuntimeError("Renderer did not produce a nonblank 1280x720 RGB image")
+ 
+     font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+-    stage_label = {"contact":"接触课程", "rotation":"转动课程", "regrasp":"小角度换指课程", "spin":"双向转动课程", "continuous":"连续转动课程"}[raw.cfg.reward_stage]
++    stage_label = {"contact":"接触课程", "rotation":"转动课程", "regrasp":"小角度换指课程", "spin":"双向转动课程", "continuous":"连续转动课程", "baseline":"稳定承托基线"}[raw.cfg.reward_stage]
+     font = ImageFont.truetype(font_path, 22)
+     small = ImageFont.truetype(font_path, 17)
+     command = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+@@ -143,7 +143,7 @@ def record_checkpoint(trainer, wrapped, checkpoint: Path, output: Path,
+             draw.rectangle((0, 678, 1280, 720), fill=(17, 24, 35))
+             draw.text((24, 690), "原速 | 果实彩点显示姿态 | 指尖四角：橙色无有效触摸 / 绿色有效触摸 | 压力为代理量", font=small, fill=(200, 210, 222))
+             if ended:
+-                label = f"回合结束：实际净转角 {turns:.3f} 圈；有效区域承托 {support_steps/(step+1):.1%}"
++                label = f"回合结束：实际净转角 {turns:.3f} 圈；任务定义承托 {support_steps/(step+1):.1%}"
+                 draw.rectangle((24, 121, 1000, 188), fill=(125, 40, 35))
+                 draw.text((39, 132), label, font=font, fill="white")
+                 draw.text((39, 162), "回合结束：画面停留在自动复位前一帧，指标为终止步数值", font=small, fill="white")
+diff --git a/simulation/roto2_pressure/reward_geometry.py b/simulation/roto2_pressure/reward_geometry.py
+index e30822f..55a7462 100644
+--- a/simulation/roto2_pressure/reward_geometry.py
++++ b/simulation/roto2_pressure/reward_geometry.py
+@@ -205,4 +205,6 @@ def continuous_rotation_reward(delta, goal, pad_forces, pad_quality, raw_forces,
+ 
+ 
+ def reward_version(stage):
++    if stage == 'baseline':
++        return 'pose_stable_v8_baseline'
+     return 'pose_pad_v7_continuous' if stage == 'continuous' else REWARD_VERSION

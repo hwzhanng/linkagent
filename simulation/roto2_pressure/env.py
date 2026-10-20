@@ -26,6 +26,7 @@ from .core import (
     quat_inv_rotate, quat_rotate,
 )
 from .pressure_track import PressureJacobianTrack, hotspot_cost
+from .reward_baseline import baseline_reward
 from .env_cfg import FruitRotationEnvCfg
 from .reward_geometry import pose_heading, heading_delta, pad_contact, reward_v2, REWARD_VERSION, pad_approach_quality, valid_rotation_step, staged_rotation_reward, continuous_rotation_reward
 
@@ -162,6 +163,23 @@ class FruitRotationEnv(DirectRLEnv):
             )
             self._sensors[name] = ContactSensor(sensor_cfg)
             self.scene.sensors[f"fruit_{name}"] = self._sensors[name]
+        self._diagnostic_finger_sensors = {}
+        if self.cfg.diagnostic_all_finger_contacts:
+            diagnostic_paths = {
+                prim.GetName(): str(prim.GetPath()) for prim in Usd.PrimRange(root)
+                if prim.HasAPI(UsdPhysics.RigidBodyAPI)
+                and any(prim.GetName().startswith(f"{finger}_link") for finger in FINGERS)
+            }
+            activate_nested_contact_reporters("/World/envs/env_0/Robot", tuple(diagnostic_paths))
+            for body, path in diagnostic_paths.items():
+                sensor = ContactSensor(ContactSensorCfg(
+                    prim_path=path.replace("/env_0/", "/env_.*/"),
+                    update_period=self.cfg.sim.dt, history_length=self.cfg.decimation,
+                    filter_prim_paths_expr=[f"{self.scene.env_regex_ns}/Fruit"],
+                    track_pose=False, track_contact_points=False,
+                    track_friction_forces=False, max_contact_data_count_per_prim=64))
+                self._diagnostic_finger_sensors[body] = sensor
+                self.scene.sensors[f"diagnostic_{body}"] = sensor
         self.scene.articulations["robot"] = self._robot
         self.scene.rigid_objects["fruit"] = self._fruit
         self.cfg.terrain.num_envs = self.scene.cfg.num_envs
@@ -328,7 +346,21 @@ class FruitRotationEnv(DirectRLEnv):
             fruit_pose[:, :3], quat, self._axes_m)
         pose_step_valid = valid_rotation_step(self._previous_upright, tilt, self._pose_delta)
         self._previous_upright.copy_(tilt < .5)
-        if self.cfg.reward_stage == "continuous":
+        if self.cfg.reward_stage == "baseline":
+            ready = self.episode_length_buf > round(1.0 / dt)
+            self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))
+            safe_path = self._reward_path_valid & ~self.reset_terminated
+            speed = self._fruit.data.root_lin_vel_w.torch.norm(dim=-1)
+            height_drop = self._center_reference_w[:, 2] - fruit_pose[:, 2]
+            reward, terms, secure_support = baseline_reward(
+                self._pose_delta, self._goal, self._pad_forces, center_error,
+                speed, height_drop, tilt,
+                self._robot.data.joint_pos.torch[:, self._active_ids],
+                self._grasp_reference, self._active_limits,
+                self._robot.data.joint_vel.torch[:, self._active_ids],
+                self._robot.data.applied_torque.torch[:, self._active_ids],
+                self._action, self._previous_action, safe_path, ready, dt)
+        elif self.cfg.reward_stage == "continuous":
             ready = self.episode_length_buf > round(1.0 / dt)
             self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))
             safe_path = self._reward_path_valid & ~self.reset_terminated
@@ -389,6 +421,8 @@ class FruitRotationEnv(DirectRLEnv):
             "peak_pressure_pa": self._dense.amax(-1).detach().clone(),
             "unwrapped_rotation_rad": self._angle.detach().clone(),
             "secure_support": secure_support.detach().clone(),
+            "legacy_thumb_support": ((self._pad_forces[:, 0] > .15)
+                & ((self._pad_forces[:, 1:] > .15).sum(-1) >= 2) & (tilt < .5)).detach().clone(),
             "jacobian_accepted": self._track.last_accepted.detach().clone(),
             "slip_speed": (self._slip_speed() / 0.25).detach().clone(),
         }
@@ -527,7 +561,11 @@ class FruitRotationEnv(DirectRLEnv):
         )
         if self._reset_grasps is not None:
             candidates = self._reset_grasps
-            chosen = [candidates[int(i) % len(candidates)] for i in env_ids.cpu()]
+            if self.cfg.randomize_reset_grasp:
+                indices = torch.randint(len(candidates), (n,), device=self.device).cpu().tolist()
+                chosen = [candidates[i] for i in indices]
+            else:
+                chosen = [candidates[int(i) % len(candidates)] for i in env_ids.cpu()]
             active = torch.tensor([c["joint_positions"] for c in chosen],
                                   device=self.device, dtype=joint_pos.dtype)
             active = (active + noise).clamp(min=active_limits[..., 0], max=active_limits[..., 1])
@@ -565,6 +603,15 @@ class FruitRotationEnv(DirectRLEnv):
         initial += torch.randn_like(initial) * self.cfg.reset_position_noise_m
         root_pose = self._fruit.data.default_root_pose.torch[env_ids].clone()
         root_pose[:, :3] = initial
+        if self._reset_grasps is not None and any("fruit_quaternion_xyzw" in c for c in chosen):
+            saved = torch.as_tensor(["fruit_quaternion_xyzw" in c for c in chosen], device=self.device)
+            q = torch.as_tensor([c.get("fruit_quaternion_xyzw", [0,0,0,1]) for c in chosen],
+                                device=self.device, dtype=root_pose.dtype)
+            if q.shape != (n,4) or not torch.isfinite(q).all() or (q.norm(dim=-1) < 1e-6).any():
+                raise ValueError("Invalid saved reset fruit quaternion")
+            q = q / q.norm(dim=-1,keepdim=True)
+            native = q if self._native_xyzw else q[:,[3,0,1,2]]
+            root_pose[:,3:] = torch.where(saved[:,None], native, root_pose[:,3:])
         self._fruit.write_root_pose_to_sim_index(
             root_pose=root_pose, env_ids=env_ids
         )
@@ -572,6 +619,14 @@ class FruitRotationEnv(DirectRLEnv):
             root_velocity=torch.zeros((n, 6), device=self.device), env_ids=env_ids
         )
         self._q_target[env_ids] = active
+        if self._reset_grasps is not None and any("joint_targets" in c for c in chosen):
+            targets = torch.as_tensor([c.get("joint_targets", c["joint_positions"]) for c in chosen],
+                                      device=self.device, dtype=joint_pos.dtype)
+            saved = torch.as_tensor(["joint_targets" in c for c in chosen], device=self.device)
+            targets = torch.where(saved[:,None], targets, active)
+            targets = targets.clamp(min=active_limits[..., 0], max=active_limits[..., 1])
+            lead = self.cfg.maximum_joint_target_lead_rad
+            self._q_target[env_ids] = torch.maximum(active-lead, torch.minimum(active+lead, targets))
         self._grasp_reference[env_ids] = active
         self._action[env_ids] = 0
         self._previous_action[env_ids] = 0

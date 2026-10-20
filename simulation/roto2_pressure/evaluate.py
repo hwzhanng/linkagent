@@ -33,8 +33,11 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
     n = wrapped.num_envs
     pending = torch.ones(n, dtype=torch.bool, device=wrapped.device)
     target_direction = raw._goal.detach().sign().clone()
+    target_speed = raw._goal.detach().abs().clone()
     initial_pose = raw._fruit.data.root_pose_w.torch.clone()
     pose_trace, active_trace, support_trace, pad_trace = [], [], [], []
+    legacy_support_trace = []
+    legacy_support = torch.zeros(n, device=wrapped.device)
     pad_counts = torch.zeros((n, 5), device=wrapped.device)
     pad_quality_sum = pad_counts.clone()
     approach_quality_sum = pad_counts.clone()
@@ -71,6 +74,9 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
         pose_trace.append(events["fruit_pose_native"].cpu().numpy().copy())
         active_trace.append(pending.cpu().numpy().copy())
         support_trace.append((support_flag.bool() & events["pose_step_valid"]).float().cpu().numpy().copy())
+        legacy_flag = events.get("legacy_thumb_support", events["secure_support"]).bool()
+        legacy_support_trace.append((legacy_flag & events["pose_step_valid"]).cpu().numpy().copy())
+        legacy_support[pending] += legacy_flag[pending].float()
         pad_trace.append(events["pad_contact"].cpu().numpy().copy())
         pad_counts[pending] += events["pad_contact"][pending].float()
         pad_quality_sum[pending] += events["pad_quality"][pending]
@@ -109,10 +115,12 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
     highwater = np.maximum.accumulate(np.maximum(directed_path,0),axis=0)
     increments = np.diff(np.concatenate([np.zeros((1,n)),highwater]),axis=0)
     supported_new_turns = (increments*np.array(support_trace)*active).sum(0)/(2*math.pi)
+    legacy_supported_turns = (increments*np.array(legacy_support_trace)*active).sum(0)/(2*math.pi)
     upright_fraction = ((mat[1:,...,2,2]>.5)*active).sum(0)/active.sum(0).clip(1)
     output.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(output.with_suffix('.npz'), poses=poses, initial_pose=initial_pose.cpu().numpy(),
-                        active=active, support=support_trace, pads=pad_trace, target_direction=direction)
+                        active=active, support=support_trace, legacy_support=legacy_support_trace,
+                        pads=pad_trace, target_direction=direction, target_speed=target_speed.cpu().numpy())
     mean_pressure = pressure_sum / steps.clamp_min(1)
     grip_fraction = support / steps.clamp_min(1)
     success = (
@@ -124,6 +132,17 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
         & (pressure_max <= raw.cfg.maximum_pressure_proxy_pa)
         & ~failed
     )
+    legacy_fraction = legacy_support / steps.clamp_min(1)
+    legacy_success = (
+        (signed_progress >= 2.0 * math.pi)
+        & torch.as_tensor(legacy_supported_turns >= 1., device=wrapped.device)
+        & torch.as_tensor(upright_fraction >= .95, device=wrapped.device)
+        & torch.as_tensor((np.abs(offline_delta)*active).max(0) < .5, device=wrapped.device)
+        & (legacy_fraction >= .65) & (pressure_max <= raw.cfg.maximum_pressure_proxy_pa) & ~failed
+    )
+    support_definition = (
+        "any >=3 effective pads OR stable object (center displacement<25mm, linear speed<0.12m/s, height drop<15mm); tilt cosine>0.5"
+        if raw.cfg.reward_stage == "baseline" else "thumb+>=2 other effective pads; tilt cosine>0.5")
     settling_steps = round(1. / dt)
     after_settle_turns = (offline_delta[settling_steps:]*active[settling_steps:]).sum(0)*direction/(2*math.pi)
     late_steps = round(10. / dt)
@@ -144,7 +163,7 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
         "target_angular_speed_rad_s": raw.cfg.target_angular_speed_rad_s,
         "mean_reward_term_totals": {k:float(v.mean()) for k,v in reward_term_totals.items()},
         "small_angle_curriculum_success_fraction": float(small_angle_success.mean()),
-        "small_angle_curriculum_definition": "after first 1s: >=30deg net target-direction pose rotation, >=50% strict pad support, >=95% upright, no failure, pressure below limit, no pose jump; NOT full-task success",
+        "small_angle_curriculum_definition": "after first 1s: >=30deg net target-direction pose rotation, >=50% task-defined support, >=95% upright, no failure, pressure below limit, no pose jump; NOT full-task success",
         "mean_after_settling_directed_turns": float(after_settle_turns.mean()),
         "mean_after_10s_directed_turns": float(late_turns.mean()),
         "direction_results": {str(int(s)): {"episodes":int((direction==s).sum()),
@@ -152,7 +171,12 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
             "mean_after_settling_directed_turns":float(after_settle_turns[direction==s].mean())}
             for s in (-1,1) if (direction==s).any()},
         "rotation_source": "independently reconstructed unwrapped material-axis heading from actual quaternion poses",
-        "success_definition": ">=1 net directed pose turn AND >=1 new turn with thumb+2 active pads; >=65% pad support; >=95% upright; no physical failure; below pressure limit",
+        "support_definition": support_definition,
+        "metric_schema_note": "pad_support_fraction is a historical compatibility alias for task_support_fraction; use support_definition and legacy_thumb_support_fraction to interpret it",
+        "success_definition": ">=1 net directed pose turn AND >=1 new turn with task-defined support; >=65% task-defined support; >=95% upright; no physical failure; below pressure limit; no pose jump",
+        "legacy_success_definition": ">=1 net directed pose turn AND >=1 new turn with thumb+2 active pads; >=65% legacy support; >=95% upright; no physical failure; below pressure limit; no pose jump",
+        "legacy_success_fraction": float(legacy_success.float().mean()),
+        "mean_legacy_thumb_support_fraction": float(legacy_fraction.mean()),
         "pose_metric_max_error_turns": float(error),
         "maximum_pose_heading_step_rad": float((np.abs(offline_delta)*active).max()),
         "mean_supported_new_turns": float(supported_new_turns.mean()),
@@ -161,12 +185,17 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
         "mean_per_finger_pad_contact_fraction": (pad_counts / steps[:,None].clamp_min(1)).mean(0).cpu().tolist(),
         "per_episode": [{"env":i,"directed_pose_turns":float(offline_turns[i]),
                          "goal_direction":float(direction[i]),
+                         "target_speed_rad_s":float(target_speed[i]),
                          "after_settling_directed_turns":float(after_settle_turns[i]),
                          "after_10s_directed_turns":float(late_turns[i]),
                          "upright_fraction":float(upright_fraction[i]),
                          "small_angle_curriculum_success":bool(small_angle_success[i]),
                          "supported_new_turns":float(supported_new_turns[i]),
                          "pad_support_fraction":float(grip_fraction[i]),
+                         "task_support_fraction":float(grip_fraction[i]),
+                         "legacy_thumb_support_fraction":float(legacy_fraction[i]),
+                         "legacy_supported_new_turns":float(legacy_supported_turns[i]),
+                         "legacy_success":bool(legacy_success[i]),
                          "failed":bool(failed[i]),"success":bool(success[i]),
                          "steps":int(steps[i])} for i in range(n)],
         "success_fraction": float(success.float().mean()),

@@ -96,7 +96,7 @@ def record_checkpoint(trainer, wrapped, checkpoint: Path, output: Path,
         raise RuntimeError("Renderer did not produce a nonblank 1280x720 RGB image")
 
     font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
-    stage_label = {"contact":"接触课程", "rotation":"转动课程", "regrasp":"小角度换指课程", "spin":"双向转动课程", "continuous":"连续转动课程"}[raw.cfg.reward_stage]
+    stage_label = {"contact":"接触课程", "rotation":"转动课程", "regrasp":"小角度换指课程", "spin":"双向转动课程", "continuous":"连续转动课程", "baseline":"稳定承托基线"}[raw.cfg.reward_stage]
     font = ImageFont.truetype(font_path, 22)
     small = ImageFont.truetype(font_path, 17)
     command = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
@@ -143,7 +143,7 @@ def record_checkpoint(trainer, wrapped, checkpoint: Path, output: Path,
             draw.rectangle((0, 678, 1280, 720), fill=(17, 24, 35))
             draw.text((24, 690), "原速 | 果实彩点显示姿态 | 指尖四角：橙色无有效触摸 / 绿色有效触摸 | 压力为代理量", font=small, fill=(200, 210, 222))
             if ended:
-                label = f"回合结束：实际净转角 {turns:.3f} 圈；有效区域承托 {support_steps/(step+1):.1%}"
+                label = f"回合结束：实际净转角 {turns:.3f} 圈；任务定义承托 {support_steps/(step+1):.1%}"
                 draw.rectangle((24, 121, 1000, 188), fill=(125, 40, 35))
                 draw.text((39, 132), label, font=font, fill="white")
                 draw.text((39, 162), "回合结束：画面停留在自动复位前一帧，指标为终止步数值", font=small, fill="white")

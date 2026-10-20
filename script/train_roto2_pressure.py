@@ -146,9 +146,11 @@ def main(argv=None):
     parser.add_argument("--initial-action-std", type=float, default=None,
                         help="Fresh-run Gaussian exploration std; network/PPO are unchanged")
     parser.add_argument("--entropy-weight", type=float, default=None)
+    parser.add_argument("--rollout-steps", type=int, default=None,
+                        help="Override rollout length without changing upstream PPO")
     parser.add_argument("--domain-profile", choices=("full", "gentle", "nominal"), default="gentle")
     parser.add_argument("--hand-posture", choices=("vertical", "palm_up"), default="vertical")
-    parser.add_argument("--reward-stage", choices=("contact", "rotation", "regrasp", "spin", "continuous"), default="rotation")
+    parser.add_argument("--reward-stage", choices=("contact", "rotation", "regrasp", "spin", "continuous", "baseline"), default="rotation")
     parser.add_argument("--goal-direction", choices=("both", "positive", "negative"), default="both")
     parser.add_argument("--smoke", action="store_true",
                         help="Run 20 actual PhysX steps before spending GPU time")
@@ -160,6 +162,19 @@ def main(argv=None):
     parser.add_argument("--probe-nominal", action="store_true",
                         help="Diagnostic only: 64 mm sphere and deterministic reset")
     parser.add_argument("--search-pad-reset", action="store_true")
+    parser.add_argument("--search-redundant-reset", action="store_true",
+                        help="Stage-0 multi-contact grasp proposal search; no PPO")
+    parser.add_argument("--validate-redundant-reset", action="store_true",
+                        help="Stage-0 physically verified whole-finger N-1 release tests; no PPO")
+    parser.add_argument("--calibration-rounds", type=int, default=32)
+    parser.add_argument("--calibration-horizon", type=int, default=80)
+    parser.add_argument("--calibration-spread", type=float, default=.12)
+    parser.add_argument("--calibration-release-mode", choices=("full_open", "adaptive"), default="full_open")
+    parser.add_argument("--calibration-region", choices=("broad", "palm"), default="broad")
+    parser.add_argument("--calibration-replicas", type=int, default=1)
+    parser.add_argument("--calibration-video", type=Path, default=None)
+    parser.add_argument("--calibration-density", type=float, default=950.0,
+                        help="Matched N-1 conditions use one density in the existing 850-1050 range")
     parser.add_argument("--probe-pad-surfaces", action="store_true")
     parser.add_argument("--probe-free-hand", action="store_true")
     parser.add_argument("--probe-no-self-collision", action="store_true")
@@ -180,10 +195,16 @@ def main(argv=None):
         if args.evaluate_checkpoint is None:
             parser.error("--record-video requires --evaluate-checkpoint")
         args.enable_cameras = True
+    if args.calibration_video:
+        if not args.validate_redundant_reset:
+            parser.error("--calibration-video requires --validate-redundant-reset")
+        args.enable_cameras = True
     if args.initial_action_std is not None and (args.initial_action_std <= 0 or args.resume_checkpoint):
         parser.error("--initial-action-std must be positive and is for fresh runs only")
     if args.entropy_weight is not None and args.entropy_weight < 0:
         parser.error("--entropy-weight must be non-negative")
+    if args.rollout_steps is not None and args.rollout_steps < 2:
+        parser.error("--rollout-steps must be >=2")
     if args.num_envs < 2:
         raise ValueError("At least 2 environments required for train/eval split")
     if args.million_steps <= 0:
@@ -223,6 +244,8 @@ def main(argv=None):
             agent_cfg["policy"]["initial_log_std"] = math.log(args.initial_action_std)
         if args.entropy_weight is not None:
             agent_cfg["agent"]["entropy_loss_scale"] = args.entropy_weight
+        if args.rollout_steps is not None:
+            agent_cfg["agent"]["rollouts"] = args.rollout_steps
         agent_cfg["seed"] = args.seed
         agent_cfg["trainer"]["num_eval_envs"] = min(
             16, max(1, args.num_envs // 8)
@@ -239,8 +262,14 @@ def main(argv=None):
         cfg.pressure_variant = args.pressure_variant
         cfg.reward_stage = args.reward_stage
         cfg.goal_direction = args.goal_direction
+        cfg.diagnostic_all_finger_contacts = args.validate_redundant_reset
+        if args.validate_redundant_reset:
+            cfg.scene.lazy_sensor_update = False
         if args.reward_stage in ("regrasp", "continuous"):
             cfg.target_angular_speed_rad_s = (.15, .30)
+        elif args.reward_stage == "baseline":
+            cfg.target_angular_speed_rad_s = (.30, .50)
+            cfg.randomize_reset_grasp = True
         cfg.domain_profile = args.domain_profile
         cfg.hand_posture = args.hand_posture
         if args.hand_posture == "palm_up":
@@ -260,6 +289,13 @@ def main(argv=None):
             cfg.reset_position_noise_m = 0.0 if args.domain_profile == "nominal" else .00025
         if args.reset_grasps:
             cfg.reset_grasps_file = str(args.reset_grasps.resolve())
+        if args.validate_redundant_reset:
+            if not 850 <= args.calibration_density <= 1050:
+                raise ValueError("Calibration density must remain inside task randomization range")
+            cfg.events.geometry.params["density_range_kg_m3"] = (
+                args.calibration_density, args.calibration_density)
+        if args.search_redundant_reset or args.validate_redundant_reset:
+            cfg.randomize_reset_grasp = False
         if args.probe_nominal:
             cfg.domain_profile = "nominal"
             if not args.probe_steps:
@@ -275,7 +311,21 @@ def main(argv=None):
         cfg.obs_list = tuple(agent_cfg["observations"]["obs_list"])
         cfg.obs_stack = agent_cfg["observations"]["obs_stack"]
 
-        env = gym.make(task_id, cfg=cfg, render_mode="rgb_array" if args.record_video else None)
+        env = gym.make(task_id, cfg=cfg, render_mode="rgb_array" if (args.record_video or args.calibration_video) else None)
+        if args.search_redundant_reset or args.validate_redundant_reset:
+            if args.pressure_variant != "plain" or args.hand_posture != "palm_up":
+                raise ValueError("Stage-0 calibration requires plain + palm_up")
+            if args.probe_output is None:
+                raise ValueError("Stage-0 calibration requires --probe-output")
+            from simulation.roto2_pressure.calibrate_redundancy import search_redundant_resets, validate_n_minus_one
+            if args.search_redundant_reset:
+                search_redundant_resets(env, args.probe_output, args.calibration_rounds,
+                                       args.calibration_horizon, args.calibration_spread,
+                                       args.calibration_region, args.calibration_replicas)
+            else:
+                validate_n_minus_one(env, args.probe_output, args.calibration_release_mode,
+                                     args.calibration_video, args.video_env_index)
+            return 0
         if args.search_pad_reset:
             from simulation.roto2_pressure.calibrate_reset import search_pad_resets
             search_pad_resets(env, args.probe_output)
@@ -365,10 +415,14 @@ def main(argv=None):
             "hand_mount_quaternion_xyzw": cfg.robot.init_state.rot,
             "exploration_std_override": args.initial_action_std,
             "entropy_loss_scale_effective": agent_cfg["agent"]["entropy_loss_scale"],
+            "rollout_steps_effective": agent_cfg["agent"]["rollouts"],
+            "learning_epochs": agent_cfg["agent"]["learning_epochs"],
+            "mini_batches": agent_cfg["agent"]["mini_batches"],
             "reset_joint_noise_rad": cfg.reset_joint_noise_rad,
             "reset_position_noise_m": cfg.reset_position_noise_m,
             "reset_grasps_file": cfg.reset_grasps_file,
             "reset_grasps_sha256": hashlib.sha256(reset_data).hexdigest(),
+            "reset_grasp_selection": "uniform_per_reset" if cfg.randomize_reset_grasp else "env_id_modulo",
             "resumed_from": str(args.resume_checkpoint) if args.resume_checkpoint else None,
             "prior_training_transitions": writer.prior_transitions,
             "fruit_axes_m": env.unwrapped._axes_m.cpu().tolist(),
