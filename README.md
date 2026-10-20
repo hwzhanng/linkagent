@@ -1,5 +1,7 @@
 # RealAgent
 
+> **本研究分支的老师审阅入口（2026-10-20）**：[L20手内旋转PPO完整实验报告与数据](research/roto2_review/2026-10-20/README.md)。包含训练配置、原始日志、评估轨迹、仿真视频、全部检查点下载与失败分析。最新v7完整一圈成功为0/128；早期失真指标已撤回，目前尚未达到持续旋转验收。
+
 RealAgent 是一个可运行的单 `TopAgent` 系统：外层 Runtime 管理观测、控制步和资源生命
 周期，内层 Agent 管理有界的模型/工具往返。默认配置完全离线；第二阶段已经加入
 `doubao-seed-2.0-pro` 的 Ark OpenAI Responses 与 Anthropic Messages 兼容协议适配。

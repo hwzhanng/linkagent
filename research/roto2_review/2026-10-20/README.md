@@ -13,7 +13,7 @@
 3. [所有运行和训练量](TRAINING_RUNS.md)、[所有评估](EVALUATIONS.md)：每项直接链接原始JSON，不只给汇总数字。
 4. [当前思路与下一步实验](NEXT_EXPERIMENTS.md)：已验证事实、推断及未实施方案分开。
 5. [复现、下载和完整性验证](REPRODUCE.md)：恢复全部证据、模型检查点、TensorBoard查看方式。
-6. [文件清单](manifest.csv)、[库存统计](inventory_summary.json)、[归档校验](release_assets.json)、[交付前验证](HANDOFF_VALIDATION.json)。
+6. [文件清单](manifest.csv)、[库存统计](inventory_summary.json)、[归档校验](release_assets.json)、[交付前验证](HANDOFF_VALIDATION.json)、[GitHub上传校验回执](DELIVERY.json)。
 7. [相对原远端提交cd97e7a的代码补丁](code_changes_from_cd97e7a.patch)：包含此前物理/任务适配修复及后来奖励迭代，不只本次文档修改。
 
 ## 一、研究问题和实现边界
