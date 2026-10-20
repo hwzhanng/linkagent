@@ -76,6 +76,7 @@ def main():
         common = ["--num-envs", "64", "--pressure-variant", "plain",
                   "--domain-profile", cfg["domain_profile"], "--hand-posture", cfg["hand_posture"],
                   "--reward-stage", "baseline", "--goal-direction", cfg["goal_direction"],
+                  "--baseline-pose-weight", str(cfg.get("baseline_pose_weight", .01)),
                   "--reset-grasps", str(library), "--evaluate-checkpoint", str(checkpoint)]
         commands = []
 

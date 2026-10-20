@@ -17,7 +17,8 @@ def support_masks(pad_forces, displacement, speed, height_drop, tilt):
 
 def baseline_reward(delta, goal, pad_forces, displacement, speed, height_drop,
                     tilt, joint_pos, reference_pos, joint_limits, joint_velocity,
-                    applied_torque, actions, previous_actions, valid, ready, dt):
+                    applied_torque, actions, previous_actions, valid, ready, dt,
+                    pose_weight=.01):
     support, three_pad, stable = support_masks(pad_forces, displacement, speed, height_drop, tilt)
     directed_speed = goal.sign() * delta / dt
     # Positive cap only: a fast reverse cannot erase its cost through clipping.
@@ -26,7 +27,7 @@ def baseline_reward(delta, goal, pad_forces, displacement, speed, height_drop,
     normalized_pose = (joint_pos-reference_pos)/(joint_limits[..., 1]-joint_limits[..., 0]).clamp_min(.01)
     terms = {
         'rotation': motion,
-        'pose_deviation_normalized': -.01*normalized_pose.square().mean(-1),
+        'pose_deviation_normalized': -pose_weight*normalized_pose.square().mean(-1),
         'mechanical_power': -.002*(applied_torque*joint_velocity).abs().sum(-1),
         'pad_bonus': .005*(pad_forces > .15).float().mean(-1),
         'linear_speed': -.05*speed,

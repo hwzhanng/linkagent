@@ -151,6 +151,8 @@ def main(argv=None):
     parser.add_argument("--domain-profile", choices=("full", "gentle", "nominal"), default="gentle")
     parser.add_argument("--hand-posture", choices=("vertical", "palm_up"), default="vertical")
     parser.add_argument("--reward-stage", choices=("contact", "rotation", "regrasp", "spin", "continuous", "baseline"), default="rotation")
+    parser.add_argument("--baseline-pose-weight", type=float, default=.01,
+                        help="Normalized grasp-deviation cost; task reward only")
     parser.add_argument("--goal-direction", choices=("both", "positive", "negative"), default="both")
     parser.add_argument("--smoke", action="store_true",
                         help="Run 20 actual PhysX steps before spending GPU time")
@@ -271,6 +273,10 @@ def main(argv=None):
         cfg.seed = args.seed
         cfg.pressure_variant = args.pressure_variant
         cfg.reward_stage = args.reward_stage
+        import math
+        if not math.isfinite(args.baseline_pose_weight) or args.baseline_pose_weight < 0:
+            raise ValueError("--baseline-pose-weight must be finite and nonnegative")
+        cfg.baseline_pose_weight = args.baseline_pose_weight
         cfg.goal_direction = args.goal_direction
         cfg.diagnostic_all_finger_contacts = (
             args.validate_redundant_reset or args.probe_reset_replay or args.calibration_whole_finger_sensors
@@ -443,6 +449,7 @@ def main(argv=None):
             "million_steps": args.million_steps, "pressure_variant": args.pressure_variant,
             "physics_dt": cfg.sim.dt, "decimation": cfg.decimation,
             "reward_version": REWARD_VERSION, "reward_stage": cfg.reward_stage,
+            "baseline_pose_weight": cfg.baseline_pose_weight,
             "goal_direction": cfg.goal_direction,
             "target_angular_speed_rad_s": cfg.target_angular_speed_rad_s,
             "domain_profile": cfg.domain_profile,

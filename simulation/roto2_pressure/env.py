@@ -359,7 +359,8 @@ class FruitRotationEnv(DirectRLEnv):
                 self._grasp_reference, self._active_limits,
                 self._robot.data.joint_vel.torch[:, self._active_ids],
                 self._robot.data.applied_torque.torch[:, self._active_ids],
-                self._action, self._previous_action, safe_path, ready, dt)
+                self._action, self._previous_action, safe_path, ready, dt,
+                pose_weight=self.cfg.baseline_pose_weight)
         elif self.cfg.reward_stage == "continuous":
             ready = self.episode_length_buf > round(1.0 / dt)
             self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))

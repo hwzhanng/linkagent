@@ -80,6 +80,7 @@ class FruitRotationEnvCfg(DirectRLEnvCfg):
     hand_posture = "vertical"  # optional palm-up mount; policy dimensions unchanged
     goal_direction = "both"  # single-direction curriculum; existing goal observation
     reward_stage = "rotation"  # "contact" curriculum or full "rotation" objective
+    baseline_pose_weight = .01  # Explicit task-only ablation; original v8 default.
     pressure_variant = "jacobian"  # "plain" | "scalar" | "jacobian"
     reset_grasps_file = str(Path(__file__).with_name("reset_pad_grasps.json"))
     reset_joint_noise_rad = 0.018
