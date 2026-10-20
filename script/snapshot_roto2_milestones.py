@@ -27,7 +27,7 @@ def main():
                     before = progress.read_bytes()
                     info = json.loads(before)
                     stat = checkpoint.stat()
-                    if (info["training_transitions"] >= milestone
+                    if (info.get("cumulative_training_transitions", info["training_transitions"]) >= milestone
                             and stat.st_mtime_ns <= progress.stat().st_mtime_ns):
                         target.mkdir(parents=True, exist_ok=True)
                         temporary = target / "agent.pt.tmp"

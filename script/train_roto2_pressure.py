@@ -399,12 +399,15 @@ def main(argv=None):
                 (Path(self.log_dir) / "progress.json").write_text(json.dumps({
                     "training_completed": False, "training_transitions": transitions,
                     "cumulative_training_transitions": self.prior_transitions + transitions,
+                    "ppo_updates": int(self.current_updates()),
+                    "cumulative_ppo_updates": self.prior_updates + int(self.current_updates()),
                     "checkpoint": str(destination),
                     "upstream_eval_return": float(mean_eval_return),
                 }, indent=2) + "\n")
 
         writer = LocalWriter(agent_cfg)
         writer.prior_transitions = 0
+        writer.prior_updates = 0
         if args.resume_checkpoint:
             source_run = args.resume_checkpoint.resolve().parent.parent
             metadata = source_run / ("training_result.json" if args.resume_checkpoint.name == "final_agent.pt"
@@ -412,6 +415,20 @@ def main(argv=None):
             if metadata.is_file():
                 prior = json.loads(metadata.read_text())
                 writer.prior_transitions = prior.get("cumulative_training_transitions", prior["training_transitions"])
+                if "cumulative_ppo_updates" in prior:
+                    writer.prior_updates = int(prior["cumulative_ppo_updates"])
+                else:
+                    # Older checkpoints did not store trainer counters. Adam
+                    # steps recover the count for the recorded fixed-epoch PPO.
+                    source_cfg = json.loads((source_run / "run_config.json").read_text())
+                    saved = torch.load(args.resume_checkpoint, map_location="cpu", weights_only=True)
+                    counts = {int(v["step"]) for v in saved["policy_optimiser"]["state"].values()
+                              if "step" in v}
+                    per_update = source_cfg["learning_epochs"] * source_cfg["mini_batches"]
+                    if len(counts) != 1 or next(iter(counts)) % per_update:
+                        raise RuntimeError("Cannot recover unambiguous prior PPO update count")
+                    writer.prior_updates = next(iter(counts)) // per_update
+                    del saved
         import hashlib
         import shutil
         snapshot = Path(writer.log_dir) / "source_snapshot"
@@ -444,11 +461,13 @@ def main(argv=None):
             "reset_grasp_selection": "uniform_per_reset" if cfg.randomize_reset_grasp else "env_id_modulo",
             "resumed_from": str(args.resume_checkpoint) if args.resume_checkpoint else None,
             "prior_training_transitions": writer.prior_transitions,
+            "prior_ppo_updates": writer.prior_updates,
             "fruit_axes_m": env.unwrapped._axes_m.cpu().tolist(),
             "fruit_mass_kg": env.unwrapped._fruit.data.body_mass.torch.cpu().tolist(),
             "upstream_ppo": "multimodal_rl@4ac55e854b4c732534d443715a0322d4220b461c",
         }, indent=2) + "\n")
         wrapped, trainer = build_roto2_training(env, cfg, agent_cfg, writer)
+        writer.current_updates = lambda: trainer.rl_update
         trainer.headless = args.headless
         env = wrapped
         if args.resume_checkpoint is not None:
@@ -514,6 +533,7 @@ def main(argv=None):
         torch.save({name: writer._get_module_state(module)
                     for name, module in writer.checkpoint_modules.items()}, final_checkpoint)
         result = {"training_completed": True, "ppo_updates": trainer.rl_update,
+                  "cumulative_ppo_updates": writer.prior_updates + trainer.rl_update,
                   "training_transitions": trainer.timesteps * trainer.num_train_envs,
                   "cumulative_training_transitions": writer.prior_transitions + trainer.timesteps * trainer.num_train_envs,
                   "parameter_change_l2": changes, "finite_parameters": True,

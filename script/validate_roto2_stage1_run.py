@@ -52,10 +52,21 @@ def main():
                 time.sleep(30)
         result = json.loads((run / "training_result.json").read_text())
         assert result["training_completed"] and result["finite_parameters"], result
-        assert result["training_transitions"] >= 299_000_000 and result["ppo_updates"] >= 2200, result
+        assert result.get("cumulative_training_transitions", result["training_transitions"]) >= 299_000_000, result
+        assert result.get("cumulative_ppo_updates", result["ppo_updates"]) >= 2200, result
         cfg = json.loads((run / "run_config.json").read_text())
         assert cfg["pressure_variant"] == "plain" and cfg["reward_stage"] == "baseline"
-        assert cfg["resumed_from"] is None
+        ancestor, lineage, seen = cfg, [str(run)], {str(run)}
+        while ancestor["resumed_from"] is not None:
+            parent = Path(ancestor["resumed_from"]).resolve().parent.parent
+            assert str(parent) not in seen, "Checkpoint lineage cycle"
+            seen.add(str(parent))
+            ancestor = json.loads((parent / "run_config.json").read_text())
+            assert ancestor["pressure_variant"] == "plain" and ancestor["reward_stage"] == "baseline"
+            assert ancestor["reset_grasps_sha256"] == cfg["reset_grasps_sha256"]
+            lineage.append(str(parent))
+        assert ancestor["exploration_std_override"] == .6, "Expected a fresh0.6-std ancestor"
+        status["verified_fresh_training_lineage"] = lineage
         library = Path(cfg["reset_grasps_file"])
         assert hashlib.sha256(library.read_bytes()).hexdigest() == cfg["reset_grasps_sha256"]
         checkpoint = Path(result["final_checkpoint"])
