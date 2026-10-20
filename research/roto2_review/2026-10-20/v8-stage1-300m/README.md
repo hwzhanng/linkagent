@@ -115,6 +115,8 @@ bash simulation/.runtime/run_roto2.sh train \
 
 最终评估命令逐条保存在 [COMMANDS.json](evidence/artifacts/simulation/rotation_v8/stage1/final_validation/COMMANDS.json)。用最终 checkpoint、64 环境、相同标称任务参数，分别 seed6101、6102。用于诊断的 seed5101 和动作 trace 另有独立日志及配置。
 
+新机器的依赖安装和物理资产恢复参见[基础环境复现说明](../REPRODUCE.md)第二节；其中旧 v7 训练/评估命令不适用于本轮。`simulation/.runtime/run_roto2.sh` 是本机便利包装器；已装好环境时，可将上述命令开头的 `bash simulation/.runtime/run_roto2.sh train` 替换为 `"$LINKAGENT_ISAACLAB_ROOT/env_isaaclab/bin/python" -m script.train_roto2_pressure --headless`，其余参数保留。先把 `LINKAGENT_ISAACLAB_ROOT` 指向实际安装目录。没有在另一台干净机器重新安装验证，不承诺跨驱动逐位复现。
+
 [manifest.json](manifest.json)列出全部已保存证据的路径、字节数、SHA-256、分支镜像及归档成员；[checkpoints.json](checkpoints.json)列出权重/优化器的有限值检查；[tensorboard_scalars.csv](tensorboard_scalars.csv)导出全部已存 TensorBoard 标量；[source_manifest.json](source_manifest.json)列出交付源码哈希；[VALIDATION.json](VALIDATION.json)记录归档数量和核验结果。
 
 **没有保存完整 3 亿行离线训练数据。** PPO 的 on-policy rollout 缓冲循环复用。本次“数据齐全”指完整交付已经保存的日志、配置、检查点、标量、独立评估原始轨迹、诊断与录像；不会声称没有保存的全量逐样本观测/动作仍然存在。失败试验和中断痕迹一并保留。
