@@ -38,20 +38,30 @@ def record_checkpoint(trainer, wrapped, checkpoint: Path, output: Path,
     from .core import quat_rotate
     marker_ops = []
     marker_offsets = []
-    for i, (axis, color) in enumerate([((1, 0, 0), (1, .95, .75)),
-                                      ((0, 1, 0), (.2, .8, .95)),
-                                      ((0, 0, 1), (.95, .85, .1))]):
+    # Cover both sides: three positive axes can all be occluded by the grasp.
+    # These display-only prims have no collision or rigid-body API.
+    marker_specs = [
+        ((1, 0, 0), (1, 1, 1)), ((-1, 0, 0), (.04, .04, .04)),
+        ((0, 1, 0), (.1, .85, 1)), ((0, -1, 0), (.1, .85, 1)),
+        ((0, 0, 1), (1, 1, 1)), ((0, 0, -1), (.04, .04, .04)),
+    ]
+    # A sparse, asymmetric ring remains visible when the top is under a finger.
+    for k in range(12):
+        angle = 2 * math.pi * k / 12
+        marker_specs.append(((math.cos(angle), math.sin(angle), 0),
+                             (1, 1, 1) if k < 3 else (.04, .04, .04)))
+    for i, (axis, color) in enumerate(marker_specs):
         marker = UsdGeom.Sphere.Define(stage, f"/World/VideoOrientationMarker_{i}")
-        marker.CreateRadiusAttr(.0027)
+        marker.CreateRadiusAttr(.0035 if i < 6 else .0018)
         marker.CreateDisplayColorAttr([Gf.Vec3f(*color)])
         marker_ops.append(UsdGeom.Xformable(marker).AddTranslateOp())
         marker_offsets.append(axis)
-    offsets = torch.tensor(marker_offsets, device=raw.device) * raw._axes_m[env_index] * .98
+    offsets = torch.tensor(marker_offsets, device=raw.device) * raw._axes_m[env_index] * 1.005
 
     def update_markers():
         pose = raw._fruit.data.root_pose_w.torch[env_index]
         quat = raw._wxyz(pose[3:7])
-        positions = pose[:3] + quat_rotate(quat.expand(3, -1), offsets)
+        positions = pose[:3] + quat_rotate(quat.expand(len(marker_offsets), -1), offsets)
         for op, pos in zip(marker_ops, positions.cpu().tolist()):
             op.Set(Gf.Vec3d(*pos))
         return pose.detach().cpu().tolist()

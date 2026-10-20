@@ -3,6 +3,7 @@ import argparse
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 from pathlib import Path
 import subprocess
 import time
@@ -12,6 +13,23 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def write(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+
+
+def verify_video_artifact(video, checkpoint, seed, env_index):
+    data = json.loads(video.with_suffix(".json").read_text())
+    assert Path(data["checkpoint"]).resolve() == checkpoint.resolve()
+    assert data["seed"] == seed and data["env_index"] == env_index
+    assert data["episode_completed"] and data["real_time_playback"]
+    assert len(data["trace"]) == data["physics_steps_recorded"]
+    assert data["trace"][-1]["ended"]
+    assert abs(data["directed_turns"] - data["independent_pose_turns"]) < 1e-4
+    for index, row in enumerate(data["trace"], 1):
+        assert row["step"] == index
+        assert all(math.isfinite(x) for x in row["fruit_pose_native"])
+    subprocess.run(["ffmpeg", "-v", "error", "-i", str(video), "-f", "null", "-"],
+                   check=True, stdout=subprocess.DEVNULL)
+    return {"episode_and_finite_pose_trace_verified": True,
+            "independent_pose_metric_verified": True, "video_fully_decoded": True}
 
 
 def main():
@@ -54,8 +72,20 @@ def main():
             cmd = ["bash", "simulation/.runtime/run_roto2.sh", mode] + common + args
             commands.append({"command": cmd, "log": str(output / (name + ".log"))})
             write(output / "COMMANDS.json", commands)
+            started = time.time()
             with (output / (name + ".log")).open("w") as log:
-                subprocess.run(cmd, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
+                process = subprocess.run(cmd, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+            commands[-1].update(returncode=process.returncode, started_unix=started)
+            write(output / "COMMANDS.json", commands)
+            allowed = (0, 143, -15) if mode == "record" else (0,)
+            if process.returncode not in allowed:
+                raise subprocess.CalledProcessError(process.returncode, cmd)
+            if process.returncode != 0:
+                # Some camera-enabled runs exit by SIGTERM after writing the
+                # full episode and clearing SimulationContext. Retain that
+                # nonzero status; accept artifacts only after verification.
+                assert "SimulationContext cleared" in (output / (name + ".log")).read_text()
+            return started
 
         evaluations = []
         for seed in status["independent_seeds"]:
@@ -89,10 +119,12 @@ def main():
                     ("best", max(rows, key=lambda r: (r["success"], r["after_10s_directed_turns"])))]
         for label, row in selected:
             video = output / f"final_seed6101_{label}_env{row['env']}.mp4"
-            execute("record", ["--seed", "6101", "--video-env-index", str(row["env"]),
-                               "--record-video", str(video)], video.stem)
-            subprocess.run(["ffmpeg", "-v", "error", "-i", str(video), "-f", "null", "-"],
-                           check=True, stdout=subprocess.DEVNULL)
+            started = execute("record", ["--seed", "6101", "--video-env-index", str(row["env"]),
+                                         "--record-video", str(video)], video.stem)
+            assert video.stat().st_mtime >= started
+            assert video.with_suffix(".json").stat().st_mtime >= started
+            commands[-1]["artifact_verification"] = verify_video_artifact(video, checkpoint, 6101, row["env"])
+            write(output / "COMMANDS.json", commands)
         status.update(status="completed_pending_visual_review", gate_rows=gate_rows,
                       completed_utc=datetime.now(timezone.utc).isoformat())
         write(status_file, status)
