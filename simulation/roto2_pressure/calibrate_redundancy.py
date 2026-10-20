@@ -11,7 +11,7 @@ import time
 import numpy as np
 import torch
 from .core import ACTIVE_JOINTS, FINGERS, quat_rotate, quat_inv_rotate
-from .reward_geometry import pad_approach_quality
+from .reward_geometry import pad_approach_quality, pad_frames
 
 
 def save(path, value):
@@ -72,13 +72,26 @@ def step_physics(raw, target):
         if not torch.isfinite(magnitude).all(): raise RuntimeError('Nonfinite whole-finger contact')
         force[:, FINGERS.index(body.split('_')[0])] += magnitude
         stable &= magnitude <= raw.cfg.maximum_contact_force_n
+    tips = raw._robot.data.body_pos_w.torch[:, raw._contact_body_ids[:5]]
+    tip_quat = raw._wxyz(raw._robot.data.body_quat_w.torch[:, raw._contact_body_ids[:5]])
+    local_contact = quat_inv_rotate(tip_quat, raw._contact_positions[:, :5] - tips)
+    center, u, v, normal = pad_frames(raw.device, local_contact.dtype)
+    relative = local_contact - center
+    depth = (relative*normal).sum(-1)
+    margin = torch.stack((.0048-(relative*u).sum(-1).abs(),
+                          .0072-(relative*v).sum(-1).abs(),
+                          depth+.0015, .004-depth), dim=-1).amin(-1)
+    # Geometry has no contact credit when physical force is absent.
+    margin = torch.where(raw._forces[:, :5] > .15, margin, torch.full_like(margin, -.02))
     return dict(pose=pose, speed=speed, displacement=displacement, tilt=tilt,
                 stable=stable, failed=failed | ~finite, pad=raw._pad_forces > .15,
-                whole_finger_force=force, peak_pressure=raw._dense.amax(-1).clone())
+                whole_finger_force=force, peak_pressure=raw._dense.amax(-1).clone(),
+                pad_margin_m=margin, palm_force_n=raw._forces[:, 5].clone())
 
 
 @torch.no_grad()
-def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, region="broad", replicas=1):
+def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, region="broad", replicas=1,
+                           replica_layout="distributed", margin_weight=0.0):
     """16 CEM islands, broad grasp/fruit-center exploration; retain diverse proposals."""
     raw = env.unwrapped; n = raw.num_envs; device = raw.device; output = Path(output)
     if n % 16 or n < 256: raise ValueError('Search needs >=256 environments, multiple of 16')
@@ -87,6 +100,10 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
     unique = n//replicas
     if horizon < 40 or rounds < 1: raise ValueError('Search horizon >=40 and rounds >=1')
     if not .005 <= spread <= .3: raise ValueError('Search spread must be in [.005,.3]')
+    if replica_layout not in ("adjacent", "distributed"):
+        raise ValueError("Unknown replica layout")
+    if not 0 <= margin_weight <= 20:
+        raise ValueError("Search-only margin weight must be in [0,20]")
     seeds = list(raw._reset_grasps)
     root = Path(__file__).resolve().parents[2]
     historical = root/'simulation/.runtime/setup/palm_up/reset_candidates.json'
@@ -114,12 +131,23 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
     for iteration in range(rounds):
         x = means[:, None] + torch.randn(16, per, 19, device=device)*sigma[:, None]
         x[:, 0] = means; x[:, 1] = best_vectors
-        x = x.clamp(lo, hi); flat = x.reshape(unique,19).repeat_interleave(replicas,dim=0)
+        x = x.clamp(lo, hi)
+        if replica_layout == "adjacent":
+            replica_env_ids = torch.arange(n, device=device).reshape(unique, replicas)
+        else:
+            # Adjacent replicas often occupy the same row of the environment
+            # grid. Spread each candidate across blocks and reshuffle each round
+            # so a favorable world-coordinate/contact branch cannot win forever.
+            replica_env_ids = torch.stack([
+                torch.randperm(unique, device=device) + r*unique for r in range(replicas)], dim=1)
+        flat = torch.empty(n, 19, device=device)
+        flat[replica_env_ids] = x.reshape(unique, 1, 19).expand(-1, replicas, -1)
         rows = flat.cpu().tolist(); raw._reset_grasps = rows_to_grasps(rows, f's{raw.cfg.seed}_r{iteration}')
         env.reset(); target = flat[:, :16].clone()
         alive = torch.ones(n, device=device, dtype=torch.bool)
         count_sum = torch.zeros(n, device=device); four = count_sum.clone(); five = count_sum.clone()
         stable_sum = count_sum.clone(); approach_sum = count_sum.clone(); pad_sum = torch.zeros(n, 5, device=device)
+        margin_sum = count_sum.clone(); margin_credit = count_sum.clone(); palm_sum = count_sum.clone()
         pressure_max = count_sum.clone(); measured = 0
         for t in range(horizon):
             d = step_physics(raw, target); alive &= ~d['failed']
@@ -127,14 +155,19 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
             measured += 1; ok = alive & d['stable']; pads = d['pad']; count = pads.sum(-1)
             pad_sum += pads * ok[:, None]; count_sum += count * ok
             four += (count >= 4) * ok; five += (count >= 5) * ok; stable_sum += ok
+            fourth_margin = d["pad_margin_m"].topk(4, dim=-1).values[:, -1]
+            margin_sum += fourth_margin * ok
+            margin_credit += (fourth_margin/.002).clamp(0, 1) * ok
+            palm_sum += d["palm_force_n"] * ok
             approach = pad_approach_quality(raw._robot.data.body_pos_w.torch[:, raw._contact_body_ids[:5]],
                 raw._wxyz(raw._robot.data.body_quat_w.torch[:, raw._contact_body_ids[:5]]),
                 d['pose'][:, :3], raw._wxyz(d['pose'][:, 3:]), raw._axes_m)
             approach_sum += approach.mean(-1) * alive
             pressure_max = torch.maximum(pressure_max, d['peak_pressure'])
         # No thumb privilege; four/five contacts receive the dominant credit.
-        score_env = (40*four + 20*five + 3*count_sum + 4*stable_sum + 2*approach_sum)/measured - 20*(~alive)
-        score = score_env.reshape(unique,replicas).amin(1)
+        score_env = (40*four + 20*five + 3*count_sum + 4*stable_sum + 2*approach_sum
+                     + margin_weight*margin_credit)/measured - 20*(~alive)
+        score = score_env[replica_env_ids].amin(1)
         scores = score.reshape(16, per); ids = scores.topk(elite, dim=1).indices
         current_best, best_ids = scores.max(1)
         better = current_best > best_scores
@@ -150,10 +183,10 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
         settled_q = raw._robot.data.joint_pos.torch[:,raw._active_ids].clone()
         settled_quat = d['pose'][:,3:] if raw._native_xyzw else d['pose'][:,[4,5,6,3]]
         for candidate_i in top.flatten().cpu().tolist():
-            rs = slice(candidate_i*replicas,(candidate_i+1)*replicas)
+            rs = replica_env_ids[candidate_i]
             # Archive the worst observed replica's actual settled state; never
             # cherry-pick the easiest mass/environment among the replications.
-            i = candidate_i*replicas + int(score_env[rs].argmin())
+            i = int(rs[score_env[rs].argmin()])
             row = rows_to_grasps([rows[i]], f's{raw.cfg.seed}_r{iteration}_env{i}')[0]
             row.update(source_initial_joint_positions=rows[i][:16],
                        source_initial_fruit_position_hand=rows[i][16:],
@@ -169,6 +202,9 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
                        per_finger_pad_fraction=(pad_sum[rs].amin(0)/measured).tolist(),
                        failed=not bool(alive[rs].all()), peak_pressure_pa=float(pressure_max[rs].max()),
                        calibration_replicas=replicas,
+                       replica_layout=replica_layout,
+                       four_pad_boundary_margin_mean_m=float(margin_sum[rs].min()/measured),
+                       palm_force_mean_n=float(palm_sum[rs].mean()/measured),
                        replica_four_pad_fractions=(four[rs]/measured).cpu().tolist())
             archive.append(row)
         archive.sort(key=lambda r:r['score'], reverse=True)
@@ -183,6 +219,9 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
         np.savez_compressed(output.with_name(f'{output.stem}_round{iteration:03d}.npz'),
                             proposals=flat.cpu().numpy(), score=score_env.cpu().numpy(),
                             worst_replica_score=score.cpu().numpy(), replicas=replicas,
+                            replica_env_ids=replica_env_ids.cpu().numpy(),
+                            four_pad_margin_mean_m=(margin_sum/measured).cpu().numpy(),
+                            palm_force_mean_n=(palm_sum/measured).cpu().numpy(),
                             four_pad_fraction=(four/measured).cpu().numpy(),
                             five_pad_fraction=(five/measured).cpu().numpy(),
                             stable_fraction=(stable_sum/measured).cpu().numpy(),
@@ -199,6 +238,9 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
                       search_region=region,
                       candidate_count=len(archive), evaluated_proposals=(iteration+1)*n,
                       unique_candidate_proposals=(iteration+1)*unique, replicas=replicas,
+                      replica_layout=replica_layout,
+                      margin_weight=margin_weight,
+                      best_four_pad_boundary_margin_mean_m=archive[0]["four_pad_boundary_margin_mean_m"],
                       best_score=archive[0]['score'], best_four_pad_fraction=archive[0]['four_pad_fraction'],
                       best_per_finger=archive[0]['per_finger_pad_fraction'],
                       four_pad_80pct_candidates=sum(r['four_pad_fraction'] >= .8 and not r['failed'] for r in archive),
@@ -210,11 +252,55 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
 
 
 @torch.no_grad()
+def validate_long_hold(env, output, steps=600):
+    """Hold without automatic timeout resets; diagnostic, not an RL episode."""
+    raw = env.unwrapped
+    if steps < 480:
+        raise ValueError("Long hold must cover at least 24 seconds")
+    env.reset()
+    target = raw._q_target.clone()
+    alive = torch.ones(raw.num_envs, dtype=torch.bool, device=raw.device)
+    traces = {k: [] for k in ("pose", "pad", "stable", "failed", "displacement",
+                              "speed", "whole_finger_force", "peak_pressure", "pad_margin_m", "palm_force_n")}
+    started = time.monotonic()
+    for step in range(steps):
+        d = step_physics(raw, target)
+        alive &= ~d["failed"]
+        d["stable"] &= alive
+        for k in traces:
+            traces[k].append(d[k].cpu().numpy().copy())
+        if (step+1) % 100 == 0:
+            progress = dict(stage="long_hold", completed_control_steps=step+1, total_control_steps=steps,
+                            failed_so_far=int((~alive).sum()), elapsed_seconds=time.monotonic()-started)
+            save(Path(output).with_name(Path(output).stem+"_progress.json"), progress)
+            print(json.dumps(progress), flush=True)
+    data = {k: np.asarray(v) for k, v in traces.items()}
+    output = Path(output)
+    np.savez_compressed(output.with_suffix(".npz"), **data)
+    rows = []
+    for i in range(raw.num_envs):
+        pad_fraction = data["pad"][20:, i].mean(0)
+        stable = bool(data["stable"][20:, i].all())
+        failed = bool(data["failed"][:, i].any())
+        rows.append(dict(env=i, pad_fraction=pad_fraction.tolist(),
+                         four_pad_time_fraction=float((data["pad"][20:, i].sum(-1)>=4).mean()),
+                         stable_after_settling=stable, physical_failure=failed,
+                         peak_pressure_pa=float(data["peak_pressure"][:, i].max()),
+                         max_displacement_m=float(data["displacement"][:, i].max()),
+                         passed=bool(stable and not failed and (pad_fraction>=.8).sum()>=4)))
+    save(output, dict(seed=raw.cfg.seed, steps=steps, duration_seconds=steps*raw.step_dt,
+                      num_envs=raw.num_envs, no_automatic_resets=True, validation_completed=True,
+                      passed_count=sum(r["passed"] for r in rows), results=rows, stage0_passed=False))
+    print(json.dumps({"long_hold_passed":sum(r["passed"] for r in rows),"num_envs":raw.num_envs}),flush=True)
+    return rows
+
+
+@torch.no_grad()
 def validate_n_minus_one(env, output, release_mode="full_open", video=None, video_env_index=0):
     """Six matched conditions per grasp: hold and independently release each finger.
 
     All links of the selected finger must lose measured normal contact for the
-    full final 0.5s. Passive object stability and restoration are mandatory.
+    full final 0.5s. Passive object stability through recovery is mandatory.
     Noncontact fingers are marked non-load-bearing, not claimed as releases.
     """
     raw = env.unwrapped; n = raw.num_envs; device = raw.device; output = Path(output)
@@ -230,6 +316,8 @@ def validate_n_minus_one(env, output, release_mode="full_open", video=None, vide
         matched_density_kg_m3=raw.cfg.events.geometry.params["density_range_kg_m3"],
         pressure_limit_pa=raw.cfg.maximum_pressure_proxy_pa,
         release_mode=release_mode, adaptive_increment_rad=.015,
+        release_controller="monotonic_clearance_v1",
+        default_release_clearance_rad=.02,
         release_measurement="sum over links of max force magnitude over all 6 physics substeps; 120Hz sensor updates",
         gate_version="n1_release_stability_v2",
         gate_definition="Initial >=4 pads; each finger measurably unloaded for 0.5s; stability and safety through release/recovery. Fixed-target four-pad recovery reported separately, not user-required stage0 gate.",
@@ -249,10 +337,12 @@ def validate_n_minus_one(env, output, release_mode="full_open", video=None, vide
                 idx = ACTIVE_JOINTS.index(f'{finger}_joint{j}')
                 open_target[group == finger_i+1, idx] = raw._active_limits[group == finger_i+1, idx, 0]+.002
         traces = {k:[] for k in ('pose','speed','displacement','tilt','stable','failed','pad','whole_finger_force','peak_pressure',
+                                'pad_margin_m', 'palm_force_n',
                                 'joint_position', 'joint_target')}
         alive = torch.ones(n, device=device, dtype=torch.bool)
         adaptive_target = base_target.clone()
         was_free = torch.zeros(n, device=device, dtype=torch.bool)
+        trial_started = time.monotonic()
         recorder = None
         if video and batch_start == 0:
             from .calibration_video import CalibrationVideo
@@ -271,8 +361,21 @@ def validate_n_minus_one(env, output, release_mode="full_open", video=None, vide
                             ids = (group==fi+1) & selected
                             stepsize = torch.as_tensor([c.get("release_increment_rad",.015) for c in padded],
                                                        device=device).repeat_interleave(6)
+                            clearance = torch.as_tensor([c.get("release_clearance_rad",.02) for c in padded],
+                                                        device=device).repeat_interleave(6)
                             for ji,direction in release_directions(finger,profile):
-                                adaptive_target[ids & free & ~was_free,ji]=q[ids & free & ~was_free,ji]
+                                # A PD-controlled joint can lag its command. Replacing
+                                # an open command with the measured position on the
+                                # first zero-force frame can close it again. Retain
+                                # the farther-open position and add a small clearance.
+                                newly_free = ids & free & ~was_free
+                                retained = direction * torch.maximum(
+                                    direction*adaptive_target[newly_free,ji],
+                                    direction*q[newly_free,ji])
+                                adaptive_target[newly_free,ji] = (
+                                    retained + direction*clearance[newly_free]).clamp(
+                                        min=raw._active_limits[newly_free,ji,0]+.002,
+                                        max=raw._active_limits[newly_free,ji,1]-.002)
                                 moved=adaptive_target[ids & ~free,ji]+direction*stepsize[ids & ~free]
                                 adaptive_target[ids & ~free,ji]=moved.clamp(
                                     min=raw._active_limits[ids & ~free,ji,0]+.002,
@@ -288,6 +391,18 @@ def validate_n_minus_one(env, output, release_mode="full_open", video=None, vide
             if recorder:
                 recorder.append(t, d)
             for k in traces: traces[k].append(d[k].cpu().numpy().copy())
+            if t in (39, 79, 89, 149):
+                progress = dict(stage="n1_validation",
+                    phase={39:"baseline",79:"retract",89:"unloaded_hold",149:"recovery"}[t],
+                    batch_start=batch_start, configurations_in_batch=actual,
+                    completed_control_steps=t+1, total_control_steps=150,
+                    four_pad_environments=int((d["pad"].sum(-1)>=4).sum()),
+                    stable_environments=int(d["stable"].sum()),
+                    failed_so_far=int((~alive).sum()),
+                    elapsed_seconds=time.monotonic()-trial_started,
+                    validation_completed=False, stage0_passed=False)
+                save(output.with_name(output.stem+"_progress.json"), progress)
+                print(json.dumps(progress), flush=True)
         if recorder:
             recorder.close()
         data = {k:np.array(v) for k,v in traces.items()}
@@ -343,6 +458,10 @@ def validate_n_minus_one(env, output, release_mode="full_open", video=None, vide
                           validation_completed=batch_start+actual==len(candidates),
                           stage0_passed=False, independent_reseed_required=True, results=results))
         save(output.with_name(output.stem+'_accepted.json'), accepted)
+        progress.update(phase="batch_complete",
+                        validation_completed=batch_start+actual==len(candidates),
+                        candidates_tested=len(results), accepted_count=len(accepted))
+        save(output.with_name(output.stem+"_progress.json"), progress)
         print(json.dumps(dict(candidates_tested=len(results), accepted_count=len(accepted),
                               baseline_ok=sum(r['baseline_ok'] for r in results))),flush=True)
     return accepted

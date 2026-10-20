@@ -172,6 +172,16 @@ def main(argv=None):
     parser.add_argument("--calibration-release-mode", choices=("full_open", "adaptive"), default="full_open")
     parser.add_argument("--calibration-region", choices=("broad", "palm"), default="broad")
     parser.add_argument("--calibration-replicas", type=int, default=1)
+    parser.add_argument("--calibration-replica-layout", choices=("adjacent", "distributed"),
+                        default="distributed")
+    parser.add_argument("--calibration-margin-weight", type=float, default=0.0,
+                        help="Search-only contact boundary margin credit; pad geometry remains unchanged")
+    parser.add_argument("--probe-reset-replay", action="store_true",
+                        help="Diagnostic matched reset-state ablation; no PPO")
+    parser.add_argument("--calibration-whole-finger-sensors", action="store_true",
+                        help="Enable identical N-1 contact instrumentation during proposal search")
+    parser.add_argument("--calibration-hold-steps", type=int, default=0,
+                        help="Long passive hold without automatic resets; at least480 control steps")
     parser.add_argument("--calibration-video", type=Path, default=None)
     parser.add_argument("--calibration-density", type=float, default=950.0,
                         help="Matched N-1 conditions use one density in the existing 850-1050 range")
@@ -262,8 +272,10 @@ def main(argv=None):
         cfg.pressure_variant = args.pressure_variant
         cfg.reward_stage = args.reward_stage
         cfg.goal_direction = args.goal_direction
-        cfg.diagnostic_all_finger_contacts = args.validate_redundant_reset
-        if args.validate_redundant_reset:
+        cfg.diagnostic_all_finger_contacts = (
+            args.validate_redundant_reset or args.probe_reset_replay or args.calibration_whole_finger_sensors
+            or args.calibration_hold_steps > 0)
+        if cfg.diagnostic_all_finger_contacts:
             cfg.scene.lazy_sensor_update = False
         if args.reward_stage in ("regrasp", "continuous"):
             cfg.target_angular_speed_rad_s = (.15, .30)
@@ -289,12 +301,12 @@ def main(argv=None):
             cfg.reset_position_noise_m = 0.0 if args.domain_profile == "nominal" else .00025
         if args.reset_grasps:
             cfg.reset_grasps_file = str(args.reset_grasps.resolve())
-        if args.validate_redundant_reset:
+        if args.validate_redundant_reset or args.probe_reset_replay or args.calibration_hold_steps > 0:
             if not 850 <= args.calibration_density <= 1050:
                 raise ValueError("Calibration density must remain inside task randomization range")
             cfg.events.geometry.params["density_range_kg_m3"] = (
                 args.calibration_density, args.calibration_density)
-        if args.search_redundant_reset or args.validate_redundant_reset:
+        if args.search_redundant_reset or args.validate_redundant_reset or args.probe_reset_replay or args.calibration_hold_steps > 0:
             cfg.randomize_reset_grasp = False
         if args.probe_nominal:
             cfg.domain_profile = "nominal"
@@ -312,16 +324,23 @@ def main(argv=None):
         cfg.obs_stack = agent_cfg["observations"]["obs_stack"]
 
         env = gym.make(task_id, cfg=cfg, render_mode="rgb_array" if (args.record_video or args.calibration_video) else None)
-        if args.search_redundant_reset or args.validate_redundant_reset:
+        if args.search_redundant_reset or args.validate_redundant_reset or args.probe_reset_replay or args.calibration_hold_steps > 0:
             if args.pressure_variant != "plain" or args.hand_posture != "palm_up":
                 raise ValueError("Stage-0 calibration requires plain + palm_up")
             if args.probe_output is None:
                 raise ValueError("Stage-0 calibration requires --probe-output")
             from simulation.roto2_pressure.calibrate_redundancy import search_redundant_resets, validate_n_minus_one
-            if args.search_redundant_reset:
+            if args.calibration_hold_steps > 0:
+                from simulation.roto2_pressure.calibrate_redundancy import validate_long_hold
+                validate_long_hold(env, args.probe_output, args.calibration_hold_steps)
+            elif args.probe_reset_replay:
+                from simulation.roto2_pressure.probe_reset_replay import probe_reset_replay
+                probe_reset_replay(env, args.probe_output, args.calibration_horizon)
+            elif args.search_redundant_reset:
                 search_redundant_resets(env, args.probe_output, args.calibration_rounds,
                                        args.calibration_horizon, args.calibration_spread,
-                                       args.calibration_region, args.calibration_replicas)
+                                       args.calibration_region, args.calibration_replicas,
+                                       args.calibration_replica_layout, args.calibration_margin_weight)
             else:
                 validate_n_minus_one(env, args.probe_output, args.calibration_release_mode,
                                      args.calibration_video, args.video_env_index)
