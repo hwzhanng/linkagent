@@ -1,0 +1,386 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+Loading user config located at: '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-20T15:33:14Z [Info] [carb] Logging to file: /home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/logs/Kit/IsaacLab/3.0/kit_20261020_233314.log
+2026-10-20T15:33:14Z [3ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers' or '/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_visualizers/config'
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792510394.338480 2219171 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792510394.338501 2219171 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+2026-10-20T15:33:14Z [195ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
+2026-10-20T15:33:14Z [375ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-20T15:33:14Z [375ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-20T15:33:14Z [514ms] [Warning] [omni.rtx] Skipping unsupported non-NVIDIA GPU: AMD Ryzen 9 9950X3D 16-Core Processor (RADV RAPHAEL_MENDOCINO)
+2026-10-20T15:33:14Z [514ms] [Warning] [omni.rtx] Skipping unsupported non-NVIDIA GPU: AMD Ryzen 9 9950X3D 16-Core Processor (RADV RAPHAEL_MENDOCINO)
+
+|---------------------------------------------------------------------------------------------|
+| Driver Version: 595.84        | Graphics API: Vulkan
+|=============================================================================================|
+| GPU | Name                             | Active | LDA | GPU Memory | Vendor-ID | LUID       |
+|     |                                  |        |     |            | Device-ID | UUID       |
+|     |                                  |        |     |            | Bus-ID    |            |
+|---------------------------------------------------------------------------------------------|
+| 0   | NVIDIA GeForce RTX 5090          | Yes: 0 |     | 32607   MB | 10de      | 0          |
+|     |                                  |        |     |            | 2b85      | dc902398.. |
+|     |                                  |        |     |            | 1         |            |
+|---------------------------------------------------------------------------------------------|
+| 1   | AMD Ryzen 9 9950X3D 16-Core Pr.. |        |     | 22004   MB | 1002      | 0          |
+|     |                                  |        |     |            | 13c0      | 00000000.. |
+|     |                                  |        |     |            | 73        |            |
+|=============================================================================================|
+| OS: 24.04.5 LTS (Noble Numbat) ubuntu, Version: 24.04.5, Kernel: 7.0.0-31-generic
+| Processor: AMD Ryzen 9 9950X3D 16-Core Processor
+| Cores: 16 | Logical Cores: 32
+|---------------------------------------------------------------------------------------------|
+| Total Memory (MB): 61918 | Free Memory: 38680
+| Total Page/Swap (MB): 8191 | Free Page/Swap: 619
+|---------------------------------------------------------------------------------------------|
+2026-10-20T15:33:15Z [815ms] [Warning] [omni.rtx] IOMMU is enabled.
+2026-10-20T15:33:15Z [1,297ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-20T15:33:15Z [1,297ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-20T15:33:15Z [1,333ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-20T15:33:15Z [1,333ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-20T15:33:15Z [1,336ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-20T15:33:15Z [1,336ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-20T15:33:15Z [1,545ms] [Warning] [omni.log] Source: omni.hydra was already registered.
+2026-10-20T15:33:16Z [2,426ms] [Warning] [pxr.Semantics] pxr.Semantics is deprecated - please use Semantics instead
+2026-10-20T15:33:16Z [2,476ms] [Warning] [omni.replicator.core.scripts.extension] No material configuration file, adding configuration to material settings directly.
+2026-10-20T15:33:24Z [10,214ms] [Warning] [rtx.hydra] RenderDelegate : Warning /rtx/hydra/readTransformsFromFabricInRenderDelegate and geometry streaming are enabled together but this can cause issues with dynamic objects not streaming correctly due to problems in the transform update.
+[ISAACLAB] AppLauncher initialization complete
+2026-10-20T15:34:22Z [68,200ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 5101
+	Physics step-size     : 0.008333333333333333
+	Rendering step-size   : 0.05
+	Environment step-size : 0.05
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Registered backend 'physx' for factory RigidObject.
+[INFO]: Registered backend 'physx' for factory ContactSensor.
+[INFO]: Physics scene prim path: /physicsScene
+[INFO]: Time taken for scene creation Last: 1.356439 s, Mean: 1.356439 s, Std: 0.000000 s, N: 1
+[INFO]: Scene manager:  <class InteractiveScene>
+	Number of environments: 64
+	Environment spacing   : 1.0
+	Source prim name      : /World/envs/env_0
+	Global prim paths     : ['/World/ground']
+	Replicate physics     : False
+[INFO]: Starting the simulation. This may take a few seconds. Please wait...
+2026-10-20T15:34:23Z [69,605ms] [Error] [omni.physx.plugin] PhysX error: PxgCudaDeviceMemoryAllocator failed to allocate memory 134217728 bytes! Result = 2, FILE /builds/omniverse/physics/physx/source/gpucommon/src/PxgCudaMemoryAllocator.cpp, LINE 164
+2026-10-20T15:34:23Z [69,605ms] [Error] [omni.physx.plugin] PhysX error: GPU Create Stream fail!!
+, FILE /builds/omniverse/physics/physx/source/gpusolver/src/PxgTGSCudaSolverCore.cpp, LINE 120
+2026-10-20T15:34:23Z [69,605ms] [Error] [omni.physx.plugin] PhysX error: GPU Create Stream fail!!
+, FILE /builds/omniverse/physics/physx/source/gpusolver/src/PxgTGSCudaSolverCore.cpp, LINE 124
+2026-10-20T15:34:24Z [69,848ms] [Error] [omni.physx.plugin] PhysX error: Unable to create scene., FILE /builds/omniverse/physics/physx/source/physx/src/NpPhysics.cpp, LINE 423
+2026-10-20T15:34:24Z [69,848ms] [Warning] [omni.physx.plugin] Not enough GPU memory available to create a PhysicsScene, falling back to CPU simulation.
+2026-10-20T15:34:24Z [69,941ms] [Error] [omni.physx.plugin] PhysX error: PxgCudaDeviceMemoryAllocator failed to allocate memory 134217728 bytes! Result = 2, FILE /builds/omniverse/physics/physx/source/gpucommon/src/PxgCudaMemoryAllocator.cpp, LINE 164
+2026-10-20T15:34:24Z [69,941ms] [Error] [omni.physx.plugin] PhysX error: GPU Create Stream fail!!
+, FILE /builds/omniverse/physics/physx/source/gpusolver/src/PxgTGSCudaSolverCore.cpp, LINE 120
+2026-10-20T15:34:24Z [69,941ms] [Error] [omni.physx.plugin] PhysX error: GPU Create Stream fail!!
+, FILE /builds/omniverse/physics/physx/source/gpusolver/src/PxgTGSCudaSolverCore.cpp, LINE 124
+2026-10-20T15:34:24Z [70,187ms] [Error] [omni.physx.plugin] PhysX error: Unable to create scene., FILE /builds/omniverse/physics/physx/source/physx/src/NpPhysics.cpp, LINE 423
+2026-10-20T15:34:24Z [70,187ms] [Warning] [omni.physx.plugin] Not enough GPU memory available to create a PhysicsScene, falling back to CPU simulation.
+2026-10-20T15:34:24Z [70,394ms] [Warning] [omni.usd] Encountered USD Warnings but USD Diagnostics are currently muted. To view USD Warnings, please set the '/persistent/app/usd/muteUsdDiagnostics' setting to false in Preferences page.
+2026-10-20T15:34:24Z [70,544ms] [Error] [omni.physx.plugin] PhysX error: Scene state is corrupted. Simulation cannot continue!, FILE /builds/omniverse/physics/physx/source/physx/src/NpScene.cpp, LINE 2912
+2026-10-20T15:34:24Z [70,552ms] [Error] [omni.physx.plugin] PhysX error: Scene state is corrupted. Simulation cannot continue!, FILE /builds/omniverse/physics/physx/source/physx/src/NpScene.cpp, LINE 2912
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Pattern '/World/envs/env_*/Robot/Geometry' did not match any articulations
+
+2026-10-20T15:34:24Z [70,567ms] [Error] [omni.physx.tensors.plugin] Provided pattern list did not match any articulations
+
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Pattern '/World/envs/env_*/Robot/Geometry' did not match any articulations
+
+2026-10-20T15:34:24Z [70,703ms] [Error] [omni.physx.tensors.plugin] Provided pattern list did not match any articulations
+
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Pattern '/World/envs/env_*/Robot/Geometry' did not match any articulations
+
+2026-10-20T15:34:25Z [70,744ms] [Error] [omni.physx.tensors.plugin] Provided pattern list did not match any articulations
+
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Articulation is not in a scene!
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Pattern '/World/envs/env_*/Robot/Geometry' did not match any articulations
+
+2026-10-20T15:34:25Z [70,759ms] [Error] [omni.physx.tensors.plugin] Provided pattern list did not match any articulations
+
+[INFO]: Time taken for simulation start Last: 1.195354 s, Mean: 1.195354 s, Std: 0.000000 s, N: 1
+2026-10-20T15:34:28Z [74,102ms] [Warning] [omni.usd] Unexpected reference count of 2 for UsdStage 'anon:0x2e808ca0:World0.usd' while being closed in UsdContext (this may indicate it is still resident in memory).
+[INFO]: SimulationContext cleared
+Traceback (most recent call last):
+  File "/home/descfly/linkagent-ppo/script/train_roto2_pressure.py", line 332, in main
+    env = gym.make(task_id, cfg=cfg, render_mode="rgb_array" if (args.record_video or args.calibration_video) else None)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/lib/python3.12/site-packages/gymnasium/envs/registration.py", line 734, in make
+    env = env_creator(**env_spec_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/descfly/linkagent-ppo/simulation/roto2_pressure/env.py", line 47, in __init__
+    super().__init__(cfg, render_mode=render_mode, **kwargs)
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/envs/direct_rl_env.py", line 120, in __init__
+    self._init_sim(render_mode, **kwargs)
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/envs/direct_rl_env.py", line 206, in _init_sim
+    self.sim.reset()
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/sim/simulation_context.py", line 720, in reset
+    self.physics_manager.reset(soft)
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_physx/isaaclab_physx/physics/physx_manager.py", line 326, in reset
+    cls.raise_callback_exception_if_any()
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_physx/isaaclab_physx/physics/physx_manager.py", line 473, in raise_callback_exception_if_any
+    raise exc
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/physics/physics_manager.py", line 406, in safe_callback_invoke
+    fn(*args)
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/assets/asset_base.py", line 364, in _invoke
+    getattr(obj_ref, callback_name)(event)
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab/isaaclab/assets/asset_base.py", line 404, in _initialize_callback
+    self._initialize_impl()
+  File "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/source/isaaclab_physx/isaaclab_physx/assets/articulation/articulation.py", line 3802, in _initialize_impl
+    raise RuntimeError(f"Failed to create articulation at: {root_prim_path_expr}. Please check PhysX logs.")
+RuntimeError: Failed to create articulation at: /World/envs/env_*/Robot/Geometry. Please check PhysX logs.

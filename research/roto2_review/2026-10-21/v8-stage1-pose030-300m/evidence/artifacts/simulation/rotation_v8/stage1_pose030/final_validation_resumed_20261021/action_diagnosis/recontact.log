@@ -1,0 +1,104 @@
+{
+  "diagnostic_only": true,
+  "final_training_result": true,
+  "seed": 6101,
+  "source_sha256": {
+    "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/action_trace_seed6101.npz": "e3b609d893fd42fe823c865d102bf611de516883038e2284176fba35412b9e16",
+    "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/final_seed6101.json": "db46115a95b9b84e87ae26a05dd6c47a362134dcfeae5a10aaeb340a3ce68459",
+    "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/final_seed6101.npz": "f0eca4e88d3763287fd36a25f845e144a05474068a275b3263f1523254574cd5"
+  },
+  "episodes": 64,
+  "safe_full_turn_successes": 0,
+  "raw_full_turns": 0,
+  "physical_failures": 10,
+  "mean_total_degrees": 214.6720463916712,
+  "mean_after10s_degrees": 37.4719471641969,
+  "max_total_degrees": 331.47882660149804,
+  "max_after10s_degrees": 147.47057640165715,
+  "policy_std": 0.07119831442832947,
+  "pad_flags_recomputed_exactly": true,
+  "approach_quality_max_recomputation_error": 3.933906555175781e-06,
+  "late_motion_reward_max_recomputation_error": 9.551644325256348e-06,
+  "late": {
+    "denominator": "Active, nonterminal environment steps with post-step time strictly >10s; joint values are pre-action.",
+    "environment_steps": 15290,
+    "near_limit_joint_fraction_20mrad": 0.3041939175931982,
+    "mean_effective_pad_count": 0.010595160235448006,
+    "per_finger_effective_contact_fraction": [
+      0.0015042511445389143,
+      0.002812295618051014,
+      0.004381948986265533,
+      0.0,
+      0.0018966644865925442
+    ],
+    "mean_approach_quality": 0.25598132610321045,
+    "mean_best_three_approach_quality": 0.4236787259578705,
+    "median_center_displacement_mm": 30.375476837158203,
+    "unsupported_environment_steps": 11093,
+    "unsupported_steps_with_center_displacement_at_least25mm": 10813,
+    "per_finger_mean_surface_gap_mm": [
+      29.579769134521484,
+      15.224424362182617,
+      14.700509071350098,
+      46.48207092285156,
+      10.97829818725586
+    ],
+    "per_finger_mean_normal_alignment": [
+      0.6294829845428467,
+      0.6175367832183838,
+      0.8355518579483032,
+      0.5407245755195618,
+      0.3216019868850708
+    ]
+  },
+  "limitations": [
+    "Single training seed; diagnosis supplements but does not replace independent acceptance.",
+    "Only five distal links are measured; absent distal contact does not imply absent palm/proximal support.",
+    "Geometric approach quality is not actual contact and is not a success metric.",
+    "Mean gap and alignment aggregate trajectories; they do not prove a feasible recontact action."
+  ],
+  "late_motion_credit_categories": {
+    "eligible": {
+      "environment_steps": 3605,
+      "net_degrees_per_initial_episode": 21.006256103515625,
+      "positive_degrees_per_initial_episode": 25.927715301513672,
+      "rotation_reward_per_initial_episode": 5.649961471557617
+    },
+    "valid_path_without_support": {
+      "environment_steps": 10013,
+      "net_degrees_per_initial_episode": 11.822566986083984,
+      "positive_degrees_per_initial_episode": 16.527339935302734,
+      "rotation_reward_per_initial_episode": -1.6422712802886963
+    },
+    "invalid_path": {
+      "environment_steps": 1672,
+      "net_degrees_per_initial_episode": 4.764868259429932,
+      "positive_degrees_per_initial_episode": 7.045638561248779,
+      "rotation_reward_per_initial_episode": -0.7961393594741821
+    }
+  },
+  "early1to5s_reward_terms_per_initial_episode": {
+    "term_rotation": 36.394142150878906,
+    "term_pose_deviation_normalized": -2.1467981338500977,
+    "term_mechanical_power": -0.017064528539776802,
+    "term_pad_bonus": 0.002843750175088644,
+    "term_linear_speed": -0.12638014554977417,
+    "term_centering": -0.12423966825008392,
+    "term_tilt": -0.07709446549415588,
+    "term_action_smoothness": -0.038075029850006104,
+    "term_time": -0.3999999761581421,
+    "term_invalid_rotation_path": -0.05937500298023224
+  },
+  "late10to24s_reward_terms_per_initial_episode": {
+    "term_rotation": 3.1505143642425537,
+    "term_pose_deviation_normalized": -2.8217687606811523,
+    "term_mechanical_power": -0.031027618795633316,
+    "term_pad_bonus": 0.0025312500074505806,
+    "term_linear_speed": -0.1653445065021515,
+    "term_centering": -1.751666784286499,
+    "term_tilt": -0.7209438681602478,
+    "term_action_smoothness": -0.12048693001270294,
+    "term_time": -1.1991405487060547,
+    "term_invalid_rotation_path": -5.259375095367432
+  }
+}

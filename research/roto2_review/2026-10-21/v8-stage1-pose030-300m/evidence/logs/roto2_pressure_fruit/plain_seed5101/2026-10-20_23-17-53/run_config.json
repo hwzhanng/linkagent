@@ -1,0 +1,64 @@
+{
+  "seed": 5101,
+  "num_envs": 2,
+  "num_eval_envs": 1,
+  "million_steps": 100.0,
+  "pressure_variant": "plain",
+  "physics_dt": 0.008333333333333333,
+  "decimation": 6,
+  "reward_version": "pose_stable_v8_baseline",
+  "reward_stage": "baseline",
+  "baseline_pose_weight": 0.3,
+  "goal_direction": "positive",
+  "target_angular_speed_rad_s": [
+    0.3,
+    0.5
+  ],
+  "domain_profile": "nominal",
+  "hand_posture": "palm_up",
+  "hand_mount_position": [
+    0.0,
+    0.0,
+    0.9
+  ],
+  "hand_mount_quaternion_xyzw": [
+    0.0,
+    -0.7071067811865476,
+    0.0,
+    0.7071067811865476
+  ],
+  "exploration_std_override": null,
+  "entropy_loss_scale_effective": 0.05,
+  "rollout_steps_effective": 32,
+  "learning_epochs": 8,
+  "mini_batches": 4,
+  "reset_joint_noise_rad": 0.0,
+  "reset_position_noise_m": 0.0,
+  "reset_grasps_file": "/home/descfly/linkagent-ppo/simulation/roto2_pressure/reset_grasps_v8_validated256.json",
+  "reset_grasps_sha256": "d667c5bb3d8442133460886ce35e086b53bfe73d89c8dabb08f3b015890243c8",
+  "reset_grasp_selection": "uniform_per_reset",
+  "resumed_from": null,
+  "prior_training_transitions": 0,
+  "prior_ppo_updates": 0,
+  "fruit_axes_m": [
+    [
+      0.03200000151991844,
+      0.03200000151991844,
+      0.03200000151991844
+    ],
+    [
+      0.03200000151991844,
+      0.03200000151991844,
+      0.03200000151991844
+    ]
+  ],
+  "fruit_mass_kg": [
+    [
+      0.13861429691314697
+    ],
+    [
+      0.11712262034416199
+    ]
+  ],
+  "upstream_ppo": "multimodal_rl@4ac55e854b4c732534d443715a0322d4220b461c"
+}

@@ -1,0 +1,129 @@
+{
+  "implemented_in_training": false,
+  "offline_scale_check_only": true,
+  "proposal_version": 2,
+  "source": "artifacts/simulation/rotation_v8/stage1_pose030/milestone_200000000/action_trace_seed5101.npz",
+  "source_sha256": "673a3faa815044cf402a121a6661835152a21cce962836dd1f8e50b0bda83a35",
+  "formula": "-weight * mean(1 - topK(existing_pad_approach_quality)); compare K=3 and K=4",
+  "quality_definition": "1 - clip(norm(pad_center_world + normal_world * local_fruit_radius - fruit_center_world)/0.06, max=3)",
+  "provisional_first_weight_if_full_run_fails": 0.025,
+  "provisional_first_pad_count_if_full_run_fails": 4,
+  "selection_reason": "Top3 provides no incentive to recover a fourth near pad. Top4 softly encourages the redundant fourth contact while leaving any three-pad support and temporary release legal. This is a design choice, not demonstrated learning success.",
+  "not_a_paper_formula": true,
+  "episodes": 64,
+  "dt": 0.05,
+  "late_nonterminal_environment_steps": 16043,
+  "late_selection_frequency_thumb_index_middle_ring_little_by_pad_count": {
+    "3": [
+      0.5394876270024309,
+      0.7055413576014461,
+      0.9402854827650688,
+      0.1380041139437761,
+      0.6766814186872779
+    ],
+    "4": [
+      0.8371252259552453,
+      0.9362962039518793,
+      0.9967587109642835,
+      0.26005111263479397,
+      0.969768746493798
+    ]
+  },
+  "ideal_release_checks_at_weight0025": {
+    "3": {
+      "four_ideal_one_distant": -0.0,
+      "release_one_leaves_three_ideal": -0.0,
+      "two_ideal_three_distant": -0.025,
+      "all_finite_and_no_forbidden_action": true
+    },
+    "4": {
+      "four_ideal_one_distant": -0.0,
+      "release_one_leaves_three_ideal": -0.018750000000000003,
+      "two_ideal_three_distant": -0.037500000000000006,
+      "all_finite_and_no_forbidden_action": true
+    }
+  },
+  "finger_permutation_invariant": true,
+  "top3_four_to_three_ideal_quality1_pads_has_no_extra_candidate_cost": true,
+  "two_near_pads_remains_finite_cost": true,
+  "rows": [
+    {
+      "pad_count": 3,
+      "weight": 0.025,
+      "theoretical_per_step_range": [
+        -0.07500000000000001,
+        0
+      ],
+      "mean_late_per_active_nonterminal_step": -0.013945269398391247,
+      "late_sum_per_initial_episode_excluding_terminal_steps": -3.4956870079040527,
+      "whole_sum_per_initial_episode_excluding_terminal_steps": -5.736456394195557
+    },
+    {
+      "pad_count": 3,
+      "weight": 0.05,
+      "theoretical_per_step_range": [
+        -0.15000000000000002,
+        0
+      ],
+      "mean_late_per_active_nonterminal_step": -0.027890538796782494,
+      "late_sum_per_initial_episode_excluding_terminal_steps": -6.9913740158081055,
+      "whole_sum_per_initial_episode_excluding_terminal_steps": -11.472912788391113
+    },
+    {
+      "pad_count": 3,
+      "weight": 0.1,
+      "theoretical_per_step_range": [
+        -0.30000000000000004,
+        0
+      ],
+      "mean_late_per_active_nonterminal_step": -0.05578107759356499,
+      "late_sum_per_initial_episode_excluding_terminal_steps": -13.982748031616211,
+      "whole_sum_per_initial_episode_excluding_terminal_steps": -22.945825576782227
+    },
+    {
+      "pad_count": 4,
+      "weight": 0.025,
+      "theoretical_per_step_range": [
+        -0.07500000000000001,
+        0
+      ],
+      "mean_late_per_active_nonterminal_step": -0.015695206820964813,
+      "late_sum_per_initial_episode_excluding_terminal_steps": -3.934347152709961,
+      "whole_sum_per_initial_episode_excluding_terminal_steps": -6.509620189666748
+    },
+    {
+      "pad_count": 4,
+      "weight": 0.05,
+      "theoretical_per_step_range": [
+        -0.15000000000000002,
+        0
+      ],
+      "mean_late_per_active_nonterminal_step": -0.031390413641929626,
+      "late_sum_per_initial_episode_excluding_terminal_steps": -7.868694305419922,
+      "whole_sum_per_initial_episode_excluding_terminal_steps": -13.019240379333496
+    },
+    {
+      "pad_count": 4,
+      "weight": 0.1,
+      "theoretical_per_step_range": [
+        -0.30000000000000004,
+        0
+      ],
+      "mean_late_per_active_nonterminal_step": -0.06278082728385925,
+      "late_sum_per_initial_episode_excluding_terminal_steps": -15.737388610839844,
+      "whole_sum_per_initial_episode_excluding_terminal_steps": -26.038480758666992
+    }
+  ],
+  "limitations": [
+    "These are costs on an existing fixed trajectory, not counterfactual policy performance or learning evidence.",
+    "Nonpositive shaping avoids an added positive standing-contact bonus but does not exclude a stationary local optimum.",
+    "A soft topK cost does not prove feasible recontact, a learned gait, or a complete revolution.",
+    "The top3 zero-extra-cost release check uses ideal equal-quality pads. Top4 pays a finite release cost, and real unequal qualities also change the cost.",
+    "Existing stability, physical failure, pressure and final success gates must not be relaxed to make this candidate pass.",
+    "No actor inputs, core network, PPO, actuator mapping, sensor geometry or current recipe are changed."
+  ],
+  "primary_sources_rechecked": [
+    "https://arxiv.org/html/2303.10880v4#S4.SS1.SSS3",
+    "https://arxiv.org/html/2405.07391v2#S3.SS1"
+  ]
+}
