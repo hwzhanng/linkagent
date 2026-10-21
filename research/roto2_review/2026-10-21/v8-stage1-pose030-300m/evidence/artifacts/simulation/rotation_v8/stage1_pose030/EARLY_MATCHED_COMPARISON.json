@@ -1,0 +1,61 @@
+{
+  "same_initial_object_poses": true,
+  "same_fresh_seed49_network_optimizer_and_scaler_initial_states": true,
+  "rows": [
+    {
+      "pose_weight": 0.01,
+      "samples": 31338608,
+      "evaluation_seed": 5101,
+      "episodes": 64,
+      "mean_total_degrees": 97.92127132415771,
+      "mean_after10s_degrees": -0.08782777396501557,
+      "full_turn_successes": 0,
+      "physical_failures": 5,
+      "late_near_limit_joint_fraction": 0.7279146545042628,
+      "late_mean_effective_pad_count": 0.026173016156918857,
+      "survivor_median_final_displacement_mm": 18.171138763427734,
+      "reward_terms_per_initial_episode": {
+        "rotation": 22.611766815185547,
+        "pose_deviation_normalized": -0.4474799633026123,
+        "mechanical_power": -0.07258792966604233,
+        "pad_bonus": 0.020593751221895218,
+        "linear_speed": -0.3400251567363739,
+        "centering": -1.1691937446594238,
+        "tilt": -1.0674407482147217,
+        "action_smoothness": -0.11376292258501053,
+        "time": -2.2835936546325684,
+        "invalid_rotation_path": -0.8125
+      },
+      "policy_std": 0.4445180892944336
+    },
+    {
+      "pose_weight": 0.3,
+      "samples": 31338608,
+      "evaluation_seed": 5101,
+      "episodes": 64,
+      "mean_total_degrees": 84.50790345668793,
+      "mean_after10s_degrees": 1.992777753008864,
+      "full_turn_successes": 0,
+      "physical_failures": 0,
+      "late_near_limit_joint_fraction": 0.41857997976618705,
+      "late_mean_effective_pad_count": 0.021919964028776977,
+      "survivor_median_final_displacement_mm": 20.643264770507812,
+      "reward_terms_per_initial_episode": {
+        "rotation": 18.72068977355957,
+        "pose_deviation_normalized": -6.461460113525391,
+        "mechanical_power": -0.07523038983345032,
+        "pad_bonus": 0.02760937437415123,
+        "linear_speed": -0.3418044447898865,
+        "centering": -1.2353601455688477,
+        "tilt": -1.0148355960845947,
+        "action_smoothness": -0.14978721737861633,
+        "time": -2.3899998664855957,
+        "invalid_rotation_path": 0.0
+      },
+      "policy_std": 0.42967739701271057
+    }
+  ],
+  "interpretation": "One early matched training-seed/checkpoint comparison, not independent training replications or final gate. The pose030 trial has fewer failures and less late joint-limit occupancy, but no full turns and no improved late effective-pad count. It does not yet demonstrate contact recovery or sustained rotation.",
+  "contact_and_joint_denominator": "Active nonterminal environment steps after10s; joint fraction divides by16 joints.",
+  "reward_denominator": "64 initial episodes, nonterminal shaping terms; excludes separate physical failure cost."
+}

@@ -1,0 +1,42 @@
+{
+  "reviewed_utc": "2026-10-21T03:13:02.617783+00:00",
+  "method": "Actual inspection of start/middle/end frames from both real-time PhysX videos, plus complete decoded-video and pose-trace verification from pipeline. Not a claim that every video frame was manually viewed.",
+  "frame_count": 6,
+  "rows": [
+    {
+      "label": "median",
+      "env": 1,
+      "video": "artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/final_seed6101_median_env1.mp4",
+      "sha256": "d746088ee2f5d43a3e63472d0828936d5ab0f6f1acf0436263303087735c6b13",
+      "net_degrees": 286.0966803078175,
+      "after10s_net_degrees": 30.51204237121126,
+      "support_fraction": 0.36325678496868474,
+      "failed": false,
+      "viewed_frames": {
+        "median_start.png": "66ba22d37b6346d7ac06ccb83d862a7bbf9dd82aade3f14babefe631fd5b5998",
+        "median_middle.png": "d5a02b43d29ef600e71ba761bf44ee023dbe790c060ac2c1610534e6bd7f7a17",
+        "median_end.png": "ac260ce7406e62c649a8b9205fd9483d6bd2eab85c80d92e23f66d423beedbd0"
+      },
+      "visual_observation": "Object orientation visibly changes during the first segment; several fingers open away from the object. From13s to24s the heading barely advances; no repeated finger exchange or full turn is demonstrated."
+    },
+    {
+      "label": "best",
+      "env": 20,
+      "video": "artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/final_seed6101_best_env20.mp4",
+      "sha256": "8aaebdbb5e209cbf947ae49a9568d2f1b1e039890cd7e220aab575095f16748a",
+      "net_degrees": 282.7575009332686,
+      "after10s_net_degrees": 147.47057640165715,
+      "support_fraction": 0.9373695198329853,
+      "failed": false,
+      "viewed_frames": {
+        "best_middle.png": "a1d6c45f34186d4e846b1650f83c5883ec7bab787b41c348fe2cf0e0c2718066",
+        "best_end.png": "8a3be85e9f0123c43e86d32fa509411bfc3f875b7c3483b6f5410fa1d763abb1",
+        "best_start.png": "d1cb625c1597c3bc2fcaa1d6b02f91c651f84307f18f0897794b3ca25845b7e4"
+      },
+      "visual_observation": "Visible object reorientation continues into the second half, but several distal pads remain away from the object. This selected late-progress episode remains below one full turn; stable-object support must not be interpreted as effective sensor-pad contact."
+    }
+  ],
+  "visual_review_completed": true,
+  "stage1_accepted": false,
+  "conclusion": "Some real rotation and improved late motion, but no full revolution and no reliable sustained finger-exchange gait. Numerical stage1 gate failed for both seeds."
+}

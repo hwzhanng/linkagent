@@ -1,0 +1,94 @@
+{
+  "status": "completed",
+  "run": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/plain_seed49/2026-10-21_10-46-58",
+  "commands": [
+    {
+      "command": [
+        "bash",
+        "simulation/.runtime/run_roto2.sh",
+        "evaluate",
+        "--num-envs",
+        "64",
+        "--seed",
+        "6101",
+        "--pressure-variant",
+        "plain",
+        "--domain-profile",
+        "nominal",
+        "--hand-posture",
+        "palm_up",
+        "--reward-stage",
+        "baseline",
+        "--goal-direction",
+        "positive",
+        "--baseline-pose-weight",
+        "0.3",
+        "--baseline-approach-weight",
+        "0.0",
+        "--baseline-approach-pad-count",
+        "4",
+        "--reset-grasps",
+        "/home/descfly/linkagent-ppo/simulation/roto2_pressure/reset_grasps_v8_validated256.json",
+        "--evaluate-checkpoint",
+        "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/plain_seed49/2026-10-21_10-46-58/checkpoints/final_agent.pt",
+        "--trace-policy-output",
+        "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/action_trace_seed6101.json"
+      ],
+      "log": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/trace.log",
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python",
+        "-m",
+        "script.audit_roto2_terminal_causes",
+        "--trace",
+        "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/action_trace_seed6101.json",
+        "--output",
+        "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/TERMINAL_CAUSES.json"
+      ],
+      "log": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/terminal_audit.log",
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python",
+        "-m",
+        "script.summarize_roto2_recontact",
+        "--folder",
+        "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis",
+        "--seed",
+        "6101",
+        "--trace",
+        "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/action_trace_seed6101.npz",
+        "--evaluation",
+        "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/final_seed6101.json",
+        "--final-training-result"
+      ],
+      "log": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/recontact.log",
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/home/descfly/linkagent-ppo/simulation/.runtime/IsaacLab-3.0.0-beta2.patch1/env_isaaclab/bin/python",
+        "-m",
+        "script.plot_roto2_policy_diagnostic",
+        "--evaluation",
+        "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/final_seed6101.json",
+        "--trace",
+        "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/action_trace_seed6101.json",
+        "--output",
+        "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/diagnostic.png",
+        "--final-training-result",
+        "--label",
+        "Pose0.30 final300M, independent seed6101"
+      ],
+      "log": "/home/descfly/linkagent-ppo/artifacts/simulation/rotation_v8/stage1_pose030/final_validation_resumed_20261021/action_diagnosis/plot.log",
+      "returncode": 0
+    }
+  ],
+  "updated_utc": "2026-10-21T03:13:02.319740+00:00",
+  "checkpoint_sha256": "0f4bea7109bf6bdb9feeaf085aa7b959731eb7f422fc83f5249f60b6b5cd868f",
+  "visual_review_pending": false,
+  "plot_visually_reviewed": true
+}

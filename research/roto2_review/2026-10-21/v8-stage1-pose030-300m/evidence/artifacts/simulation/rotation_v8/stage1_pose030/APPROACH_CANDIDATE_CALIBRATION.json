@@ -1,0 +1,67 @@
+{
+  "implemented_in_training": false,
+  "offline_scale_check_only": true,
+  "source": "artifacts/simulation/rotation_v8/stage1_pose030/milestone_100000000/action_trace_seed5101.npz",
+  "source_sha256": "1dd21175f903e29cb7795b83e9ccf9ad2cbc448b7a920b05b268812f3b5317af",
+  "formula": "-weight * mean(1 - top3(existing_pad_approach_quality))",
+  "quality_definition": "1 - clip(norm(pad_center_world + normal_world * local_fruit_radius - fruit_center_world)/0.06, max=3)",
+  "provisional_first_weight_if_full_run_fails": 0.025,
+  "not_a_paper_formula": true,
+  "episodes": 64,
+  "dt": 0.05,
+  "late_nonterminal_environment_steps": 15193,
+  "late_top3_selection_frequency_thumb_index_middle_ring_little": [
+    0.48746133087606136,
+    0.805107615349174,
+    0.8944250641742908,
+    0.2824326992694004,
+    0.5305732903310735
+  ],
+  "finger_permutation_invariant": true,
+  "four_to_three_ideal_quality1_pads_has_no_extra_candidate_cost": true,
+  "two_near_pads_remains_finite_cost": true,
+  "rows": [
+    {
+      "weight": 0.025,
+      "theoretical_per_step_range": [
+        -0.07500000000000001,
+        0
+      ],
+      "mean_late_per_active_nonterminal_step": -0.013539530336856842,
+      "late_sum_per_initial_episode_excluding_terminal_steps": -3.2141573429107666,
+      "whole_sum_per_initial_episode_excluding_terminal_steps": -5.762701988220215
+    },
+    {
+      "weight": 0.05,
+      "theoretical_per_step_range": [
+        -0.15000000000000002,
+        0
+      ],
+      "mean_late_per_active_nonterminal_step": -0.027079060673713684,
+      "late_sum_per_initial_episode_excluding_terminal_steps": -6.428314685821533,
+      "whole_sum_per_initial_episode_excluding_terminal_steps": -11.52540397644043
+    },
+    {
+      "weight": 0.1,
+      "theoretical_per_step_range": [
+        -0.30000000000000004,
+        0
+      ],
+      "mean_late_per_active_nonterminal_step": -0.05415812134742737,
+      "late_sum_per_initial_episode_excluding_terminal_steps": -12.856629371643066,
+      "whole_sum_per_initial_episode_excluding_terminal_steps": -23.05080795288086
+    }
+  ],
+  "limitations": [
+    "These are costs on an existing fixed trajectory, not counterfactual policy performance or learning evidence.",
+    "Nonpositive shaping avoids an added positive standing-contact bonus but does not exclude a stationary local optimum.",
+    "A soft top3 cost does not prove feasible recontact, a learned gait, or a complete revolution.",
+    "The zero-extra-cost release check uses ideal equal-quality pads. Releasing a better pad among unequal qualities may increase the soft cost.",
+    "Existing stability, physical failure, pressure and final success gates must not be relaxed to make this candidate pass.",
+    "No actor inputs, core network, PPO, actuator mapping, sensor geometry or current recipe are changed."
+  ],
+  "primary_sources_rechecked": [
+    "https://arxiv.org/html/2303.10880v4#S4.SS1.SSS3",
+    "https://arxiv.org/html/2405.07391v2#S3.SS1"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "checkpoint": "/home/descfly/linkagent-ppo/logs/roto2_pressure_fruit/plain_seed49/2026-10-21_10-46-58/checkpoints/final_agent.pt",
+  "episodes": 64,
+  "dt": 0.05,
+  "failure_thresholds": {
+    "maximum_fruit_center_displacement_m": 0.105,
+    "maximum_contact_force_n": 8.0,
+    "maximum_pressure_proxy_pa": 18000.0,
+    "overpressure_termination_steps": 3,
+    "minimum_world_z_m": 0.78
+  },
+  "discount": 0.99,
+  "mean_undiscounted_return": 23.090662002563477,
+  "mean_discounted_return": 20.538511144734876,
+  "near_limit_fraction_by_joint": {
+    "thumb_joint2": 0.9132159062488835,
+    "index_joint1": 0.2695701882882561,
+    "middle_joint1": 0.0008932080460180785,
+    "ring_joint1": 0.020758154989460147,
+    "little_joint1": 0.07217121011826075,
+    "thumb_joint0": 0.10679195398192147,
+    "index_joint0": 0.3384543927971703,
+    "middle_joint0": 0.32841473435992713,
+    "ring_joint0": 0.23519954267748044,
+    "little_joint0": 0.8805959484083032,
+    "thumb_joint1": 0.7887741612776448,
+    "thumb_joint3": 0.6888777734109829,
+    "index_joint2": 0.023223409196470042,
+    "middle_joint2": 0.022723212690699917,
+    "ring_joint2": 0.06309621637071706,
+    "little_joint2": 0.009396548644110186
+  },
+  "policy_std": 0.07119831442832947,
+  "geometry_trace_note": "World-frame tip positions and native xyzw quaternions. Approach quality, peak pressure, maximum distal contact force, pad flags and fruit pose come from pre-reset step snapshots. Exclude done steps for raw tip, force and contact-position buffers, which automatic resets may replace. Joint and target arrays are pre-action."
+}

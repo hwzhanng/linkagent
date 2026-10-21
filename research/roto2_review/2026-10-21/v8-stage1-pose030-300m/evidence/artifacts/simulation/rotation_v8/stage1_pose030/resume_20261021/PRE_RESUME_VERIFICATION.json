@@ -1,0 +1,39 @@
+{
+  "reward_random_cases": 256,
+  "pose_weights_checked": [
+    0.01,
+    0.3
+  ],
+  "zero_approach_weight_bitwise_equal_to_previous_code": true,
+  "nonzero_only_adds_one_nonpositive_term": true,
+  "protected_functions_ast_unchanged": {
+    "simulation/roto2_pressure/env.py:_get_dones": true,
+    "simulation/roto2_pressure/env.py:_get_observations": true,
+    "simulation/roto2_pressure/env.py:_pre_physics_step": true,
+    "simulation/roto2_pressure/env.py:_apply_action": true,
+    "script/train_roto2_pressure.py:build_roto2_training": true
+  },
+  "checkpoint_sha256": "9595c81c67f465a5ecc8bfb0ee4afaff08f2278b89e9f526d2d943fd11b96fcd",
+  "all_checkpoint_tensors_finite": true,
+  "resumed_recipe": {
+    "baseline_pose_weight": 0.3,
+    "baseline_approach_weight": 0.0,
+    "baseline_approach_pad_count": 4
+  },
+  "remaining_transitions": 68929888,
+  "core_network_or_PPO_architecture_changed": false,
+  "optional_reward_real_physx_smoke": {
+    "passed": true,
+    "returncode": 0,
+    "environments": 2,
+    "steps": 20,
+    "approach_weight": 0.025,
+    "approach_pad_count": 4,
+    "actor_inputs": [
+      70,
+      432
+    ],
+    "log": "optional_reward_smoke.log",
+    "not_a_training_or_success_claim": true
+  }
+}
