@@ -27,24 +27,37 @@ def write(p, data):
 
 
 def main():
+    global BASE, OUT, UPLOAD, TAG
     import numpy as np
     import torch
     from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
 
     p = argparse.ArgumentParser()
     p.add_argument("--final-run", type=Path, required=True)
+    p.add_argument("--evidence-root", type=Path)
+    p.add_argument("--validation-dir", type=Path)
+    p.add_argument("--review-dir", type=Path)
+    p.add_argument("--upload-dir", type=Path)
+    p.add_argument("--release-tag")
+    p.add_argument("--run-list", type=Path, help="JSON array of exact run directories for this cohort")
     a = p.parse_args()
+    BASE = a.evidence_root.resolve() if a.evidence_root else BASE
+    OUT = a.review_dir.resolve() if a.review_dir else OUT
+    UPLOAD = a.upload_dir.resolve() if a.upload_dir else UPLOAD
+    TAG = a.release_tag or TAG
+    validation = a.validation_dir.resolve() if a.validation_dir else BASE / "final_validation"
+    assert not (UPLOAD / (TAG + "-evidence.tar.gz")).exists(), "Never overwrite an immutable evidence archive"
     run = a.final_run.resolve()
     result = json.loads((run / "training_result.json").read_text())
     assert result["training_completed"] and result["finite_parameters"]
     assert result["cumulative_training_transitions"] >= 299_000_000
-    pipeline = json.loads((BASE / "final_validation/VALIDATION_PIPELINE.json").read_text())
+    pipeline = json.loads((validation / "VALIDATION_PIPELINE.json").read_text())
     assert pipeline["status"] == "completed_pending_visual_review"
     packaged_at = datetime.now(timezone.utc)
     # Include diagnostics explicitly run after the automatic video pipeline.
     cutoff = packaged_at.astimezone(
         ZoneInfo("Asia/Shanghai")).strftime("%Y-%m-%d_%H-%M-%S")
-    gate = json.loads((BASE / "final_validation/QUANTITATIVE_GATE.json").read_text())
+    gate = json.loads((validation / "QUANTITATIVE_GATE.json").read_text())
     assert gate["visual_review_pending"] is False, "Actual visual review must precede delivery"
     spec = importlib.util.spec_from_file_location("previous_packager", ROOT / "script/package_roto2_review.py")
     old = importlib.util.module_from_spec(spec)
@@ -54,12 +67,15 @@ def main():
     # Exact known stage1 cohort. Other project jobs and their data are excluded.
     roots = [BASE]
     log_root = ROOT / "logs/roto2_pressure_fruit"
-    run_dirs = []
-    for seed in (49, 5101, 6101, 6102):
-        for directory in sorted((log_root / f"plain_seed{seed}").glob("*")):
-            if directory.is_dir() and "2026-10-20_20-53-18" <= directory.name <= cutoff:
-                run_dirs.append(directory)
-                roots.append(directory)
+    if a.run_list:
+        run_dirs = sorted({Path(path).resolve() for path in json.loads(a.run_list.read_text())})
+        assert all(d.is_dir() and d.is_relative_to(log_root) for d in run_dirs)
+    else:
+        run_dirs = [directory
+                    for seed in (49, 5101, 6101, 6102)
+                    for directory in sorted((log_root / f"plain_seed{seed}").glob("*"))
+                    if directory.is_dir() and "2026-10-20_20-53-18" <= directory.name <= cutoff]
+    roots.extend(run_dirs)
     assert run in run_dirs
     files = sorted({f for root in roots for f in root.rglob("*")
                     if f.is_file() and "__pycache__" not in f.parts})
@@ -72,6 +88,8 @@ def main():
             "script/train_roto2_pressure.py", "script/validate_roto2_stage1_run.py",
             "script/snapshot_roto2_milestones.py", "script/plot_roto2_policy_diagnostic.py",
             "script/package_roto2_stage1_review.py",
+            "script/audit_roto2_terminal_causes.py", "script/diagnose_roto2_final_run.py",
+            "script/summarize_roto2_recontact.py", "script/calibrate_roto2_approach_candidate.py",
             "script/probe_roto2_shifted_grasp_ik.py",
             "simulation/.runtime/setup/search_grasp.py"]]))
     scan = old.security_check(files + sources)
