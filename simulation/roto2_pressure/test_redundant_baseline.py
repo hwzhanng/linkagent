@@ -31,4 +31,34 @@ def test_contract():
                           run(qp=large,lim=lim)[1]['pose_deviation_normalized'])
     print('PASS: no-thumb support, stable release, airborne rejection, motion dominance, reverse loop, normalized joints')
 
-if __name__=='__main__':test_contract()
+def test_approach_contract():
+    z = torch.zeros(1); q = torch.zeros(1, 16)
+    yes = torch.ones(1, dtype=torch.bool)
+    limits = torch.stack((q, q + 1), -1)
+    def run(pads, quality, delta=.02, displacement=.03, weight=.025):
+        return baseline_reward(z + delta, z + .4, torch.tensor([pads]),
+            z + displacement, z, z, z, q, q, limits, q, q, q, q,
+            yes, yes, .05, pose_weight=.3,
+            approach_quality=torch.tensor([quality]), approach_weight=weight,
+            approach_pad_count=4)
+    full = run([1., 1., 1., 1., 0.], [1., 1., 1., 1., -2.])
+    for released in range(4):
+        pads = [1., 1., 1., 1., 0.]; pads[released] = 0.
+        quality = [1., 1., 1., 1., -2.]; quality[released] = -2.
+        moving, terms, support = run(pads, quality)
+        assert support.all()  # Three contacts suffice even outside stable-center criteria.
+        assert torch.equal(terms['rotation'], full[1]['rotation'])
+        assert torch.allclose(terms['pad_approach_recovery'], z - .01875)
+        stationary = run(pads, quality, delta=0.)[0]
+        assert stationary <= 0 and moving > stationary
+    # Even two-pad release remains legal under the existing stable-object path.
+    two = run([0., 1., 1., 0., 0.], [-2., 1., 1., -2., -2.], displacement=0.)
+    assert two[2].all() and two[1]['rotation'] > 0
+    # Off means no dependence on the candidate geometry, not merely a small cost.
+    off = run([1., 1., 1., 1., 0.], [float('nan')] * 5, weight=0.)
+    assert torch.isfinite(off[0]).all() and 'pad_approach_recovery' not in off[1]
+    print('PASS: soft fourth-pad recovery permits release, preserves support and rotation, off ignores geometry')
+
+if __name__=='__main__':
+    test_contract()
+    test_approach_contract()

@@ -360,7 +360,10 @@ class FruitRotationEnv(DirectRLEnv):
                 self._robot.data.joint_vel.torch[:, self._active_ids],
                 self._robot.data.applied_torque.torch[:, self._active_ids],
                 self._action, self._previous_action, safe_path, ready, dt,
-                pose_weight=self.cfg.baseline_pose_weight)
+                pose_weight=self.cfg.baseline_pose_weight,
+                approach_quality=approach,
+                approach_weight=self.cfg.baseline_approach_weight,
+                approach_pad_count=self.cfg.baseline_approach_pad_count)
         elif self.cfg.reward_stage == "continuous":
             ready = self.episode_length_buf > round(1.0 / dt)
             self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))
@@ -420,6 +423,7 @@ class FruitRotationEnv(DirectRLEnv):
             "curriculum_milestones_paid": self._milestones_paid.detach().clone(),
             "pressure_risk": pressure_risk((self._dense / PRESSURE_REF_PA).clamp(0, 4)).detach().clone(),
             "peak_pressure_pa": self._dense.amax(-1).detach().clone(),
+            "maximum_distal_contact_force_n": self._forces[:, :5].amax(-1).detach().clone(),
             "unwrapped_rotation_rad": self._angle.detach().clone(),
             "secure_support": secure_support.detach().clone(),
             "legacy_thumb_support": ((self._pad_forces[:, 0] > .15)

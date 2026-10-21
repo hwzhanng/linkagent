@@ -153,6 +153,9 @@ def main(argv=None):
     parser.add_argument("--reward-stage", choices=("contact", "rotation", "regrasp", "spin", "continuous", "baseline"), default="rotation")
     parser.add_argument("--baseline-pose-weight", type=float, default=.01,
                         help="Normalized grasp-deviation cost; task reward only")
+    parser.add_argument("--baseline-approach-weight", type=float, default=0.,
+                        help="Optional continuous pad recovery cost; task reward only")
+    parser.add_argument("--baseline-approach-pad-count", type=int, choices=(3, 4), default=4)
     parser.add_argument("--goal-direction", choices=("both", "positive", "negative"), default="both")
     parser.add_argument("--smoke", action="store_true",
                         help="Run 20 actual PhysX steps before spending GPU time")
@@ -277,6 +280,10 @@ def main(argv=None):
         if not math.isfinite(args.baseline_pose_weight) or args.baseline_pose_weight < 0:
             raise ValueError("--baseline-pose-weight must be finite and nonnegative")
         cfg.baseline_pose_weight = args.baseline_pose_weight
+        if not math.isfinite(args.baseline_approach_weight) or args.baseline_approach_weight < 0:
+            raise ValueError("--baseline-approach-weight must be finite and nonnegative")
+        cfg.baseline_approach_weight = args.baseline_approach_weight
+        cfg.baseline_approach_pad_count = args.baseline_approach_pad_count
         cfg.goal_direction = args.goal_direction
         cfg.diagnostic_all_finger_contacts = (
             args.validate_redundant_reset or args.probe_reset_replay or args.calibration_whole_finger_sensors
@@ -450,6 +457,8 @@ def main(argv=None):
             "physics_dt": cfg.sim.dt, "decimation": cfg.decimation,
             "reward_version": REWARD_VERSION, "reward_stage": cfg.reward_stage,
             "baseline_pose_weight": cfg.baseline_pose_weight,
+            "baseline_approach_weight": cfg.baseline_approach_weight,
+            "baseline_approach_pad_count": cfg.baseline_approach_pad_count,
             "goal_direction": cfg.goal_direction,
             "target_angular_speed_rad_s": cfg.target_angular_speed_rad_s,
             "domain_profile": cfg.domain_profile,

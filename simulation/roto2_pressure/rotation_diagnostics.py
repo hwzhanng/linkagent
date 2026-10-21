@@ -19,7 +19,7 @@ def trace_policy(trainer, wrapped, checkpoint, output):
     pending = torch.ones(raw.num_envs,device=raw.device,dtype=torch.bool)
     data = {k:[] for k in ('joint','target','action','reward','active','done','pad','pose','forces','contact_local',
                            'tip_position_w','tip_quaternion_xyzw','approach_quality',
-                           'peak_pressure_pa','terminated','truncated')}
+                           'peak_pressure_pa','maximum_distal_contact_force_n','terminated','truncated')}
     term_data = {}
     from .core import quat_inv_rotate
     limits=raw._active_limits.cpu().numpy().copy()
@@ -49,6 +49,8 @@ def trace_policy(trainer, wrapped, checkpoint, output):
         data['tip_quaternion_xyzw'].append(tip_quat.cpu().numpy().copy())
         data['approach_quality'].append(e['pad_approach_quality'].cpu().numpy().copy())
         data['peak_pressure_pa'].append(e['peak_pressure_pa'].cpu().numpy().copy())
+        data['maximum_distal_contact_force_n'].append(
+            e['maximum_distal_contact_force_n'].cpu().numpy().copy())
         local=quat_inv_rotate(raw._wxyz(raw._robot.data.body_quat_w.torch[:,ids]),
                               raw._contact_positions[:,:5]-raw._robot.data.body_pos_w.torch[:,ids])
         data['contact_local'].append(local.cpu().numpy().copy())
@@ -69,7 +71,7 @@ def trace_policy(trainer, wrapped, checkpoint, output):
             'mean_discounted_return':float((rewards*discount[:,None]).sum(0).mean()),
             'near_limit_fraction_by_joint':dict(zip(ACTIVE_JOINTS,near_fraction.tolist())),
             'policy_std':float(agent.policy.log_std_parameter.exp().mean()),
-            'geometry_trace_note':'World-frame tip positions and native xyzw quaternions. Approach quality, peak pressure, pad flags and fruit pose come from pre-reset step snapshots. Exclude done steps for raw tip, force and contact-position buffers, which automatic resets may replace. Joint and target arrays are pre-action.'}
+            'geometry_trace_note':'World-frame tip positions and native xyzw quaternions. Approach quality, peak pressure, maximum distal contact force, pad flags and fruit pose come from pre-reset step snapshots. Exclude done steps for raw tip, force and contact-position buffers, which automatic resets may replace. Joint and target arrays are pre-action.'}
     output.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2),flush=True)
 
 

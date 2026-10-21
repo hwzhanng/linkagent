@@ -158,6 +158,8 @@ def evaluate_checkpoint(trainer, wrapped, checkpoint: Path, output: Path):
         "episodes": n,
         "reward_version": reward_version(raw.cfg.reward_stage), "evaluation_reward_stage": raw.cfg.reward_stage,
         "baseline_pose_weight": raw.cfg.baseline_pose_weight,
+        "baseline_approach_weight": raw.cfg.baseline_approach_weight,
+        "baseline_approach_pad_count": raw.cfg.baseline_approach_pad_count,
         "domain_profile": raw.cfg.domain_profile,
         "hand_posture": raw.cfg.hand_posture,
         "goal_direction": raw.cfg.goal_direction,

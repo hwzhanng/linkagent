@@ -77,6 +77,8 @@ def main():
                   "--domain-profile", cfg["domain_profile"], "--hand-posture", cfg["hand_posture"],
                   "--reward-stage", "baseline", "--goal-direction", cfg["goal_direction"],
                   "--baseline-pose-weight", str(cfg.get("baseline_pose_weight", .01)),
+                  "--baseline-approach-weight", str(cfg.get("baseline_approach_weight", 0.)),
+                  "--baseline-approach-pad-count", str(cfg.get("baseline_approach_pad_count", 4)),
                   "--reset-grasps", str(library), "--evaluate-checkpoint", str(checkpoint)]
         commands = []
 

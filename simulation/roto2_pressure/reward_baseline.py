@@ -18,7 +18,8 @@ def support_masks(pad_forces, displacement, speed, height_drop, tilt):
 def baseline_reward(delta, goal, pad_forces, displacement, speed, height_drop,
                     tilt, joint_pos, reference_pos, joint_limits, joint_velocity,
                     applied_torque, actions, previous_actions, valid, ready, dt,
-                    pose_weight=.01):
+                    pose_weight=.01, approach_quality=None, approach_weight=0.,
+                    approach_pad_count=4):
     support, three_pad, stable = support_masks(pad_forces, displacement, speed, height_drop, tilt)
     directed_speed = goal.sign() * delta / dt
     # Positive cap only: a fast reverse cannot erase its cost through clipping.
@@ -37,4 +38,11 @@ def baseline_reward(delta, goal, pad_forces, displacement, speed, height_drop,
         'time': torch.full_like(delta, -.005),
         'invalid_rotation_path': -.20*(ready & ~valid).float(),
     }
+    if approach_weight:
+        if approach_quality is None:
+            raise ValueError("Nonzero approach weight requires actual pad geometry")
+        # A soft recovery cost, never a support/action gate. Four near pads
+        # encourage redundancy; releasing one still leaves three-pad support.
+        closest = approach_quality.topk(approach_pad_count, dim=-1).values
+        terms['pad_approach_recovery'] = -approach_weight * (1 - closest).mean(-1)
     return sum(terms.values()), terms, support

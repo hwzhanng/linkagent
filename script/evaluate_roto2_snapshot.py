@@ -52,6 +52,8 @@ def main():
                   "--hand-posture", cfg["hand_posture"],
                   "--reward-stage", cfg["reward_stage"],
                   "--baseline-pose-weight", str(cfg.get("baseline_pose_weight", .01)),
+                  "--baseline-approach-weight", str(cfg.get("baseline_approach_weight", 0.)),
+                  "--baseline-approach-pad-count", str(cfg.get("baseline_approach_pad_count", 4)),
                   "--goal-direction", cfg["goal_direction"],
                   "--reset-grasps", cfg["reset_grasps_file"],
                   "--evaluate-checkpoint", str(checkpoint)]
