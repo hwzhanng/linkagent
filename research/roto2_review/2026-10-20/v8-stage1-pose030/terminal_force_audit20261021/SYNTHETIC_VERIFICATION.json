@@ -1,0 +1,95 @@
+{
+  "failure_predicates_match_all_active_steps": true,
+  "episodes": 5,
+  "active_environment_steps": 18,
+  "physical_failures": 4,
+  "time_limit_events": 2,
+  "cause_counts_nonexclusive": {
+    "center_displacement": 2,
+    "distal_contact_force": 1,
+    "sustained_overpressure": 1,
+    "world_height": 1,
+    "nonfinite_position": 0
+  },
+  "thresholds": {
+    "maximum_fruit_center_displacement_m": 0.105,
+    "maximum_contact_force_n": 8.0,
+    "maximum_pressure_proxy_pa": 18000.0,
+    "overpressure_termination_steps": 3,
+    "minimum_world_z_m": 0.78
+  },
+  "per_episode": [
+    {
+      "env": 0,
+      "step": 2,
+      "time_s": 0.1,
+      "terminated": true,
+      "truncated": false,
+      "causes": [
+        "distal_contact_force"
+      ],
+      "center_displacement_m": 0.0,
+      "maximum_distal_contact_force_n": 8.1,
+      "peak_pressure_pa": 0.0,
+      "world_z_m": 0.9
+    },
+    {
+      "env": 1,
+      "step": 4,
+      "time_s": 0.2,
+      "terminated": true,
+      "truncated": false,
+      "causes": [
+        "center_displacement"
+      ],
+      "center_displacement_m": 0.106,
+      "maximum_distal_contact_force_n": 0.0,
+      "peak_pressure_pa": 0.0,
+      "world_z_m": 0.9
+    },
+    {
+      "env": 2,
+      "step": 4,
+      "time_s": 0.2,
+      "terminated": true,
+      "truncated": false,
+      "causes": [
+        "sustained_overpressure"
+      ],
+      "center_displacement_m": 0.0,
+      "maximum_distal_contact_force_n": 0.0,
+      "peak_pressure_pa": 18001.0,
+      "world_z_m": 0.9
+    },
+    {
+      "env": 3,
+      "step": 4,
+      "time_s": 0.2,
+      "terminated": true,
+      "truncated": true,
+      "causes": [
+        "center_displacement",
+        "world_height"
+      ],
+      "center_displacement_m": 0.13,
+      "maximum_distal_contact_force_n": 0.0,
+      "peak_pressure_pa": 0.0,
+      "world_z_m": 0.77
+    },
+    {
+      "env": 4,
+      "step": 4,
+      "time_s": 0.2,
+      "terminated": false,
+      "truncated": true,
+      "causes": [],
+      "center_displacement_m": 0.0,
+      "maximum_distal_contact_force_n": 0.0,
+      "peak_pressure_pa": 18001.0,
+      "world_z_m": 0.9
+    }
+  ],
+  "scope": "First episodes only; overlapping failure causes retained. Raw post-reset contact buffers are not used.",
+  "synthetic_test": true,
+  "corrupt_trace_rejected": true
+}

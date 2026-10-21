@@ -19,10 +19,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--folder", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=5101)
+    parser.add_argument("--evaluation", type=Path, help="Existing evaluation JSON, including final_seed files")
+    parser.add_argument("--trace", type=Path, help="Action trace NPZ")
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--final-training-result", action="store_true")
     args = parser.parse_args()
     folder = args.folder
-    trace_path = folder / f"action_trace_seed{args.seed}.npz"
-    evaluation_path = folder / f"evaluation_seed{args.seed}.json"
+    trace_path = args.trace or folder / f"action_trace_seed{args.seed}.npz"
+    evaluation_path = args.evaluation or folder / f"evaluation_seed{args.seed}.json"
     trace = np.load(trace_path)
     evaluation = json.loads(evaluation_path.read_text())
     evaluation_npz_path = evaluation_path.with_suffix(".npz")
@@ -79,6 +83,7 @@ def main():
     assert motion_error < 1e-3, motion_error
     result = {
         "diagnostic_only": True,
+        "final_training_result": args.final_training_result,
         "seed": args.seed,
         "source_sha256": {str(trace_path): sha256(trace_path),
                           str(evaluation_path): sha256(evaluation_path),
@@ -110,7 +115,8 @@ def main():
             "per_finger_mean_normal_alignment": alignment[geometry_late].mean(0).tolist(),
         },
         "limitations": [
-            "Single training seed and intermediate checkpoint; not a final gate.",
+            ("Single training seed; diagnosis supplements but does not replace independent acceptance."
+             if args.final_training_result else "Single training seed and intermediate checkpoint; not a final gate."),
             "Only five distal links are measured; absent distal contact does not imply absent palm/proximal support.",
             "Geometric approach quality is not actual contact and is not a success metric.",
             "Mean gap and alignment aggregate trajectories; they do not prove a feasible recontact action.",
@@ -135,7 +141,7 @@ def main():
             key: float((trace[key] * window).sum() / len(episodes))
             for key in trace.files if key.startswith("term_")
         }
-    out = folder / "RECONTACT_DIAGNOSIS.json"
+    out = args.output or folder / "RECONTACT_DIAGNOSIS.json"
     out.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))
 

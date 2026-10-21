@@ -67,6 +67,13 @@ def trace_policy(trainer, wrapped, checkpoint, output):
                         fruit_axes_m=fruit_axes_m,
                         **{'term_'+k:np.array(v) for k,v in term_data.items()})
     result={'checkpoint':str(checkpoint),'episodes':raw.num_envs,'dt':raw.step_dt,
+            'failure_thresholds': {
+                'maximum_fruit_center_displacement_m': raw.cfg.maximum_fruit_center_displacement_m,
+                'maximum_contact_force_n': raw.cfg.maximum_contact_force_n,
+                'maximum_pressure_proxy_pa': raw.cfg.maximum_pressure_proxy_pa,
+                'overpressure_termination_steps': raw.cfg.overpressure_termination_steps,
+                'minimum_world_z_m': .78,
+            },
             'discount':.99,'mean_undiscounted_return':float(rewards.sum(0).mean()),
             'mean_discounted_return':float((rewards*discount[:,None]).sum(0).mean()),
             'near_limit_fraction_by_joint':dict(zip(ACTIVE_JOINTS,near_fraction.tolist())),
