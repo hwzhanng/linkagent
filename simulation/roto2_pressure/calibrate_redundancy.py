@@ -91,7 +91,7 @@ def step_physics(raw, target):
 
 @torch.no_grad()
 def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, region="broad", replicas=1,
-                           replica_layout="distributed", margin_weight=0.0):
+                           replica_layout="distributed", margin_weight=0.0, reserve_weight=0.0):
     """16 CEM islands, broad grasp/fruit-center exploration; retain diverse proposals."""
     raw = env.unwrapped; n = raw.num_envs; device = raw.device; output = Path(output)
     if n % 16 or n < 256: raise ValueError('Search needs >=256 environments, multiple of 16')
@@ -104,14 +104,30 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
         raise ValueError("Unknown replica layout")
     if not 0 <= margin_weight <= 20:
         raise ValueError("Search-only margin weight must be in [0,20]")
+    if not 0 <= reserve_weight <= 40:
+        raise ValueError("Search-only joint reserve weight must be in [0,40]")
     seeds = list(raw._reset_grasps)
     root = Path(__file__).resolve().parents[2]
     historical = root/'simulation/.runtime/setup/palm_up/reset_candidates.json'
     if historical.exists(): seeds.extend(json.loads(historical.read_text()))
     seed_rows = torch.tensor([s['joint_positions']+s['fruit_position_hand'] for s in seeds], device=device)
     means = seed_rows[torch.arange(16, device=device) % len(seed_rows)].clone()
+    preload = torch.zeros(16,16,device=device)
+    if reserve_weight:
+        # Cover distinct input configurations rather than the first 16 nearby rows.
+        norm = torch.cat((raw._active_limits[0,:,1]-raw._active_limits[0,:,0],
+                          torch.full((3,), .05, device=device)))
+        chosen = [0]
+        for _ in range(15):
+            distance = torch.cdist(seed_rows/norm, seed_rows[chosen]/norm).amin(1)
+            distance[chosen] = -1
+            chosen.append(int(distance.argmax()))
+        means = seed_rows[chosen].clone()
+        preload = torch.tensor([seeds[i].get('joint_targets',seeds[i]['joint_positions'])
+                                for i in chosen],device=device)-means[:,:16]
+        preload = preload.clamp(-raw.cfg.maximum_joint_target_lead_rad,raw.cfg.maximum_joint_target_lead_rad)
     # Separate islands explore towards palm and ulnar side; no asset change.
-    if spread >= .08 and region == "broad":
+    if spread >= .08 and region == "broad" and not reserve_weight:
         means[4:8, 16] -= .018; means[4:8, 18] -= .025
         means[8:12, 17] -= .018; means[8:12, 18] -= .015
         means[12:, 17] += .018; means[12:, 18] -= .035
@@ -127,6 +143,8 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
     floor = sigma * .15
     best_vectors = means.clone()
     best_scores = torch.full((16,), -float('inf'), device=device)
+    reserve_joints = [[ACTIVE_JOINTS.index(f'{f}_joint{j}')
+                       for j in ((1,2,3) if f=='thumb' else (1,2))] for f in FINGERS]
     per = unique//16; elite = max(4, per//8); archive = []; started = time.monotonic()
     for iteration in range(rounds):
         x = means[:, None] + torch.randn(16, per, 19, device=device)*sigma[:, None]
@@ -143,12 +161,23 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
         flat = torch.empty(n, 19, device=device)
         flat[replica_env_ids] = x.reshape(unique, 1, 19).expand(-1, replicas, -1)
         rows = flat.cpu().tolist(); raw._reset_grasps = rows_to_grasps(rows, f's{raw.cfg.seed}_r{iteration}')
-        env.reset(); target = flat[:, :16].clone()
+        if reserve_weight:
+            preload_unique = preload[:,None,:].expand(-1,per,-1).reshape(unique,16)
+            target_all = flat[:,:16].clone()
+            target_all[replica_env_ids] += preload_unique[:,None,:]
+            target_all = target_all.clamp(limits[:,0],limits[:,1])
+            for ci, ids_rep in enumerate(replica_env_ids.cpu().tolist()):
+                yaw = (ci % 12)*math.pi/6
+                for ei in ids_rep:
+                    raw._reset_grasps[ei]['fruit_quaternion_xyzw'] = [0,0,math.sin(yaw/2),math.cos(yaw/2)]
+                    raw._reset_grasps[ei]['joint_targets'] = target_all[ei].cpu().tolist()
+        env.reset(); target = raw._q_target.clone() if reserve_weight else flat[:, :16].clone()
         alive = torch.ones(n, device=device, dtype=torch.bool)
         count_sum = torch.zeros(n, device=device); four = count_sum.clone(); five = count_sum.clone()
         stable_sum = count_sum.clone(); approach_sum = count_sum.clone(); pad_sum = torch.zeros(n, 5, device=device)
         margin_sum = count_sum.clone(); margin_credit = count_sum.clone(); palm_sum = count_sum.clone()
         pressure_max = count_sum.clone(); measured = 0
+        reserve_sum = count_sum.clone()
         for t in range(horizon):
             d = step_physics(raw, target); alive &= ~d['failed']
             if t < 20: continue  # settling cannot earn contact credit
@@ -164,9 +193,17 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
                 d['pose'][:, :3], raw._wxyz(d['pose'][:, 3:]), raw._axes_m)
             approach_sum += approach.mean(-1) * alive
             pressure_max = torch.maximum(pressure_max, d['peak_pressure'])
+            if reserve_weight:
+                q = raw._robot.data.joint_pos.torch[:,raw._active_ids]
+                travel = torch.minimum(q-limits[:,0], limits[:,1]-q).clamp_min(0)
+                finger_reserve = torch.stack([travel[:,ids].amin(-1) for ids in reserve_joints],dim=-1)
+                # Only actual contacting pads contribute. Abduction limits are not
+                # penalized; all active flexion/opposition axes need travel.
+                credit = ((finger_reserve/.12).clamp(0,1)*pads).topk(4,dim=-1).values.mean(-1)
+                reserve_sum += credit*ok
         # No thumb privilege; four/five contacts receive the dominant credit.
         score_env = (40*four + 20*five + 3*count_sum + 4*stable_sum + 2*approach_sum
-                     + margin_weight*margin_credit)/measured - 20*(~alive)
+                     + margin_weight*margin_credit + reserve_weight*reserve_sum)/measured - 20*(~alive)
         score = score_env[replica_env_ids].amin(1)
         scores = score.reshape(16, per); ids = scores.topk(elite, dim=1).indices
         current_best, best_ids = scores.max(1)
@@ -205,6 +242,7 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
                        replica_layout=replica_layout,
                        four_pad_boundary_margin_mean_m=float(margin_sum[rs].min()/measured),
                        palm_force_mean_n=float(palm_sum[rs].mean()/measured),
+                       active_contact_joint_reserve_credit=float(reserve_sum[rs].min()/measured),
                        replica_four_pad_fractions=(four[rs]/measured).cpu().tolist())
             archive.append(row)
         archive.sort(key=lambda r:r['score'], reverse=True)
@@ -222,6 +260,7 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
                             replica_env_ids=replica_env_ids.cpu().numpy(),
                             four_pad_margin_mean_m=(margin_sum/measured).cpu().numpy(),
                             palm_force_mean_n=(palm_sum/measured).cpu().numpy(),
+                            active_contact_joint_reserve_credit=(reserve_sum/measured).cpu().numpy(),
                             four_pad_fraction=(four/measured).cpu().numpy(),
                             five_pad_fraction=(five/measured).cpu().numpy(),
                             stable_fraction=(stable_sum/measured).cpu().numpy(),
@@ -240,6 +279,8 @@ def search_redundant_resets(env, output, rounds=32, horizon=80, spread=.12, regi
                       unique_candidate_proposals=(iteration+1)*unique, replicas=replicas,
                       replica_layout=replica_layout,
                       margin_weight=margin_weight,
+                      reserve_weight=reserve_weight,
+                      best_active_contact_joint_reserve_credit=archive[0]['active_contact_joint_reserve_credit'],
                       best_four_pad_boundary_margin_mean_m=archive[0]["four_pad_boundary_margin_mean_m"],
                       best_score=archive[0]['score'], best_four_pad_fraction=archive[0]['four_pad_fraction'],
                       best_per_finger=archive[0]['per_finger_pad_fraction'],

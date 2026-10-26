@@ -19,6 +19,9 @@ def trace_policy(trainer, wrapped, checkpoint, output):
     pending = torch.ones(raw.num_envs,device=raw.device,dtype=torch.bool)
     data = {k:[] for k in ('joint','target','action','reward','active','done','pad','pose','forces','contact_local',
                            'tip_position_w','tip_quaternion_xyzw','approach_quality',
+                           'pad_quality','pad_forces_n','distal_forces_n',
+                           'correction_support_pre','jacobian_ready_pre','sparse_pressure_pre',
+                           'sparse_mask_pre','jacobian_accepted','executed_action',
                            'peak_pressure_pa','maximum_distal_contact_force_n','terminated','truncated')}
     term_data = {}
     from .core import quat_inv_rotate
@@ -33,13 +36,21 @@ def trace_policy(trainer, wrapped, checkpoint, output):
         data['target'].append(raw._q_target.cpu().numpy().copy())
         data['action'].append(action.cpu().numpy().copy())
         data['active'].append(pending.cpu().numpy().copy())
+        data['correction_support_pre'].append(raw._pressure_correction_support().cpu().numpy().copy())
+        data['jacobian_ready_pre'].append(raw._track.ready.cpu().numpy().copy())
+        data['sparse_pressure_pre'].append(raw._sparse.cpu().numpy().copy())
+        data['sparse_mask_pre'].append(raw._panel_valid.repeat_interleave(4, dim=-1).cpu().numpy().copy())
         states,reward,term,trunc,info=wrapped.step(action)
         e=info['step'];done=(term|trunc).reshape(-1)
+        data['jacobian_accepted'].append(e['jacobian_accepted'].cpu().numpy().copy())
+        data['executed_action'].append(raw._executed.cpu().numpy().copy())
         data['reward'].append(reward.reshape(-1).cpu().numpy().copy())
         data['done'].append(done.cpu().numpy().copy())
         data['terminated'].append(term.reshape(-1).cpu().numpy().copy())
         data['truncated'].append(trunc.reshape(-1).cpu().numpy().copy())
         data['pad'].append(e['pad_contact'].cpu().numpy().copy())
+        for key in ('pad_quality', 'pad_forces_n', 'distal_forces_n'):
+            data[key].append(e[key].cpu().numpy().copy())
         data['pose'].append(e['fruit_pose_native'].cpu().numpy().copy())
         data['forces'].append(raw._forces[:,:5].cpu().numpy().copy())
         ids=raw._contact_body_ids[:5]
@@ -67,6 +78,15 @@ def trace_policy(trainer, wrapped, checkpoint, output):
                         fruit_axes_m=fruit_axes_m,
                         **{'term_'+k:np.array(v) for k,v in term_data.items()})
     result={'checkpoint':str(checkpoint),'episodes':raw.num_envs,'dt':raw.step_dt,
+            'pressure_variant':raw.cfg.pressure_variant,
+            'correction_trace_note':'Support, readiness, sparse pressure and mask are pre-action. Acceptance is a pre-reset step snapshot. Exclude done steps for executed_action, which auto-reset may replace. Readiness/acceptance are controller diagnostics, not evidence of actual pressure benefit.',
+            'baseline_motion_weight':raw.cfg.baseline_motion_weight,
+            'baseline_centering_weight':raw.cfg.baseline_centering_weight,
+            'baseline_failure_penalty':raw.cfg.baseline_failure_penalty,
+            'baseline_pad_quality_weight':raw.cfg.baseline_pad_quality_weight,
+            'baseline_offpad_weight':raw.cfg.baseline_offpad_weight,
+            'baseline_pressure_weight':raw.cfg.baseline_pressure_weight,
+            "baseline_contact_motion_floor": raw.cfg.baseline_contact_motion_floor,
             'failure_thresholds': {
                 'maximum_fruit_center_displacement_m': raw.cfg.maximum_fruit_center_displacement_m,
                 'maximum_contact_force_n': raw.cfg.maximum_contact_force_n,

@@ -360,3 +360,5 @@ PyYAML，加载器可选择性解析普通 YAML。
 完整开发契约见 [preview.md](./preview.md)，阶段目标、范围和逐项证据见
 [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)。两份文档均应在每轮实现后与代码
 和测试重新对齐。
+
+- [2026-10-26 完整实验、全部权重与跨电脑续接指南](research/roto2_handoff/2026-10-26/README.md)

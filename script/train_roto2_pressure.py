@@ -16,7 +16,7 @@ import traceback
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def build_roto2_training(env, cfg, agent_cfg, writer):
+def build_roto2_training(env, cfg, agent_cfg, writer, critic_reward_state="off"):
     """Minimal environment adapter/glue; delegate PPO entirely to 2026 library."""
     import copy
     import gymnasium as gym
@@ -39,6 +39,12 @@ def build_roto2_training(env, cfg, agent_cfg, writer):
             low=-np.inf, high=np.inf,
             shape=(value.shape[-1] * cfg.obs_stack,), dtype=np.float32,
         )
+    if critic_reward_state != "off":
+        from simulation.roto2_pressure.critic_reward_state import (
+            RewardStateObservation, RewardStateFrameStack, RewardStateEncoder,
+            ActorOnlyPolicy, with_reward_state,
+        )
+        gym_obs["gt"] = gym.spaces.Box(low=0., high=1., shape=(1,), dtype=np.float32)
     single_obs_space = gym.spaces.Dict({
         "policy": gym.spaces.Dict(gym_obs)
     })
@@ -51,8 +57,11 @@ def build_roto2_training(env, cfg, agent_cfg, writer):
         action_space,
         gym.vector.utils.batch_space(action_space, cfg.scene.num_envs),
     )
+    if critic_reward_state != "off":
+        env = RewardStateObservation(env)
     if cfg.obs_stack > 1:
-        env = FrameStack(env, obs_stack=cfg.obs_stack)
+        stack_class = RewardStateFrameStack if critic_reward_state != "off" else FrameStack
+        env = stack_class(env, obs_stack=cfg.obs_stack)
 
     class TaskAwareWrapper(IsaacLabWrapper):
         """Keep custom object/sensor reset consistent across evaluation episodes."""
@@ -76,6 +85,8 @@ def build_roto2_training(env, cfg, agent_cfg, writer):
             self._unwrapped._reset_idx(self.eval_env_ids)
             self._unwrapped.episode_length_buf[self.eval_env_ids] = 0
             new_obs = self._unwrapped.get_observations(env_ids=self.eval_env_ids)
+            if critic_reward_state != "off":
+                new_obs = with_reward_state(self._unwrapped, new_obs)
             if self.obs_stack > 1:
                 for key, frame_buffer in self._env.frames.items():
                     for index in range(len(frame_buffer)):
@@ -90,15 +101,24 @@ def build_roto2_training(env, cfg, agent_cfg, writer):
         env, cfg.num_eval_envs, obs_stack=cfg.obs_stack, debug=cfg.debug
     )
     observation_space = wrapped.observation_space["policy"]
-    encoder = Encoder(
-        observation_space, wrapped.action_space, cfg, agent_cfg,
+    actor_space = (gym.spaces.Dict({k: observation_space[k] for k in ("prop", "tactile")})
+                   if critic_reward_state != "off" else observation_space)
+    encoder_class = RewardStateEncoder if critic_reward_state != "off" else Encoder
+    encoder_kwargs = {"critic_mode": critic_reward_state} if critic_reward_state != "off" else {}
+    encoder = encoder_class(
+        actor_space, wrapped.action_space, cfg, agent_cfg,
         device=wrapped.device,
+        **encoder_kwargs,
     )
-    policy = GaussianPolicy(
-        z_dim=encoder.num_outputs,
-        observation_space=observation_space,
+    actor_latent_dim = getattr(encoder, "actor_latent_dim", encoder.num_outputs)
+    policy_class = ActorOnlyPolicy if critic_reward_state != "off" else GaussianPolicy
+    policy_kwargs = {"actor_latent_dim": actor_latent_dim} if critic_reward_state != "off" else {}
+    policy = policy_class(
+        z_dim=actor_latent_dim,
+        observation_space=actor_space,
         action_space=wrapped.action_space, device=wrapped.device,
         **agent_cfg["policy"],
+        **policy_kwargs,
     )
     value = DeterministicValue(
         z_dim=encoder.num_outputs,
@@ -146,8 +166,12 @@ def main(argv=None):
     parser.add_argument("--initial-action-std", type=float, default=None,
                         help="Fresh-run Gaussian exploration std; network/PPO are unchanged")
     parser.add_argument("--entropy-weight", type=float, default=None)
+    parser.add_argument("--resume-action-std", type=float, default=None,
+                        help="Explicitly reset exploration std and its Adam state on resume")
     parser.add_argument("--rollout-steps", type=int, default=None,
                         help="Override rollout length without changing upstream PPO")
+    parser.add_argument("--episode-length-seconds", type=float, default=None,
+                        help="Task horizon only; default24 preserves the original evaluation protocol")
     parser.add_argument("--domain-profile", choices=("full", "gentle", "nominal"), default="gentle")
     parser.add_argument("--hand-posture", choices=("vertical", "palm_up"), default="vertical")
     parser.add_argument("--reward-stage", choices=("contact", "rotation", "regrasp", "spin", "continuous", "baseline"), default="rotation")
@@ -156,6 +180,14 @@ def main(argv=None):
     parser.add_argument("--baseline-approach-weight", type=float, default=0.,
                         help="Optional continuous pad recovery cost; task reward only")
     parser.add_argument("--baseline-approach-pad-count", type=int, choices=(3, 4), default=4)
+    parser.add_argument("--baseline-motion-weight", type=float, default=1.)
+    parser.add_argument("--baseline-centering-weight", type=float, default=.02)
+    parser.add_argument("--baseline-failure-penalty", type=float, default=60.)
+    parser.add_argument("--baseline-pad-quality-weight", type=float, default=0.)
+    parser.add_argument("--baseline-offpad-weight", type=float, default=0.)
+    parser.add_argument("--baseline-pressure-weight", type=float, default=0.)
+    parser.add_argument("--baseline-contact-motion-floor", type=float, default=1.,
+                        help="Minimum positive motion-credit fraction without effective pad contacts; (0,1], default1 disables")
     parser.add_argument("--goal-direction", choices=("both", "positive", "negative"), default="both")
     parser.add_argument("--smoke", action="store_true",
                         help="Run 20 actual PhysX steps before spending GPU time")
@@ -181,6 +213,40 @@ def main(argv=None):
                         default="distributed")
     parser.add_argument("--calibration-margin-weight", type=float, default=0.0,
                         help="Search-only contact boundary margin credit; pad geometry remains unchanged")
+    parser.add_argument("--calibration-reserve-weight", type=float, default=0.0,
+                        help="Search-only active contacting joint travel credit; no PPO/core change")
+    parser.add_argument("--calibration-recontact-cycles", type=int, default=0,
+                        help="Additional repeated release/recontact test with --validate-redundant-reset")
+    parser.add_argument("--calibration-recovery-states", action="store_true",
+                        help="With --validate-redundant-reset, screen recovery states separately from N-1 anchors")
+    parser.add_argument("--calibration-thumb-recovery", action="store_true",
+                        help="With --validate-redundant-reset, diagnose bounded thumb recovery paths; no PPO")
+    parser.add_argument("--calibration-recovery-path-search", action="store_true",
+                        help="With --validate-redundant-reset, search physical thumb recontact paths; no PPO")
+    parser.add_argument("--calibration-cycle-search", action="store_true",
+                        help="Search physical multi-finger cycles for accumulating directed rotation; no PPO")
+    parser.add_argument("--calibration-cycle-particles", type=int, choices=(128,512), default=128)
+    parser.add_argument("--calibration-cycle-search-horizon", type=int, choices=(3,8), default=3)
+    parser.add_argument("--calibration-cycle-all-joints", action="store_true")
+    parser.add_argument("--calibration-cycle-contact-feasible-first", action="store_true")
+    parser.add_argument("--calibration-cycle-warm-start", type=Path, default=None)
+    parser.add_argument("--calibration-cycle-validate", type=Path, default=None)
+    parser.add_argument("--calibration-cycle-count", type=int, default=8)
+    parser.add_argument("--calibration-cycle-time-scale", type=float, choices=(1.,2.), default=1.)
+    parser.add_argument("--calibration-recovery-demonstrations", type=Path, default=None,
+                        help="Collect actual actor observations and successful physical recovery actions")
+    parser.add_argument("--calibration-recovery-policy", type=Path, default=None,
+                        help="Pure network recovery test from calibration states; no teacher actions")
+    parser.add_argument("--collect-policy-observations", type=Path, default=None,
+                        help="With --evaluate-checkpoint, collect early policy states for action preservation")
+    parser.add_argument("--collect-value-diagnostic", type=Path, default=None,
+                        help="Read-only full episodes: actual actor observations and pre-action simulator state")
+    parser.add_argument("--value-gradient-diagnostic", type=Path, default=None,
+                        help="Observe actual PPO value clipping and backward gradients without changing updates")
+    parser.add_argument("--critic-reward-state", choices=("off", "masked", "validity"), default="off",
+                        help="Opt-in single reward-state bit for critic only; matched masked control")
+    parser.add_argument("--calibration-recovery-path-validate", type=Path, default=None,
+                        help="With --validate-redundant-reset, replay searched recovery paths for three cycles")
     parser.add_argument("--probe-reset-replay", action="store_true",
                         help="Diagnostic matched reset-state ablation; no PPO")
     parser.add_argument("--calibration-whole-finger-sensors", action="store_true",
@@ -216,6 +282,10 @@ def main(argv=None):
         args.enable_cameras = True
     if args.initial_action_std is not None and (args.initial_action_std <= 0 or args.resume_checkpoint):
         parser.error("--initial-action-std must be positive and is for fresh runs only")
+    if args.resume_action_std is not None:
+        import math
+        if not args.resume_checkpoint or not math.isfinite(args.resume_action_std) or args.resume_action_std <= 0:
+            parser.error("--resume-action-std requires a resume checkpoint and a finite positive std")
     if args.entropy_weight is not None and args.entropy_weight < 0:
         parser.error("--entropy-weight must be non-negative")
     if args.rollout_steps is not None and args.rollout_steps < 2:
@@ -274,6 +344,11 @@ def main(argv=None):
         cfg = FruitRotationEnvCfg()
         cfg.scene.num_envs = args.num_envs
         cfg.seed = args.seed
+        if args.episode_length_seconds is not None:
+            import math
+            if not math.isfinite(args.episode_length_seconds) or not 24 <= args.episode_length_seconds <= 120:
+                raise ValueError('Task episode length must be finite and between24 and120 seconds')
+            cfg.episode_length_s = args.episode_length_seconds
         cfg.pressure_variant = args.pressure_variant
         cfg.reward_stage = args.reward_stage
         import math
@@ -284,6 +359,15 @@ def main(argv=None):
             raise ValueError("--baseline-approach-weight must be finite and nonnegative")
         cfg.baseline_approach_weight = args.baseline_approach_weight
         cfg.baseline_approach_pad_count = args.baseline_approach_pad_count
+        for name in ("baseline_motion_weight", "baseline_centering_weight", "baseline_failure_penalty",
+                     "baseline_pad_quality_weight", "baseline_offpad_weight", "baseline_pressure_weight"):
+            value = getattr(args, name)
+            if not math.isfinite(value) or value < 0:
+                raise ValueError(f"--{name.replace('_', '-')} must be finite and nonnegative")
+            setattr(cfg, name, value)
+        if not math.isfinite(args.baseline_contact_motion_floor) or not 0. < args.baseline_contact_motion_floor <= 1.:
+            raise ValueError("--baseline-contact-motion-floor must be finite and in (0,1]")
+        cfg.baseline_contact_motion_floor = args.baseline_contact_motion_floor
         cfg.goal_direction = args.goal_direction
         cfg.diagnostic_all_finger_contacts = (
             args.validate_redundant_reset or args.probe_reset_replay or args.calibration_whole_finger_sensors
@@ -353,7 +437,39 @@ def main(argv=None):
                 search_redundant_resets(env, args.probe_output, args.calibration_rounds,
                                        args.calibration_horizon, args.calibration_spread,
                                        args.calibration_region, args.calibration_replicas,
-                                       args.calibration_replica_layout, args.calibration_margin_weight)
+                                       args.calibration_replica_layout, args.calibration_margin_weight,
+                                       args.calibration_reserve_weight)
+            elif args.calibration_cycle_search:
+                from simulation.roto2_pressure.search_rotation_cycles import search_cycles
+                search_cycles(env,args.probe_output,args.calibration_rounds,args.calibration_cycle_particles,
+                              args.calibration_cycle_search_horizon,args.calibration_cycle_all_joints,
+                              args.calibration_cycle_warm_start,args.calibration_cycle_contact_feasible_first)
+            elif args.calibration_cycle_validate:
+                from simulation.roto2_pressure.search_rotation_cycles import validate_cycles
+                validate_cycles(env,args.probe_output,args.calibration_cycle_validate,args.calibration_cycle_count,
+                                args.calibration_cycle_time_scale)
+            elif args.calibration_recovery_policy:
+                from simulation.roto2_pressure.evaluate_recovery_policy import evaluate_recovery_policy
+                evaluate_recovery_policy(env,args.probe_output,args.calibration_recovery_policy,agent_cfg)
+            elif args.calibration_recovery_demonstrations:
+                from simulation.roto2_pressure.search_recovery_paths import collect_demonstrations
+                collect_demonstrations(env,args.probe_output,args.calibration_recovery_demonstrations)
+            elif args.calibration_recovery_path_search:
+                from simulation.roto2_pressure.search_recovery_paths import search_paths
+                search_paths(env, args.probe_output, args.calibration_rounds)
+            elif args.calibration_recovery_path_validate:
+                from simulation.roto2_pressure.search_recovery_paths import validate_paths
+                validate_paths(env, args.probe_output, args.calibration_recovery_path_validate,
+                               args.calibration_video, args.video_env_index)
+            elif args.calibration_thumb_recovery:
+                from simulation.roto2_pressure.calibrate_thumb_recovery import diagnose_thumb_recovery
+                diagnose_thumb_recovery(env, args.probe_output)
+            elif args.calibration_recovery_states:
+                from simulation.roto2_pressure.calibrate_curriculum import validate_recovery_states
+                validate_recovery_states(env, args.probe_output)
+            elif args.calibration_recontact_cycles:
+                from simulation.roto2_pressure.calibrate_cycles import validate_recontact_cycles
+                validate_recontact_cycles(env, args.probe_output, args.calibration_recontact_cycles)
             else:
                 validate_n_minus_one(env, args.probe_output, args.calibration_release_mode,
                                      args.calibration_video, args.video_env_index)
@@ -455,10 +571,18 @@ def main(argv=None):
             "seed": args.seed, "num_envs": args.num_envs, "num_eval_envs": cfg.num_eval_envs,
             "million_steps": args.million_steps, "pressure_variant": args.pressure_variant,
             "physics_dt": cfg.sim.dt, "decimation": cfg.decimation,
+            "episode_length_seconds": cfg.episode_length_s,
             "reward_version": REWARD_VERSION, "reward_stage": cfg.reward_stage,
             "baseline_pose_weight": cfg.baseline_pose_weight,
             "baseline_approach_weight": cfg.baseline_approach_weight,
             "baseline_approach_pad_count": cfg.baseline_approach_pad_count,
+            "baseline_motion_weight": cfg.baseline_motion_weight,
+            "baseline_centering_weight": cfg.baseline_centering_weight,
+            "baseline_failure_penalty": cfg.baseline_failure_penalty,
+            "baseline_pad_quality_weight": cfg.baseline_pad_quality_weight,
+            "baseline_offpad_weight": cfg.baseline_offpad_weight,
+            "baseline_pressure_weight": cfg.baseline_pressure_weight,
+            "baseline_contact_motion_floor": cfg.baseline_contact_motion_floor,
             "goal_direction": cfg.goal_direction,
             "target_angular_speed_rad_s": cfg.target_angular_speed_rad_s,
             "domain_profile": cfg.domain_profile,
@@ -466,6 +590,7 @@ def main(argv=None):
             "hand_mount_position": cfg.robot.init_state.pos,
             "hand_mount_quaternion_xyzw": cfg.robot.init_state.rot,
             "exploration_std_override": args.initial_action_std,
+            "resume_exploration_std_override": args.resume_action_std,
             "entropy_loss_scale_effective": agent_cfg["agent"]["entropy_loss_scale"],
             "rollout_steps_effective": agent_cfg["agent"]["rollouts"],
             "learning_epochs": agent_cfg["agent"]["learning_epochs"],
@@ -476,20 +601,40 @@ def main(argv=None):
             "reset_grasps_sha256": hashlib.sha256(reset_data).hexdigest(),
             "reset_grasp_selection": "uniform_per_reset" if cfg.randomize_reset_grasp else "env_id_modulo",
             "resumed_from": str(args.resume_checkpoint) if args.resume_checkpoint else None,
+            "critic_reward_state": args.critic_reward_state,
             "prior_training_transitions": writer.prior_transitions,
             "prior_ppo_updates": writer.prior_updates,
             "fruit_axes_m": env.unwrapped._axes_m.cpu().tolist(),
             "fruit_mass_kg": env.unwrapped._fruit.data.body_mass.torch.cpu().tolist(),
             "upstream_ppo": "multimodal_rl@4ac55e854b4c732534d443715a0322d4220b461c",
         }, indent=2) + "\n")
-        wrapped, trainer = build_roto2_training(env, cfg, agent_cfg, writer)
+        wrapped, trainer = build_roto2_training(env, cfg, agent_cfg, writer, args.critic_reward_state)
         writer.current_updates = lambda: trainer.rl_update
         trainer.headless = args.headless
         env = wrapped
         if args.resume_checkpoint is not None:
             if not args.resume_checkpoint.is_file():
                 raise FileNotFoundError(args.resume_checkpoint)
-            trainer.agent.load(str(args.resume_checkpoint))
+            if args.critic_reward_state != "off":
+                from simulation.roto2_pressure.critic_reward_state import load_reward_state_checkpoint
+                migration = load_reward_state_checkpoint(trainer.agent, args.resume_checkpoint)
+                (Path(writer.log_dir) / "critic_migration.json").write_text(json.dumps(migration, indent=2) + "\n")
+            else:
+                trainer.agent.load(str(args.resume_checkpoint))
+            if args.resume_action_std is not None:
+                import math
+                import torch
+                parameter = trainer.agent.policy.log_std_parameter
+                previous_std = float(parameter.detach().exp().mean())
+                with torch.no_grad():
+                    parameter.fill_(math.log(args.resume_action_std))
+                cleared = trainer.agent.policy_optimiser.state.pop(parameter, None) is not None
+                (Path(writer.log_dir) / "exploration_reset.json").write_text(json.dumps({
+                    "previous_mean_std": previous_std, "new_std": args.resume_action_std,
+                    "only_log_std_parameter_reinitialized": True,
+                    "log_std_adam_state_cleared": cleared,
+                    "network_architecture_or_ppo_algorithm_changed": False,
+                }, indent=2) + "\n")
             for module in (trainer.agent.encoder, trainer.agent.policy, trainer.agent.value):
                 module.train()
         if args.validate_contracts:
@@ -497,6 +642,14 @@ def main(argv=None):
             checks = validate_wrapper(wrapped)
             (Path(writer.log_dir) / "wrapper_validation.json").write_text(json.dumps(checks, indent=2) + "\n")
         if args.evaluate_checkpoint is not None:
+            if args.collect_value_diagnostic:
+                from simulation.roto2_pressure.collect_value_diagnostic import collect_value_diagnostic
+                collect_value_diagnostic(trainer,wrapped,args.evaluate_checkpoint,args.collect_value_diagnostic)
+                return 0
+            if args.collect_policy_observations:
+                from simulation.roto2_pressure.collect_policy_observations import collect_policy_observations
+                collect_policy_observations(trainer,wrapped,args.evaluate_checkpoint,args.collect_policy_observations)
+                return 0
             if args.trace_policy_output:
                 from simulation.roto2_pressure.rotation_diagnostics import trace_policy
                 trace_policy(trainer, wrapped, args.evaluate_checkpoint, args.trace_policy_output)
@@ -534,7 +687,12 @@ def main(argv=None):
                    Path(writer.checkpoint_dir) / "initial_agent.pt")
         import time
         started = time.monotonic()
-        best_return, aborted = trainer.train()
+        if args.value_gradient_diagnostic:
+            from simulation.roto2_pressure.value_gradient_diagnostic import ValueGradientDiagnostic
+            with ValueGradientDiagnostic(trainer.agent, args.value_gradient_diagnostic):
+                best_return, aborted = trainer.train()
+        else:
+            best_return, aborted = trainer.train()
         if aborted:
             raise RuntimeError("Upstream PPO aborted (nonfinite update or pruning)")
         changes = {}

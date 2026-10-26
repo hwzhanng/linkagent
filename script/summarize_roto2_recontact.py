@@ -79,6 +79,7 @@ def main():
     speed = delta / trace_summary["dt"]
     forward = np.minimum(np.maximum(speed, 0), 2 * evaluation_trace["target_speed"][None])
     expected_motion = forward * (valid_path & support) + np.minimum(speed, 0)
+    expected_motion *= trace_summary.get("baseline_motion_weight", 1.)
     motion_error = float(np.max(np.abs(expected_motion[late] - trace["term_rotation"][late])))
     assert motion_error < 1e-3, motion_error
     result = {

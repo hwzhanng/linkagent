@@ -1,4 +1,4 @@
-"""After final evaluation/video jobs, collect matching action and failure evidence."""
+"""After final evaluations, collect action evidence; videos may run concurrently."""
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -42,8 +42,13 @@ def main():
             while Path(f'/proc/{a.wait_pid}').exists():
                 time.sleep(30)
         parent = json.loads((validation / 'VALIDATION_PIPELINE.json').read_text())
-        assert parent['status'] == 'completed_pending_visual_review', parent['status']
+        assert parent['status'] in ('recording', 'completed_pending_visual_review',
+                                    'completed_visual_reviewed'), parent['status']
         assert Path(parent['training_run']) == run
+        for seed in (6101, 6102):
+            evaluated = json.loads((validation / f'final_seed{seed}.json').read_text())
+            assert evaluated['simulation_physx_rollout_completed'] and evaluated['episodes'] == 64
+            assert evaluated['pose_metric_max_error_turns'] < 1e-4
         cfg = json.loads((run / 'run_config.json').read_text())
         result = json.loads((run / 'training_result.json').read_text())
         checkpoint = Path(result['final_checkpoint'])
@@ -62,6 +67,13 @@ def main():
                  '--baseline-pose-weight', str(cfg['baseline_pose_weight']),
                  '--baseline-approach-weight', str(cfg.get('baseline_approach_weight', 0.)),
                  '--baseline-approach-pad-count', str(cfg.get('baseline_approach_pad_count', 4)),
+                 '--baseline-motion-weight', str(cfg.get('baseline_motion_weight', 1.)),
+                 '--baseline-centering-weight', str(cfg.get('baseline_centering_weight', .02)),
+                 '--baseline-failure-penalty', str(cfg.get('baseline_failure_penalty', 60.)),
+                 "--baseline-pad-quality-weight", str(cfg.get("baseline_pad_quality_weight", 0.)),
+                 "--baseline-offpad-weight", str(cfg.get("baseline_offpad_weight", 0.)),
+                 "--baseline-pressure-weight", str(cfg.get("baseline_pressure_weight", 0.)),
+                 "--baseline-contact-motion-floor", str(cfg.get("baseline_contact_motion_floor", 1.)),
                  '--reset-grasps', cfg['reset_grasps_file'], '--evaluate-checkpoint', checkpoint,
                  '--trace-policy-output', trace], 'trace')
         execute([PYTHON, '-m', 'script.audit_roto2_terminal_causes', '--trace', trace,
@@ -72,7 +84,9 @@ def main():
         execute([PYTHON, '-m', 'script.plot_roto2_policy_diagnostic',
                  '--evaluation', evaluation, '--trace', trace,
                  '--output', output / 'diagnostic.png', '--final-training-result',
-                 '--label', 'Pose0.30 final300M, independent seed6101'], 'plot')
+                 '--label', f"Final {result.get('cumulative_training_transitions', result['training_transitions']) / 1e6:.2f}M, "
+                            f"approach{cfg.get('baseline_approach_weight', 0.):.3f}, "
+                            f"motion{cfg.get('baseline_motion_weight', 1.):g}, seed6101"], 'plot')
         status.update(status='completed', visual_review_pending=True)
         save()
     except BaseException as exc:

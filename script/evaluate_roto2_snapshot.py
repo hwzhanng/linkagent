@@ -54,6 +54,13 @@ def main():
                   "--baseline-pose-weight", str(cfg.get("baseline_pose_weight", .01)),
                   "--baseline-approach-weight", str(cfg.get("baseline_approach_weight", 0.)),
                   "--baseline-approach-pad-count", str(cfg.get("baseline_approach_pad_count", 4)),
+                  "--baseline-motion-weight", str(cfg.get("baseline_motion_weight", 1.)),
+                  "--baseline-centering-weight", str(cfg.get("baseline_centering_weight", .02)),
+                  "--baseline-failure-penalty", str(cfg.get("baseline_failure_penalty", 60.)),
+                  "--baseline-pad-quality-weight", str(cfg.get("baseline_pad_quality_weight", 0.)),
+                  "--baseline-offpad-weight", str(cfg.get("baseline_offpad_weight", 0.)),
+                  "--baseline-pressure-weight", str(cfg.get("baseline_pressure_weight", 0.)),
+                  "--baseline-contact-motion-floor", str(cfg.get("baseline_contact_motion_floor", 1.)),
                   "--goal-direction", cfg["goal_direction"],
                   "--reset-grasps", cfg["reset_grasps_file"],
                   "--evaluate-checkpoint", str(checkpoint)]
@@ -78,9 +85,24 @@ def main():
         execute([str(runtime), "-m", "script.plot_roto2_policy_diagnostic",
                  "--evaluation", str(evaluation), "--trace", str(trace),
                  "--output", str(output / "diagnostic.png"),
-                 "--label", f"Pose cost{cfg.get('baseline_pose_weight', .01):.2f}, "
-                            f"{info['training_transitions'] / 1e6:.2f}M samples, seed{a.seed}"],
+                 "--label", f"Pose{cfg.get('baseline_pose_weight', .01):.2f}, "
+                            f"approach{cfg.get('baseline_approach_weight', 0.):.3f}, "
+                            f"motion{cfg.get('baseline_motion_weight', 1.):g}; "
+                            f"{info.get('cumulative_training_transitions', info['training_transitions']) / 1e6:.2f}M total, seed{a.seed}"],
                 output / "plot.log")
+        if cfg["reward_stage"] == "baseline":
+            execute([str(runtime), "-m", "script.summarize_roto2_recontact",
+                     "--folder", str(output), "--seed", str(a.seed)],
+                    output / "recontact.log")
+            execute([str(runtime), "-m", "script.audit_roto2_terminal_causes",
+                     "--trace", str(trace), "--output", str(output / "TERMINAL_CAUSES.json")],
+                    output / "terminal_audit.log")
+            execute([str(runtime), "-m", "script.summarize_roto2_tradeoff",
+                     "--folder", str(output), "--seed", str(a.seed)],
+                    output / "tradeoff.log")
+            execute([str(runtime), "-m", "script.audit_roto2_contact_coverage",
+                     "--folder", str(output), "--seed", str(a.seed)],
+                    output / "contact_coverage.log")
         d = json.loads(evaluation.read_text())
         assert d["simulation_physx_rollout_completed"] and d["episodes"] == 64
         status.update(status="completed", full_turns=sum(r["success"] for r in d["per_episode"]),

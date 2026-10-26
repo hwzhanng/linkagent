@@ -79,6 +79,13 @@ def main():
                   "--baseline-pose-weight", str(cfg.get("baseline_pose_weight", .01)),
                   "--baseline-approach-weight", str(cfg.get("baseline_approach_weight", 0.)),
                   "--baseline-approach-pad-count", str(cfg.get("baseline_approach_pad_count", 4)),
+                  "--baseline-motion-weight", str(cfg.get("baseline_motion_weight", 1.)),
+                  "--baseline-centering-weight", str(cfg.get("baseline_centering_weight", .02)),
+                  "--baseline-failure-penalty", str(cfg.get("baseline_failure_penalty", 60.)),
+                  "--baseline-pad-quality-weight", str(cfg.get("baseline_pad_quality_weight", 0.)),
+                  "--baseline-offpad-weight", str(cfg.get("baseline_offpad_weight", 0.)),
+                  "--baseline-pressure-weight", str(cfg.get("baseline_pressure_weight", 0.)),
+                  "--baseline-contact-motion-floor", str(cfg.get("baseline_contact_motion_floor", 1.)),
                   "--reset-grasps", str(library), "--evaluate-checkpoint", str(checkpoint)]
         commands = []
 

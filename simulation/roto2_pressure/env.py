@@ -26,7 +26,7 @@ from .core import (
     quat_inv_rotate, quat_rotate,
 )
 from .pressure_track import PressureJacobianTrack, hotspot_cost
-from .reward_baseline import baseline_reward
+from .reward_baseline import baseline_reward, support_masks
 from .env_cfg import FruitRotationEnvCfg
 from .reward_geometry import pose_heading, heading_delta, pad_contact, reward_v2, REWARD_VERSION, pad_approach_quality, valid_rotation_step, staged_rotation_reward, continuous_rotation_reward
 
@@ -251,6 +251,25 @@ class FruitRotationEnv(DirectRLEnv):
             contact_local, self._forces[:, :5])
         self._taxels = fingertip_taxels(self._pad_forces, contact_xy)
 
+    def _pressure_correction_support(self) -> torch.Tensor:
+        """Use the current task's support definition at the action boundary.
+
+        This adapter does not change the pressure controller or success gates.
+        Read the current pre-action physical state, not a previous reward flag.
+        """
+        if self.cfg.reward_stage != "baseline":
+            return ((self._pad_forces[:, 0] > self.cfg.minimum_support_force_n)
+                    & ((self._pad_forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2))
+        pose = self._fruit.data.root_pose_w.torch
+        quat = self._wxyz(pose[:, 3:7])
+        z_axis = torch.zeros_like(pose[:, :3])
+        z_axis[:, 2] = 1.
+        tilt = 1. - quat_rotate(quat, z_axis)[:, 2].clamp(-1., 1.)
+        return support_masks(
+            self._pad_forces, (pose[:, :3] - self._center_reference_w).norm(dim=-1),
+            self._fruit.data.root_lin_vel_w.torch.norm(dim=-1),
+            self._center_reference_w[:, 2] - pose[:, 2], tilt)[0]
+
     def _pre_physics_step(self, actions: torch.Tensor) -> None:
         if actions.shape != self._action.shape:
             raise ValueError(f"Expected {self._action.shape} normalized actions")
@@ -261,6 +280,8 @@ class FruitRotationEnv(DirectRLEnv):
             (self._pad_forces[:, 0] > self.cfg.minimum_support_force_n)
             & ((self._pad_forces[:, 1:5] > self.cfg.minimum_support_force_n).sum(-1) >= 2)
         )
+        if self.cfg.pressure_variant == "jacobian" and self.cfg.reward_stage == "baseline":
+            grip_ok = self._pressure_correction_support()
         applied = self._track.correct(
             proposed, (self._sparse / PRESSURE_REF_PA).clamp(0, 4),
             valid, grip_ok
@@ -363,7 +384,29 @@ class FruitRotationEnv(DirectRLEnv):
                 pose_weight=self.cfg.baseline_pose_weight,
                 approach_quality=approach,
                 approach_weight=self.cfg.baseline_approach_weight,
-                approach_pad_count=self.cfg.baseline_approach_pad_count)
+                approach_pad_count=self.cfg.baseline_approach_pad_count,
+                motion_weight=self.cfg.baseline_motion_weight,
+                centering_weight=self.cfg.baseline_centering_weight)
+            if any((self.cfg.baseline_pad_quality_weight,
+                    self.cfg.baseline_offpad_weight, self.cfg.baseline_pressure_weight)):
+                from .reward_tactile import tactile_constraint_costs
+                tactile_terms = tactile_constraint_costs(
+                    self._pad_quality, self._pad_forces, self._forces[:, :5],
+                    self._dense.amax(-1),
+                    quality_weight=self.cfg.baseline_pad_quality_weight,
+                    offpad_weight=self.cfg.baseline_offpad_weight,
+                    pressure_weight=self.cfg.baseline_pressure_weight,
+                    force_limit_n=self.cfg.maximum_contact_force_n,
+                    pressure_limit_pa=self.cfg.maximum_pressure_proxy_pa)
+                reward += sum(tactile_terms.values())
+                terms.update(tactile_terms)
+            if self.cfg.baseline_contact_motion_floor < 1.:
+                from .reward_tactile import contact_motion_discount
+                discount = contact_motion_discount(
+                    terms['rotation'], self._pad_quality, self._pad_forces,
+                    floor=self.cfg.baseline_contact_motion_floor)
+                reward += discount
+                terms['tactile_motion_discount'] = discount
         elif self.cfg.reward_stage == "continuous":
             ready = self.episode_length_buf > round(1.0 / dt)
             self._reward_path_valid &= ~ready | (pose_step_valid & (self._dense.amax(-1) <= self.cfg.maximum_pressure_proxy_pa))
@@ -396,7 +439,7 @@ class FruitRotationEnv(DirectRLEnv):
                 self._action, self._previous_action, self._previous_pad_support, dt, approach, self.cfg.reward_stage)
         self._previous_pad_support.copy_(secure_support)
         # DirectRLEnv computes this exact failure mask before rewards. Keep
-        # over-force / low-height failures subject to the same -60 penalty;
+        # over-force / low-height failures subject to one explicit penalty;
         # time-limit truncation is not a physical failure.
         terminated = self.reset_terminated
         # Pressure reduction is never itself a positive reward. This closes
@@ -407,7 +450,9 @@ class FruitRotationEnv(DirectRLEnv):
         self._previous_risk.copy_(measured_risk.detach())
         if self.cfg.pressure_variant != "plain":
             reward -= 0.05 * measured_risk
-        reward -= (40.0 if self.cfg.reward_stage == "contact" else 60.0) * terminated.float()
+        failure_penalty = (self.cfg.baseline_failure_penalty if self.cfg.reward_stage == "baseline"
+                           else 40.0 if self.cfg.reward_stage == "contact" else 60.0)
+        reward -= failure_penalty * terminated.float()
         self.extras["step"] = {
             "rotation_rate": signed_omega.detach().clone(),
             "pose_delta_rad": self._pose_delta.detach().clone(),
@@ -416,6 +461,8 @@ class FruitRotationEnv(DirectRLEnv):
             "reported_angular_velocity_z": self._fruit.data.root_ang_vel_w.torch[:, 2].detach().clone(),
             "pad_contact": (self._pad_forces > .15).detach().clone(),
             "pad_quality": self._pad_quality.detach().clone(),
+            "pad_forces_n": self._pad_forces.detach().clone(),
+            "distal_forces_n": self._forces[:, :5].detach().clone(),
             "pad_approach_quality": approach.detach().clone(),
             "reward_rotation": terms["rotation"].detach().clone(),
             "reward_terms": {k:v.detach().clone() for k,v in terms.items()},
