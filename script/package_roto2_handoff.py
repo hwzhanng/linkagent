@@ -32,9 +32,16 @@ def main():
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     files = []
+    aliases = []
     for name in ROOTS:
         for base, dirs, names in os.walk(ROOT / name):
             dirs[:] = sorted(d for d in dirs if d not in EXCLUDED)
+            for directory in dirs:
+                link = Path(base) / directory
+                if link.is_symlink():
+                    assert link.resolve().is_relative_to(ROOT), link
+                    aliases.append(dict(path=link.relative_to(ROOT).as_posix(),
+                                        target=link.resolve().relative_to(ROOT).as_posix()))
             files.extend(Path(base) / n for n in sorted(names) if not n.endswith(('.pyc', '.pyo')))
     for p in (ROOT / 'simulation/.runtime').iterdir():
         if p.is_file():
@@ -65,6 +72,7 @@ def main():
         'uv cache', 'Git internals', 'Python bytecode'], files=rows,
         file_count=len(rows), bytes=sum(r.get('bytes', 0) for r in rows))
     (DOC / 'DATA_MANIFEST.json').write_text(json.dumps(inventory, ensure_ascii=False, indent=2) + '\n')
+    (DOC / 'DIRECTORY_ALIASES.json').write_text(json.dumps(aliases, indent=2) + '\n')
     weights = [r for r in rows if Path(r['path']).suffix in ('.pt', '.pth', '.ckpt', '.onnx')]
     videos = [r for r in rows if Path(r['path']).suffix.lower() in ('.mp4', '.webm', '.mov', '.avi')]
     (DOC / 'ALL_WEIGHTS.json').write_text(json.dumps(weights, indent=2) + '\n')
